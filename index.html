@@ -3,109 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0f172a">
-    <title>Vandana ERP - Inventory</title>
+    <meta name="theme-color" content="#ffffff">
+    <title>Vandana ERP - SaaS Edition</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
     <style>
-        /* ================= INVENTORY & ERP UTILITY CSS ================= */
+        /* ================= ULTRA PROFESSIONAL SAAS CSS ================= */
         :root {
-            --bg-color: #f1f5f9;
+            --bg-canvas: #f9fafb;
             --surface: #ffffff;
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
-            --border: #cbd5e1;
-            --primary: #0284c7;      /* Professional Blue */
-            --primary-dark: #0369a1;
-            --header-bg: #0f172a;    /* Dark Navy Header */
-            --success: #16a34a;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --border-light: #e5e7eb;
+            --border-dark: #d1d5db;
+            --brand-primary: #2563eb;    /* Trust Blue */
+            --brand-hover: #1d4ed8;
+            --success: #059669;
             --danger: #dc2626;
             --warning: #d97706;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius-md: 8px;
+            --radius-lg: 12px;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
-        body { background-color: var(--bg-color); color: var(--text-dark); overflow-x: hidden; }
+        body { background-color: var(--bg-canvas); color: var(--text-primary); overflow-x: hidden; font-size: 14px; }
 
-        /* 📱 DARK ERP HEADER */
-        .app-bar { position: fixed; top: 0; width: 100%; height: 56px; background: var(--header-bg); color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        /* 📱 CLEAN CORPORATE HEADER */
+        .app-bar { position: fixed; top: 0; width: 100%; height: 56px; background: var(--surface); border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 1000; box-shadow: var(--shadow-sm); }
         .app-bar-left { display: flex; align-items: center; gap: 12px; }
-        .menu-icon { font-size: 20px; font-weight: bold; cursor: pointer; }
-        .app-bar h1 { font-size: 16px; font-weight: 600; letter-spacing: 0.5px; }
-        .sync-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 4px 10px; border-radius: 4px; font-size: 11px; display: flex; align-items: center; gap: 4px;}
+        .app-logo { width: 28px; height: 28px; background: var(--brand-primary); color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;}
+        .app-bar h1 { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+        .user-avatar { width: 32px; height: 32px; background: #f3f4f6; border: 1px solid var(--border-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--text-secondary); cursor: pointer; }
 
         /* 🏠 DASHBOARD LAYOUT */
-        .main-content { padding: 70px 16px 80px 16px; max-width: 800px; margin: 0 auto; }
+        .main-content { padding: 76px 16px 80px 16px; max-width: 800px; margin: 0 auto; }
         
-        /* Quick Actions Grid */
-        .section-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin: 0 0 12px 0; letter-spacing: 0.5px; }
-        .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
-        .action-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 4px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
-        .action-box:active { background: #e2e8f0; }
-        .action-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 18px; }
-        .bg-blue-light { background: #e0f2fe; color: var(--primary); }
-        .bg-green-light { background: #dcfce7; color: var(--success); }
-        .bg-purple-light { background: #f3e8ff; color: #9333ea; }
-        .bg-orange-light { background: #ffedd5; color: var(--warning); }
-        .action-label { font-size: 11px; font-weight: 600; color: var(--text-dark); text-align: center; line-height: 1.2;}
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .section-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin: 0; }
+        .date-filter { font-size: 12px; font-weight: 500; color: var(--text-secondary); background: var(--surface); border: 1px solid var(--border-light); padding: 4px 10px; border-radius: var(--radius-md); }
 
-        /* Inventory Summary Box */
-        .summary-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
-        .summary-row { display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 12px; }
-        .summary-row:last-child { border: none; padding-bottom: 0; margin-bottom: 0; }
-        .sum-title { font-size: 13px; color: var(--text-muted); font-weight: 500; }
-        .sum-val { font-size: 15px; font-weight: 700; color: var(--text-dark); }
-        .val-red { color: var(--danger); }
+        /* SaaS KPI Metrics */
+        .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+        .metric-card { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 16px; box-shadow: var(--shadow-sm); }
+        .metric-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); margin-bottom: 8px; display: block; }
+        .metric-value { font-size: 24px; font-weight: 700; color: var(--text-primary); margin: 0 0 4px 0; letter-spacing: -0.5px; }
+        .metric-trend { font-size: 11px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--danger); }
 
-        /* Low Stock Alerts */
-        .alert-card { background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid var(--danger); padding: 12px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
-        .alert-item { font-size: 13px; font-weight: 600; color: #991b1b; margin: 0 0 4px 0;}
-        .alert-stock { font-size: 11px; color: var(--danger); font-weight: 700; }
-        .add-stock-btn { background: var(--surface); border: 1px solid #fca5a5; color: var(--danger); padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; }
+        /* Task & Alert List */
+        .list-group { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 24px; box-shadow: var(--shadow-sm); }
+        .list-item { padding: 16px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; }
+        .list-item:last-child { border-bottom: none; }
+        .item-info h4 { font-size: 14px; font-weight: 600; margin: 0 0 4px 0; }
+        .item-info p { font-size: 12px; color: var(--text-secondary); margin: 0; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .badge-warning { background: #fef3c7; color: #b45309; }
+        .badge-danger { background: #fee2e2; color: #b91c1c; }
+        
+        .btn-link { background: none; border: none; color: var(--brand-primary); font-size: 13px; font-weight: 600; cursor: pointer; }
 
-        /* ⚓ BOTTOM NAVIGATION (Standard App Style) */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; color: var(--text-muted); font-size: 10px; font-weight: 600; gap: 4px; cursor: pointer; }
+        /* ⚓ BOTTOM NAVIGATION */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 64px; background: var(--surface); border-top: 1px solid var(--border-light); display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 64px; height: 100%; color: var(--text-secondary); font-size: 11px; font-weight: 500; gap: 4px; cursor: pointer; transition: 0.2s;}
         .nav-item i { font-size: 20px; font-style: normal; }
-        .nav-item.active { color: var(--primary); }
-
-        /* 📄 SLIDING PAGES (POS/Inventory Screens) */
-        .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 80px; }
-        .page.active { transform: translateX(0); }
-        .page-header { position: sticky; top: 0; background: var(--primary); color: white; height: 56px; display: flex; align-items: center; padding: 0 16px; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .back-btn { background: transparent; border: none; color: white; font-size: 24px; margin-right: 16px; cursor: pointer; padding: 0; }
-        .page-title { font-size: 16px; font-weight: 600; margin: 0; }
-        .page-content { padding: 16px; max-width: 800px; margin: 0 auto; }
-
-        /* 📝 POS / INVENTORY FORMS */
-        .form-group { margin-bottom: 16px; }
-        .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
-        .form-control { width: 100%; background: var(--surface); border: 1px solid var(--border); padding: 12px; border-radius: 6px; font-size: 14px; color: var(--text-dark); outline: none; transition: 0.2s; }
-        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2); }
-        .input-group { display: flex; gap: 8px; }
-        .btn-icon { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0 16px; font-size: 16px; cursor: pointer; }
+        .nav-item.active { color: var(--brand-primary); }
         
-        .btn-primary { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
-        .btn-primary:active { background: var(--primary-dark); }
-        .btn-outline { width: 100%; background: var(--surface); color: var(--text-dark); border: 1px solid var(--border); padding: 12px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
+        /* Floating Add Button */
+        .nav-fab { width: 48px; height: 48px; background: var(--brand-primary); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: 0 4px 12px rgba(37,99,235,0.3); transform: translateY(-10px); }
 
-        /* 📋 DATA TABLES (Inventory Look) */
-        .data-table-wrapper { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; overflow-x: auto; margin-bottom: 20px;}
-        .data-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
-        .data-table th { background: #f8fafc; padding: 10px 12px; color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border); text-transform: uppercase; font-size: 11px; }
-        .data-table td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; font-weight: 500; color: var(--text-dark); }
-        .data-table tr:last-child td { border-bottom: none; }
+        /* 📄 SLIDING PAGES */
+        .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-canvas); z-index: 2000; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; padding-bottom: 80px; }
+        .page.active { transform: translateX(0); }
+        .page-header { position: sticky; top: 0; background: var(--surface); height: 56px; display: flex; align-items: center; padding: 0 16px; z-index: 10; border-bottom: 1px solid var(--border-light); }
+        .back-btn { background: transparent; border: none; font-size: 22px; color: var(--text-primary); margin-right: 12px; cursor: pointer; }
+        .page-title { font-size: 15px; font-weight: 600; margin: 0; }
+        .page-content { padding: 20px 16px; max-width: 800px; margin: 0 auto; }
+
+        /* 📝 PROFESSIONAL FORMS */
+        .form-section { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 20px; box-shadow: var(--shadow-sm); }
+        .form-group { margin-bottom: 16px; }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-label { display: block; font-size: 12px; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
+        .form-control { width: 100%; background: #f9fafb; border: 1px solid var(--border-dark); padding: 10px 12px; border-radius: var(--radius-md); font-size: 14px; color: var(--text-primary); outline: none; transition: 0.2s; }
+        .form-control:focus { background: var(--surface); border-color: var(--brand-primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        .input-row { display: flex; gap: 12px; }
+        
+        .btn { width: 100%; padding: 12px; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: 0.2s; }
+        .btn-primary { background: var(--brand-primary); color: white; box-shadow: var(--shadow-sm); }
+        .btn-primary:active { background: var(--brand-hover); }
+        .btn-secondary { background: var(--surface); border-color: var(--border-dark); color: var(--text-primary); }
+        .btn-secondary:active { background: var(--bg-canvas); }
+
+        /* 📋 SAAS DATA GRID (TABLES) */
+        .data-grid { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+        .data-grid th { background: #f3f4f6; padding: 12px; color: var(--text-secondary); font-weight: 600; border-bottom: 1px solid var(--border-light); border-top: 1px solid var(--border-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .data-grid td { padding: 12px; border-bottom: 1px solid var(--border-light); color: var(--text-primary); }
+        .data-grid tbody tr:hover { background: #f9fafb; }
         .text-right { text-align: right; }
-        .status-badge { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; }
-        .status-ok { background: #dcfce7; color: var(--success); }
-        .status-low { background: #fee2e2; color: var(--danger); }
+        
+        /* Thermal Receipt Style */
+        .receipt-box { background: #fffacd; border: 1px dashed #d1d5db; border-radius: 4px; padding: 16px; font-family: 'Courier New', Courier, monospace; font-size: 13px; margin-bottom: 20px;}
+        .receipt-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+        .receipt-total { border-top: 1px dashed #9ca3af; padding-top: 8px; margin-top: 8px; font-weight: bold; font-size: 15px; }
 
-        /* LIST ITEMS (Parties/Sales) */
-        .list-item { background: var(--surface); border: 1px solid var(--border); padding: 12px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .list-title { font-size: 14px; font-weight: 600; margin: 0 0 4px 0; }
-        .list-sub { font-size: 12px; color: var(--text-muted); margin: 0; }
-        .list-amt { font-size: 15px; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -113,65 +118,68 @@
     <!-- 📱 TOP APP BAR -->
     <header class="app-bar">
         <div class="app-bar-left">
-            <div class="menu-icon">☰</div>
+            <div class="app-logo">V</div>
             <h1>Vandana ERP</h1>
         </div>
-        <button class="sync-btn" onclick="alert('Syncing with Server...')">☁️ Sync</button>
+        <div class="user-avatar">VA</div>
     </header>
 
     <!-- 🏠 DASHBOARD CONTENT -->
     <main class="main-content">
         
-        <h3 class="section-title">Quick Actions</h3>
-        <div class="quick-actions">
-            <div class="action-box" onclick="openPage('pos-page', null)">
-                <div class="action-icon bg-blue-light">🧾</div>
-                <span class="action-label">Add<br>Sale</span>
+        <div class="section-header">
+            <h3 class="section-title">Business Snapshot</h3>
+            <span class="date-filter">Today ▾</span>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <span class="metric-label">Gross Revenue</span>
+                <p class="metric-value">₹45,200</p>
+                <span class="metric-trend trend-up">↑ 12% vs yesterday</span>
             </div>
-            <div class="action-box">
-                <div class="action-icon bg-green-light">📦</div>
-                <span class="action-label">Stock<br>In</span>
+            <div class="metric-card">
+                <span class="metric-label">Pending Dues</span>
+                <p class="metric-value">₹12,450</p>
+                <span class="metric-trend trend-down">↓ ₹1,200 collected</span>
             </div>
-            <div class="action-box" onclick="openPage('parties-page', this)">
-                <div class="action-icon bg-purple-light">👥</div>
-                <span class="action-label">Add<br>Party</span>
+            <div class="metric-card">
+                <span class="metric-label">Invoices Generated</span>
+                <p class="metric-value">18</p>
+                <span class="metric-trend trend-up">↑ 3 new</span>
             </div>
-            <div class="action-box">
-                <div class="action-icon bg-orange-light">📊</div>
-                <span class="action-label">All<br>Reports</span>
+            <div class="metric-card" onclick="openPage('items-page', null)">
+                <span class="metric-label">Low Stock Alerts</span>
+                <p class="metric-value" style="color:var(--danger);">2 Items</p>
+                <span class="metric-trend" style="color:var(--text-secondary);">Requires action</span>
             </div>
         </div>
 
-        <h3 class="section-title">Business Overview (Today)</h3>
-        <div class="summary-box">
-            <div class="summary-row">
-                <span class="sum-title">Total Sales Value</span>
-                <span class="sum-val">₹ 45,200</span>
-            </div>
-            <div class="summary-row">
-                <span class="sum-title">Total Boxes Sold</span>
-                <span class="sum-val">185 BOX</span>
-            </div>
-            <div class="summary-row">
-                <span class="sum-title">Pending Receivables</span>
-                <span class="sum-val val-red">₹ 12,450</span>
-            </div>
+        <div class="section-header">
+            <h3 class="section-title">Action Items</h3>
         </div>
 
-        <h3 class="section-title" style="color:var(--danger);">⚠️ Low Stock Alerts</h3>
-        <div class="alert-card">
-            <div>
-                <p class="alert-item">Kamlay Shade 105</p>
-                <span class="alert-stock">Current Stock: 2 BOX</span>
+        <div class="list-group">
+            <div class="list-item">
+                <div class="item-info">
+                    <h4>Kamlay Shade 105</h4>
+                    <p>Current Stock: 2 BOX</p>
+                </div>
+                <div style="text-align:right;">
+                    <span class="badge badge-danger">CRITICAL</span><br>
+                    <button class="btn-link" style="margin-top:4px;">Reorder</button>
+                </div>
             </div>
-            <button class="add-stock-btn">Add Stock</button>
-        </div>
-        <div class="alert-card">
-            <div>
-                <p class="alert-item">Viscose Black</p>
-                <span class="alert-stock">Current Stock: 0 CONE</span>
+            <div class="list-item">
+                <div class="item-info">
+                    <h4>Gopal Handloom</h4>
+                    <p>Due: ₹8,200 (Overdue 5 days)</p>
+                </div>
+                <div style="text-align:right;">
+                    <span class="badge badge-warning">REMINDER</span><br>
+                    <button class="btn-link" style="margin-top:4px;">Send WA</button>
+                </div>
             </div>
-            <button class="add-stock-btn">Add Stock</button>
         </div>
     </main>
 
@@ -181,164 +189,154 @@
             <i>🏠</i><span>Home</span>
         </div>
         <div class="nav-item" onclick="openPage('items-page', this)">
-            <i>📦</i><span>Items</span>
+            <i>📦</i><span>Inventory</span>
         </div>
-        <div class="nav-item" onclick="openPage('pos-page', this)">
-            <i>➕</i><span>Billing</span>
-        </div>
-        <div class="nav-item" onclick="openPage('parties-page', this)">
+        
+        <!-- FAB inside Nav -->
+        <div class="nav-fab" onclick="openPage('pos-page', null)" style="cursor:pointer;">+</div>
+
+        <div class="nav-item" onclick="alert('Parties Module coming next.')">
             <i>👥</i><span>Parties</span>
+        </div>
+        <div class="nav-item" onclick="alert('Reports Module coming next.')">
+            <i>📊</i><span>Reports</span>
         </div>
     </nav>
 
     <!-- ================= FULL SCREEN PAGES ================= -->
 
-    <!-- 📦 1. ITEMS / INVENTORY PAGE (New) -->
+    <!-- 📦 1. INVENTORY (Data Grid Style) -->
     <div class="page" id="items-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('items-page')">←</button>
-            <h2 class="page-title">Inventory Items</h2>
+            <h2 class="page-title">Inventory Master</h2>
         </div>
-        <div class="page-content">
-            <input type="text" class="form-control" placeholder="🔍 Search Shade or Category..." style="margin-bottom:16px;">
+        <div class="page-content" style="padding:0;">
             
-            <div class="data-table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Item Name</th>
-                            <th class="text-right">Stock</th>
-                            <th class="text-right">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Kamlay Shade 264</td>
-                            <td class="text-right">145 BOX</td>
-                            <td class="text-right"><span class="status-badge status-ok">IN STOCK</span></td>
-                        </tr>
-                        <tr>
-                            <td>Kamlay Shade 120</td>
-                            <td class="text-right">40 BOX</td>
-                            <td class="text-right"><span class="status-badge status-ok">IN STOCK</span></td>
-                        </tr>
-                        <tr>
-                            <td>Kamlay Shade 105</td>
-                            <td class="text-right" style="color:var(--danger); font-weight:bold;">2 BOX</td>
-                            <td class="text-right"><span class="status-badge status-low">LOW</span></td>
-                        </tr>
-                        <tr>
-                            <td>Metallic Zari Golden</td>
-                            <td class="text-right">50 CONE</td>
-                            <td class="text-right"><span class="status-badge status-ok">IN STOCK</span></td>
-                        </tr>
-                        <tr>
-                            <td>Viscose Black</td>
-                            <td class="text-right" style="color:var(--danger); font-weight:bold;">0 CONE</td>
-                            <td class="text-right"><span class="status-badge status-low">OUT</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div style="padding: 16px;">
+                <input type="text" class="form-control" placeholder="Search item, shade or category...">
             </div>
-            <button class="btn-primary">➕ Add New Item</button>
+
+            <table class="data-grid">
+                <thead>
+                    <tr>
+                        <th>Item Details</th>
+                        <th class="text-right">Stock</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div style="font-weight:600; color:var(--text-primary);">Kamlay Shade 264</div>
+                            <div style="font-size:11px; color:var(--text-secondary);">Thread • BOX</div>
+                        </td>
+                        <td class="text-right">
+                            <span style="font-weight:600;">145</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="font-weight:600; color:var(--text-primary);">Kamlay Shade 105</div>
+                            <div style="font-size:11px; color:var(--text-secondary);">Thread • BOX</div>
+                        </td>
+                        <td class="text-right">
+                            <span style="font-weight:600; color:var(--danger);">2</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="font-weight:600; color:var(--text-primary);">Viscose Black</div>
+                            <div style="font-size:11px; color:var(--text-secondary);">Thread • CONE</div>
+                        </td>
+                        <td class="text-right">
+                            <span style="font-weight:600; color:var(--danger);">0</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="padding: 16px;">
+                <button class="btn btn-secondary">Add New Item</button>
+            </div>
         </div>
     </div>
 
-    <!-- 🧾 2. POS / BILLING PAGE (Simplified for speed) -->
+    <!-- 🧾 2. POS / FAST BILLING (SaaS Style) -->
     <div class="page" id="pos-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('pos-page')">←</button>
-            <h2 class="page-title">Sale Invoice (POS)</h2>
+            <h2 class="page-title">Point of Sale (POS)</h2>
         </div>
         <div class="page-content">
             
+            <!-- Input Section -->
+            <div class="form-section">
+                <div class="form-group">
+                    <label class="form-label">Customer / Party</label>
+                    <input type="text" class="form-control" placeholder="Select or type customer name">
+                </div>
+                
+                <hr style="border:0; border-top:1px solid var(--border-light); margin: 16px 0;">
+                
+                <div class="input-row form-group">
+                    <div style="flex:2;">
+                        <label class="form-label">Category</label>
+                        <select class="form-control" id="inv-cat">
+                            <option value="Kamlay">Kamlay Thread</option>
+                            <option value="Viscose">Viscose Thread</option>
+                            <option value="Zari">Zari</option>
+                        </select>
+                    </div>
+                    <div style="flex:1;">
+                        <label class="form-label">Shade</label>
+                        <input type="number" class="form-control" id="inv-shade" placeholder="No.">
+                    </div>
+                </div>
+                
+                <div class="input-row form-group">
+                    <div style="flex:1;">
+                        <label class="form-label">Qty</label>
+                        <input type="number" class="form-control" id="inv-qty" placeholder="0">
+                    </div>
+                    <div style="flex:1;">
+                        <label class="form-label">Rate (₹)</label>
+                        <input type="number" class="form-control" id="inv-rate" placeholder="0.00">
+                    </div>
+                </div>
+                
+                <button class="btn btn-secondary" onclick="addPosItem()">Add to Bill</button>
+            </div>
+
+            <!-- Receipt Section -->
+            <h3 class="section-title" style="margin-bottom:12px;">Bill Preview</h3>
+            <div class="receipt-box">
+                <div style="text-align:center; font-weight:bold; margin-bottom:10px; border-bottom:1px solid #ccc; padding-bottom:5px;">VANDANA ENTERPRISES<br><span style="font-size:10px; font-weight:normal;">TAX INVOICE</span></div>
+                
+                <div id="pos-cart">
+                    <!-- Javascript will populate rows here -->
+                    <div style="text-align:center; color:#9ca3af; padding:10px 0;">No items added</div>
+                </div>
+
+                <div class="receipt-total">
+                    <div class="receipt-row">
+                        <span>NET AMOUNT:</span>
+                        <span id="pos-total">₹ 0.00</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="form-group">
-                <label class="form-label">Party / Customer</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search Customer">
-                    <button class="btn-icon">➕</button>
-                </div>
-            </div>
-
-            <div style="background:#f8fafc; border:1px solid var(--border); padding:12px; border-radius:6px; margin-bottom:16px;">
-                <label class="form-label">Scan or Enter Item</label>
-                <div class="input-group" style="margin-bottom:10px;">
-                    <select class="form-control" style="flex:1;" id="inv-cat">
-                        <option>Kamlay Thread</option>
-                        <option>Viscose Thread</option>
-                        <option>Zari</option>
-                    </select>
-                    <input type="number" class="form-control" id="inv-shade" placeholder="Shade No" style="flex:1;">
-                    <button class="btn-icon" style="color:var(--primary);">📷</button>
-                </div>
-                <div class="input-group">
-                    <input type="number" class="form-control" id="inv-qty" placeholder="Qty">
-                    <input type="number" class="form-control" id="inv-rate" placeholder="Rate ₹">
-                </div>
-                <button class="btn-outline" style="margin-top:10px; margin-bottom:0; background:white;" onclick="addPosItem()">⬇ Add to Cart</button>
-            </div>
-
-            <h3 class="section-title">Cart Items</h3>
-            <div class="data-table-wrapper" style="margin-bottom:10px;">
-                <table class="data-table">
-                    <thead><tr><th>Item</th><th>Qty</th><th class="text-right">Total</th></tr></thead>
-                    <tbody id="pos-cart">
-                        <tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Cart is empty</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Payment Type</label>
+                <label class="form-label">Payment Mode</label>
                 <select class="form-control"><option>Cash</option><option>UPI</option><option>Udhaar</option></select>
             </div>
 
-            <div style="display:flex; justify-content:space-between; align-items:center; background:#e0f2fe; padding:12px; border-radius:6px; margin-bottom:16px;">
-                <span style="font-weight:600; color:var(--primary-dark);">Grand Total:</span>
-                <span style="font-size:20px; font-weight:bold; color:var(--primary-dark);" id="pos-total">₹ 0</span>
-            </div>
-
-            <button class="btn-primary" onclick="alert('Bill Saved & Stock Deducted!')">Save & Print Bill</button>
+            <button class="btn btn-primary" onclick="alert('Invoice Recorded and Synced.')">Confirm & Save</button>
         </div>
     </div>
 
-    <!-- 👥 3. PARTIES / LEDGER PAGE -->
-    <div class="page" id="parties-page">
-        <div class="page-header">
-            <button class="back-btn" onclick="closePage('parties-page')">←</button>
-            <h2 class="page-title">Parties & Ledger</h2>
-        </div>
-        <div class="page-content">
-            <input type="text" class="form-control" placeholder="🔍 Search Party Name..." style="margin-bottom:16px;">
-            
-            <div class="list-item" style="border-left: 4px solid var(--danger);">
-                <div>
-                    <h4 class="list-title">Gopal Handloom</h4>
-                    <p class="list-sub">Pending Amount</p>
-                </div>
-                <div class="text-right">
-                    <div class="list-amt" style="color:var(--danger);">₹ 8,200</div>
-                    <span style="font-size:11px; color:var(--primary); cursor:pointer; font-weight:600;">View Ledger ➔</span>
-                </div>
-            </div>
-
-            <div class="list-item" style="border-left: 4px solid var(--success);">
-                <div>
-                    <h4 class="list-title">Ramesh Traders</h4>
-                    <p class="list-sub">Advance Balance</p>
-                </div>
-                <div class="text-right">
-                    <div class="list-amt" style="color:var(--success);">₹ 1,500</div>
-                    <span style="font-size:11px; color:var(--primary); cursor:pointer; font-weight:600;">View Ledger ➔</span>
-                </div>
-            </div>
-            
-            <button class="btn-primary" style="margin-top:10px;">➕ Add New Party</button>
-        </div>
-    </div>
-
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Page Navigation Logic
+        // Page Navigation
         function openPage(id, navElement) {
             document.getElementById(id).classList.add('active');
             if(navElement) {
@@ -350,7 +348,7 @@
         function closePage(id) {
             document.getElementById(id).classList.remove('active');
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            document.querySelector('.nav-item').classList.add('active');
+            document.querySelector('.nav-item').classList.add('active'); // Set Home active
         }
 
         function goHome(navElement) {
@@ -359,25 +357,27 @@
             navElement.classList.add('active');
         }
 
-        // POS Cart Logic
+        // POS Logic (Receipt Style)
         let cart = [];
         function addPosItem() {
             let cat = document.getElementById('inv-cat').value;
-            let shade = document.getElementById('inv-shade').value;
+            let shade = document.getElementById('inv-shade').value || "Gen";
             let qty = parseFloat(document.getElementById('inv-qty').value) || 0;
             let rate = parseFloat(document.getElementById('inv-rate').value) || 0;
 
-            if(qty <= 0 || rate <= 0) return alert("Enter Qty and Rate");
+            if(qty <= 0 || rate <= 0) return alert("Please enter valid Qty and Rate");
 
-            let name = cat.includes('Kamlay') ? `Shade ${shade}` : `${cat} ${shade}`;
+            let name = `${cat} Shd:${shade}`;
             let total = qty * rate;
             
-            cart.push({name, qty, total});
+            cart.push({name, qty, rate, total});
             renderCart();
 
+            // Clear specific inputs for fast entry
             document.getElementById('inv-shade').value = '';
             document.getElementById('inv-qty').value = '';
             document.getElementById('inv-rate').value = '';
+            document.getElementById('inv-shade').focus();
         }
 
         function renderCart() {
@@ -386,22 +386,22 @@
             let gTotal = 0;
 
             if(cart.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:gray;">Cart is empty</td></tr>';
-                document.getElementById('pos-total').innerText = "₹ 0";
+                tbody.innerHTML = '<div style="text-align:center; color:#9ca3af; padding:10px 0;">No items added</div>';
+                document.getElementById('pos-total').innerText = "₹ 0.00";
                 return;
             }
 
             cart.forEach((item) => {
                 gTotal += item.total;
                 tbody.innerHTML += `
-                    <tr>
-                        <td>${item.name}</td>
-                        <td>${item.qty}</td>
-                        <td class="text-right">₹${item.total.toLocaleString()}</td>
-                    </tr>
+                    <div class="receipt-row">
+                        <span style="flex:2;">${item.name}</span>
+                        <span style="flex:1; text-align:center;">${item.qty} x ${item.rate}</span>
+                        <span style="flex:1; text-align:right;">${item.total.toLocaleString()}</span>
+                    </div>
                 `;
             });
-            document.getElementById('pos-total').innerText = `₹ ${gTotal.toLocaleString()}`;
+            document.getElementById('pos-total').innerText = `₹ ${gTotal.toLocaleString('en-IN')}.00`;
         }
     </script>
 </body>

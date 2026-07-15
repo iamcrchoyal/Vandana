@@ -3,295 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#1a237e">
-    <title>Vandana ERP - Vyapar Style</title>
+    <meta name="theme-color" content="#09090b">
+    <title>Vandana ERP - Premium</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
     <style>
-        /* ================= VYAPAR STYLE CSS ================= */
+        /* ================= ULTRA PREMIUM FINTECH CSS ================= */
         :root {
-            --bg-color: #f2f2f2;
-            --surface: #ffffff;
-            --primary: #1a237e;      /* Vyapar Deep Blue */
-            --primary-light: #283593;
-            --text-main: #212121;
-            --text-muted: #757575;
-            --border: #e0e0e0;
-            --success: #2e7d32;
-            --danger: #d32f2f;
-            --warning: #f57c00;
+            --bg-dark: #09090b;
+            --surface-glass: rgba(255, 255, 255, 0.03);
+            --surface-hover: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --neon-blue: #3b82f6;
+            --neon-purple: #8b5cf6;
+            --gradient-premium: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            --success: #10b981;
+            --danger: #f43f5e;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Roboto', sans-serif; margin: 0; padding: 0; }
-        body { background-color: var(--bg-color); color: var(--text-main); overflow-x: hidden; font-size: 14px; }
-
-        /* 📱 HEADER (Solid Blue) */
-        .app-bar { position: fixed; top: 0; width: 100%; height: 56px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .app-bar-left { display: flex; align-items: center; gap: 15px; }
-        .menu-icon { font-size: 20px; cursor: pointer; }
-        .app-bar h1 { font-size: 16px; font-weight: 500; }
-        .sync-btn { background: rgba(255,255,255,0.15); border: none; padding: 6px 12px; border-radius: 4px; color: white; font-size: 12px; font-weight: 500; }
-
-        /* 🏠 DASHBOARD */
-        .main-content { padding: 66px 12px 80px 12px; max-width: 800px; margin: 0 auto; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; }
+        body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; }
         
-        /* Active Date Picker */
-        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .dash-title { font-size: 14px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
-        .date-picker { background: var(--surface); border: 1px solid var(--border); color: var(--primary); font-weight: 600; padding: 6px 10px; border-radius: 4px; font-size: 13px; outline: none; box-shadow: 0 1px 3px rgba(0,0,0,0.1); cursor: pointer; }
+        /* 🌟 SPLASH SCREEN ANIMATION */
+        #splash { position: fixed; inset: 0; background: var(--bg-dark); z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease; }
+        .splash-logo { font-size: 32px; font-weight: 800; background: var(--gradient-premium); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; margin-bottom: 20px; animation: pulseGlow 2s infinite; }
+        .loading-bar { width: 150px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; position: relative; }
+        .loading-bar::after { content: ''; position: absolute; top: 0; left: 0; width: 50%; height: 100%; background: var(--gradient-premium); animation: loading 1.5s infinite ease-in-out; border-radius: 4px; }
+        @keyframes loading { 0% { left: -50%; } 100% { left: 100%; } }
+        @keyframes pulseGlow { 0% { filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.2)); } 50% { filter: drop-shadow(0 0 25px rgba(139, 92, 246, 0.6)); } 100% { filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.2)); } }
 
-        /* Total Collection Box (Clickable) */
-        .collection-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid var(--success); cursor: pointer; position: relative; transition: 0.2s;}
-        .collection-box:active { background: #f5f5f5; }
-        .collection-box::after { content: '➔'; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--border); font-size: 18px; }
-        .col-title { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-bottom: 4px; }
-        .col-amount { font-size: 28px; font-weight: 700; color: var(--text-main); }
-        .col-sub { font-size: 12px; color: var(--success); font-weight: 500; margin-top: 4px; }
+        /* 💎 GLASSMORPHISM HEADER */
+        .app-bar { position: fixed; top: 0; width: 100%; height: 65px; background: rgba(9, 9, 11, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-glow); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000; }
+        .app-bar-brand h1 { font-size: 18px; font-weight: 800; margin: 0; letter-spacing: 0.5px; }
+        .pro-badge { background: var(--gradient-premium); padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 15px rgba(139,92,246,0.4); }
 
-        /* Vyapar Grid Stats */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .stat-card { background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; }
-        .stat-title { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-bottom: 8px; display: flex; justify-content: space-between; }
-        .stat-val { font-size: 18px; font-weight: 700; }
-        .text-green { color: var(--success); }
-        .text-red { color: var(--danger); }
-        .text-blue { color: var(--primary); }
-
-        /* ⚓ BOTTOM NAV */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; color: var(--text-muted); font-size: 11px; font-weight: 500; cursor: pointer; }
-        .nav-item i { font-size: 22px; font-style: normal; margin-bottom: 2px; }
-        .nav-item.active { color: var(--primary); }
+        /* 🏠 MAIN DASHBOARD */
+        .main-content { padding: 85px 20px 100px 20px; max-width: 800px; margin: 0 auto; }
         
-        .fab { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 56px; height: 56px; background: var(--danger); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 4px 10px rgba(211, 47, 47, 0.4); border: none; cursor: pointer; z-index: 1001; }
-        .fab:active { background: #b71c1c; }
+        /* Premium Balance Card */
+        .premium-card { background: var(--surface-glass); border: 1px solid var(--border-glow); border-radius: 24px; padding: 30px; position: relative; overflow: hidden; margin-bottom: 25px; backdrop-filter: blur(10px); }
+        .premium-card::before { content: ''; position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: var(--neon-purple); filter: blur(80px); opacity: 0.3; z-index: -1; }
+        .premium-card::after { content: ''; position: absolute; bottom: -50px; left: -50px; width: 150px; height: 150px; background: var(--neon-blue); filter: blur(80px); opacity: 0.2; z-index: -1; }
+        
+        .card-label { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+        .card-balance { font-size: 42px; font-weight: 800; margin: 0 0 20px 0; letter-spacing: -1px; background: linear-gradient(to right, #fff, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .card-footer { display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
+        .footer-stat { display: flex; flex-direction: column; }
+        .stat-val { font-size: 16px; font-weight: 700; color: var(--text-main); }
+        .stat-label { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+
+        /* Grid Items */
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        .grid-item { background: var(--surface-glass); border: 1px solid var(--border-glow); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; transition: 0.3s; cursor: pointer; position: relative; overflow: hidden; }
+        .grid-item:active { transform: scale(0.96); background: var(--surface-hover); border-color: rgba(255,255,255,0.2); }
+        .grid-icon { width: 45px; height: 45px; border-radius: 14px; background: rgba(255,255,255,0.05); display: flex; justify-content: center; align-items: center; font-size: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
+        .grid-val { font-size: 20px; font-weight: 800; margin: 0 0 4px 0; }
+        .grid-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+
+        /* ⚓ FLOATING GLASS BOTTOM NAV */
+        .nav-wrapper { position: fixed; bottom: 25px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 1000; padding: 0 20px; pointer-events: none;}
+        .bottom-nav { background: rgba(20, 20, 25, 0.8); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1); border-radius: 30px; display: flex; justify-content: space-around; align-items: center; width: 100%; max-width: 400px; height: 70px; padding: 0 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); pointer-events: auto; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 60px; color: var(--text-muted); font-size: 10px; font-weight: 600; gap: 4px; transition: 0.3s; cursor: pointer; border-radius: 20px; }
+        .nav-item i { font-size: 22px; font-style: normal; transition: 0.3s; }
+        .nav-item.active { color: #fff; background: rgba(255,255,255,0.05); }
+        .nav-item.active i { transform: translateY(-3px); color: var(--neon-blue); text-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+        
+        /* ⚡ CENTRAL GLOWING FAB */
+        .fab-container { position: relative; width: 65px; height: 65px; top: -20px; display: flex; justify-content: center; align-items: center; }
+        .fab { width: 60px; height: 60px; background: var(--gradient-premium); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 28px; font-weight: 300; border: none; cursor: pointer; transition: 0.3s; pointer-events: auto; box-shadow: 0 10px 25px rgba(139, 92, 246, 0.5); }
+        .fab:active { transform: scale(0.9) rotate(45deg); }
+        .fab::before { content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%; background: inherit; z-index: -1; filter: blur(15px); opacity: 0.7; }
 
         /* 📄 SLIDING PAGES */
-        .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; transform: translateX(100%); transition: transform 0.3s ease-in-out; overflow-y: auto; padding-bottom: 80px; }
+        .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 2000; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); overflow-y: auto; padding-bottom: 100px; }
         .page.active { transform: translateX(0); }
-        .page-header { position: sticky; top: 0; background: var(--primary); height: 56px; display: flex; align-items: center; padding: 0 16px; color: white; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .back-btn { background: transparent; border: none; font-size: 20px; color: white; margin-right: 16px; cursor: pointer; font-weight: bold; padding: 5px; }
-        .page-title { font-size: 16px; font-weight: 500; margin: 0; }
-        .page-content { padding: 12px; max-width: 800px; margin: 0 auto; }
+        .page-header { position: sticky; top: 0; background: rgba(9, 9, 11, 0.8); backdrop-filter: blur(20px); height: 70px; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid var(--border-glow); z-index: 10; }
+        .back-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border-glow); width: 40px; height: 40px; border-radius: 12px; font-size: 18px; color: var(--text-main); margin-right: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .back-btn:active { background: rgba(255,255,255,0.1); }
+        .page-title { font-size: 18px; font-weight: 700; margin: 0; }
+        .page-content { padding: 25px 20px; max-width: 800px; margin: 0 auto; }
 
-        /* 📝 FORMS & CARDS */
-        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .form-group { margin-bottom: 12px; }
-        .form-label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
-        .form-control { width: 100%; border: 0; border-bottom: 1px solid var(--border); padding: 8px 0; font-size: 14px; outline: none; transition: 0.2s; background: transparent; }
-        .form-control:focus { border-bottom: 2px solid var(--primary); }
-        .input-row { display: flex; gap: 12px; }
+        /* 📝 PREMIUM NEON FORMS */
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .form-control { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 16px; border-radius: 16px; font-size: 15px; font-weight: 600; color: var(--text-main); outline: none; transition: 0.3s; }
+        .form-control:focus { border-color: var(--neon-purple); box-shadow: 0 0 20px rgba(139, 92, 246, 0.15); background: rgba(0,0,0,0.5); }
+        .input-row { display: flex; gap: 15px; }
         
-        .btn { width: 100%; padding: 12px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; text-transform: uppercase; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-primary { width: 100%; background: var(--gradient-premium); color: white; border: none; padding: 18px; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3); transition: 0.2s; position: relative; overflow: hidden;}
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-outline { width: 100%; background: transparent; color: var(--text-main); border: 1px solid rgba(255,255,255,0.2); padding: 16px; border-radius: 16px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-bottom: 20px; }
+        .btn-outline:active { background: rgba(255,255,255,0.05); }
 
-        /* Collection Details Table */
-        .detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
-        .detail-row:last-child { border-bottom: none; }
-        .d-val { font-weight: 700; }
-
-        /* List Items */
-        .list-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-        .list-title { font-size: 15px; font-weight: 500; color: var(--primary); }
-        .list-amt { font-size: 16px; font-weight: 700; }
-        .badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 500; }
-        .bg-green { background: #e8f5e9; color: var(--success); }
+        /* 📋 GLASS LIST CARDS */
+        .list-card { background: var(--surface-glass); border: 1px solid var(--border-glow); padding: 20px; border-radius: 20px; margin-bottom: 15px; transition: 0.3s; backdrop-filter: blur(10px); }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .card-title { font-size: 16px; font-weight: 700; margin: 0; color: #fff;}
+        .card-amt { font-size: 18px; font-weight: 800; color: var(--neon-blue); }
+        .card-amt.danger { color: var(--danger); }
+        .badge { font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 8px; letter-spacing: 1px; }
+        .bg-success { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .bg-danger { background: rgba(244, 63, 94, 0.1); color: var(--danger); border: 1px solid rgba(244, 63, 94, 0.2); }
         
-        .tray { display: flex; gap: 8px; margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px; }
-        .tray-btn { flex: 1; background: #f5f5f5; border: none; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: 500; color: var(--text-main); cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px;}
-        .tray-btn.wa { background: #e8f5e9; color: var(--success); border: 1px solid #c8e6c9; }
-        .tray-btn.wa i { font-size: 14px; }
+        .action-tray { display: flex; gap: 12px; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .tray-btn { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 600; color: var(--text-main); cursor: pointer; }
+        .tray-btn.wa { background: rgba(16, 185, 129, 0.1); color: var(--success); border-color: rgba(16, 185, 129, 0.2); }
+
+        /* Dark Receipt Box */
+        .receipt-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px; margin-bottom: 25px; }
+        .receipt-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; font-weight: 500; color: var(--text-muted); }
+        .receipt-total { border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 15px; margin-top: 15px; display: flex; justify-content: space-between; font-size: 18px; font-weight: 800; color: #fff; }
 
     </style>
 </head>
 <body>
 
-    <!-- 📱 HEADER -->
+    <!-- 🌟 SPLASH SCREEN -->
+    <div id="splash">
+        <div class="splash-logo">VANDANA ERP</div>
+        <div class="loading-bar"></div>
+    </div>
+
+    <!-- 💎 HEADER -->
     <header class="app-bar">
-        <div class="app-bar-left">
-            <div class="menu-icon">☰</div>
-            <h1>Vandana Enterprises</h1>
+        <div class="app-bar-brand">
+            <h1>Vandana Ent.</h1>
         </div>
-        <button class="sync-btn">Last Sync: 10m ago</button>
+        <div class="pro-badge">PRO</div>
     </header>
 
     <!-- 🏠 DASHBOARD -->
     <main class="main-content">
         
-        <div class="dash-header">
-            <span class="dash-title">Business Overview</span>
-            <!-- ACTIVE DATE PICKER -->
-            <input type="date" id="dash-date" class="date-picker">
+        <!-- Premium Balance Card -->
+        <div class="premium-card">
+            <span class="card-label">Total Collection Today</span>
+            <h1 class="card-balance">₹45,200</h1>
+            <div class="card-footer">
+                <div class="footer-stat">
+                    <span class="stat-val">₹20,000</span>
+                    <span class="stat-label" style="color:var(--success);">Cash</span>
+                </div>
+                <div class="footer-stat">
+                    <span class="stat-val">₹25,200</span>
+                    <span class="stat-label" style="color:var(--neon-blue);">UPI / Bank</span>
+                </div>
+            </div>
         </div>
 
-        <!-- ACTIVE COLLECTION BOX -->
-        <div class="collection-box" onclick="openPage('collection-page')">
-            <p class="col-title">Total Collection (Selected Date)</p>
-            <h1 class="col-amount" id="dash-collection-amt">₹ 45,200</h1>
-            <p class="col-sub">View breakdown Details ➔</p>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card" onclick="openPage('sales-page')">
-                <div class="stat-title"><span>Total Sales</span> <span>🧾</span></div>
-                <div class="stat-val text-blue">₹ 45,200</div>
+        <h3 style="font-size:14px; color:var(--text-muted); margin-bottom:15px; text-transform:uppercase; letter-spacing:1px;">Business Matrix</h3>
+        
+        <div class="grid-container">
+            <div class="grid-item" onclick="openPage('sales-page', document.getElementById('nav-sales'))">
+                <div class="grid-icon" style="color:var(--neon-blue);">🧾</div>
+                <p class="grid-val">18</p>
+                <span class="grid-label">Invoices Today</span>
             </div>
-            <div class="stat-card" onclick="openPage('dues-page')">
-                <div class="stat-title"><span>To Collect (Dues)</span> <span>📒</span></div>
-                <div class="stat-val text-red">₹ 12,450</div>
+            <div class="grid-item" onclick="openPage('dues-page', document.getElementById('nav-dues'))">
+                <div class="grid-icon" style="color:var(--danger);">📒</div>
+                <p class="grid-val">₹12.4k</p>
+                <span class="grid-label">Pending Dues</span>
             </div>
-            <div class="stat-card">
-                <div class="stat-title"><span>Total Purchase</span> <span>🛒</span></div>
-                <div class="stat-val">₹ 15,000</div>
+            <div class="grid-item">
+                <div class="grid-icon" style="color:var(--success);">📦</div>
+                <p class="grid-val">2 Items</p>
+                <span class="grid-label">Low Stock Alerts</span>
             </div>
-            <div class="stat-card">
-                <div class="stat-title"><span>Stock Value</span> <span>📦</span></div>
-                <div class="stat-val text-green">₹ 2,45,000</div>
+            <div class="grid-item">
+                <div class="grid-icon" style="color:var(--neon-purple);">📊</div>
+                <p class="grid-val">Stats</p>
+                <span class="grid-label">View Analytics</span>
             </div>
         </div>
     </main>
 
-    <!-- ⚓ BOTTOM NAV & FAB -->
-    <nav class="bottom-nav">
-        <div class="nav-item active" onclick="goHome()">
-            <i>🏠</i><span>Home</span>
-        </div>
-        <div class="nav-item" onclick="openPage('sales-page')">
-            <i>📋</i><span>Bills</span>
-        </div>
-        <div style="width:60px;"></div> <!-- Space for FAB -->
-        <div class="nav-item" onclick="openPage('items-page')">
-            <i>📦</i><span>Items</span>
-        </div>
-        <div class="nav-item">
-            <i>📊</i><span>Reports</span>
-        </div>
-    </nav>
-    <button class="fab" onclick="openPage('invoice-page')">➕</button>
-
-    <!-- ================= FULL SCREEN PAGES ================= -->
-
-    <!-- 💰 1. COLLECTION DETAILS PAGE (NEW) -->
-    <div class="page" id="collection-page">
-        <div class="page-header">
-            <button class="back-btn" onclick="closePage('collection-page')">←</button>
-            <h2 class="page-title">Collection Details</h2>
-        </div>
-        <div class="page-content">
-            <div class="card">
-                <h3 style="margin-bottom:15px; color:var(--primary); font-weight:500;">Payment Breakdown</h3>
-                <div class="detail-row">
-                    <span style="color:var(--text-muted);">💵 Cash in Hand</span>
-                    <span class="d-val">₹ 20,000</span>
-                </div>
-                <div class="detail-row">
-                    <span style="color:var(--text-muted);">📱 UPI / PhonePe</span>
-                    <span class="d-val text-green">₹ 15,200</span>
-                </div>
-                <div class="detail-row">
-                    <span style="color:var(--text-muted);">🏦 Bank Transfer (NEFT)</span>
-                    <span class="d-val text-blue">₹ 10,000</span>
-                </div>
-                <div class="detail-row" style="background:#f5f5f5; padding:12px; margin-top:10px; border-radius:4px;">
-                    <span style="font-weight:bold; color:var(--text-main);">Total Received</span>
-                    <span class="d-val" style="font-size:16px; color:var(--primary);">₹ 45,200</span>
-                </div>
+    <!-- ⚓ FLOATING GLASS BOTTOM NAV -->
+    <div class="nav-wrapper">
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="goHome(this)">
+                <i>🏠</i>
             </div>
-            <button class="btn btn-outline" style="background:var(--surface);">Download Report (PDF)</button>
-        </div>
+            <div class="nav-item" id="nav-sales" onclick="openPage('sales-page', this)">
+                <i>🧾</i>
+            </div>
+            
+            <div class="fab-container">
+                <button class="fab" onclick="openPage('invoice-page', null)">+</button>
+            </div>
+
+            <div class="nav-item" id="nav-dues" onclick="openPage('dues-page', this)">
+                <i>📒</i>
+            </div>
+            <div class="nav-item" onclick="alert('Settings menu opening...')">
+                <i>⚙️</i>
+            </div>
+        </nav>
     </div>
 
-    <!-- 🧾 2. POS / INVOICE PAGE -->
+    <!-- ================= FULL SCREEN SLIDING PAGES ================= -->
+
+    <!-- 📄 NEW INVOICE PAGE (Premium Form) -->
     <div class="page" id="invoice-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('invoice-page')">←</button>
-            <h2 class="page-title">Sale Invoice</h2>
+            <h2 class="page-title">New Invoice</h2>
         </div>
         <div class="page-content">
-            <div class="card">
-                <div class="form-group">
-                    <label class="form-label">Party Name</label>
-                    <input type="text" class="form-control" id="inv-party" placeholder="Enter Party Name">
+            
+            <div class="form-group">
+                <label class="form-label">Client Name</label>
+                <input type="text" class="form-control" placeholder="Search or add client">
+            </div>
+            
+            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin: 25px 0;">
+            
+            <div class="input-row form-group">
+                <div style="flex:2;">
+                    <label class="form-label">Category</label>
+                    <select class="form-control" style="appearance: none;" id="inv-cat">
+                        <option value="Kamlay">Kamlay Thread</option>
+                        <option value="Viscose">Viscose Thread</option>
+                        <option value="Zari">Zari</option>
+                    </select>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Phone Number</label>
-                    <input type="tel" class="form-control" id="inv-phone" placeholder="+91">
+                <div style="flex:1;">
+                    <label class="form-label">Shade</label>
+                    <input type="number" class="form-control" id="inv-shade" placeholder="No.">
+                </div>
+            </div>
+            
+            <div class="input-row form-group">
+                <div style="flex:1;">
+                    <label class="form-label">Qty</label>
+                    <input type="number" class="form-control" id="inv-qty" placeholder="0">
+                </div>
+                <div style="flex:1;">
+                    <label class="form-label">Rate (₹)</label>
+                    <input type="number" class="form-control" id="inv-rate" placeholder="0">
+                </div>
+            </div>
+            
+            <button class="btn-outline" onclick="addPosItem()">+ Add to Bill</button>
+
+            <!-- Dark Receipt Box -->
+            <div class="receipt-box">
+                <div id="pos-cart">
+                    <div style="text-align:center; color:var(--text-muted); padding:10px 0;">Cart is empty</div>
+                </div>
+                <div class="receipt-total">
+                    <span>NET TOTAL</span>
+                    <span id="pos-total" style="color:var(--neon-blue);">₹ 0</span>
                 </div>
             </div>
 
-            <div class="card">
-                <h4 style="margin-bottom:12px; font-weight:500; color:var(--text-muted);">Item Details</h4>
-                <div class="input-row form-group">
-                    <div style="flex:2;">
-                        <label class="form-label">Item / Category</label>
-                        <select class="form-control" id="inv-cat" style="border:none; border-bottom:1px solid var(--border);">
-                            <option>Kamlay Thread</option>
-                            <option>Viscose</option>
-                            <option>Zari</option>
-                        </select>
-                    </div>
-                    <div style="flex:1;">
-                        <label class="form-label">Shade</label>
-                        <input type="number" class="form-control" id="inv-shade" placeholder="No.">
-                    </div>
-                </div>
-                <div class="input-row form-group">
-                    <div style="flex:1;">
-                        <label class="form-label">Qty</label>
-                        <input type="number" class="form-control" id="inv-qty" placeholder="0">
-                    </div>
-                    <div style="flex:1;">
-                        <label class="form-label">Rate/Price</label>
-                        <input type="number" class="form-control" id="inv-rate" placeholder="₹">
-                    </div>
-                </div>
-                <button class="btn btn-outline" onclick="addItem()" style="margin-top:10px;">ADD ITEM</button>
+            <div class="form-group">
+                <label class="form-label">Payment Mode</label>
+                <select class="form-control" style="appearance: none;"><option>Cash</option><option>UPI</option><option>Udhaar</option></select>
             </div>
 
-            <div class="card" style="background:#e8eaf6; border-color:#c5cae9;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-weight:500;">Total Amount</span>
-                    <span id="inv-total" style="font-size:24px; font-weight:700; color:var(--primary);">₹ 0</span>
-                </div>
-            </div>
-
-            <button class="btn btn-primary" onclick="saveBill()">Save</button>
+            <button class="btn-primary" onclick="alert('Processing Payment and Saving to Server...')">Generate Invoice</button>
         </div>
     </div>
 
-    <!-- 📋 3. SALES LIST (WITH WA & EDIT) -->
+    <!-- 📄 SALES PAGE -->
     <div class="page" id="sales-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('sales-page')">←</button>
-            <h2 class="page-title">Sale Bills</h2>
+            <h2 class="page-title">Today's Transactions</h2>
         </div>
         <div class="page-content">
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="🔍 Search Bill No, Party Name..." style="background:white; padding:12px; border-radius:4px; border:1px solid var(--border);">
+                <input type="text" class="form-control" placeholder="Search transactions...">
             </div>
             
-            <div class="card">
-                <div class="list-header">
+            <div class="list-card">
+                <div class="card-header">
                     <div>
-                        <h4 class="list-title">Ramesh Traders</h4>
-                        <span style="font-size:11px; color:var(--text-muted);">Inv: #1024 | Today, 12:30 PM</span>
+                        <h4 class="card-title">Ramesh Traders</h4>
+                        <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">Today, 12:30 PM</p>
                     </div>
-                    <div style="text-align:right;">
-                        <div class="list-amt">₹ 6,750</div>
-                        <span class="badge bg-green">CASH</span>
-                    </div>
+                    <span class="badge bg-success">CASH</span>
                 </div>
-                <p style="font-size:12px; color:var(--text-muted); margin-top:8px;">Items: Kamlay 105 (20 Box), Zari (5 Cone)</p>
-                
-                <!-- ACTIVE ACTION BUTTONS -->
-                <div class="tray">
-                    <button class="tray-btn" onclick="editInvoice('Ramesh Traders', '6750')">✏️ Edit</button>
-                    <button class="tray-btn">🖨️ Print</button>
-                    <button class="tray-btn wa" onclick="sendWhatsApp('9876543210', 'Ramesh Traders', '6750', '1024')">
-                        <i style="font-style:normal;">💬</i> WhatsApp
-                    </button>
+                <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                    <div style="font-size:13px; color:var(--text-muted);">
+                        • Kamlay Shade 105 (20 Box)<br>• Zari Golden (5 Cone)
+                    </div>
+                    <div class="card-amt">₹6,750</div>
+                </div>
+                <div class="action-tray">
+                    <button class="tray-btn">Details</button>
+                    <button class="tray-btn wa">Send Bill</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📄 DUES PAGE -->
+    <div class="page" id="dues-page">
+        <div class="page-header">
+            <button class="back-btn" onclick="closePage('dues-page')">←</button>
+            <h2 class="page-title">Outstanding Dues</h2>
+        </div>
+        <div class="page-content">
+            <div class="list-card" style="border-left: 4px solid var(--danger);">
+                <div class="card-header">
+                    <div>
+                        <h4 class="card-title">Gopal Handloom</h4>
+                        <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">Last Billed: 12 July</p>
+                    </div>
+                    <span class="badge bg-danger">OVERDUE</span>
+                </div>
+                <div class="card-amt danger" style="margin-top:10px;">₹8,200</div>
+                <div class="action-tray">
+                    <button class="tray-btn">View Ledger</button>
+                    <button class="tray-btn wa">Remind</button>
                 </div>
             </div>
         </div>
@@ -299,88 +329,79 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // ==========================================
-        // 🚫 HARDWARE BACK BUTTON DISABLE LOGIC
-        // ==========================================
-        
-        // Push initial state
-        window.history.pushState(null, null, window.location.href);
-        
-        // Listen for phone's hardware back button press
-        window.onpopstate = function(event) {
-            // Push state again to prevent going back
-            window.history.pushState(null, null, window.location.href);
-            // Show alert to user
-            alert("सुरक्षा कारणों से फोन का बैक (Back) बटन बंद है।\n\nकृपया पीछे जाने के लिए स्क्रीन के ऊपर दिए गए तीर (←) का उपयोग करें।");
-        };
+        // Splash Screen Logic
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('splash').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('splash').style.display = 'none';
+                }, 800);
+            }, 2000); // 2 Seconds premium loading feel
+        });
 
-        // ==========================================
-        // 📅 DATE PICKER LOGIC
-        // ==========================================
-        window.onload = () => {
-            // Set today's date in input
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('dash-date').value = today;
-        };
-
-        // ==========================================
-        // 📲 WHATSAPP & EDIT LOGIC (ACTIVE)
-        // ==========================================
-        function sendWhatsApp(phone, name, amount, billNo) {
-            let message = `नमस्ते ${name},%0A%0Aआपका वंदना एंटरप्राइजेज का बिल (No. ${billNo}) तैयार है।%0Aकुल राशि: ₹${amount}%0A%0Aधन्यवाद!`;
-            let url = `https://wa.me/91${phone}?text=${message}`;
-            window.open(url, '_blank');
-        }
-
-        function editInvoice(name, amount) {
-            // Go to invoice page
-            openPage('invoice-page');
-            // Populate data
-            document.getElementById('inv-party').value = name;
-            alert(`Edit mode on for ${name}.\n(In real app, items will also load here)`);
-        }
-
-        // ==========================================
-        // 📱 PAGE NAVIGATION (Software Buttons)
-        // ==========================================
-        function openPage(id) {
+        // Navigation
+        function openPage(id, navElement) {
             document.getElementById(id).classList.add('active');
+            if(navElement) {
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                navElement.classList.add('active');
+            }
         }
         function closePage(id) {
             document.getElementById(id).classList.remove('active');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.querySelector('.nav-item').classList.add('active'); 
         }
-        function goHome() {
+        function goHome(navElement) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            navElement.classList.add('active');
         }
 
-        // ==========================================
-        // 🧾 POS / INVOICE LOGIC
-        // ==========================================
-        let gTotal = 0;
-        function addItem() {
+        // Cart Logic
+        let cart = [];
+        function addPosItem() {
+            let cat = document.getElementById('inv-cat').value;
+            let shade = document.getElementById('inv-shade').value || "Gen";
             let qty = parseFloat(document.getElementById('inv-qty').value) || 0;
             let rate = parseFloat(document.getElementById('inv-rate').value) || 0;
-            if(qty > 0 && rate > 0) {
-                gTotal += (qty * rate);
-                document.getElementById('inv-total').innerText = `₹ ${gTotal.toLocaleString('en-IN')}`;
-                
-                // Clear fields for next item
-                document.getElementById('inv-shade').value = '';
-                document.getElementById('inv-qty').value = '';
-                document.getElementById('inv-rate').value = '';
-                alert("Item Added to Bill!");
-            } else {
-                alert("Enter Quantity and Rate!");
-            }
+
+            if(qty <= 0 || rate <= 0) return alert("Please enter Qty and Rate");
+
+            let name = `${cat} Shd:${shade}`;
+            let total = qty * rate;
+            
+            cart.push({name, qty, rate, total});
+            renderCart();
+
+            document.getElementById('inv-shade').value = '';
+            document.getElementById('inv-qty').value = '';
+            document.getElementById('inv-rate').value = '';
+            document.getElementById('inv-shade').focus();
         }
 
-        function saveBill() {
-            if(gTotal === 0) return alert("Please add items to bill.");
-            alert("Bill Saved Successfully!");
-            closePage('invoice-page');
-            gTotal = 0;
-            document.getElementById('inv-total').innerText = "₹ 0";
-            document.getElementById('inv-party').value = '';
+        function renderCart() {
+            let tbody = document.getElementById('pos-cart');
+            tbody.innerHTML = '';
+            let gTotal = 0;
+
+            if(cart.length === 0) {
+                tbody.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:10px 0;">Cart is empty</div>';
+                document.getElementById('pos-total').innerText = "₹ 0";
+                return;
+            }
+
+            cart.forEach((item) => {
+                gTotal += item.total;
+                tbody.innerHTML += `
+                    <div class="receipt-row">
+                        <span style="flex:2; color:#fff;">${item.name}</span>
+                        <span style="flex:1; text-align:center;">${item.qty} x ${item.rate}</span>
+                        <span style="flex:1; text-align:right; color:#fff;">₹${item.total.toLocaleString()}</span>
+                    </div>
+                `;
+            });
+            document.getElementById('pos-total').innerText = `₹ ${gTotal.toLocaleString('en-IN')}`;
         }
     </script>
 </body>

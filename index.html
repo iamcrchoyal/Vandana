@@ -3,270 +3,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#09090b">
-    <title>Vandana ERP - Premium</title>
+    <meta name="theme-color" content="#ffffff">
+    <title>Vandana ERP - Clean Pro</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        /* ================= ULTRA PREMIUM FINTECH CSS ================= */
+        /* ================= CLEAN CORPORATE SAAS CSS ================= */
         :root {
-            --bg-dark: #09090b;
-            --surface-glass: rgba(255, 255, 255, 0.03);
-            --surface-hover: rgba(255, 255, 255, 0.08);
-            --border-glow: rgba(255, 255, 255, 0.1);
-            --text-main: #ffffff;
-            --text-muted: #a1a1aa;
-            --neon-blue: #3b82f6;
-            --neon-purple: #8b5cf6;
-            --gradient-premium: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
-            --success: #10b981;
-            --danger: #f43f5e;
+            --bg-page: #f8fafc;        /* Very light, airy blue-gray */
+            --surface: #ffffff;
+            --text-main: #0f172a;      /* Dark Slate for high contrast */
+            --text-muted: #64748b;
+            --border-light: #e2e8f0;
+            --border-focus: #93c5fd;
+            --primary: #2563eb;        /* Trust / Corporate Blue */
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --success: #059669;
+            --success-light: #d1fae5;
+            --danger: #dc2626;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.05);
+            --shadow-float: 0 10px 25px rgba(37, 99, 235, 0.2);
+            --radius-md: 12px;
+            --radius-lg: 20px;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; }
-        body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; }
-        
-        /* 🌟 SPLASH SCREEN ANIMATION */
-        #splash { position: fixed; inset: 0; background: var(--bg-dark); z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease; }
-        .splash-logo { font-size: 32px; font-weight: 800; background: var(--gradient-premium); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; margin-bottom: 20px; animation: pulseGlow 2s infinite; }
-        .loading-bar { width: 150px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; position: relative; }
-        .loading-bar::after { content: ''; position: absolute; top: 0; left: 0; width: 50%; height: 100%; background: var(--gradient-premium); animation: loading 1.5s infinite ease-in-out; border-radius: 4px; }
-        @keyframes loading { 0% { left: -50%; } 100% { left: 100%; } }
-        @keyframes pulseGlow { 0% { filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.2)); } 50% { filter: drop-shadow(0 0 25px rgba(139, 92, 246, 0.6)); } 100% { filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.2)); } }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+        body { background-color: var(--bg-page); color: var(--text-main); overflow-x: hidden; font-size: 14px; }
 
-        /* 💎 GLASSMORPHISM HEADER */
-        .app-bar { position: fixed; top: 0; width: 100%; height: 65px; background: rgba(9, 9, 11, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-glow); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000; }
-        .app-bar-brand h1 { font-size: 18px; font-weight: 800; margin: 0; letter-spacing: 0.5px; }
-        .pro-badge { background: var(--gradient-premium); padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 15px rgba(139,92,246,0.4); }
+        /* 🌟 CLEAN SPLASH SCREEN */
+        #splash { position: fixed; inset: 0; background: var(--surface); z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.6s ease; }
+        .splash-logo-box { width: 64px; height: 64px; background: var(--primary); border-radius: 16px; display: flex; justify-content: center; align-items: center; color: white; font-size: 32px; font-weight: 800; margin-bottom: 20px; box-shadow: var(--shadow-float); animation: float 3s ease-in-out infinite;}
+        .splash-text { font-size: 20px; font-weight: 800; color: var(--text-main); letter-spacing: 0.5px; }
+        .splash-sub { font-size: 12px; color: var(--text-muted); margin-top: 5px; font-weight: 500; }
+        @keyframes float { 0% { transform: translateY(0); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0); } }
 
-        /* 🏠 MAIN DASHBOARD */
+        /* 📱 CLEAN HEADER */
+        .app-bar { position: fixed; top: 0; width: 100%; height: 64px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000; }
+        .app-brand { display: flex; align-items: center; gap: 12px; }
+        .brand-icon { width: 32px; height: 32px; background: var(--primary); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px;}
+        .app-bar h1 { font-size: 16px; font-weight: 700; color: var(--text-main); letter-spacing: -0.3px; }
+        .user-chip { background: var(--bg-page); border: 1px solid var(--border-light); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 6px;}
+
+        /* 🏠 DASHBOARD LAYOUT */
         .main-content { padding: 85px 20px 100px 20px; max-width: 800px; margin: 0 auto; }
         
-        /* Premium Balance Card */
-        .premium-card { background: var(--surface-glass); border: 1px solid var(--border-glow); border-radius: 24px; padding: 30px; position: relative; overflow: hidden; margin-bottom: 25px; backdrop-filter: blur(10px); }
-        .premium-card::before { content: ''; position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: var(--neon-purple); filter: blur(80px); opacity: 0.3; z-index: -1; }
-        .premium-card::after { content: ''; position: absolute; bottom: -50px; left: -50px; width: 150px; height: 150px; background: var(--neon-blue); filter: blur(80px); opacity: 0.2; z-index: -1; }
-        
-        .card-label { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
-        .card-balance { font-size: 42px; font-weight: 800; margin: 0 0 20px 0; letter-spacing: -1px; background: linear-gradient(to right, #fff, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .card-footer { display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
-        .footer-stat { display: flex; flex-direction: column; }
-        .stat-val { font-size: 16px; font-weight: 700; color: var(--text-main); }
-        .stat-label { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+        .header-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; }
+        .greeting-sub { font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 4px; }
+        .greeting-main { font-size: 22px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
+        .date-badge { background: var(--surface); border: 1px solid var(--border-light); padding: 6px 12px; border-radius: var(--radius-md); font-size: 12px; font-weight: 600; color: var(--text-muted); box-shadow: var(--shadow-sm); }
 
-        /* Grid Items */
-        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
-        .grid-item { background: var(--surface-glass); border: 1px solid var(--border-glow); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; transition: 0.3s; cursor: pointer; position: relative; overflow: hidden; }
-        .grid-item:active { transform: scale(0.96); background: var(--surface-hover); border-color: rgba(255,255,255,0.2); }
-        .grid-icon { width: 45px; height: 45px; border-radius: 14px; background: rgba(255,255,255,0.05); display: flex; justify-content: center; align-items: center; font-size: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
-        .grid-val { font-size: 20px; font-weight: 800; margin: 0 0 4px 0; }
-        .grid-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+        /* Summary Hero Card (Clean) */
+        .hero-card { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-md); margin-bottom: 24px; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        .hero-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--primary); }
+        .hero-title { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .hero-amount { font-size: 36px; font-weight: 800; color: var(--text-main); letter-spacing: -1px; margin-bottom: 16px; }
+        .hero-stats-row { display: flex; justify-content: space-between; border-top: 1px solid var(--border-light); padding-top: 16px; }
+        .hero-stat { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+        .hero-stat b { color: var(--text-main); font-weight: 700; font-size: 14px;}
 
-        /* ⚓ FLOATING GLASS BOTTOM NAV */
-        .nav-wrapper { position: fixed; bottom: 25px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 1000; padding: 0 20px; pointer-events: none;}
-        .bottom-nav { background: rgba(20, 20, 25, 0.8); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1); border-radius: 30px; display: flex; justify-content: space-around; align-items: center; width: 100%; max-width: 400px; height: 70px; padding: 0 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); pointer-events: auto; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 60px; color: var(--text-muted); font-size: 10px; font-weight: 600; gap: 4px; transition: 0.3s; cursor: pointer; border-radius: 20px; }
-        .nav-item i { font-size: 22px; font-style: normal; transition: 0.3s; }
-        .nav-item.active { color: #fff; background: rgba(255,255,255,0.05); }
-        .nav-item.active i { transform: translateY(-3px); color: var(--neon-blue); text-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+        /* Grid Metrics */
+        .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 30px; }
+        .metric-box { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 16px; box-shadow: var(--shadow-sm); transition: 0.2s; cursor: pointer; }
+        .metric-box:active { background: var(--bg-page); transform: scale(0.98); }
+        .metric-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .metric-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 18px; }
+        .bg-blue { background: var(--primary-light); color: var(--primary); }
+        .bg-red { background: var(--danger-light); color: var(--danger); }
+        .bg-green { background: var(--success-light); color: var(--success); }
+        .bg-orange { background: #fef3c7; color: var(--warning); }
         
-        /* ⚡ CENTRAL GLOWING FAB */
-        .fab-container { position: relative; width: 65px; height: 65px; top: -20px; display: flex; justify-content: center; align-items: center; }
-        .fab { width: 60px; height: 60px; background: var(--gradient-premium); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 28px; font-weight: 300; border: none; cursor: pointer; transition: 0.3s; pointer-events: auto; box-shadow: 0 10px 25px rgba(139, 92, 246, 0.5); }
-        .fab:active { transform: scale(0.9) rotate(45deg); }
-        .fab::before { content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%; background: inherit; z-index: -1; filter: blur(15px); opacity: 0.7; }
+        .metric-val { font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
+        .metric-label { font-size: 12px; font-weight: 500; color: var(--text-muted); }
+
+        /* ⚓ AIRY BOTTOM NAVIGATION */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: var(--surface); border-top: 1px solid var(--border-light); display: flex; justify-content: space-around; align-items: center; padding: 0 10px; z-index: 1000; box-shadow: 0 -4px 20px rgba(0,0,0,0.02); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 64px; height: 100%; color: var(--text-muted); font-size: 11px; font-weight: 600; gap: 4px; cursor: pointer; transition: 0.2s; }
+        .nav-item i { font-size: 22px; font-style: normal; transition: 0.2s; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item.active i { transform: translateY(-2px); }
+        
+        /* Floating Action Button */
+        .fab-container { position: relative; top: -25px; display: flex; justify-content: center; align-items: center; }
+        .fab { width: 56px; height: 56px; background: var(--primary); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: 300; border: none; box-shadow: var(--shadow-float); cursor: pointer; transition: 0.2s; }
+        .fab:active { transform: scale(0.9) rotate(45deg); background: var(--primary-hover); }
 
         /* 📄 SLIDING PAGES */
-        .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 2000; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); overflow-y: auto; padding-bottom: 100px; }
+        .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-page); z-index: 2000; transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); overflow-y: auto; padding-bottom: 90px; }
         .page.active { transform: translateX(0); }
-        .page-header { position: sticky; top: 0; background: rgba(9, 9, 11, 0.8); backdrop-filter: blur(20px); height: 70px; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid var(--border-glow); z-index: 10; }
-        .back-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border-glow); width: 40px; height: 40px; border-radius: 12px; font-size: 18px; color: var(--text-main); margin-right: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .back-btn:active { background: rgba(255,255,255,0.1); }
-        .page-title { font-size: 18px; font-weight: 700; margin: 0; }
-        .page-content { padding: 25px 20px; max-width: 800px; margin: 0 auto; }
+        .page-header { position: sticky; top: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); height: 64px; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid var(--border-light); z-index: 10; }
+        .back-btn { background: var(--bg-page); border: 1px solid var(--border-light); width: 36px; height: 36px; border-radius: 50%; font-size: 18px; color: var(--text-main); margin-right: 16px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+        .page-title { font-size: 16px; font-weight: 700; margin: 0; }
+        .page-content { padding: 20px; max-width: 800px; margin: 0 auto; }
 
-        /* 📝 PREMIUM NEON FORMS */
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
-        .form-control { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 16px; border-radius: 16px; font-size: 15px; font-weight: 600; color: var(--text-main); outline: none; transition: 0.3s; }
-        .form-control:focus { border-color: var(--neon-purple); box-shadow: 0 0 20px rgba(139, 92, 246, 0.15); background: rgba(0,0,0,0.5); }
-        .input-row { display: flex; gap: 15px; }
+        /* 📝 CLEAN FORMS */
+        .form-section { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-sm); }
+        .section-heading { font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 16px; letter-spacing: 0.5px; }
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; }
+        .form-control { width: 100%; background: var(--surface); border: 1.5px solid var(--border-light); padding: 14px 16px; border-radius: var(--radius-md); font-size: 15px; font-weight: 500; color: var(--text-main); outline: none; transition: 0.2s; appearance: none; }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-light); }
+        .input-row { display: flex; gap: 12px; }
         
-        .btn-primary { width: 100%; background: var(--gradient-premium); color: white; border: none; padding: 18px; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3); transition: 0.2s; position: relative; overflow: hidden;}
-        .btn-primary:active { transform: scale(0.98); }
-        .btn-outline { width: 100%; background: transparent; color: var(--text-main); border: 1px solid rgba(255,255,255,0.2); padding: 16px; border-radius: 16px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-bottom: 20px; }
-        .btn-outline:active { background: rgba(255,255,255,0.05); }
+        .btn { width: 100%; padding: 16px; border-radius: var(--radius-md); font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; border: none; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+        .btn-primary:active { background: var(--primary-hover); transform: scale(0.98); }
+        .btn-outline { background: var(--surface); border: 2px solid var(--border-light); color: var(--text-main); margin-bottom: 16px; }
+        .btn-outline:active { background: var(--bg-page); }
 
-        /* 📋 GLASS LIST CARDS */
-        .list-card { background: var(--surface-glass); border: 1px solid var(--border-glow); padding: 20px; border-radius: 20px; margin-bottom: 15px; transition: 0.3s; backdrop-filter: blur(10px); }
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .card-title { font-size: 16px; font-weight: 700; margin: 0; color: #fff;}
-        .card-amt { font-size: 18px; font-weight: 800; color: var(--neon-blue); }
-        .card-amt.danger { color: var(--danger); }
-        .badge { font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 8px; letter-spacing: 1px; }
-        .bg-success { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
-        .bg-danger { background: rgba(244, 63, 94, 0.1); color: var(--danger); border: 1px solid rgba(244, 63, 94, 0.2); }
+        /* 📋 DATA CARDS & TABLES */
+        .list-card { background: var(--surface); border: 1px solid var(--border-light); padding: 20px; border-radius: var(--radius-lg); margin-bottom: 16px; box-shadow: var(--shadow-sm); }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .card-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0 0 4px 0; }
+        .card-sub { font-size: 13px; color: var(--text-muted); margin: 0; font-weight: 500; }
+        .card-amt { font-size: 18px; font-weight: 800; color: var(--text-main); }
+        .badge { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; }
+        .badge-green { background: var(--success-light); color: var(--success); }
+        .badge-red { background: var(--danger-light); color: var(--danger); }
         
-        .action-tray { display: flex; gap: 12px; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); }
-        .tray-btn { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 600; color: var(--text-main); cursor: pointer; }
-        .tray-btn.wa { background: rgba(16, 185, 129, 0.1); color: var(--success); border-color: rgba(16, 185, 129, 0.2); }
+        .card-actions { display: flex; gap: 10px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+        .action-btn { flex: 1; background: var(--bg-page); border: 1px solid var(--border-light); padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--text-main); cursor: pointer; }
+        .action-btn.primary { background: var(--success-light); color: var(--success); border-color: transparent; }
 
-        /* Dark Receipt Box */
-        .receipt-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px; margin-bottom: 25px; }
-        .receipt-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; font-weight: 500; color: var(--text-muted); }
-        .receipt-total { border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 15px; margin-top: 15px; display: flex; justify-content: space-between; font-size: 18px; font-weight: 800; color: #fff; }
+        /* Clean Receipt Table */
+        .receipt-box { background: var(--bg-page); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 16px; margin-bottom: 24px; }
+        .receipt-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; font-weight: 500; color: var(--text-muted); }
+        .receipt-total { border-top: 1px dashed var(--border-light); padding-top: 12px; margin-top: 12px; display: flex; justify-content: space-between; font-size: 18px; font-weight: 800; color: var(--text-main); }
 
     </style>
 </head>
 <body>
 
-    <!-- 🌟 SPLASH SCREEN -->
+    <!-- 🌟 CLEAN SPLASH SCREEN -->
     <div id="splash">
-        <div class="splash-logo">VANDANA ERP</div>
-        <div class="loading-bar"></div>
+        <div class="splash-logo-box">V</div>
+        <div class="splash-text">Vandana ERP</div>
+        <div class="splash-sub">Business Management System</div>
     </div>
 
-    <!-- 💎 HEADER -->
+    <!-- 📱 HEADER -->
     <header class="app-bar">
-        <div class="app-bar-brand">
-            <h1>Vandana Ent.</h1>
+        <div class="app-brand">
+            <div class="brand-icon">V</div>
+            <h1>Vandana ERP</h1>
         </div>
-        <div class="pro-badge">PRO</div>
+        <div class="user-chip">
+            <span style="width:8px; height:8px; background:var(--success); border-radius:50%; display:inline-block;"></span>
+            Online
+        </div>
     </header>
 
     <!-- 🏠 DASHBOARD -->
     <main class="main-content">
         
-        <!-- Premium Balance Card -->
-        <div class="premium-card">
-            <span class="card-label">Total Collection Today</span>
-            <h1 class="card-balance">₹45,200</h1>
-            <div class="card-footer">
-                <div class="footer-stat">
-                    <span class="stat-val">₹20,000</span>
-                    <span class="stat-label" style="color:var(--success);">Cash</span>
-                </div>
-                <div class="footer-stat">
-                    <span class="stat-val">₹25,200</span>
-                    <span class="stat-label" style="color:var(--neon-blue);">UPI / Bank</span>
-                </div>
+        <div class="header-row">
+            <div>
+                <p class="greeting-sub">Overview</p>
+                <h2 class="greeting-main">Dashboard</h2>
             </div>
+            <div class="date-badge" id="today-date">15 July 2026</div>
         </div>
 
-        <h3 style="font-size:14px; color:var(--text-muted); margin-bottom:15px; text-transform:uppercase; letter-spacing:1px;">Business Matrix</h3>
+        <!-- Hero Summary Card -->
+        <div class="hero-card">
+            <span class="hero-title">Today's Collection</span>
+            <h1 class="hero-amount">₹45,200</h1>
+            <div class="hero-stats-row">
+                <span class="hero-stat">Cash: <b style="color:var(--success);">₹20,000</b></span>
+                <span class="hero-stat">UPI: <b>₹25,200</b></span>
+            </div>
+        </div>
         
-        <div class="grid-container">
-            <div class="grid-item" onclick="openPage('sales-page', document.getElementById('nav-sales'))">
-                <div class="grid-icon" style="color:var(--neon-blue);">🧾</div>
-                <p class="grid-val">18</p>
-                <span class="grid-label">Invoices Today</span>
+        <h3 class="section-heading" style="margin-bottom:12px;">Quick Metrics</h3>
+        
+        <div class="metrics-grid">
+            <div class="metric-box" onclick="openPage('sales-page', document.getElementById('nav-sales'))">
+                <div class="metric-header">
+                    <span class="metric-label">Invoices</span>
+                    <div class="metric-icon bg-blue">🧾</div>
+                </div>
+                <p class="metric-val">18</p>
             </div>
-            <div class="grid-item" onclick="openPage('dues-page', document.getElementById('nav-dues'))">
-                <div class="grid-icon" style="color:var(--danger);">📒</div>
-                <p class="grid-val">₹12.4k</p>
-                <span class="grid-label">Pending Dues</span>
+            <div class="metric-box" onclick="openPage('dues-page', document.getElementById('nav-dues'))">
+                <div class="metric-header">
+                    <span class="metric-label">Pending Dues</span>
+                    <div class="metric-icon bg-red">📒</div>
+                </div>
+                <p class="metric-val" style="color:var(--danger);">₹12.4k</p>
             </div>
-            <div class="grid-item">
-                <div class="grid-icon" style="color:var(--success);">📦</div>
-                <p class="grid-val">2 Items</p>
-                <span class="grid-label">Low Stock Alerts</span>
+            <div class="metric-box">
+                <div class="metric-header">
+                    <span class="metric-label">Low Stock</span>
+                    <div class="metric-icon bg-orange">📦</div>
+                </div>
+                <p class="metric-val">2 Items</p>
             </div>
-            <div class="grid-item">
-                <div class="grid-icon" style="color:var(--neon-purple);">📊</div>
-                <p class="grid-val">Stats</p>
-                <span class="grid-label">View Analytics</span>
+            <div class="metric-box">
+                <div class="metric-header">
+                    <span class="metric-label">Gross Profit</span>
+                    <div class="metric-icon bg-green">💰</div>
+                </div>
+                <p class="metric-val">₹8,500</p>
             </div>
         </div>
     </main>
 
-    <!-- ⚓ FLOATING GLASS BOTTOM NAV -->
-    <div class="nav-wrapper">
-        <nav class="bottom-nav">
-            <div class="nav-item active" onclick="goHome(this)">
-                <i>🏠</i>
-            </div>
-            <div class="nav-item" id="nav-sales" onclick="openPage('sales-page', this)">
-                <i>🧾</i>
-            </div>
-            
-            <div class="fab-container">
-                <button class="fab" onclick="openPage('invoice-page', null)">+</button>
-            </div>
+    <!-- ⚓ AIRY BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="goHome(this)">
+            <i>🏠</i><span>Home</span>
+        </div>
+        <div class="nav-item" id="nav-sales" onclick="openPage('sales-page', this)">
+            <i>🧾</i><span>Sales</span>
+        </div>
+        
+        <div class="fab-container">
+            <button class="fab" onclick="openPage('invoice-page', null)">+</button>
+        </div>
 
-            <div class="nav-item" id="nav-dues" onclick="openPage('dues-page', this)">
-                <i>📒</i>
-            </div>
-            <div class="nav-item" onclick="alert('Settings menu opening...')">
-                <i>⚙️</i>
-            </div>
-        </nav>
-    </div>
+        <div class="nav-item" id="nav-dues" onclick="openPage('dues-page', this)">
+            <i>📒</i><span>Ledger</span>
+        </div>
+        <div class="nav-item" onclick="alert('Menu opened')">
+            <i>☰</i><span>Menu</span>
+        </div>
+    </nav>
 
-    <!-- ================= FULL SCREEN SLIDING PAGES ================= -->
+    <!-- ================= FULL SCREEN PAGES ================= -->
 
-    <!-- 📄 NEW INVOICE PAGE (Premium Form) -->
+    <!-- 📄 NEW INVOICE PAGE -->
     <div class="page" id="invoice-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('invoice-page')">←</button>
-            <h2 class="page-title">New Invoice</h2>
+            <h2 class="page-title">Create Invoice</h2>
         </div>
         <div class="page-content">
             
-            <div class="form-group">
-                <label class="form-label">Client Name</label>
-                <input type="text" class="form-control" placeholder="Search or add client">
-            </div>
-            
-            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin: 25px 0;">
-            
-            <div class="input-row form-group">
-                <div style="flex:2;">
-                    <label class="form-label">Category</label>
-                    <select class="form-control" style="appearance: none;" id="inv-cat">
-                        <option value="Kamlay">Kamlay Thread</option>
-                        <option value="Viscose">Viscose Thread</option>
-                        <option value="Zari">Zari</option>
-                    </select>
-                </div>
-                <div style="flex:1;">
-                    <label class="form-label">Shade</label>
-                    <input type="number" class="form-control" id="inv-shade" placeholder="No.">
+            <div class="form-section">
+                <h3 class="section-heading">Party Details</h3>
+                <div class="form-group" style="margin:0;">
+                    <input type="text" class="form-control" placeholder="Search Customer Name...">
                 </div>
             </div>
             
-            <div class="input-row form-group">
-                <div style="flex:1;">
-                    <label class="form-label">Qty</label>
-                    <input type="number" class="form-control" id="inv-qty" placeholder="0">
+            <div class="form-section">
+                <h3 class="section-heading">Add Items</h3>
+                <div class="input-row form-group">
+                    <div style="flex:2;">
+                        <label class="form-label">Category</label>
+                        <select class="form-control" id="inv-cat">
+                            <option value="Kamlay">Kamlay Thread</option>
+                            <option value="Viscose">Viscose Thread</option>
+                            <option value="Zari">Zari</option>
+                        </select>
+                    </div>
+                    <div style="flex:1;">
+                        <label class="form-label">Shade</label>
+                        <input type="number" class="form-control" id="inv-shade" placeholder="No.">
+                    </div>
                 </div>
-                <div style="flex:1;">
-                    <label class="form-label">Rate (₹)</label>
-                    <input type="number" class="form-control" id="inv-rate" placeholder="0">
+                
+                <div class="input-row form-group">
+                    <div style="flex:1;">
+                        <label class="form-label">Qty</label>
+                        <input type="number" class="form-control" id="inv-qty" placeholder="0">
+                    </div>
+                    <div style="flex:1;">
+                        <label class="form-label">Rate (₹)</label>
+                        <input type="number" class="form-control" id="inv-rate" placeholder="0">
+                    </div>
                 </div>
-            </div>
-            
-            <button class="btn-outline" onclick="addPosItem()">+ Add to Bill</button>
+                
+                <button class="btn btn-outline" onclick="addPosItem()">+ Add to List</button>
 
-            <!-- Dark Receipt Box -->
-            <div class="receipt-box">
-                <div id="pos-cart">
-                    <div style="text-align:center; color:var(--text-muted); padding:10px 0;">Cart is empty</div>
+                <!-- Receipt Preview -->
+                <div class="receipt-box">
+                    <div id="pos-cart">
+                        <div style="text-align:center; color:var(--text-muted); padding:10px 0;">No items added</div>
+                    </div>
+                    <div class="receipt-total">
+                        <span>Net Total</span>
+                        <span id="pos-total" style="color:var(--primary);">₹ 0</span>
+                    </div>
                 </div>
-                <div class="receipt-total">
-                    <span>NET TOTAL</span>
-                    <span id="pos-total" style="color:var(--neon-blue);">₹ 0</span>
+
+                <div class="form-group" style="margin:0;">
+                    <label class="form-label">Payment Mode</label>
+                    <select class="form-control"><option>Cash</option><option>UPI</option><option>Udhaar</option></select>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Payment Mode</label>
-                <select class="form-control" style="appearance: none;"><option>Cash</option><option>UPI</option><option>Udhaar</option></select>
-            </div>
-
-            <button class="btn-primary" onclick="alert('Processing Payment and Saving to Server...')">Generate Invoice</button>
+            <button class="btn btn-primary" onclick="alert('Invoice generated successfully!')">Save Invoice</button>
         </div>
     </div>
 
@@ -274,30 +305,28 @@
     <div class="page" id="sales-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('sales-page')">←</button>
-            <h2 class="page-title">Today's Transactions</h2>
+            <h2 class="page-title">Today's Sales</h2>
         </div>
         <div class="page-content">
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search transactions...">
-            </div>
+            <input type="text" class="form-control" placeholder="Search by name or amount..." style="margin-bottom:20px;">
             
             <div class="list-card">
                 <div class="card-header">
                     <div>
                         <h4 class="card-title">Ramesh Traders</h4>
-                        <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">Today, 12:30 PM</p>
+                        <p class="card-sub">Today, 12:30 PM</p>
                     </div>
-                    <span class="badge bg-success">CASH</span>
+                    <span class="badge badge-green">CASH</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:flex-end;">
-                    <div style="font-size:13px; color:var(--text-muted);">
-                        • Kamlay Shade 105 (20 Box)<br>• Zari Golden (5 Cone)
-                    </div>
+                    <p class="card-sub" style="color:var(--text-main); font-weight:600;">
+                        Kamlay Shade 105 (20 Box)<br>Zari Golden (5 Cone)
+                    </p>
                     <div class="card-amt">₹6,750</div>
                 </div>
-                <div class="action-tray">
-                    <button class="tray-btn">Details</button>
-                    <button class="tray-btn wa">Send Bill</button>
+                <div class="card-actions">
+                    <button class="action-btn">Edit Bill</button>
+                    <button class="action-btn primary">WhatsApp</button>
                 </div>
             </div>
         </div>
@@ -307,21 +336,23 @@
     <div class="page" id="dues-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('dues-page')">←</button>
-            <h2 class="page-title">Outstanding Dues</h2>
+            <h2 class="page-title">Pending Ledger</h2>
         </div>
         <div class="page-content">
+            <input type="text" class="form-control" placeholder="Search customer..." style="margin-bottom:20px;">
+            
             <div class="list-card" style="border-left: 4px solid var(--danger);">
                 <div class="card-header">
                     <div>
                         <h4 class="card-title">Gopal Handloom</h4>
-                        <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">Last Billed: 12 July</p>
+                        <p class="card-sub">Last Bill: 12 July 2026</p>
                     </div>
-                    <span class="badge bg-danger">OVERDUE</span>
+                    <span class="badge badge-red">OVERDUE</span>
                 </div>
-                <div class="card-amt danger" style="margin-top:10px;">₹8,200</div>
-                <div class="action-tray">
-                    <button class="tray-btn">View Ledger</button>
-                    <button class="tray-btn wa">Remind</button>
+                <div class="card-amt" style="color:var(--danger); margin-top:8px;">₹8,200</div>
+                <div class="card-actions">
+                    <button class="action-btn">View Ledger</button>
+                    <button class="action-btn" style="color:var(--primary); font-weight:700;">Remind</button>
                 </div>
             </div>
         </div>
@@ -331,12 +362,15 @@
     <script>
         // Splash Screen Logic
         window.addEventListener('load', () => {
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('today-date').innerText = new Date().toLocaleDateString('en-GB', options);
+            
             setTimeout(() => {
                 document.getElementById('splash').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('splash').style.display = 'none';
-                }, 800);
-            }, 2000); // 2 Seconds premium loading feel
+                }, 600);
+            }, 1500); // Fast 1.5s load
         });
 
         // Navigation
@@ -358,7 +392,7 @@
             navElement.classList.add('active');
         }
 
-        // Cart Logic
+        // Fast Cart Logic
         let cart = [];
         function addPosItem() {
             let cat = document.getElementById('inv-cat').value;
@@ -366,7 +400,7 @@
             let qty = parseFloat(document.getElementById('inv-qty').value) || 0;
             let rate = parseFloat(document.getElementById('inv-rate').value) || 0;
 
-            if(qty <= 0 || rate <= 0) return alert("Please enter Qty and Rate");
+            if(qty <= 0 || rate <= 0) return alert("Please enter valid Qty and Rate");
 
             let name = `${cat} Shd:${shade}`;
             let total = qty * rate;
@@ -386,7 +420,7 @@
             let gTotal = 0;
 
             if(cart.length === 0) {
-                tbody.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:10px 0;">Cart is empty</div>';
+                tbody.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:10px 0;">No items added</div>';
                 document.getElementById('pos-total').innerText = "₹ 0";
                 return;
             }
@@ -395,9 +429,9 @@
                 gTotal += item.total;
                 tbody.innerHTML += `
                     <div class="receipt-row">
-                        <span style="flex:2; color:#fff;">${item.name}</span>
+                        <span style="flex:2; color:var(--text-main); font-weight:600;">${item.name}</span>
                         <span style="flex:1; text-align:center;">${item.qty} x ${item.rate}</span>
-                        <span style="flex:1; text-align:right; color:#fff;">₹${item.total.toLocaleString()}</span>
+                        <span style="flex:1; text-align:right; color:var(--text-main); font-weight:700;">₹${item.total.toLocaleString()}</span>
                     </div>
                 `;
             });

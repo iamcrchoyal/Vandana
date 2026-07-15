@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:css='false' b:defaultwidgetversion='2' b:layoutsVersion='3' b:responsive='true' b:version='2' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' name='viewport'/>
+  <title>Vandana Enterprises - Professional ERP</title>
+  
+  <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
+
+  <b:skin><![CDATA[
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; margin: 0; padding: 0; background-color: #f1f5f9; color: #0f172a; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.05) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(217, 70, 239, 0.05) 0%, transparent 50%); z-index: -1; }
+
+    /* 📷 PREMIUM AI FACE LOCK SCREEN OVERLAY */
+    #face-lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #090d16; z-index: 10000000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
+    .face-scanner-container { position: relative; width: 220px; height: 220px; border-radius: 50%; border: 3px dashed #3b82f6; overflow: hidden; box-shadow: 0 0 30px rgba(59, 130, 246, 0.4); background: #000; margin-bottom: 20px;}
+    #face-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+    .face-radar-line { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: #3b82f6; box-shadow: 0 0 15px 4px #3b82f6; animation: faceScan 2s infinite ease-in-out; display: none; }
+    @keyframes faceScan { 0% { top: 0%; } 50% { top: 100%; } 100% { top: 0%; } }
+    .btn-face-start { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; border: none; padding: 14px 28px; border-radius: 30px; font-weight: 900; font-size: 15px; cursor: pointer; box-shadow: 0 10px 20px rgba(59,130,246,0.3); transition: 0.2s; }
+    .btn-face-start:active { transform: scale(0.95); }
+
+    /* 🌟 SCROLLING GLASS HEADER WITH EXIT ONLY */
+    .header-wrapper { position: sticky; top: 15px; z-index: 999; display: flex; justify-content: center; width: 100%; padding: 0 15px; box-sizing: border-box; pointer-events: none; }
+    header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 10px 30px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-radius: 40px; width: 100%; max-width: 900px; pointer-events: auto; transition: all 0.4s ease; }
+    header.scrolled { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);}
+    header h1 { margin: 0; font-size: 16px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570, #fbbc04); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 300% 100%; animation: gradientMove 5s ease infinite; }
+    .btn-exit { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);}
+    @keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+    .dash-wrapper { max-width: 900px; margin: 30px auto 20px auto; padding: 0 20px; }
+    
+    /* SIDE-BY-SIDE DASHBOARD AND DATE */
+    .kpi-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; gap: 10px; flex-wrap: nowrap;}
+    .kpi-header h2 { margin: 0; font-size: 18px; font-weight: 900; color: #1e293b; white-space: nowrap;}
+    
+    .date-box { display: flex; align-items: center; background: #fff; border: 2px solid #cbd5e1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.02); flex-shrink: 0;}
+    .kpi-date-picker { border: none; padding: 6px 8px; font-weight: 800; color: #0f172a; outline: none; cursor: pointer; font-size: 13px; background: transparent; width: 110px;}
+    
+    /* 📅 TRUE DYNAMIC CALENDAR ICON WITH REAL TIME DATE */
+    .dyn-cal-wrapper { padding: 5px 8px; background: #f8fafc; border-right: 1px solid #cbd5e1; display: flex; justify-content: center; align-items: center; }
+    .dyn-cal { width: 26px; height: 26px; background: #fff; border: 1.5px solid #cbd5e1; border-radius: 6px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.03);}
+    .dyn-cal-m { background: #ef4444; color: white; font-size: 7px; font-weight: 900; text-align: center; text-transform: uppercase; padding: 1px 0; line-height: 1; }
+    .dyn-cal-d { font-size: 12px; font-weight: 900; color: #1e293b; text-align: center; padding-top: 1px; line-height: 1.1;}
+
+    /* 6 CARDS GRID */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 30px; }
+    .kpi-card { background: #fff; padding: 18px 15px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 8px 20px rgba(0,0,0,0.03); display: flex; flex-direction: column; transition: 0.3s; cursor: pointer; }
+    .kpi-card:active { transform: scale(0.95); }
+    .kpi-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .kpi-title { font-size: 11px; color: #64748b; font-weight: 800; text-transform: uppercase; margin: 0;}
+    .kpi-icon { font-size: 14px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
+    
+    .card-sales .kpi-icon { background: #eff6ff; color: #2563eb; } .card-sales .kpi-value { color: #1e3a8a; }
+    .card-profit .kpi-icon { background: #f0fdf4; color: #16a34a; } .card-profit .kpi-value { color: #14532d; }
+    .card-exp .kpi-icon { background: #fef2f2; color: #dc2626; } .card-exp .kpi-value { color: #7f1d1d; }
+    .card-perf .kpi-icon { background: #fff7ed; color: #ea580c; } .card-perf .kpi-value { color: #c2410c; font-size: 14px !important; margin-top:5px !important;}
+    .card-udhaar .kpi-icon { background: #fffbeb; color: #d97706; } .card-udhaar .kpi-value { color: #b45309; }
+    .card-orders .kpi-icon { background: #f8fafc; color: #475569; } .card-orders .kpi-value { color: #0f172a; }
+    .kpi-value { font-size: 20px; font-weight: 900; margin: 0; }
+
+    /* ACTION BUTTONS & NEW GENERATE INVOICE ACTION */
+    .action-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-bottom: 25px; }
+    .btn-action { background: #fff; color: #334155; border: 1.5px solid #e2e8f0; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 13px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: 0.2s;}
+    .btn-action span { font-size: 18px; }
+    .btn-action:active { transform: scale(0.95); }
+    .btn-invoice-launcher { background: linear-gradient(135deg, #9333ea, #4f46e5); color: white; border: 1px solid #7c3aed; }
+
+    /* 📱 FULL-SCREEN UI PAGES SYSTEM */
+    .full-page { position: fixed; top: 100%; left: 0; width: 100%; height: 100%; background: #f8fafc; z-index: 99999; transition: top 0.35s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; padding-bottom: 60px; }
+    .full-page.active { top: 0; }
+    .fp-header { position: sticky; top: 0; background: #fff; padding: 18px 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 10; border-bottom: 1px solid #e2e8f0;}
+    .fp-back-btn { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px 15px; border-radius: 10px; font-size: 15px; cursor: pointer; font-weight:900; color:#1e293b;}
+    .fp-header h2 { margin: 0; font-size: 18px; font-weight: 900; color: #0f172a;}
+    .fp-content { padding: 20px; max-width: 800px; margin: 0 auto; }
+
+    /* 🎨 PROFESSIONAL INVOICE CONTAINER INSIDE FULL PAGE */
+    .entry-panel { background: #ffffff; padding: 25px; border-radius: 24px; border: 1px solid #e2e8f0; border-top: 5px solid #9333ea; box-shadow: 0 15px 35px rgba(0,0,0,0.03); margin-top: 10px; }
+    .section-title { font-size: 12px; color: #fff; background: linear-gradient(90deg, #1e293b, #334155); padding: 8px 15px; border-radius: 8px; margin: 0 0 20px 0; font-weight: 800; letter-spacing: 1px; display: inline-block;}
+    .section-title.color-alt { background: linear-gradient(90deg, #9333ea, #d96570); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+    @media(max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
+    .input-group label { font-size: 12px; font-weight: 800; color: #475569; margin-bottom: 8px; display:block; }
+    
+    .input-with-icon { position: relative; display: flex; align-items: center; }
+    .input-with-icon input { width: 100%; padding-right: 50px; }
+    .input-with-icon .inside-btn { position: absolute; right: 8px; background: #dbeafe; color: #2563eb; border: none; border-radius: 8px; padding: 8px 12px; font-size: 16px; font-weight: bold; cursor: pointer;}
+    .input-with-unit { display: flex; align-items: center; border: 2px solid #e2e8f0; border-radius: 12px; background: #fff; overflow: hidden;}
+    .input-with-unit input { border: none; padding: 14px 16px; flex: 1; font-size: 14px; font-weight: 700; outline: none; }
+    .unit-addon { padding: 14px 16px; font-weight: 900; color: #64748b; font-size: 13px; background: #f1f5f9; border-left: 2px solid #e2e8f0;}
+    .contact-row { display: flex; gap: 10px; }
+    .btn-phonebook { background: #fef2f2; color: #dc2626; border: 2px solid #fecaca; padding: 0 16px; border-radius: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; font-size: 16px;}
+    .save-btn { background: linear-gradient(90deg, #4285f4, #9333ea); color: #fff; border: none; padding: 18px; border-radius: 16px; font-weight: 900; cursor: pointer; width: 100%; font-size: 15px;}
+    
+    /* 📊 PROFESSIONAL ITEM ITEMS TABLE CSS */
+    .invoice-table-wrapper { margin: 20px 0; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: white;}
+    .invoice-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;}
+    .invoice-table th { background: #f8fafc; color: #475569; padding: 12px; font-weight: 800; border-bottom: 2px solid #e2e8f0;}
+    .invoice-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-weight: 700; color: #1e293b;}
+    .btn-item-delete { background: #fee2e2; color: #ef4444; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-weight: bold;}
+
+    /* Lists Cards System */
+    .list-card { background: #fff; padding: 18px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); display: flex; flex-direction: column; cursor: pointer;}
+    .list-card-main { display: flex; justify-content: space-between; align-items: center; }
+    .list-info h4 { margin: 0 0 5px 0; font-size: 16px; color: #1e293b; font-weight: 900;}
+    .list-info p { margin: 0; font-size: 13px; color: #64748b; font-weight: 600;}
+    .list-amt { font-size: 17px; font-weight: 900; color: #2563eb;}
+    
+    .ledger-details { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #cbd5e1; font-size: 13px; color: #334155; }
+    .ledger-details.open { display: block; cursor: default;}
+    .bill-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9;}
+    .bill-total { display: flex; justify-content: space-between; padding: 12px 0 0 0; font-size: 15px; font-weight: 900; color: #dc2626;}
+
+    /* 🟢 🔴 PERFORMANCE COLORED TABS & BOXES */
+    .perf-tabs-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .btn-sub-tab { padding: 14px; border-radius: 12px; border: 1px solid #cbd5e1; background: white; font-weight: 800; cursor: pointer; font-size: 14px;}
+    
+    #tab-move-btn.active { background: #10b981; color: white; border-color: #10b981; box-shadow: 0 4px 12px rgba(16,185,129,0.2); }
+    #tab-unmove-btn.active { background: #ef4444; color: white; border-color: #ef4444; box-shadow: 0 4px 12px rgba(239,68,68,0.2); }
+
+    .perf-box { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 22px; border-radius: 16px; margin-bottom: 20px; cursor: pointer; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.25);}
+    .perf-box.worst { background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 10px 20px rgba(239, 68, 68, 0.25);}
+    .perf-box h3 { margin: 0 0 8px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.95);}
+    .perf-box h2 { margin: 0; font-size: 22px; font-weight: 900;}
+    .perf-details { display: none; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 10px; margin-top: 15px; font-size: 13px; font-weight: bold; cursor: default;}
+    .perf-details.open { display: block; }
+    .close-details-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 900; cursor: pointer; margin-bottom: 10px; display: inline-block; }
+
+    /* ADVANCED TODAY SALES UI SYSTEM */
+    .pay-badge { font-size: 10px; padding: 4px 8px; border-radius: 6px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;}
+    .badge-cash { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0;}
+    .badge-upi { background: #dbeafe; color: #2563eb; border: 1px solid #bfdbfe;}
+    .badge-udhaar { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca;}
+    
+    .multi-item-list { margin: 10px 0; background: #f8fafc; padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0;}
+    .multi-item-list p { margin: 4px 0; font-size: 12px; color: #475569; font-weight: 700;}
+    
+    .sales-action-row { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px dashed #cbd5e1; padding-top: 12px;}
+    .sales-action-btns button { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 800; cursor: pointer; color: #334155; transition: 0.2s;}
+    .sales-action-btns button:active { transform: scale(0.9); }
+
+    /* STICKY LIVE PAYMENT SUMMARY BAR */
+    .sales-summary-bar { position: absolute; bottom: 0; left: 0; width: 100%; background: #0f172a; color: white; display: flex; justify-content: space-around; padding: 15px 10px; box-sizing: border-box; border-top: 3px solid #3b82f6; z-index: 100;}
+    .sum-item { text-align: center; font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase;}
+    .sum-item span { display: block; font-size: 16px; font-weight: 900; margin-top: 3px; color: #fff;}
+    .sum-cash span { color: #4ade80; }
+    .sum-upi span { color: #60a5fa; }
+    .sum-udhaar span { color: #f87171; }
+
+    /* OCR LIVE SCANNER VIEW */
+    #ocr-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.98); z-index: 100000; display: none; flex-direction: column; align-items: center; justify-content: center;}
+    .ocr-container { position: relative; width: 100%; max-width: 350px; border-radius: 24px; overflow: hidden; background: #000; margin-top: 30px;}
+    #ocr-video { width: 100%; height: auto; display: block; object-fit: cover; }
+    .scan-guide { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 180px; height: 60px; border: 3px solid #10b981; border-radius: 8px; box-shadow: 0 0 0 1000px rgba(0,0,0,0.7); overflow: hidden; }
+    .laser-line { width: 100%; height: 3px; background: #10b981; position: absolute; top: 0; animation: scan 1.2s infinite linear; }
+    @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+    .btn-ocr-close { width: 100%; background: #ef4444; color: white; padding: 18px; border: none; border-radius: 16px; font-weight: 900; font-size: 16px; cursor: pointer;}
+  ]]></b:skin>
+</head>
+<body>
+  
+  <div style='display:none;'><b:section id='main' showaddelement='no'><b:widget id='Blog1' locked='true' title='Hidden' type='Blog' version='2'><b:includable id='main'></b:includable></b:widget></b:section></div>
+
+  <div id="face-lock-screen">
+      <div class="face-scanner-container">
+          <video id="face-video" autoplay="true" playsinline="true"></video>
+          <div class="face-radar-line" id="radar"></div>
+      </div>
+      <h3 id="face-status" style="margin: 0 0 20px 0; letter-spacing:1px; font-weight:900;">AI FACE SECURITY REQUIRED</h3>
+      <button class="btn-face-start" id="face-btn" onclick="startAppFaceScan()">🔐 Verify Admin Face</button>
+  </div>
+
+  <div class='header-wrapper'>
+      <header id="main-header">
+          <h1>VANDANA ENTERPRISES</h1>
+          <button class="btn-exit" onclick="exitApp()">🚪 Exit App</button>
+      </header>
+  </div>
+
+  <div class='dash-wrapper'>
+     
+     <div class='kpi-header'>
+         <h2>Dashboard</h2>
+         <div class='date-box'>
+             <div class='dyn-cal-wrapper'>
+                 <div class='dyn-cal'>
+                     <div class='dyn-cal-m' id='cal-month'>MON</div>
+                     <div class='dyn-cal-d' id='cal-day'>00</div>
+                 </div>
+             </div>
+             <input class='kpi-date-picker' type='date' id='kpi-date'/>
+         </div>
+     </div>
+
+     <div class='kpi-grid'>
+         <div class='kpi-card card-sales' onclick='openPage("sales-page")'>
+             <div class='kpi-title-row'><h4 class='kpi-title'>Today Sales</h4><span class='kpi-icon'>📈</span></div>
+             <p class='kpi-value'>₹45,200</p>
+         </div>
+         <div class='kpi-card card-profit'>
+             <div class='kpi-title-row'><h4 class='kpi-title'>Gross Profit</h4><span class='kpi-icon'>💰</span></div>
+             <p class='kpi-value'>₹8,500</p>
+         </div>
+         <div class='kpi-card card-exp' onclick='openPage("expense-page")'>
+             <div class='kpi-title-row'><h4 class='kpi-title'>Expenses</h4><span class='kpi-icon'>📉</span></div>
+             <p class='kpi-value'>₹1,200</p>
+         </div>
+         <div class='kpi-card card-perf' onclick='openPage("perf-page")'>
+             <div class='kpi-title-row'><h4 class='kpi-title'>Performance</h4><span class='kpi-icon'>🏆</span></div>
+             <p class='kpi-value'>View Stats ➔</p>
+         </div>
+         <div class='kpi-card card-udhaar' onclick='openPage("dues-page")'>
+             <div class='kpi-title-row'><h4 class='kpi-title'>Pending Dues</h4><span class='kpi-icon'>📒</span></div>
+             <p class='kpi-value'>₹12,450</p>
+         </div>
+         <div class='kpi-card card-orders' onclick='openPage("bills-page")'>
+             <div class='kpi-title-row'><h4 class='kpi-title'>Total Bills</h4><span class='kpi-icon'>🧾</span></div>
+             <p class='kpi-value'>18</p>
+         </div>
+     </div>
+
+     <div class='action-row'>
+         <button class='btn-action btn-invoice-launcher' onclick='openPage("invoice-page")'><span>⚡</span> Smart Invoice</button>
+         <button class='btn-action' onclick='openPage("stock-page")'><span>📦</span> Stock</button>
+         <button class='btn-action' onclick='openPage("dues-page")'><span>📒</span> Khata</button>
+         <button class='btn-action' onclick='openPage("expense-page")'><span>☕</span> Expenses</button>
+     </div>
+  </div>
+
+  <div class='full-page' id='invoice-page'>
+      <div class='fp-header'><button class='fp-back-btn' onclick='closePage("invoice-page")'>← Back</button><h2>Invoice Generator</h2></div>
+      <div class='fp-content'>
+          <div class='entry-panel'>
+              <div class='section-title'>👤 Customer Information</div>
+              <div class='form-grid'>
+                  <div class='input-group'>
+                      <label>Invoice Date</label>
+                      <input class='pro-input' type='date' id='inv-date'/>
+                  </div>
+                  <div class='input-group'>
+                      <label>Customer Name</label>
+                      <div class='contact-row'>
+                          <input autocomplete='off' class='pro-input' placeholder='Enter Full Name' type='text' id='ui-cust'/>
+                          <button class='btn-phonebook' onclick='openPhonebook()'>👥 Contacts</button>
+                      </div>
+                  </div>
+                  <div class='input-group'>
+                      <label>Mobile Number</label>
+                      <input class='pro-input' id='inv-phone' placeholder='Phone Number' type='tel'/>
+                  </div>
+              </div>
+              
+              <div class='section-title color-alt'>🛍️ Product Information</div>
+              <div class='form-grid'>
+                  <div class='input-group'>
+                      <label>Select Category</label>
+                      <select class='pro-input' id='inv-cat' onchange='handleProductChange()'>
+                          <option value='Kamlay Thread'>🧵 Kamlay Thread</option>
+                          <option value='Viscose Thread'>🧶 Viscose Thread</option>
+                          <option value='Metallic Zari'>✨ Metallic Zari</option>
+                          <option value='Bobbin Yarn'>🧵 Bobbin Yarn</option>
+                          <option value='Cotton Yarn'>☁️ Cotton Yarn</option>
+                      </select>
+                  </div>
+                  
+                  <div class='input-group' id='shade-group'>
+                      <label>Shade No. (Auto Scan)</label>
+                      <div class='input-with-icon'>
+                          <input class='pro-input' id='inv-shade' placeholder='e.g. 264' type='number' style='font-size:16px; font-weight:900; color:#9333ea;'/>
+                          <button class='inside-btn' id='btn-camera' onclick='openOCRScanner()'>📷</button>
+                      </div>
+                  </div>
+
+                  <div class='input-group' id='details-group' style='display:none;'>
+                      <label>Details (Color / Type)</label>
+                      <input class='pro-input' id='inv-details' placeholder='e.g. White, Black, Golden' type='text' style='font-weight:800; color:#0f172a;'/>
+                  </div>
+
+                  <div class='input-group'>
+                      <label>Rate (₹)</label><input class='pro-input' id='inv-rate' type='number' placeholder='0'/>
+                  </div>
+                  <div class='input-group'>
+                      <label>Quantity</label>
+                      <div class='input-with-unit'>
+                          <input class='pro-input' id='inv-qty' type='number' placeholder='0' style="border:none;"/>
+                          <div class='unit-addon' id='lbl-unit'>BOX</div>
+                      </div>
+                  </div>
+              </div>
+
+              <button class="save-btn" style="background:#0f172a; margin-bottom:20px;" onclick="addItemToInvoiceTable()">➕ Add Item to Bill List</button>
+
+              <div class='section-title' style="background:linear-gradient(90deg, #10b981, #059669);">🧾 Added Items List</div>
+              
+              <div class="invoice-table-wrapper">
+                  <table class="invoice-table">
+                      <thead>
+                          <tr>
+                              <th>Product Description</th>
+                              <th>Rate</th>
+                              <th>Qty</th>
+                              <th>Total</th>
+                              <th>Action</th>
+                          </tr>
+                      </thead>
+                      <tbody id="invoice-items-body">
+                          <tr id="empty-row"><td colspan="5" style="text-align:center; color:#94a3b8;">No items added yet.</td></tr>
+                      </tbody>
+                  </table>
+              </div>
+
+              <div class='input-group' style="margin-bottom:25px;">
+                  <label style="font-size:14px; font-weight:900;">Grand Total Amount (₹)</label>
+                  <input class='pro-input' readonly='true' value='₹ 0' style='background:#f8fafc; color:#16a34a; font-weight:900; font-size:22px; border-color:#10b981;' type='text' id='inv-grand-total'/>
+              </div>
+
+              <button class='save-btn' onclick='alert("Full Invoice Saved and Live Synced!")'>💾 Save Final Invoice</button>
+          </div>
+      </div>
+  </div>
+
+  <div class='full-page' id='sales-page'>
+      <div class='fp-header'><button class='fp-back-btn' onclick='closePage("sales-page")'>← Back</button><h2>Today's Sales</h2></div>
+      <div class='fp-content' style="padding-bottom: 100px;">
+          <input type="text" id="searchSales" class="pro-input" placeholder="🔍 Search Customer, Item or Shade..." onkeyup="filterSalesList()" style="margin-bottom:20px; border-color:#94a3b8; border-width:2px;"/>
+
+          <div class='list-card sales-card'>
+              <div style='display:flex; justify-content:space-between; align-items:flex-start;'>
+                  <h4 style="margin:0; font-size:16px; font-weight:900; color:#1e293b;">Ramesh Traders</h4>
+                  <span class='pay-badge badge-cash'>💵 Cash</span>
+              </div>
+              <div class="multi-item-list">
+                  <p>👉 🧵 Kamlay Shade 105 (20 BOX)</p>
+                  <p>👉 ✨ Metallic Zari Golden (5 CONE)</p>
+              </div>
+              <div class='sales-action-row'>
+                  <div class='list-amt'>₹6,750</div>
+                  <div class='sales-action-btns'>
+                      <button title="Edit Bill" onclick="alert('Editing Invoice...')">✏️</button>
+                      <button title="Cancel Bill" style="color:#ef4444;" onclick="alert('Invoice Cancelled!')">🗑️</button>
+                      <button title="Send WhatsApp" style="color:#16a34a; border-color:#16a34a;" onclick='sendWhatsAppBill("9876543210", "Ramesh Traders", "Kamlay Shade 105 and Zari", "6750")'>📲 WA</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="sales-summary-bar">
+          <div class="sum-item sum-cash">Cash<br/><span>₹6,750</span></div>
+          <div class="sum-item sum-upi">UPI<br/><span>₹2,000</span></div>
+          <div class="sum-item sum-udhaar">Udhaar<br/><span>₹1,800</span></div>
+      </div>
+  </div>
+
+  <div class='full-page' id='dues-page'>
+      <div class='fp-header'><button class='fp-back-btn' onclick='closePage("dues-page")'>← Back</button><h2>Customer Ledger</h2></div>
+      <div class='fp-content'>
+          <input type="text" class="pro-input" placeholder="🔍 Search Customer..." style="margin-bottom:20px;"/>
+          <div class='list-card' onclick='toggleLedger("ledger-1")' style="border-left: 5px solid #dc2626;">
+              <div style='display:flex; justify-content:space-between; align-items:center;'>
+                  <div class='list-info'><h4>Gopal Handloom</h4><p>Tap to view full ledger ⬇</p></div>
+                  <div class='list-amt' style="color:#dc2626;">₹8,200<br/><span style="font-size:12px; display:block; color:#64748b;">Pending</span></div>
+              </div>
+              <div class='ledger-details' id='ledger-1' onclick="event.stopPropagation();">
+                  <div class='bill-row'><span>10 Jul - Kamlay Shade 120 (10 Box)</span><span>₹2,000</span></div>
+                  <div class='bill-row'><span>12 Jul - Viscose Black (5 Cone)</span><span>₹1,200</span></div>
+                  <div class='bill-row'><span>13 Jul - Cash Received</span><span style="color:#16a34a;">- ₹5,000</span></div>
+                  <div class='bill-total'><span>Total Due Now:</span><span>₹8,200</span></div>
+                  <div style="margin-top:15px; padding-top:15px; border-top:1px solid #e2e8f0;">
+                      <p style="margin:0 0 5px 0; font-weight:bold; font-size:12px; color:#1e293b;">Send Systematic WhatsApp Reminder:</p>
+                      <div style="display:flex; gap:8px;">
+                          <input type="tel" class="pro-input" placeholder="Enter WhatsApp Number" style="padding:10px; font-size:13px;" id="wa-num-gopal" value="9829000000"/>
+                          <button class='save-btn' style="margin:0; padding:10px 15px; font-size:13px; width:auto; background:#16a34a;" onclick="triggerSystematicWA()">📲 Send WA</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class='full-page' id='bills-page'><div class='fp-header'><button class='fp-back-btn' onclick='closePage("bills-page")'>← Back</button><h2>Today's Invoices</h2></div></div>
+
+  <div class='full-page' id='perf-page'>
+      <div class='fp-header'><button class='fp-back-btn' onclick='closePage("perf-page")'>← Back</button><h2>Performance Matrix</h2></div>
+      <div class='fp-content'>
+          <div class="perf-tabs-row">
+              <button class="btn-sub-tab active" id="tab-move-btn" onclick="switchPerfTab('movable')">📈 Movable Items</button>
+              <button class="btn-sub-tab" id="tab-unmove-btn" onclick="switchPerfTab('unmovable')">🛑 Unmovable Stock</button>
+          </div>
+          <div id="perf-movable-section">
+              <div class='perf-box' onclick='openPerfBlock("perf-top-264")'>
+                  <h3>🏆 #1 Top Selling Item</h3><h2>Kamlay Shade 264</h2>
+                  <div class='perf-details' id='perf-top-264' onclick='event.stopPropagation();'>
+                      <button class='close-details-btn' onclick='closePerfBlock("perf-top-264")'>✖ Close Box</button>
+                      <p style="color:#d1fae5; font-size:14px; margin-top:5px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:5px;">📊 Monthly Total Sold: 950 Boxes</p>
+                      <p style="margin:8px 0 2px 0;"><b>Buyers This Month:</b></p>
+                      <p style="margin:2px 0; font-size:12px;">• Ramesh Traders: 450 Boxes</p>
+                      <p style="margin:2px 0; font-size:12px;">• Shree Kripa: 300 Boxes</p>
+                      <p style="margin:10px 0 2px 0; color:#fef08a;">🏁 Last Box Taken By:</p>
+                      <p style="margin:2px 0; font-size:13px; color:#fff;">👉 <b>Gopal Handloom</b> - 20 Boxes</p>
+                  </div>
+              </div>
+          </div>
+          <div id="perf-unmovable-section" style="display:none;">
+              <div class='perf-box worst' onclick='openPerfBlock("perf-dead-details")'>
+                  <h3>⚠️ Dead Stock Matrix</h3><h2>View Unsold Items</h2>
+                  <div class='perf-details' id='perf-dead-details' onclick='event.stopPropagation();'>
+                      <button class='close-details-btn' onclick='closePerfBlock("perf-dead-details")'>✖ Close Box</button>
+                      <p style="color:#fca5a5; margin-top:5px;">⏳ <b>1 Month Unsold:</b> Viscose Green (15 Box)</p>
+                      <p style="color:#fca5a5;">⏳ <b>6 Months Unsold:</b> Bobbin Yarn Black (80 KG)</p>
+                      <p style="color:#f87171;">🚫 <b>12 Months Dead Stock:</b> Metallic Zari Silver (120 Cone)</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class='full-page' id='expense-page'><div class='fp-header'><button class='fp-back-btn' onclick='closePage("expense-page")'>← Back</button><h2>Expenses</h2></div></div>
+  <div class='full-page' id='stock-page'><div class='fp-header'><button class='fp-back-btn' onclick='closePage("stock-page")'>← Back</button><h2>Stock Manager</h2></div></div>
+
+  <div id='ocr-modal'>
+      <div class='ocr-header'><h3>FAST SCANNER</h3><div id='scan-status'>🤖 Point camera at the number...</div></div>
+      <div class='ocr-container'><video id='ocr-video' autoplay='true' playsinline='true'></video><div class='scan-guide' id='guide-box'><div class='laser-line'></div></div></div>
+      <div class='ocr-controls'><button class='btn-ocr-close' onclick='closeOCRScanner()'>✖ Cancel Scanning</button></div>
+  </div>
+
+  <script type='text/javascript'>
+  //<![CDATA[
+    
+    // --- 🚫 HARDWARE BACK BUTTON LOCK ---
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () { history.go(1); };
+
+    function exitApp() {
+        if(confirm("क्या आप वाकई ऐप बंद करना चाहते हैं?")) {
+            window.close();
+            window.location.href = "about:blank";
+        }
+    }
+
+    // --- 📷 PREMIUM AI FACE SCAN SIMULATION SYSTEM ---
+    async function startAppFaceScan() {
+        const btn = document.getElementById('face-btn');
+        const radar = document.getElementById('radar');
+        const status = document.getElementById('face-status');
+        const video = document.getElementById('face-video');
+
+        btn.disabled = true;
+        btn.innerText = "⏳ Initializing Camera...";
+        
+        try {
+            // Request camera feed to project inside the oval window
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+            video.srcObject = stream;
+            
+            // Start Sci-Fi Radar Scanning Line Animation
+            radar.style.display = "block";
+            status.innerText = "⚡ SCANNING BIOMETRICS...";
+            status.style.color = "#3b82f6";
+            
+            // Vibrate during scan if available
+            if(navigator.vibrate) navigator.vibrate([100, 100, 100, 100]);
+
+            // Simulate AI matching algorithm time delay
+            setTimeout(() => {
+                radar.style.display = "none";
+                status.innerText = "✅ FACE MATCHED: VANDANA ADMIN";
+                status.style.color = "#10b981";
+                if(navigator.vibrate) navigator.vibrate([200, 100, 200]);
+
+                setTimeout(() => {
+                    // Turn off camera stream
+                    stream.getTracks().forEach(track => track.stop());
+                    // Hide lock overlay screen
+                    document.getElementById('face-lock-screen').style.display = "none";
+                }, 800);
+            }, 2500);
+
+        } catch(err) {
+            alert("Face Scan Simulator requires front camera permissions to run.");
+            btn.disabled = false;
+            btn.innerText = "🔐 Verify Admin Face";
+        }
+    }
+
+    // --- 📊 MULTI-ITEM INVOICE CORE SYSTEM ENGINE ---
+    let addedItems = [];
+
+    function addItemToInvoiceTable() {
+        const cat = document.getElementById('inv-cat').value;
+        const shade = document.getElementById('inv-shade').value;
+        const details = document.getElementById('inv-details').value;
+        const rate = parseFloat(document.getElementById('inv-rate').value) || 0;
+        const qty = parseFloat(document.getElementById('inv-qty').value) || 0;
+        const unit = document.getElementById('lbl-unit').innerText;
+
+        if(qty <= 0 || rate <= 0) { alert("Please enter valid Rate and Quantity!"); return; }
+
+        let desc = (cat === 'Kamlay Thread') ? `Kamlay - Shade ${shade}` : `${cat} - ${details}`;
+        let total = rate * qty;
+
+        // Push item into current local array list
+        addedItems.push({ desc, rate, qty, unit, total });
+        renderInvoiceTable();
+
+        // Clear input entry fields for next rapid item additions
+        document.getElementById('inv-shade').value = "";
+        document.getElementById('inv-details').value = "";
+        document.getElementById('inv-rate').value = "";
+        document.getElementById('inv-qty').value = "";
+    }
+
+    function removeInvoiceItem(index) {
+        addedItems.splice(index, 1);
+        renderInvoiceTable();
+    }
+
+    function renderInvoiceTable() {
+        const tbody = document.getElementById('invoice-items-body');
+        tbody.innerHTML = "";
+
+        if(addedItems.length === 0) {
+            tbody.innerHTML = '<tr id="empty-row"><td colspan="5" style="text-align:center; color:#94a3b8;">No items added yet.</td></tr>';
+            document.getElementById('inv-grand-total').value = "₹ 0";
+            return;
+        }
+
+        let grandTotal = 0;
+        addedItems.forEach((item, index) => {
+            grandTotal += item.total;
+            let row = `<tr>
+                <td>${item.desc}</td>
+                <td>₹${item.rate}</td>
+                <td>${item.qty} ${item.unit}</td>
+                <td>₹${item.total.toLocaleString('en-IN')}</td>
+                <td><button class="btn-item-delete" onclick="removeInvoiceItem(${index})">🗑️</button></td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+
+        document.getElementById('inv-grand-total').value = "₹ " + grandTotal.toLocaleString('en-IN');
+    }
+
+    // --- 📅 DYNAMIC CALENDAR LOADER ---
+    function updateTrueCalendarIcon(dateObject) {
+        const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+        document.getElementById('cal-month').innerText = months[dateObject.getMonth()];
+        document.getElementById('cal-day').innerText = String(dateObject.getDate()).padStart(2, '0');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+        document.getElementById('inv-date').value = todayStr;
+        document.getElementById('kpi-date').value = todayStr;
+        updateTrueCalendarIcon(now);
+        handleProductChange(); 
+    });
+
+    document.getElementById('kpi-date').addEventListener('change', function(e) {
+        if(e.target.value) updateTrueCalendarIcon(new Date(e.target.value));
+    });
+
+    // --- OTHER CORE INTERACTIVE LOGICS ---
+    function filterSalesList() {
+        let input = document.getElementById('searchSales').value.toLowerCase();
+        let cards = document.querySelectorAll('.sales-card');
+        cards.forEach(c => {
+            if(c.innerText.toLowerCase().includes(input)) c.style.display = 'flex'; else c.style.display = 'none';
+        });
+    }
+
+    function sendWhatsAppBill(phone, customer, items, amount) {
+        const message = `🧾 *VANDANA ENTERPRISES* %0A📅 *Date:* Today%0A👤 *Customer:* ${customer}%0A🛍️ *Purchase:* ${items}%0A💰 *Total Amount:* ₹${amount}%0A%0A_Thank you for doing business with us!_`;
+        window.open(`https://wa.me/91${phone}?text=${message}`, '_blank');
+    }
+
+    function triggerSystematicWA() {
+        const number = document.getElementById('wa-num-gopal').value.replace(/\D/g, '');
+        if(number.length < 10) { alert("Please enter a valid 10-digit WhatsApp number!"); return; }
+        const message = `⚠️ *PENDING DUES REMINDER* ⚠️%0A🏛️ *VANDANA ENTERPRISES*%0A👤 *Account Name:* Gopal Handloom%0A💰 *Outstanding Balance:* ₹8,200%0A%0APlease ensure timely payment. Thank you!`;
+        window.open(`https://wa.me/91${number}?text=${message}`, '_blank');
+    }
+
+    function openPage(id) { document.getElementById(id).classList.add('active'); }
+    function closePage(id) { document.getElementById(id).classList.remove('active'); }
+    function toggleLedger(id) { document.getElementById(id).classList.toggle('open'); }
+    function openPerfBlock(id) { document.getElementById(id).classList.add('open'); }
+    function closePerfBlock(id) { document.getElementById(id).classList.remove('open'); }
+
+    function switchPerfTab(mode) {
+        document.getElementById('tab-move-btn').classList.remove('active');
+        document.getElementById('tab-unmove-btn').classList.remove('active');
+        document.getElementById('perf-movable-section').style.display = 'none';
+        document.getElementById('perf-unmovable-section').style.display = 'none';
+        if(mode === 'movable') {
+            document.getElementById('tab-move-btn').classList.add('active');
+            document.getElementById('perf-movable-section').style.display = 'block';
+        } else {
+            document.getElementById('tab-unmove-btn').classList.add('active');
+            document.getElementById('perf-unmovable-section').style.display = 'block';
+        }
+    }
+
+    function handleProductChange() {
+        const cat = document.getElementById('inv-cat').value;
+        const shadeGroup = document.getElementById('shade-group');
+        const detailsGroup = document.getElementById('details-group');
+        const lblUnit = document.getElementById('lbl-unit');
+        if (cat === 'Kamlay Thread') {
+            shadeGroup.style.display = 'block'; detailsGroup.style.display = 'none'; lblUnit.innerText = 'BOX';
+        } else {
+            shadeGroup.style.display = 'none'; detailsGroup.style.display = 'block';
+            if (cat === 'Bobbin Yarn') lblUnit.innerText = 'KG'; else lblUnit.innerText = 'CONE';
+        }
+    }
+
+    // --- OCR LOOP UTILITIES ---
+    let videoStream; let workerReady = false; let tesseractWorker = null; let isScanningActive = false;
+    async function initTesseract() {
+        if (!tesseractWorker) {
+            tesseractWorker = await Tesseract.createWorker('eng');
+            await tesseractWorker.setParameters({ tessedit_char_whitelist: '0123456789' });
+            workerReady = true;
+        }
+    }
+    initTesseract();
+    async function openOCRScanner() {
+        const modal = document.getElementById('ocr-modal'); const video = document.getElementById('ocr-video');
+        modal.style.display = 'flex'; isScanningActive = true;
+        try {
+            videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment", width: 1280, height: 720 } });
+            video.srcObject = videoStream; video.onloadedmetadata = () => { video.play(); runAutoScanLoop(); };
+        } catch (err) { closeOCRScanner(); }
+    }
+    function closeOCRScanner() { isScanningActive = false; document.getElementById('ocr-modal').style.display = 'none'; if(videoStream) videoStream.getTracks().forEach(t => t.stop()); }
+    async function runAutoScanLoop() {
+        if (!isScanningActive) return; const video = document.getElementById('ocr-video');
+        if (!workerReady || video.videoWidth === 0) { setTimeout(runAutoScanLoop, 300); return; }
+        const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+        canvas.width = 180; canvas.height = 60;
+        ctx.drawImage(video, (video.videoWidth-180)/2, (video.videoHeight-60)/2, 180, 60, 0, 0, 180, 60);
+        try {
+            const result = await tesseractWorker.recognize(canvas); const text = result.data.text.trim();
+            const matches = text.match(/\b\d{2,4}\b/);
+            if (matches && isScanningActive) {
+                document.getElementById('inv-shade').value = matches[0];
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                closeOCRScanner();
+            } else setTimeout(runAutoScanLoop, 300);
+        } catch (e) { setTimeout(runAutoScanLoop, 500); }
+    }
+
+    window.addEventListener('scroll', () => {
+        const header = document.getElementById('main-header');
+        if (window.scrollY > 20) header.classList.add('scrolled'); else header.classList.remove('scrolled');
+    });
+
+    async function openPhonebook() {
+        if ('contacts' in navigator && 'ContactsManager' in window) {
+            try {
+                const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false });
+                if (contacts.length > 0) {
+                    const c = contacts[0];
+                    if (c.name && c.name.length > 0) document.getElementById('ui-cust').value = c.name[0];
+                    if (c.tel && c.tel.length > 0) {
+                        let num = String(c.tel[0]).replace(/\D/g, ''); 
+                        if(num.length > 10 && num.startsWith('91')) num = num.substring(2);
+                        document.getElementById('inv-phone').value = num;
+                    }
+                }
+            } catch (ex) { }
+        }
+    }
+  //]]>
+  </script>
+</body>
+</html>

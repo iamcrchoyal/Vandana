@@ -4,157 +4,159 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0f172a">
-    <title>Vandana ERP - Inventory</title>
+    <title>Vandana ERP - Advanced Inventory</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
     <style>
-        /* ================= INVENTORY & ERP UTILITY CSS ================= */
         :root {
-            --bg-color: #f1f5f9;
+            --bg-color: #f8fafc;
             --surface: #ffffff;
             --text-dark: #0f172a;
             --text-muted: #64748b;
             --border: #cbd5e1;
-            --primary: #0284c7;      /* Professional Blue */
+            --primary: #0284c7;
             --primary-dark: #0369a1;
-            --header-bg: #0f172a;    /* Dark Navy Header */
+            --header-bg: #0f172a;
             --success: #16a34a;
             --danger: #dc2626;
             --warning: #d97706;
+            --khatabook-in: #e8f5e9;
+            --khatabook-out: #ffe5e5;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         body { background-color: var(--bg-color); color: var(--text-dark); overflow-x: hidden; }
 
-        /* 📱 DARK ERP HEADER */
+        /* HEADER */
         .app-bar { position: fixed; top: 0; width: 100%; height: 56px; background: var(--header-bg); color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .app-bar-left { display: flex; align-items: center; gap: 12px; }
-        .menu-icon { font-size: 20px; font-weight: bold; cursor: pointer; }
-        .app-bar h1 { font-size: 16px; font-weight: 600; letter-spacing: 0.5px; }
-        .sync-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 4px 10px; border-radius: 4px; font-size: 11px; display: flex; align-items: center; gap: 4px;}
+        .app-bar h1 { font-size: 16px; font-weight: 600; }
+        .sync-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; }
 
-        /* 🏠 DASHBOARD LAYOUT */
+        /* MAIN CONTENT */
         .main-content { padding: 70px 16px 80px 16px; max-width: 800px; margin: 0 auto; }
+        .section-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin: 15px 0 10px 0; letter-spacing: 0.5px; }
         
         /* Quick Actions Grid */
-        .section-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin: 0 0 12px 0; letter-spacing: 0.5px; }
-        .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
-        .action-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 4px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
-        .action-box:active { background: #e2e8f0; }
+        .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+        .action-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 4px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
         .action-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 18px; }
         .bg-blue-light { background: #e0f2fe; color: var(--primary); }
         .bg-green-light { background: #dcfce7; color: var(--success); }
         .bg-purple-light { background: #f3e8ff; color: #9333ea; }
         .bg-orange-light { background: #ffedd5; color: var(--warning); }
-        .action-label { font-size: 11px; font-weight: 600; color: var(--text-dark); text-align: center; line-height: 1.2;}
+        .action-label { font-size: 11px; font-weight: 600; color: var(--text-dark); text-align: center; }
 
-        /* Inventory Summary Box */
-        .summary-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
-        .summary-row { display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 12px; }
-        .summary-row:last-child { border: none; padding-bottom: 0; margin-bottom: 0; }
+        /* Business Overview Box */
+        .summary-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; margin-bottom: 20px; }
+        .summary-row { display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding: 12px 0; cursor: pointer; }
+        .summary-row:last-child { border: none; }
         .sum-title { font-size: 13px; color: var(--text-muted); font-weight: 500; }
         .sum-val { font-size: 15px; font-weight: 700; color: var(--text-dark); }
-        .val-red { color: var(--danger); }
 
-        /* Low Stock Alerts */
+        /* Alerts */
         .alert-card { background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid var(--danger); padding: 12px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
-        .alert-item { font-size: 13px; font-weight: 600; color: #991b1b; margin: 0 0 4px 0;}
+        .alert-item { font-size: 13px; font-weight: 600; color: #991b1b; }
         .alert-stock { font-size: 11px; color: var(--danger); font-weight: 700; }
-        .add-stock-btn { background: var(--surface); border: 1px solid #fca5a5; color: var(--danger); padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; }
+        .wa-alert-btn { background: var(--success); color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; }
 
-        /* ⚓ BOTTOM NAVIGATION (Standard App Style) */
+        /* BOTTOM NAV */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; color: var(--text-muted); font-size: 10px; font-weight: 600; gap: 4px; cursor: pointer; }
         .nav-item i { font-size: 20px; font-style: normal; }
         .nav-item.active { color: var(--primary); }
 
-        /* 📄 SLIDING PAGES (POS/Inventory Screens) */
+        /* SLIDING PAGES */
         .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 80px; }
         .page.active { transform: translateX(0); }
         .page-header { position: sticky; top: 0; background: var(--primary); color: white; height: 56px; display: flex; align-items: center; padding: 0 16px; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .back-btn { background: transparent; border: none; color: white; font-size: 24px; margin-right: 16px; cursor: pointer; padding: 0; }
+        .back-btn { background: transparent; border: none; color: white; font-size: 24px; margin-right: 16px; cursor: pointer; }
         .page-title { font-size: 16px; font-weight: 600; margin: 0; }
         .page-content { padding: 16px; max-width: 800px; margin: 0 auto; }
 
-        /* 📝 POS / INVENTORY FORMS */
-        .form-group { margin-bottom: 16px; }
+        /* FORMS & UI PANELS */
+        .form-panel { background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: 8px; margin-bottom: 16px; }
+        .form-group { margin-bottom: 14px; }
         .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
-        .form-control { width: 100%; background: var(--surface); border: 1px solid var(--border); padding: 12px; border-radius: 6px; font-size: 14px; color: var(--text-dark); outline: none; transition: 0.2s; }
-        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2); }
-        .input-group { display: flex; gap: 8px; }
-        .btn-icon { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0 16px; font-size: 16px; cursor: pointer; }
+        .form-control { width: 100%; background: var(--surface); border: 1px solid var(--border); padding: 10px; border-radius: 6px; font-size: 14px; color: var(--text-dark); outline: none; }
+        .form-control:focus { border-color: var(--primary); }
+        .input-btn-group { display: flex; gap: 8px; }
+        .action-btn { background: #e0f2fe; color: var(--primary); border: 1px solid var(--border); border-radius: 6px; padding: 0 14px; font-weight: bold; cursor: pointer; }
+        .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .btn-success { background: var(--success); margin-top: 10px; }
+
+        /* TABLES */
+        .table-wrapper { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 15px; }
+        .invoice-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
+        .invoice-table th { background: #f8fafc; padding: 10px; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+        .invoice-table td { padding: 10px; border-bottom: 1px solid #f1f5f9; font-weight: 500; }
+
+        /* INTERACTIVE ACCORDION LIST */
+        .clickable-bill-card { background: var(--surface); border: 1px solid var(--border); padding: 12px; border-radius: 6px; margin-bottom: 10px; cursor: pointer; }
+        .bill-details-drawer { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+        .drawer-actions { display: flex; gap: 10px; margin-top: 10px; }
+        .drawer-btn { flex: 1; padding: 8px; border-radius: 4px; border: 1px solid var(--border); background: #f8fafc; font-size: 12px; font-weight: 600; cursor: pointer; }
         
-        .btn-primary { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
-        .btn-primary:active { background: var(--primary-dark); }
-        .btn-outline { width: 100%; background: var(--surface); color: var(--text-dark); border: 1px solid var(--border); padding: 12px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
+        /* KHATABOOK STYLE */
+        .khatabook-header { display: flex; justify-content: space-between; background: var(--surface); padding: 16px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 16px; }
+        .kh-box { text-align: center; flex: 1; }
+        .kh-box h3 { font-size: 18px; font-weight: 700; margin-top: 4px; }
+        .kh-split { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-kh { flex: 1; padding: 12px; border-radius: 6px; font-weight: 700; border: none; color: white; cursor: pointer; }
+        .btn-kh-give { background: var(--danger); }
+        .btn-kh-got { background: var(--success); }
 
-        /* 📋 DATA TABLES (Inventory Look) */
-        .data-table-wrapper { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; overflow-x: auto; margin-bottom: 20px;}
-        .data-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
-        .data-table th { background: #f8fafc; padding: 10px 12px; color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border); text-transform: uppercase; font-size: 11px; }
-        .data-table td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; font-weight: 500; color: var(--text-dark); }
-        .data-table tr:last-child td { border-bottom: none; }
-        .text-right { text-align: right; }
-        .status-badge { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; }
-        .status-ok { background: #dcfce7; color: var(--success); }
-        .status-low { background: #fee2e2; color: var(--danger); }
-
-        /* LIST ITEMS (Parties/Sales) */
-        .list-item { background: var(--surface); border: 1px solid var(--border); padding: 12px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .list-title { font-size: 14px; font-weight: 600; margin: 0 0 4px 0; }
-        .list-sub { font-size: 12px; color: var(--text-muted); margin: 0; }
-        .list-amt { font-size: 15px; font-weight: 700; }
+        /* STOCK IN CATEGORY GRID */
+        .stock-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .stock-box-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px 10px; text-align: center; font-weight: 600; cursor: pointer; }
+        .stock-box-btn:active { background: #f1f5f9; }
     </style>
 </head>
 <body>
 
-    <!-- 📱 TOP APP BAR -->
     <header class="app-bar">
         <div class="app-bar-left">
             <div class="menu-icon">☰</div>
-            <h1>Vandana ERP</h1>
+            <h1>Vandana Enterprises</h1>
         </div>
-        <button class="sync-btn" onclick="alert('Syncing with Server...')">☁️ Sync</button>
+        <button class="sync-btn" onclick="alert('Cloud Sync Complete!')">☁️ Sync</button>
     </header>
 
-    <!-- 🏠 DASHBOARD CONTENT -->
     <main class="main-content">
-        
         <h3 class="section-title">Quick Actions</h3>
         <div class="quick-actions">
-            <div class="action-box" onclick="openPage('pos-page', null)">
+            <div class="action-box" onclick="openPage('pos-page')">
                 <div class="action-icon bg-blue-light">🧾</div>
-                <span class="action-label">Add<br>Sale</span>
+                <span class="action-label">Sale<br>Invoice</span>
             </div>
-            <div class="action-box">
+            <div class="action-box" onclick="openPage('stock-in-page')">
                 <div class="action-icon bg-green-light">📦</div>
                 <span class="action-label">Stock<br>In</span>
             </div>
-            <div class="action-box" onclick="openPage('parties-page', this)">
+            <div class="action-box" onclick="openPage('parties-page')">
                 <div class="action-icon bg-purple-light">👥</div>
-                <span class="action-label">Add<br>Party</span>
+                <span class="action-label">Parties<br>Ledger</span>
             </div>
-            <div class="action-box">
+            <div class="action-box" onclick="openPage('today-bills-page')">
                 <div class="action-icon bg-orange-light">📊</div>
-                <span class="action-label">All<br>Reports</span>
+                <span class="action-label">Today<br>Bills</span>
             </div>
         </div>
 
         <h3 class="section-title">Business Overview (Today)</h3>
         <div class="summary-box">
-            <div class="summary-row">
+            <div class="summary-row" onclick="openPage('today-bills-page')">
                 <span class="sum-title">Total Sales Value</span>
-                <span class="sum-val">₹ 45,200</span>
+                <span class="sum-val" style="color:var(--primary);">₹ 45,200 ➔</span>
             </div>
-            <div class="summary-row">
-                <span class="sum-title">Total Boxes Sold</span>
-                <span class="sum-val">185 BOX</span>
+            <div class="summary-row" onclick="openPage('items-page')">
+                <span class="sum-title">Total Box Sold</span>
+                <span class="sum-val">185 BOX ➔</span>
             </div>
-            <div class="summary-row">
+            <div class="summary-row" onclick="openPage('receivables-page')">
                 <span class="sum-title">Pending Receivables</span>
-                <span class="sum-val val-red">₹ 12,450</span>
+                <span class="sum-val" style="color:var(--danger);">₹ 12,450 ➔</span>
             </div>
         </div>
 
@@ -164,244 +166,445 @@
                 <p class="alert-item">Kamlay Shade 105</p>
                 <span class="alert-stock">Current Stock: 2 BOX</span>
             </div>
-            <button class="add-stock-btn">Add Stock</button>
+            <button class="wa-alert-btn" onclick="sendLowStockAlert('Kamlay Shade 105', '2 BOX')">Send WA</button>
         </div>
         <div class="alert-card">
             <div>
                 <p class="alert-item">Viscose Black</p>
                 <span class="alert-stock">Current Stock: 0 CONE</span>
             </div>
-            <button class="add-stock-btn">Add Stock</button>
+            <button class="wa-alert-btn" onclick="sendLowStockAlert('Viscose Black', '0 CONE')">Send WA</button>
         </div>
     </main>
 
-    <!-- ⚓ BOTTOM NAVIGATION -->
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="goHome(this)">
+        <div class="nav-item active" onclick="goHome()">
             <i>🏠</i><span>Home</span>
         </div>
-        <div class="nav-item" onclick="openPage('items-page', this)">
+        <div class="nav-item" onclick="openPage('items-page')">
             <i>📦</i><span>Items</span>
         </div>
-        <div class="nav-item" onclick="openPage('pos-page', this)">
+        <div class="nav-item" onclick="openPage('pos-page')">
             <i>➕</i><span>Billing</span>
         </div>
-        <div class="nav-item" onclick="openPage('parties-page', this)">
+        <div class="nav-item" onclick="openPage('parties-page')">
             <i>👥</i><span>Parties</span>
         </div>
     </nav>
 
-    <!-- ================= FULL SCREEN PAGES ================= -->
-
-    <!-- 📦 1. ITEMS / INVENTORY PAGE (New) -->
-    <div class="page" id="items-page">
-        <div class="page-header">
-            <button class="back-btn" onclick="closePage('items-page')">←</button>
-            <h2 class="page-title">Inventory Items</h2>
-        </div>
-        <div class="page-content">
-            <input type="text" class="form-control" placeholder="🔍 Search Shade or Category..." style="margin-bottom:16px;">
-            
-            <div class="data-table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Item Name</th>
-                            <th class="text-right">Stock</th>
-                            <th class="text-right">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Kamlay Shade 264</td>
-                            <td class="text-right">145 BOX</td>
-                            <td class="text-right"><span class="status-badge status-ok">IN STOCK</span></td>
-                        </tr>
-                        <tr>
-                            <td>Kamlay Shade 120</td>
-                            <td class="text-right">40 BOX</td>
-                            <td class="text-right"><span class="status-badge status-ok">IN STOCK</span></td>
-                        </tr>
-                        <tr>
-                            <td>Kamlay Shade 105</td>
-                            <td class="text-right" style="color:var(--danger); font-weight:bold;">2 BOX</td>
-                            <td class="text-right"><span class="status-badge status-low">LOW</span></td>
-                        </tr>
-                        <tr>
-                            <td>Metallic Zari Golden</td>
-                            <td class="text-right">50 CONE</td>
-                            <td class="text-right"><span class="status-badge status-ok">IN STOCK</span></td>
-                        </tr>
-                        <tr>
-                            <td>Viscose Black</td>
-                            <td class="text-right" style="color:var(--danger); font-weight:bold;">0 CONE</td>
-                            <td class="text-right"><span class="status-badge status-low">OUT</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <button class="btn-primary">➕ Add New Item</button>
-        </div>
-    </div>
-
-    <!-- 🧾 2. POS / BILLING PAGE (Simplified for speed) -->
     <div class="page" id="pos-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('pos-page')">←</button>
-            <h2 class="page-title">Sale Invoice (POS)</h2>
+            <h2 class="page-title">Professional Sale Invoice</h2>
         </div>
         <div class="page-content">
-            
-            <div class="form-group">
-                <label class="form-label">Party / Customer</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search Customer">
-                    <button class="btn-icon">➕</button>
+            <div class="form-panel">
+                <div class="form-group">
+                    <label class="form-label">Customer Details</label>
+                    <div class="input-btn-group">
+                        <input type="text" class="form-control" id="inv-party" placeholder="Enter Name or Search">
+                        <button class="action-btn" onclick="openPhonebook('inv-party', 'inv-phone')">👥 Contact</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control" id="inv-phone" placeholder="10-digit mobile number">
                 </div>
             </div>
 
-            <div style="background:#f8fafc; border:1px solid var(--border); padding:12px; border-radius:6px; margin-bottom:16px;">
-                <label class="form-label">Scan or Enter Item</label>
-                <div class="input-group" style="margin-bottom:10px;">
-                    <select class="form-control" style="flex:1;" id="inv-cat">
+            <div class="form-panel">
+                <label class="form-label">Item / Product Entry</label>
+                <div class="input-btn-group" style="margin-bottom: 10px;">
+                    <select class="form-control" id="inv-cat" style="flex:2;">
                         <option>Kamlay Thread</option>
-                        <option>Viscose Thread</option>
                         <option>Zari</option>
+                        <option>Viscose</option>
                     </select>
                     <input type="number" class="form-control" id="inv-shade" placeholder="Shade No" style="flex:1;">
-                    <button class="btn-icon" style="color:var(--primary);">📷</button>
                 </div>
-                <div class="input-group">
-                    <input type="number" class="form-control" id="inv-qty" placeholder="Qty">
+                <div class="input-btn-group" style="margin-bottom: 10px;">
+                    <input type="number" class="form-control" id="inv-qty" placeholder="Quantity">
                     <input type="number" class="form-control" id="inv-rate" placeholder="Rate ₹">
                 </div>
-                <button class="btn-outline" style="margin-top:10px; margin-bottom:0; background:white;" onclick="addPosItem()">⬇ Add to Cart</button>
+                <button class="btn-submit" style="background:var(--text-dark);" onclick="addCartItem()">⬇ Add Item to Cart</button>
             </div>
 
-            <h3 class="section-title">Cart Items</h3>
-            <div class="data-table-wrapper" style="margin-bottom:10px;">
-                <table class="data-table">
-                    <thead><tr><th>Item</th><th>Qty</th><th class="text-right">Total</th></tr></thead>
-                    <tbody id="pos-cart">
-                        <tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Cart is empty</td></tr>
+            <h3 class="section-title">Invoice Cart Items</h3>
+            <div class="table-wrapper">
+                <table class="invoice-table">
+                    <thead><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th></tr></thead>
+                    <tbody id="cart-rows">
+                        <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cart khali hai</td></tr>
                     </tbody>
                 </table>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Payment Type</label>
-                <select class="form-control"><option>Cash</option><option>UPI</option><option>Udhaar</option></select>
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#f0f9ff; padding:15px; border-radius:6px; margin-bottom:15px; border:1px solid #bae6fd;">
+                <span style="font-weight:600; color:var(--primary-dark);">Grand Total Value:</span>
+                <span style="font-size:20px; font-weight:700; color:var(--primary-dark);" id="cart-grand-total">₹ 0</span>
             </div>
 
-            <div style="display:flex; justify-content:space-between; align-items:center; background:#e0f2fe; padding:12px; border-radius:6px; margin-bottom:16px;">
-                <span style="font-weight:600; color:var(--primary-dark);">Grand Total:</span>
-                <span style="font-size:20px; font-weight:bold; color:var(--primary-dark);" id="pos-total">₹ 0</span>
+            <button class="btn-submit" onclick="triggerSaveAndShare()">💾 Save & Share Bill</button>
+            <div id="wa-share-tray" style="display:none; margin-top:10px;">
+                <button class="btn-submit btn-success" id="btn-wa-direct">📲 Share Directly on WhatsApp</button>
             </div>
-
-            <button class="btn-primary" onclick="alert('Bill Saved & Stock Deducted!')">Save & Print Bill</button>
         </div>
     </div>
 
-    <!-- 👥 3. PARTIES / LEDGER PAGE -->
+    <div class="page" id="stock-in-page">
+        <div class="page-header">
+            <button class="back-btn" onclick="closePage('stock-in-page')">←</button>
+            <h2 class="page-title">Stock In Management</h2>
+        </div>
+        <div class="page-content">
+            <h3 class="section-title">Select Raw Material / Category</h3>
+            <div class="stock-grid">
+                <div class="stock-box-btn" onclick="openKamlaySubpage()" style="border-left:4px solid var(--primary); background:#f0f9ff;">🧵 Kamlay Thread</div>
+                <div class="stock-box-btn" onclick="openGenericStockIn('Zari')">✨ Zari</div>
+                <div class="stock-box-btn" onclick="openGenericStockIn('Cotton Yarn')">☁️ Cotton Yarn</div>
+                <div class="stock-box-btn" onclick="openGenericStockIn('Viscose')">🧶 Viscose</div>
+                <div class="stock-box-btn" onclick="openGenericStockIn('Metallic Coding')">⛓️ Metallic Coding</div>
+                <div class="stock-box-btn" onclick="openGenericStockIn('Cotton Coding')">🧵 Cotton Coding</div>
+                <div class="stock-box-btn" onclick="openGenericStockIn('Nylon')">🛡️ Nylon</div>
+                <div class="stock-box-btn" onclick="openGenericStockIn('Bobin')">⭕ Bobbin</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page" id="kamlay-color-page">
+        <div class="page-header">
+            <button class="back-btn" onclick="closePage('kamlay-color-page')">←</button>
+            <h2 class="page-title">Kamlay 850 Shades Manager</h2>
+        </div>
+        <div class="page-content">
+            <div class="form-panel">
+                <h3 class="section-title" style="margin:0 0 10px 0;">Add / Update Color Shade</h3>
+                <div class="form-group">
+                    <label class="form-label">Shade Code / Number (1 to 850)</label>
+                    <input type="number" class="form-control" id="kamlay-shade-input" placeholder="e.g. 264">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Inward Box Count</label>
+                    <input type="number" class="form-control" id="kamlay-qty-input" placeholder="Enter Quantity">
+                </div>
+                <button class="btn-submit" onclick="saveKamlayShade()">📥 Add Item / Update Stock</button>
+            </div>
+
+            <h3 class="section-title">Live Kamlay Shade Directory</h3>
+            <div class="table-wrapper">
+                <table class="invoice-table">
+                    <thead><tr><th>Shade Code</th><th>Category</th><th>Available Stock</th></tr></thead>
+                    <tbody id="kamlay-inventory-list">
+                        <tr><td>Shade 105</td><td>Kamlay Thread</td><td style="color:var(--danger); font-weight:700;">2 BOX</td></tr>
+                        <tr><td>Shade 264</td><td>Kamlay Thread</td><td>145 BOX</td></tr>
+                        <tr><td>Shade 120</td><td>Kamlay Thread</td><td>40 BOX</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <div class="page" id="parties-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('parties-page')">←</button>
-            <h2 class="page-title">Parties & Ledger</h2>
+            <h2 class="page-title">Parties & Ledger (Khatabook)</h2>
         </div>
         <div class="page-content">
-            <input type="text" class="form-control" placeholder="🔍 Search Party Name..." style="margin-bottom:16px;">
-            
-            <div class="list-item" style="border-left: 4px solid var(--danger);">
-                <div>
-                    <h4 class="list-title">Gopal Handloom</h4>
-                    <p class="list-sub">Pending Amount</p>
+            <div class="khatabook-header">
+                <div class="kh-box" style="border-right:1px solid var(--border);">
+                    <span class="form-label">You Will Get (Milenge)</span>
+                    <h3 style="color:var(--success);">₹ 12,450</h3>
                 </div>
-                <div class="text-right">
-                    <div class="list-amt" style="color:var(--danger);">₹ 8,200</div>
-                    <span style="font-size:11px; color:var(--primary); cursor:pointer; font-weight:600;">View Ledger ➔</span>
+                <div class="kh-box">
+                    <span class="form-label">You Will Give (Denge)</span>
+                    <h3 style="color:var(--danger);">₹ 1,500</h3>
                 </div>
             </div>
 
-            <div class="list-item" style="border-left: 4px solid var(--success);">
-                <div>
-                    <h4 class="list-title">Ramesh Traders</h4>
-                    <p class="list-sub">Advance Balance</p>
+            <div class="form-panel">
+                <h3 class="section-title" style="margin:0 0 10px 0;">Add Transaction Entry</h3>
+                <div class="form-group">
+                    <label class="form-label">Select Active Customer</label>
+                    <select class="form-control" id="kh-customer-select">
+                        <option>Gopal Handloom</option>
+                        <option>Ramesh Traders</option>
+                    </select>
                 </div>
-                <div class="text-right">
-                    <div class="list-amt" style="color:var(--success);">₹ 1,500</div>
-                    <span style="font-size:11px; color:var(--primary); cursor:pointer; font-weight:600;">View Ledger ➔</span>
+                <div class="form-group">
+                    <label class="form-label">Amount (₹)</label>
+                    <input type="number" class="form-control" id="kh-amount" placeholder="₹ Enter Amount">
+                </div>
+                <div class="kh-split">
+                    <button class="btn-kh btn-kh-give" onclick="addKhTransaction('Out')">🔴 You Gave (Diye)</button>
+                    <button class="btn-kh btn-kh-got" onclick="addKhTransaction('In')">🟢 You Got (Mile)</button>
                 </div>
             </div>
-            
-            <button class="btn-primary" style="margin-top:10px;">➕ Add New Party</button>
+
+            <h3 class="section-title">Monthly Account Ledger Ledger</h3>
+            <div id="khatabook-ledger-list">
+                <div class="list-item" style="background:var(--khatabook-out); border-left:4px solid var(--danger);">
+                    <div><h4>Gopal Handloom</h4><p class="list-sub">12 July • Outgoing Credit</p></div>
+                    <div class="list-amt" style="color:var(--danger);">You Gave: ₹8,200</div>
+                </div>
+                <div class="list-item" style="background:var(--khatabook-in); border-left:4px solid var(--success);">
+                    <div><h4>Ramesh Traders</h4><p class="list-sub">11 July • Cash Inward</p></div>
+                    <div class="list-amt" style="color:var(--success);">You Got: ₹1,500</div>
+                </div>
+            </div>
+
+            <button class="btn-submit" style="margin-top:15px; background:var(--text-dark);" onclick="openPage('add-party-page')">➕ Add New Party / Customer</button>
+        </div>
+    </div>
+
+    <div class="page" id="add-party-page">
+        <div class="page-header">
+            <button class="back-btn" onclick="closePage('add-party-page')">←</button>
+            <h2 class="page-title">Add New Party Accounts</h2>
+        </div>
+        <div class="page-content">
+            <div class="form-panel">
+                <div class="form-group">
+                    <label class="form-label">Party Full Name</label>
+                    <div class="input-btn-group">
+                        <input type="text" class="form-control" id="new-party-name" placeholder="Enter Full Name">
+                        <button class="action-btn" onclick="openPhonebook('new-party-name', 'new-party-phone')">👥 Contacts</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">WhatsApp Mobile Number</label>
+                    <input type="tel" class="form-control" id="new-party-phone" placeholder="Enter Mobile Number">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Opening Balance (Optional)</label>
+                    <input type="number" class="form-control" id="new-party-bal" placeholder="₹ 0.00">
+                </div>
+                <button class="btn-submit" onclick="saveNewPartyAccount()">💾 Save Customer Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="page" id="today-bills-page">
+        <div class="page-header">
+            <button class="back-btn" onclick="closePage('today-bills-page')">←</button>
+            <h2 class="page-title">Today's Invoices Summary</h2>
+        </div>
+        <div class="page-content">
+            <div class="clickable-bill-card" onclick="toggleBillDrawer('drawer-1')">
+                <div style="display:flex; justify-content:space-between;">
+                    <div><strong>Ramesh Traders</strong><p style="font-size:11px; color:var(--text-muted);">Bill #V-901 • Today</p></div>
+                    <div style="font-weight:700;">₹ 6,750</div>
+                </div>
+                <div class="bill-details-drawer" id="drawer-1">
+                    <p style="font-size:12px; color:var(--text-muted);">• Kamlay Shade 105 (20 Box)<br>• Zari Golden (5 Cone)</p>
+                    <div class="drawer-actions">
+                        <button class="drawer-btn" onclick="event.stopPropagation(); alert('Edit Invoice Engine Activated!')">✏️ Edit Bill</button>
+                        <button class="drawer-btn" style="color:var(--success);" onclick="event.stopPropagation(); resendBillWA('Ramesh Traders', '6750', '9876543210')">📲 Resend Bill</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page" id="receivables-page">
+        <div class="page-header">
+            <button class="back-btn" onclick="closePage('receivables-page')">←</button>
+            <h2 class="page-title">Pending Balances Grid</h2>
+        </div>
+        <div class="page-content">
+            <div class="list-card" style="background:white; border:1px solid var(--border); padding:15px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h4 style="font-weight:700;">Gopal Handloom</h4>
+                    <p style="font-size:12px; color:var(--danger); font-weight:600; margin-top:2px;">Outstanding Due: ₹8,200</p>
+                </div>
+                <button class="wa-alert-btn" onclick="sendDueReminder('Gopal Handloom', '8,200', '9829000000')">⚠️ Send Alert</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="page" id="items-page">
+        <div class="page-header">
+            <button class="back-btn" onclick="closePage('items-page')">←</button>
+            <h2 class="page-title">Live Inventory Ledger</h2>
+        </div>
+        <div class="page-content">
+            <div class="table-wrapper">
+                <table class="invoice-table">
+                    <thead><tr><th>Item Master</th><th>Category</th><th>Current Balance</th></tr></thead>
+                    <tbody>
+                        <tr><td>Kamlay Shade 264</td><td>Thread</td><td>145 BOX</td></tr>
+                        <tr><td>Kamlay Shade 105</td><td>Thread</td><td style="color:var(--danger); font-weight:bold;">2 BOX</td></tr>
+                        <tr><td>Zari Golden</td><td>Zari</td><td>50 CONE</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
-        // Page Navigation Logic
-        function openPage(id, navElement) {
+        // --- 🚫 1. PHONE HARDWARE BACK BUTTON DEACTIVATOR ENGINE ---
+        window.history.pushState(null, null, window.location.href);
+        window.onpopstate = function (event) {
+            window.history.pushState(null, null, window.location.href);
+            alert("🚫 Hardware Back button lock hai! Back jaane ke liye kripya screen ke upar wale arrow (←) ka upyog karein.");
+        };
+
+        // --- 📅 2. AUTOMATED DATE CONTROL SYSTEM ---
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('dash-date').value = new Date().toISOString().split('T')[0];
+            setTimeout(() => { document.getElementById('splash').style.opacity = '0'; setTimeout(() => document.getElementById('splash').style.display = 'none', 600); }, 1500);
+        });
+
+        // --- 📱 3. PROFESSIONAL CONTROLLER SYSTEM ---
+        function openPage(id, navItem) {
             document.getElementById(id).classList.add('active');
-            if(navElement) {
-                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                navElement.classList.add('active');
+            if(navItem) {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                navItem.classList.add('active');
             }
         }
-
-        function closePage(id) {
-            document.getElementById(id).classList.remove('active');
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        function closePage(id) { document.getElementById(id).classList.remove('active'); }
+        function goHome() {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             document.querySelector('.nav-item').classList.add('active');
         }
 
-        function goHome(navElement) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            navElement.classList.add('active');
+        // --- 👥 4. ANDROID NATIVE CONTACT PICKER API LOGIC ---
+        async function openPhonebook(nameInputId, phoneInputId) {
+            if ('contacts' in navigator && 'ContactsManager' in window) {
+                try {
+                    const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false });
+                    if (contacts.length > 0) {
+                        const selectedContact = contacts[0];
+                        if (selectedContact.name && selectedContact.name.length > 0) {
+                            document.getElementById(nameInputId).value = selectedContact.name[0];
+                        }
+                        if (selectedContact.tel && selectedContact.tel.length > 0) {
+                            let cleanNum = String(selectedContact.tel[0]).replace(/\D/g, '');
+                            if (cleanNum.length > 10) cleanNum = cleanNum.slice(-10);
+                            document.getElementById(phoneInputId).value = cleanNum;
+                        }
+                    }
+                } catch (e) { alert("Contact access error."); }
+            } else {
+                alert("💡 Yeh Feature direct phonebook se contact select karne ke liye hai.\n(Android Mobile ke Chrome browser par HTTPS ke saath 100% chalta hai). Abhi aap haath se entry kar sakte hain.");
+            }
         }
 
-        // POS Cart Logic
-        let cart = [];
-        function addPosItem() {
-            let cat = document.getElementById('inv-cat').value;
-            let shade = document.getElementById('inv-shade').value;
-            let qty = parseFloat(document.getElementById('inv-qty').value) || 0;
-            let rate = parseFloat(document.getElementById('inv-rate').value) || 0;
+        // --- 🧾 5. PROFESSIONAL POS SYSTEM ARRAYS ---
+        let currentCart = [];
+        let grandInvoiceTotal = 0;
 
-            if(qty <= 0 || rate <= 0) return alert("Enter Qty and Rate");
+        function addCartItem() {
+            const cat = document.getElementById('inv-cat').value;
+            const shade = document.getElementById('inv-shade').value || "Gen";
+            const qty = parseFloat(document.getElementById('inv-qty').value) || 0;
+            const rate = parseFloat(document.getElementById('inv-rate').value) || 0;
 
-            let name = cat.includes('Kamlay') ? `Shade ${shade}` : `${cat} ${shade}`;
-            let total = qty * rate;
-            
-            cart.push({name, qty, total});
-            renderCart();
+            if (qty <= 0 || rate <= 0) { alert("Kripya sahi Quantity aur Rate dalein!"); return; }
 
+            let title = `${cat} - Shd:${shade}`;
+            let itemTotal = qty * rate;
+            currentCart.push({ title, qty, rate, itemTotal });
+
+            renderCartUi();
             document.getElementById('inv-shade').value = '';
             document.getElementById('inv-qty').value = '';
             document.getElementById('inv-rate').value = '';
         }
 
-        function renderCart() {
-            let tbody = document.getElementById('pos-cart');
+        function renderCartUi() {
+            const tbody = document.getElementById('cart-rows');
             tbody.innerHTML = '';
-            let gTotal = 0;
+            grandInvoiceTotal = 0;
 
-            if(cart.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:gray;">Cart is empty</td></tr>';
-                document.getElementById('pos-total').innerText = "₹ 0";
+            if (currentCart.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cart khali hai</td></tr>';
+                document.getElementById('cart-grand-total').innerText = "₹ 0";
                 return;
             }
 
-            cart.forEach((item) => {
-                gTotal += item.total;
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${item.name}</td>
-                        <td>${item.qty}</td>
-                        <td class="text-right">₹${item.total.toLocaleString()}</td>
-                    </tr>
-                `;
+            currentCart.forEach(item => {
+                grandInvoiceTotal += item.itemTotal;
+                tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.qty}</td><td>₹${item.rate}</td><td><strong>₹${item.itemTotal.toLocaleString()}</strong></td></tr>`;
             });
-            document.getElementById('pos-total').innerText = `₹ ${gTotal.toLocaleString()}`;
+            document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`;
+        }
+
+        function triggerSaveAndShare() {
+            if (currentCart.length === 0) { alert("Cart khali hai, bill kaise save karein?"); return; }
+            const custName = document.getElementById('inv-party').value || "Valued Customer";
+            const custPhone = document.getElementById('inv-phone').value || "0000000000";
+
+            alert(`✅ Invoice Saved! Total Value: ₹${grandInvoiceTotal}`);
+            document.getElementById('wa-share-tray').style.display = "block";
+
+            document.getElementById('btn-wa-direct').onclick = function() {
+                let msg = `🏛️ *VANDANA ENTERPRISES* %0A👤 *Customer:* ${custName}%0A💰 *Grand Total:* ₹${grandInvoiceTotal}%0A%0ABill details saved successfully. Thank you!`;
+                window.open(`https://wa.me/91${custPhone}?text=${msg}`, '_blank');
+            };
+        }
+
+        // --- 📦 6. STOCK IN & TABS CONFIGS ---
+        function openKamlaySubpage() { openPage('kamlay-color-page'); }
+        function openGenericStockIn(catName) { alert(`${catName} Stock In panel active. Quantity can be synced to Google sheets.`); }
+        
+        function saveKamlayShade() {
+            const shade = document.getElementById('kamlay-shade-input').value;
+            const qty = document.getElementById('kamlay-qty-input').value;
+            if(!shade || !qty) return alert("Shade aur Qty dono daalna zaroori hai");
+            
+            const tbody = document.getElementById('kamlay-inventory-list');
+            tbody.innerHTML = `<tr><td>Shade ${shade}</td><td>Kamlay Thread</td><td>${qty} BOX</td></tr>` + tbody.innerHTML;
+            alert(`Shade ${shade} successfully updated with ${qty} Boxes.`);
+            document.getElementById('kamlay-shade-input').value = '';
+            document.getElementById('kamlay-qty-input').value = '';
+        }
+
+        // --- 👥 7. KHATABOOK ENTRIES ---
+        function addKhTransaction(type) {
+            const amt = document.getElementById('kh-amount').value;
+            const party = document.getElementById('kh-customer-select').value;
+            if(!amt) return alert("Amount likhna zaroori hai");
+
+            const list = document.getElementById('khatabook-ledger-list');
+            let itemBg = (type === 'In') ? 'var(--khatabook-in)' : 'var(--khatabook-out)';
+            let itemColor = (type === 'In') ? 'var(--success)' : 'var(--danger)';
+            let itemText = (type === 'In') ? 'You Got' : 'You Gave';
+
+            list.innerHTML = `<div class="list-item" style="background:${itemBg}; border-left:4px solid ${itemColor};">
+                <div><h4>${party}</h4><p class="list-sub">Just Now • Entry Added</p></div>
+                <div class="list-amt" style="color:${itemColor};">${itemText}: ₹${amt}</div>
+            </div>` + list.innerHTML;
+
+            alert(`Khatabook entry saved for ${party}`);
+            document.getElementById('kh-amount').value = '';
+        }
+
+        function saveNewPartyAccount() {
+            const name = document.getElementById('new-party-name').value;
+            if(!name) return alert("Party ka naam likhna zaroori hai!");
+            alert(`New party "${name}" successfully listed.`);
+            closePage('add-party-page');
+        }
+
+        // --- 📊 8. ACCORDION & DIRECT INTEGRATIONS ---
+        function toggleBillDrawer(id) {
+            const drawer = document.getElementById(id);
+            drawer.style.display = (drawer.style.display === 'block') ? 'none' : 'block';
+        }
+        function resendBillWA(name, amt, phone) {
+            let msg = `🧾 *RESEND INVOICE* %0A🏛️ *VANDANA ENTERPRISES*%0A👤 *Party:* ${name}%0A💰 *Amount:* ₹${amt}`;
+            window.open(`https://wa.me/91${phone}?text=${msg}`, '_blank');
+        }
+        function sendDueReminder(name, due, phone) {
+            let msg = `⚠️ *PENDING DUES REMINDER* ⚠️%0A🏛️ *VANDANA ENTERPRISES*%0A👤 *Account:* ${name}%0A🔴 *Outstanding Balance:* ₹${due}%0A%0AKripya samay par bhugtan karein. Dhanyawad!`;
+            window.open(`https://wa.me/91${phone}?text=${msg}`, '_blank');
+        }
+        function sendLowStockAlert(item, stock) {
+            // Yahan aap apne WhatsApp Group ka link set kar sakte hain text me ya sidhe message flow bypass kar sakte hain
+            let msg = `🚨 *LOW STOCK ALERT* 🚨%0A🏛️ *Warehouse:* Vandana Ent.%0A📦 *Product:* ${item}%0A⚠️ *Remaining Stock:* ${stock}%0A%0AKripya naya stock jaldi mangaayein!`;
+            window.open(`https://wa.me/?text=${msg}`, '_blank'); 
         }
     </script>
 </body>

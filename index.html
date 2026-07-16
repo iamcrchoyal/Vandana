@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0b0f19">
-    <title>Vandana ERP - Live Connected</title>
+    <title>Vandana ERP - Live 2-Way Sync</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -12,7 +12,6 @@
         /* ================= 1. LIVE GEMINI DASHBOARD & BASE CSS ================= */
         :root {
             --primary: #2563eb;
-            --primary-dark: #1d4ed8;
             --success: #10b981;
             --danger: #f43f5e;
             --warning: #f59e0b;
@@ -22,7 +21,6 @@
             --glass-border: rgba(255, 255, 255, 0.1);
             --glass-blur: blur(16px);
             
-            /* Inner Pages Light Theme Colors */
             --page-bg: #f8fafc;
             --page-surface: #ffffff;
             --page-text: #0f172a;
@@ -49,14 +47,12 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Glowing Orbs */
         .orb-1 { position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw; border-radius: 50%; background: radial-gradient(circle, rgba(139,92,246,0.25) 0%, rgba(0,0,0,0) 70%); animation: float 10s infinite ease-in-out alternate; z-index: -1; pointer-events: none;}
         .orb-2 { position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw; border-radius: 50%; background: radial-gradient(circle, rgba(59,130,246,0.25) 0%, rgba(0,0,0,0) 70%); animation: float 12s infinite ease-in-out alternate-reverse; z-index: -1; pointer-events: none;}
         @keyframes float { 0% { transform: translate(0, 0); } 100% { transform: translate(30px, 50px); } }
 
         .glass-panel { background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); }
 
-        /* 📱 HEADER */
         .app-bar { position: fixed; top: 0; width: 100%; height: 60px; background: rgba(11, 15, 25, 0.6); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000; border-bottom: 1px solid var(--glass-border); }
         .app-bar h1 { font-size: 18px; font-weight: 800; letter-spacing: 0.5px; background: linear-gradient(to right, #ffffff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
         
@@ -67,7 +63,6 @@
         .dropdown div { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; color: white; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 12px; transition: 0.2s;}
         .dropdown div:active { background: rgba(255,255,255,0.1); padding-left: 25px;}
 
-        /* 🏠 DASHBOARD */
         .main-content { padding: 85px 20px 100px 20px; max-width: 800px; margin: 0 auto; }
         .section-title-dash { font-size: 13px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin: 0; letter-spacing: 1px; }
         
@@ -87,14 +82,13 @@
         .sum-title { font-size: 14px; color: var(--text-muted); font-weight: 600; }
         .sum-val { font-size: 17px; font-weight: 800; color: white; }
 
-        /* ⚓ FLOATING GLASS NAV */
         .bottom-nav { position: fixed; bottom: 15px; left: 5%; width: 90%; height: 65px; background: rgba(11, 15, 25, 0.85); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border-radius: 20px; display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid var(--glass-border);}
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 65px; height: 100%; color: var(--text-muted); font-size: 11px; font-weight: 700; gap: 4px; cursor: pointer; transition: 0.3s; }
         .nav-item i { font-size: 22px; font-style: normal; transition: 0.3s;}
         .nav-item.active { color: #60a5fa; }
         .nav-item.active i { transform: translateY(-4px) scale(1.1); text-shadow: 0 4px 15px rgba(59, 130, 246, 0.5); }
 
-        /* ================= 2. BRIGHT INNER PAGES (Clean Hybrid Style) ================= */
+        /* ================= 2. BRIGHT INNER PAGES ================= */
         .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--page-bg); z-index: 2000; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); overflow-y: auto; padding-bottom: 100px; color: var(--page-text); }
         .page.active { transform: translateX(0); }
         
@@ -150,7 +144,7 @@
         .kb-fab { position: fixed; bottom: 95px; right: 25px; width: 60px; height: 60px; background: linear-gradient(135deg, #e11d48, #be123c); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; box-shadow: 0 8px 25px rgba(225, 29, 72, 0.4); border: none; z-index: 1001; cursor: pointer; transition: 0.3s;}
         .kb-fab:active { transform: scale(0.9) rotate(90deg); }
 
-        /* Ledger Deep Page - Bright Mode */
+        /* Ledger Deep Page */
         .ledger-header-area { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: white; padding: 15px 20px 35px 20px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;}
         .ledger-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .l-name { font-size: 18px; font-weight: 700; }
@@ -179,17 +173,17 @@
 </head>
 <body>
 
-    <!-- Loading Overlay for Google Sheets API -->
+    <!-- Loading Overlay -->
     <div id="loader" class="loader-overlay">
         <div class="spinner"></div>
-        <p style="margin-top:15px; font-weight:700; color:var(--primary);">Saving to Cloud...</p>
+        <p style="margin-top:15px; font-weight:700; color:var(--primary);" id="loader-text">Loading...</p>
     </div>
 
-    <!-- Glowing Orbs Background (Dashboard) -->
+    <!-- Glowing Orbs (Dashboard) -->
     <div class="orb-1"></div>
     <div class="orb-2"></div>
 
-    <!-- 📱 TOP BAR WITH 3-DOT MENU -->
+    <!-- 📱 TOP BAR -->
     <header class="app-bar">
         <div class="app-bar-left">
             <h1>Vandana Enterprises</h1>
@@ -199,8 +193,7 @@
             <div id="dropdown-menu" class="dropdown">
                 <div onclick="openPage('profile-page'); toggleMenu();">💼 Business Profile</div>
                 <div onclick="openPage('report-page'); toggleMenu();">📄 View Reports</div>
-                <div onclick="alert('Data is live synced!'); toggleMenu();">🔄 Sync Data</div>
-                <div style="color:var(--danger);" onclick="alert('Logged Out safely'); toggleMenu();">🚪 Logout</div>
+                <div onclick="loadDataFromCloud(); toggleMenu();">🔄 Sync Data (Refresh)</div>
             </div>
         </div>
     </header>
@@ -210,19 +203,19 @@
         <h3 class="section-title-dash">Quick Actions</h3>
         <div class="quick-actions">
             <div class="action-box" onclick="openPage('pos-page')">
-                <div class="action-icon" style="color: #60a5fa; text-shadow: 0 0 10px rgba(96,165,250,0.5);">🧾</div>
+                <div class="action-icon" style="color: #60a5fa;">🧾</div>
                 <span class="action-label">Sale<br>Invoice</span>
             </div>
             <div class="action-box" onclick="openPage('stock-in-page')">
-                <div class="action-icon" style="color: #34d399; text-shadow: 0 0 10px rgba(52,211,153,0.5);">📦</div>
+                <div class="action-icon" style="color: #34d399;">📦</div>
                 <span class="action-label">Stock<br>In</span>
             </div>
             <div class="action-box" onclick="openPage('parties-page')">
-                <div class="action-icon" style="color: #c084fc; text-shadow: 0 0 10px rgba(192,132,252,0.5);">👥</div>
+                <div class="action-icon" style="color: #c084fc;">👥</div>
                 <span class="action-label">Ledger<br>Book</span>
             </div>
             <div class="action-box" onclick="openPage('items-page')">
-                <div class="action-icon" style="color: #fbbf24; text-shadow: 0 0 10px rgba(251,191,36,0.5);">📊</div>
+                <div class="action-icon" style="color: #fbbf24;">📊</div>
                 <span class="action-label">All<br>Items</span>
             </div>
         </div>
@@ -233,18 +226,18 @@
         </div>
 
         <div class="summary-box glass-panel">
-            <div class="summary-row" onclick="openPage('report-page')">
+            <div class="summary-row">
                 <span class="sum-title">Total Sales Value</span>
                 <span class="sum-val" style="color:#60a5fa;">₹ 45,200 ➔</span>
             </div>
-            <div class="summary-row" onclick="openPage('items-page')">
+            <div class="summary-row">
                 <span class="sum-title">Total Box Sold</span>
                 <span class="sum-val">185 BOX ➔</span>
             </div>
         </div>
     </main>
 
-    <!-- ⚓ FLOATING GLASS BOTTOM NAV -->
+    <!-- ⚓ BOTTOM NAV -->
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="goHome()">
             <i>🏠</i><span>Home</span>
@@ -261,110 +254,6 @@
     </nav>
 
     <!-- ======================================================== -->
-    <!-- 💼 BUSINESS PROFILE -->
-    <!-- ======================================================== -->
-    <div class="page" id="profile-page">
-        <div class="page-header">
-            <button class="back-btn" onclick="closePage('profile-page')">←</button>
-            <h2 class="page-title">Business Profile</h2>
-        </div>
-        <div class="page-content">
-            <div style="text-align:center; padding:10px 0 30px 0;">
-                <img src="https://ui-avatars.com/api/?name=Vandana+Enterprises&background=2563eb&color=fff&size=120" style="border-radius:50%; border:4px solid white; box-shadow:0 10px 30px rgba(37, 99, 235, 0.2); margin-bottom:20px;">
-                <h2 style="margin:0; font-size:24px; font-weight:800; color:var(--page-text);">Vandana Enterprises</h2>
-                <p style="color:var(--page-text-muted); margin-top:8px; font-size:14px; font-weight:500;">Manage Business Identity</p>
-            </div>
-            <div class="form-panel">
-                <h3 class="section-title">Firm Details</h3>
-                <input type="text" class="form-control" placeholder="Firm Name" value="Vandana Enterprises" style="margin-bottom:15px;">
-                <input type="text" class="form-control" placeholder="Enter GSTIN Number">
-            </div>
-            <button class="btn-submit" onclick="alert('Profile Saved!')">Save Changes</button>
-        </div>
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- 🧾 SALE INVOICE PAGE -->
-    <!-- ======================================================== -->
-    <div class="page" id="pos-page">
-        <div class="page-header">
-            <button class="back-btn" onclick="closePage('pos-page')">←</button>
-            <h2 class="page-title">Create Sale Invoice</h2>
-        </div>
-        <div class="page-content">
-            <div class="form-panel">
-                <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label">Customer Details</label>
-                    <div class="input-btn-group" style="margin-bottom:12px;">
-                        <input type="text" class="form-control" id="inv-party" placeholder="Enter Name">
-                        <button class="action-btn" onclick="openPhonebook('inv-party', 'inv-phone')">👤</button>
-                    </div>
-                    <input type="tel" class="form-control" id="inv-phone" placeholder="Mobile Number">
-                </div>
-            </div>
-            
-            <div class="form-panel">
-                <label class="form-label">Add Product</label>
-                <div class="input-btn-group" style="margin-bottom: 12px;">
-                    <select class="form-control" id="inv-cat" style="flex:2;">
-                        <option value="Kamlay Thread">Kamlay Thread</option>
-                        <option value="Zari">Zari</option>
-                        <option value="Cotton Yarn">Cotton Yarn</option>
-                        <option value="Viscose">Viscose</option>
-                    </select>
-                    <input type="text" class="form-control" id="inv-shade" placeholder="Shade/Color" style="flex:1;">
-                </div>
-                <div class="input-btn-group" style="margin-bottom: 20px;">
-                    <input type="number" class="form-control" id="inv-qty" placeholder="Qty">
-                    <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)">
-                </div>
-                <button class="btn-submit" style="background:#0f172a;" onclick="addCartItem()">⬇ Add Item to Cart</button>
-            </div>
-            
-            <table class="invoice-table" style="margin-bottom: 20px;">
-                <thead><tr><th>Details</th><th>Qty</th><th>Rate</th><th>Total</th></tr></thead>
-                <tbody id="cart-rows">
-                    <tr><td colspan="4" style="text-align:center; padding:20px; color:var(--page-text-muted); font-weight:600;">Cart is empty</td></tr>
-                </tbody>
-            </table>
-
-            <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#eff6ff; border-color:#bfdbfe;">
-                <span style="font-weight:800; font-size:16px; color:var(--primary);">Grand Total:</span>
-                <span style="font-size:26px; font-weight:800; color:var(--primary);" id="cart-grand-total">₹ 0</span>
-            </div>
-            
-            <button class="btn-submit" onclick="triggerSaveAndShare()">💾 Save & Generate Bill</button>
-        </div>
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- 📦 STOCK IN PAGE -->
-    <!-- ======================================================== -->
-    <div class="page" id="stock-in-page">
-        <div class="page-header">
-            <button class="back-btn" onclick="closePage('stock-in-page')">←</button>
-            <h2 class="page-title">Stock In Management</h2>
-        </div>
-        <div class="page-content">
-            <div class="form-panel">
-                <h3 class="section-title" style="margin:0 0 15px 0;">Add Inventory</h3>
-                <div class="form-group">
-                    <label class="form-label">Category</label>
-                    <select class="form-control" id="stock-cat" style="margin-bottom:15px;">
-                        <option>Kamlay Thread</option><option>Zari</option><option>Cotton Yarn</option><option>Viscose</option>
-                    </select>
-                    <label class="form-label">Details</label>
-                    <div class="input-btn-group" style="margin-bottom:20px;">
-                        <input type="text" class="form-control" id="stock-shade" placeholder="Shade/Code" style="flex:1;">
-                        <input type="number" class="form-control" id="stock-qty" placeholder="Total Boxes" style="flex:1;">
-                    </div>
-                </div>
-                <button class="btn-submit" onclick="saveStockToCloud()">📥 Update Inventory</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ======================================================== -->
     <!-- 👥 PARTIES & LEDGER -->
     <!-- ======================================================== -->
     <div class="page" id="parties-page">
@@ -375,14 +264,12 @@
                     <div style="background:rgba(255,255,255,0.2); color:white; padding:8px; border-radius:10px; font-size:18px;">📘</div>
                     <div>
                         <div class="kb-header-title">Ledger Book <span>⌄</span></div>
-                        <div style="font-size:13px; opacity:0.9; margin-top:2px; font-weight:500;">Manage Accounts</div>
+                        <div style="font-size:13px; opacity:0.9; margin-top:2px;">Manage Accounts</div>
                     </div>
                 </div>
             </div>
-            
             <div class="kb-tabs">
-                <div class="kb-tab active" id="tab-cust" onclick="switchLedgerTab('cust')">CUSTOMERS</div>
-                <div class="kb-tab" id="tab-supp" onclick="switchLedgerTab('supp')">SUPPLIERS</div>
+                <div class="kb-tab active" id="tab-cust">CUSTOMERS</div>
             </div>
         </div>
 
@@ -390,63 +277,24 @@
             <div class="kb-summary-split">
                 <div class="kb-summary-box">
                     <div class="kb-summary-label">You will give</div>
-                    <div class="kb-summary-val" style="color:var(--success);">₹ 831</div>
+                    <div class="kb-summary-val" style="color:var(--success);">₹ 0</div>
                 </div>
                 <div class="kb-summary-box">
                     <div class="kb-summary-label">You will get</div>
-                    <div class="kb-summary-val" style="color:var(--danger);">₹ 1,45,824</div>
+                    <div class="kb-summary-val" style="color:var(--danger);">₹ 0</div>
                 </div>
-            </div>
-            <div style="border-top:1px solid #f8fafc; padding:18px; text-align:center; font-size:14px; font-weight:800; color:var(--primary); cursor:pointer;" onclick="openPage('report-page')">
-                📄 View Reports
             </div>
         </div>
 
+        <!-- 🚀 LIVE DATA WILL APPEAR HERE -->
         <div class="kb-list" id="kb-customer-list">
-            <!-- New customers will be prepended here via JS -->
-            <div class="kb-list-item" onclick="openLedgerDetail('NANDU JI MEENA', '831', 'give')">
-                <div class="kb-list-left">
-                    <div class="kb-avatar">NM</div>
-                    <div><div class="kb-name">NANDU JI MEENA</div><div class="kb-time">Demo Data</div></div>
-                </div>
-                <div class="kb-list-right" style="background:#ecfdf5; border-left:1px dashed #e2e8f0; border-top-right-radius:16px; border-bottom-right-radius:16px;"><span style="color:var(--success); font-weight:800;">₹ 831</span></div>
-            </div>
-        </div>
-
-        <div class="kb-list" id="kb-supplier-list" style="display:none;">
-            <div style="padding:50px; text-align:center; color:var(--page-text-muted); font-weight:600; font-size:15px;">No Suppliers added yet.</div>
+            <div style="text-align:center; padding:40px; color:var(--page-text-muted); font-weight:600;">Loading Data from Cloud... ☁️</div>
         </div>
 
         <button class="kb-fab" onclick="openPage('add-party-page')">+</button>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- 📄 REPORT PAGE -->
-    <!-- ======================================================== -->
-    <div class="page" id="report-page">
-        <div class="page-header">
-            <button class="back-btn" onclick="closePage('report-page')">←</button>
-            <h2 class="page-title">Generate Report</h2>
-        </div>
-        <div class="page-content">
-            <div class="form-panel">
-                <h3 class="section-title" style="margin:0 0 20px 0;">Select Date Range</h3>
-                <div class="form-group">
-                    <label class="form-label">From Date</label>
-                    <input type="date" class="form-control" id="rep-from" style="width:100%;">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">To Date</label>
-                    <input type="date" class="form-control" id="rep-to" style="width:100%;">
-                </div>
-                <button class="btn-submit" style="margin-top:20px;" onclick="alert('Downloading Data...')">📥 Download Report</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- 👤 ADD NEW PARTY PAGE (Connected to Cloud) -->
-    <!-- ======================================================== -->
+    <!-- ADD PARTY PAGE -->
     <div class="page" id="add-party-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('add-party-page')">←</button>
@@ -456,10 +304,7 @@
             <div class="form-panel">
                 <div class="form-group">
                     <label class="form-label">Full Name</label>
-                    <div class="input-btn-group">
-                        <input type="text" class="form-control" id="new-party-name" placeholder="Enter Full Name">
-                        <button class="action-btn" onclick="openPhonebook('new-party-name', 'new-party-phone')">👥</button>
-                    </div>
+                    <input type="text" class="form-control" id="new-party-name" placeholder="Enter Full Name">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Mobile Number</label>
@@ -469,10 +314,8 @@
             </div>
         </div>
     </div>
-
-    <!-- ======================================================== -->
-    <!-- 🔥 KHATABOOK DEEP LEDGER PAGE (Connected to Cloud) -->
-    <!-- ======================================================== -->
+    
+    <!-- LEDGER DEEP PAGE -->
     <div class="page" id="ledger-deep-page">
         <div class="ledger-header-area">
             <div class="ledger-top-row">
@@ -482,83 +325,91 @@
                         <div id="l-deep-avatar-text" class="kb-avatar" style="width:44px; height:44px; margin-right:0; font-size:18px; color:var(--primary); background:white;"></div>
                         <div>
                             <div class="l-name" id="l-deep-name">Name</div>
-                            <div style="font-size:12px; color:rgba(255,255,255,0.8); margin-top:2px; font-weight:500;">View settings</div>
                         </div>
                     </div>
                 </div>
-                <span style="font-size:24px; font-weight:bold; cursor:pointer;">📞</span>
             </div>
         </div>
-
         <div class="ledger-bal-card">
-            <span style="font-size:16px; color:var(--page-text-muted); font-weight:700;" id="l-deep-bal-text">You will give</span>
+            <span style="font-size:16px; color:var(--page-text-muted); font-weight:700;" id="l-deep-bal-text">Balance</span>
             <span style="font-size:26px; font-weight:800;" id="l-deep-bal-amt">₹ 0</span>
         </div>
-
-        <div class="ledger-action-tabs">
-            <div class="l-tab" onclick="openPage('report-page')">📄 Report</div>
-            <div class="l-tab" onclick="alert('Sending Reminder...')">💬 Reminder</div>
-            <div class="l-tab" onclick="alert('Sending SMS...')">✉️ SMS</div>
-        </div>
-
-        <div class="entries-container">
-            <div style="display:flex; justify-content:space-between; padding:0 5px; font-size:11px; font-weight:800; color:var(--page-text-muted); margin-bottom:10px; text-transform:uppercase;">
-                <span style="flex:2;">ENTRIES</span>
-                <span style="flex:1; text-align:center; color:var(--danger);">YOU GAVE</span>
-                <span style="flex:1; text-align:right; color:var(--success);">YOU GOT</span>
-            </div>
-            <div id="ledger-entries-list"></div>
-        </div>
-
+        <div class="entries-container" id="ledger-entries-list"></div>
         <div class="bottom-action-bar">
             <button class="btn-l-gave" onclick="addLedgerToCloud('Gave')">YOU GAVE ₹</button>
             <button class="btn-l-got" onclick="addLedgerToCloud('Got')">YOU GOT ₹</button>
         </div>
     </div>
 
-    <!-- 📦 ITEMS MASTER PAGE -->
-    <div class="page" id="items-page">
-        <div class="page-header">
-            <button class="back-btn" onclick="closePage('items-page')">←</button>
-            <h2 class="page-title">Master Inventory</h2>
-        </div>
-        <div class="page-content">
-            <table class="invoice-table">
-                <thead><tr><th>Item Details</th><th>Stock</th></tr></thead>
-                <tbody>
-                    <tr><td>Kamlay Shade 264</td><td>145 BOX</td></tr>
-                    <tr><td>Kamlay Shade 105</td><td style="color:var(--danger); font-weight:800;">2 BOX</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <!-- STOCK & POS PAGES (Basic Layouts included to prevent errors) -->
+    <div class="page" id="stock-in-page"><div class="page-header"><button class="back-btn" onclick="closePage('stock-in-page')">←</button><h2 class="page-title">Stock In</h2></div></div>
+    <div class="page" id="pos-page"><div class="page-header"><button class="back-btn" onclick="closePage('pos-page')">←</button><h2 class="page-title">Billing</h2></div></div>
+    <div class="page" id="items-page"><div class="page-header"><button class="back-btn" onclick="closePage('items-page')">←</button><h2 class="page-title">Inventory</h2></div></div>
+    <div class="page" id="report-page"><div class="page-header"><button class="back-btn" onclick="closePage('report-page')">←</button><h2 class="page-title">Reports</h2></div></div>
+    <div class="page" id="profile-page"><div class="page-header"><button class="back-btn" onclick="closePage('profile-page')">←</button><h2 class="page-title">Profile</h2></div></div>
 
-    <!-- ================= JAVASCRIPT: GOOGLE SHEETS API CONNECTION ================= -->
+
+    <!-- ================= JAVASCRIPT: CLOUD CONNECTION ================= -->
     <script>
-        // 🚀 YOUR GOOGLE SCRIPT URL HERE
+        // 🚀 YOUR GOOGLE SCRIPT URL HERE (DO NOT CHANGE THIS)
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxisMxpKcoa8So_ku7XKDuOfOQx6dspEm_YmNJiQdeSVC6tTL76jfWlrC4FeprdPXk/exec";
 
-        // Loader Functions
-        function showLoader() { document.getElementById('loader').style.display = 'flex'; }
+        function showLoader(text="Loading...") { 
+            document.getElementById('loader-text').innerText = text;
+            document.getElementById('loader').style.display = 'flex'; 
+        }
         function hideLoader() { document.getElementById('loader').style.display = 'none'; }
 
-        // --- 1. ADD NEW CUSTOMER TO GOOGLE SHEETS ---
+        // --- 1. APP KHULTE HI DATA SHEET SE LANA (READ DATA) ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('dash-date-display').innerText = new Date().toLocaleDateString('en-GB', options);
+            
+            // Fetch live data silently on app load
+            loadDataFromCloud();
+        });
+
+        function loadDataFromCloud() {
+            document.getElementById('kb-customer-list').innerHTML = '<div style="text-align:center; padding:40px; color:var(--page-text-muted); font-weight:600;">Loading Live Data... ☁️</div>';
+            
+            fetch(SCRIPT_URL)
+            .then(response => response.json())
+            .then(data => {
+                let html = '';
+                if(data.length === 0) {
+                    html = '<div style="text-align:center; padding:40px; color:var(--page-text-muted);">No customers found in sheet.</div>';
+                } else {
+                    // Reverse loop to show newest customers at the top
+                    for(let i = data.length - 1; i >= 0; i--) {
+                        let cust = data[i];
+                        let initial = cust.name.substring(0,2).toUpperCase();
+                        html += `
+                        <div class="kb-list-item" onclick="openLedgerDetail('${cust.name}', '0', 'get')">
+                            <div class="kb-list-left">
+                                <div class="kb-avatar">${initial}</div>
+                                <div><div class="kb-name">${cust.name}</div><div class="kb-time">📱 ${cust.phone || 'No Phone'}</div></div>
+                            </div>
+                            <div class="kb-list-right" style="background:#f8fafc; border-left:1px dashed #e2e8f0; border-top-right-radius:16px; border-bottom-right-radius:16px;"><span style="color:var(--page-text); font-weight:800;">₹ 0</span></div>
+                        </div>`;
+                    }
+                }
+                document.getElementById('kb-customer-list').innerHTML = html;
+            })
+            .catch(error => {
+                document.getElementById('kb-customer-list').innerHTML = '<div style="text-align:center; padding:40px; color:red;">Failed to load data from Cloud. Check internet.</div>';
+            });
+        }
+
+        // --- 2. ADD CUSTOMER TO CLOUD (WRITE DATA) ---
         function addCustomerToCloud() {
             let name = document.getElementById('new-party-name').value;
             let phone = document.getElementById('new-party-phone').value;
-            
             if(!name) return alert("Please enter Customer Name!");
 
-            showLoader();
+            showLoader("Saving to Cloud... ☁️");
 
-            let payload = {
-                action: "addCustomer",
-                name: name,
-                phone: phone,
-                date: new Date().toISOString().split('T')[0]
-            };
+            let payload = { action: "addCustomer", name: name, phone: phone, date: new Date().toISOString().split('T')[0] };
 
-            // Using no-cors mode to bypass CORS issues while writing data
             fetch(SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors", 
@@ -566,158 +417,24 @@
                 body: JSON.stringify(payload)
             }).then(() => {
                 hideLoader();
-                alert("✅ Customer successfully saved to Google Sheets!");
-                
-                // Update Local UI instantly
-                let list = document.getElementById('kb-customer-list');
-                let initial = name.substring(0,2).toUpperCase();
-                list.innerHTML = `
-                <div class="kb-list-item" onclick="openLedgerDetail('${name}', '0', 'get')">
-                    <div class="kb-list-left">
-                        <div class="kb-avatar">${initial}</div>
-                        <div><div class="kb-name">${name}</div><div class="kb-time">Just now</div></div>
-                    </div>
-                    <div class="kb-list-right" style="background:var(--page-bg); border-left:1px dashed var(--page-border); border-top-right-radius:16px; border-bottom-right-radius:16px;"><span style="color:var(--page-text); font-weight:800;">₹ 0</span></div>
-                </div>` + list.innerHTML;
-                
+                alert("✅ Saved to Google Sheets!");
                 closePage('add-party-page');
                 document.getElementById('new-party-name').value = '';
                 document.getElementById('new-party-phone').value = '';
-            }).catch(err => {
-                hideLoader();
-                alert("Error connecting to server. Please try again.");
-            });
-        }
-
-        // --- 2. ADD LEDGER ENTRY TO GOOGLE SHEETS ---
-        let currentPartyName = "";
-        
-        function openLedgerDetail(name, balance, type) {
-            currentPartyName = name;
-            document.getElementById('l-deep-name').innerText = name;
-            
-            let balEl = document.getElementById('l-deep-bal-amt');
-            let txtEl = document.getElementById('l-deep-bal-text');
-            balEl.innerText = "₹ " + balance;
-            
-            if(type === 'give') {
-                balEl.style.color = "var(--success)";
-                txtEl.innerText = "You will give";
-            } else {
-                balEl.style.color = "var(--danger)";
-                txtEl.innerText = "You will get";
-            }
-
-            document.getElementById('l-deep-avatar-text').innerText = name.substring(0,2).toUpperCase();
-            
-            // Clear current list and wait for new entry
-            document.getElementById('ledger-entries-list').innerHTML = `<div style="text-align:center; padding:30px; color:var(--page-text-muted);">Syncing data...</div>`;
-            openPage('ledger-deep-page');
-        }
-
-        function addLedgerToCloud(type) {
-            let amount = prompt(`Enter Amount for 'You ${type}' (₹):`);
-            if(!amount) return;
-            let detail = prompt("Enter Note/Details (Optional):") || "";
-
-            showLoader();
-
-            let now = new Date();
-            let dateStr = now.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'2-digit'});
-            let timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            let fullDateTime = `${dateStr} ${timeStr}`;
-
-            let payload = {
-                action: "addLedgerEntry",
-                name: currentPartyName,
-                type: type,
-                amount: amount,
-                details: detail,
-                dateTime: fullDateTime
-            };
-
-            fetch(SCRIPT_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "text/plain" },
-                body: JSON.stringify(payload)
-            }).then(() => {
-                hideLoader();
-                alert("✅ Ledger entry saved to Google Sheets!");
                 
-                // Update Local UI instantly
-                let entryList = document.getElementById('ledger-entries-list');
-                if(entryList.innerHTML.includes('Syncing')) entryList.innerHTML = '';
-
-                let gaveHtml = type === 'Gave' ? `₹ ${amount}` : '';
-                let gotHtml = type === 'Got' ? `₹ ${amount}` : '';
-
-                let html = `
-                <div class="entry-card">
-                    <div class="ec-left">
-                        <div style="font-size:13px; color:var(--page-text-muted); margin-bottom:8px; font-weight:600;">${dateStr} • ${timeStr}</div>
-                        <div style="display:inline-block; padding:4px 8px; font-size:11px; font-weight:700; border-radius:6px; background:#eff6ff; color:var(--primary); margin-bottom:8px;">Synced ☁️</div>
-                        <div style="font-size:14px; color:var(--page-text); font-weight:500;">${detail}</div>
-                    </div>
-                    <div class="ec-gave">${gaveHtml}</div>
-                    <div class="ec-got">${gotHtml}</div>
-                </div>`;
-                entryList.innerHTML = html + entryList.innerHTML;
+                // Refresh list automatically
+                loadDataFromCloud();
             }).catch(err => {
                 hideLoader();
                 alert("Error connecting to server.");
             });
         }
 
-        // --- 3. ADD STOCK TO GOOGLE SHEETS ---
-        function saveStockToCloud() {
-            let cat = document.getElementById('stock-cat').value;
-            let shade = document.getElementById('stock-shade').value;
-            let qty = document.getElementById('stock-qty').value;
-
-            if(!shade || !qty) return alert("Enter Shade Code and Quantity!");
-
-            showLoader();
-
-            let payload = {
-                action: "updateStock",
-                category: cat,
-                shadeCode: shade,
-                qty: qty,
-                date: new Date().toISOString().split('T')[0]
-            };
-
-            fetch(SCRIPT_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "text/plain" },
-                body: JSON.stringify(payload)
-            }).then(() => {
-                hideLoader();
-                alert("✅ Inventory Stock updated in Google Sheets!");
-                document.getElementById('stock-shade').value = '';
-                document.getElementById('stock-qty').value = '';
-            }).catch(err => {
-                hideLoader();
-                alert("Error connecting to server.");
-            });
-        }
-
-
-        // ==========================================
-        // OTHER STANDARD UI LOGIC
-        // ==========================================
-        window.addEventListener('DOMContentLoaded', () => {
-            const options = { day: 'numeric', month: 'long', year: 'numeric' };
-            const todayStr = new Date().toLocaleDateString('en-GB', options);
-            document.getElementById('dash-date-display').innerText = todayStr;
-        });
-
+        // --- STANDARD NAVIGATION LOGIC ---
         function toggleMenu() { 
             const menu = document.getElementById('dropdown-menu');
             menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; 
         }
-
         function openPage(id) { document.getElementById(id).classList.add('active'); }
         function closePage(id) { document.getElementById(id).classList.remove('active'); }
         function goHome() {
@@ -726,62 +443,26 @@
             document.querySelector('.nav-item').classList.add('active');
         }
 
-        function switchLedgerTab(tab) {
-            document.getElementById('tab-cust').classList.remove('active');
-            document.getElementById('tab-supp').classList.remove('active');
-            document.getElementById('kb-customer-list').style.display = 'none';
-            document.getElementById('kb-supplier-list').style.display = 'none';
-            if(tab === 'cust') {
-                document.getElementById('tab-cust').classList.add('active');
-                document.getElementById('kb-customer-list').style.display = 'block';
-            } else {
-                document.getElementById('tab-supp').classList.add('active');
-                document.getElementById('kb-supplier-list').style.display = 'block';
-            }
+        let currentPartyName = "";
+        function openLedgerDetail(name, balance, type) {
+            currentPartyName = name;
+            document.getElementById('l-deep-name').innerText = name;
+            document.getElementById('l-deep-bal-amt').innerText = "₹ " + balance;
+            document.getElementById('l-deep-avatar-text').innerText = name.substring(0,2).toUpperCase();
+            document.getElementById('ledger-entries-list').innerHTML = `<div style="text-align:center; padding:30px; color:var(--page-text-muted);">Syncing entries... ☁️</div>`;
+            openPage('ledger-deep-page');
         }
 
-        async function openPhonebook(nameId, phoneId) {
-            if ('contacts' in navigator) {
-                try {
-                    const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false });
-                    if (contacts.length > 0) {
-                        if (contacts[0].name) document.getElementById(nameId).value = contacts[0].name[0];
-                        if (contacts[0].tel) {
-                            let cleanNum = String(contacts[0].tel[0]).replace(/\D/g, '');
-                            if (cleanNum.length > 10) cleanNum = cleanNum.slice(-10);
-                            document.getElementById(phoneId).value = cleanNum;
-                        }
-                    }
-                } catch(e) {}
-            }
-        }
-
-        // Cart Logic (Local for now)
-        let currentCart = [];
-        let grandInvoiceTotal = 0;
-        function addCartItem() {
-            const cat = document.getElementById('inv-cat').value;
-            const shade = document.getElementById('inv-shade').value || "Gen";
-            const qty = parseFloat(document.getElementById('inv-qty').value) || 0;
-            const rate = parseFloat(document.getElementById('inv-rate').value) || 0;
-            if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!");
+        function addLedgerToCloud(type) {
+            let amount = prompt(`Enter Amount for 'You ${type}' (₹):`);
+            if(!amount) return;
+            showLoader("Updating Ledger... ☁️");
             
-            let itemTotal = qty * rate;
-            currentCart.push({ title: `${cat} - Shd:${shade}`, qty, rate, itemTotal });
-            
-            let tbody = document.getElementById('cart-rows');
-            tbody.innerHTML = '';
-            grandInvoiceTotal = 0;
-            currentCart.forEach(item => {
-                grandInvoiceTotal += item.itemTotal;
-                tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.qty}</td><td>₹${item.rate}</td><td><strong>₹${item.itemTotal.toLocaleString()}</strong></td></tr>`;
-            });
-            document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`;
-        }
-
-        function triggerSaveAndShare() {
-            if (currentCart.length === 0) return alert("Cart is empty!");
-            alert(`✅ Invoice Generated! Total: ₹${grandInvoiceTotal}`);
+            let payload = { action: "addLedgerEntry", name: currentPartyName, type: type, amount: amount, details: "App Entry", dateTime: new Date().toLocaleString() };
+            fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload) })
+            .then(() => {
+                hideLoader(); alert("✅ Ledger Updated!");
+            }).catch(err => { hideLoader(); alert("Error."); });
         }
     </script>
 </body>

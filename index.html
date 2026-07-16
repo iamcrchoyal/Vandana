@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0e53a7">
-    <title>Vandana ERP - Professional Suite</title>
+    <title>Vandana ERP - Full Final Edition</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -26,21 +26,28 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         body { background-color: var(--bg-color); color: var(--text-dark); overflow-x: hidden; font-size: 14px;}
 
-        /* 📱 HEADER */
+        /* 📱 HEADER WITH 3-DOT MENU */
         .app-bar { position: fixed; top: 0; width: 100%; height: 56px; background: var(--header-bg); color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
         .app-bar-left { display: flex; align-items: center; gap: 12px; }
         .app-bar h1 { font-size: 16px; font-weight: 600; letter-spacing: 0.5px;}
-        .profile-btn { width: 32px; height: 32px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; border: 1px solid rgba(255,255,255,0.4); }
+        
+        .menu-dots { font-size: 24px; cursor: pointer; padding: 5px; font-weight: bold; }
+        .dropdown { position: absolute; right: 16px; top: 50px; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: none; z-index: 2000; min-width: 160px; overflow: hidden; }
+        .dropdown div { padding: 14px 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; color: #212121; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px; }
+        .dropdown div:active { background: #f8fafc; }
+        .dropdown div:last-child { border-bottom: none; }
 
-        /* 🏠 DASHBOARD */
+        /* 🏠 DASHBOARD & DATE PICKER */
         .main-content { padding: 75px 16px 80px 16px; max-width: 800px; margin: 0 auto; }
         .section-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin: 15px 0 10px 0; letter-spacing: 0.5px; }
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .date-picker { background: var(--surface); border: 1px solid var(--border); color: var(--primary); font-weight: 600; padding: 6px 12px; border-radius: 6px; font-size: 13px; outline: none; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);}
+        
+        /* Professional Date Picker */
+        .date-picker { background: var(--surface); border: 1px solid #cbd5e1; color: var(--primary); font-weight: 600; padding: 8px 12px; border-radius: 6px; font-size: 13px; outline: none; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: 0.2s; }
+        .date-picker:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1); }
 
         .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-        .action-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 15px 4px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.2s;}
-        .action-box:active { transform: scale(0.95); background: #f8fafc; }
+        .action-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 15px 4px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
         .action-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 20px; }
         .bg-blue-light { background: #e3f2fd; color: var(--primary); }
         .bg-green-light { background: #e8f5e9; color: var(--success); }
@@ -68,7 +75,6 @@
         .page-title { font-size: 16px; font-weight: 600; margin: 0; }
         .page-content { padding: 16px; max-width: 800px; margin: 0 auto; }
 
-        /* Upgraded Form Panels */
         .form-panel { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .form-group { margin-bottom: 16px; }
         .form-label { display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
@@ -99,26 +105,25 @@
         .kb-summary-val { font-size: 20px; font-weight: 800; margin-top: 6px; }
         
         .kb-list { background: white; padding-bottom: 90px; }
-        .kb-list-item { display: flex; justify-content: space-between; align-items: stretch; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: 0.2s;}
-        .kb-list-item:active { background: #f8fafc; }
+        .kb-list-item { display: flex; justify-content: space-between; align-items: stretch; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
         .kb-list-left { display: flex; align-items: center; gap: 15px; padding: 15px; }
         .kb-avatar { width: 44px; height: 44px; border-radius: 50%; background: #e3f2fd; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #1565c0; font-size: 16px; }
         .kb-name { font-size: 15px; font-weight: 600; color: #212121; }
         .kb-time { font-size: 12px; color: #9e9e9e; margin-top: 4px; }
         .kb-list-right { display: flex; flex-direction: column; justify-content: center; padding: 15px; min-width: 110px; text-align: right; }
         
-        /* 🔵 FIXED FAB ICON BUTTON */
-        .kb-fab { position: fixed; bottom: 85px; right: 20px; width: 56px; height: 56px; background: #990a4d; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 4px 12px rgba(153, 10, 77, 0.4); border: none; z-index: 1001; cursor: pointer; transition: 0.2s;}
+        /* 🔵 SMALL FIXED FAB ICON BUTTON */
+        .kb-fab { position: fixed; bottom: 85px; right: 20px; width: 50px; height: 50px; background: #990a4d; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: 0 4px 12px rgba(153, 10, 77, 0.4); border: none; z-index: 1001; cursor: pointer; transition: 0.2s;}
         .kb-fab:active { transform: scale(0.9); }
 
-        /* ================= 4. KHATABOOK LEDGER & ENTRY CSS ================= */
+        /* ================= 4. KHATABOOK LEDGER DEEP PAGE ================= */
         .ledger-header-area { background: var(--header-bg); color: white; padding: 10px 15px 20px 15px; }
         .ledger-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .l-avatar-name { display: flex; align-items: center; gap: 12px; }
         .l-name { font-size: 16px; font-weight: 600; }
         .ledger-bal-card { background: white; border-radius: 8px; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px;}
         .ledger-action-tabs { background: white; display: flex; border-bottom: 1px solid #e0e0e0; }
-        .l-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 12px; color: var(--primary); font-weight: 600; border-bottom: 2px solid transparent; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px;}
+        .l-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 12px; color: var(--primary); font-weight: 600; border-bottom: 2px solid transparent; cursor: pointer; }
         .entries-container { padding: 10px 15px 90px 15px; background: #f4f5fa;}
         .entry-card { background: white; border: 1px solid #e0e0e0; border-radius: 6px; display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 12px; cursor: pointer; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
         .ec-left { padding: 15px; flex: 2; border-right: 1px solid #f0f0f0; }
@@ -126,24 +131,28 @@
         .ec-gave { background: #fffafa; color: var(--danger); border-right: 1px solid #f0f0f0;}
         .ec-got { background: #f6fbf6; color: var(--success); }
         .bottom-action-bar { position: fixed; bottom: 0; width: 100%; background: white; padding: 15px; display: flex; gap: 10px; border-top: 1px solid #e0e0e0; z-index: 1000; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); }
-        .btn-l-gave { flex: 1; background: var(--kb-red); color: white; border: none; padding: 15px; border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; }
-        .btn-l-got { flex: 1; background: var(--kb-green); color: white; border: none; padding: 15px; border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; }
+        .btn-l-gave { flex: 1; background: #a11313; color: white; border: none; padding: 15px; border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; }
+        .btn-l-got { flex: 1; background: #0a6b2b; color: white; border: none; padding: 15px; border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; }
 
     </style>
 </head>
 <body>
 
-    <!-- 📱 TOP BAR WITH PROFILE ICON -->
     <header class="app-bar">
         <div class="app-bar-left">
             <div style="font-size: 20px; cursor: pointer;">☰</div>
             <h1>Vandana Enterprises</h1>
         </div>
-        <!-- CRED Style Profile Avatar -->
-        <button class="profile-btn" onclick="openPage('profile-page')">👤</button>
+        <div style="position: relative;">
+            <div class="menu-dots" onclick="toggleMenu()">⋮</div>
+            <div id="dropdown-menu" class="dropdown">
+                <div onclick="openPage('profile-page'); toggleMenu();">💼 Business Profile</div>
+                <div onclick="openPage('report-page'); toggleMenu();">📄 View Reports</div>
+                <div onclick="alert('Syncing to Cloud...'); toggleMenu();">🔄 Sync Data</div>
+            </div>
+        </div>
     </header>
 
-    <!-- 🏠 MAIN DASHBOARD -->
     <main class="main-content">
         <div class="dash-header">
             <span class="section-title" style="margin:0;">Dashboard</span>
@@ -182,7 +191,6 @@
         </div>
     </main>
 
-    <!-- ⚓ BOTTOM NAV -->
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="goHome()">
             <i>🏠</i><span>Home</span>
@@ -198,9 +206,6 @@
         </div>
     </nav>
 
-    <!-- ======================================================== -->
-    <!-- 🏢 PROFILE & BANK SETUP (CRED STYLE) -->
-    <!-- ======================================================== -->
     <div class="page" id="profile-page">
         <div class="page-header" style="background:#09090b; color:white;">
             <button class="back-btn" onclick="closePage('profile-page')">←</button>
@@ -209,19 +214,18 @@
         <div class="page-content" style="background:#09090b; min-height:100vh; color:white;">
             
             <div style="text-align:center; padding:20px 0;">
-                <div style="width:80px; height:80px; background:linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius:50%; margin:0 auto 15px auto; display:flex; justify-content:center; align-items:center; font-size:30px; font-weight:bold;">V</div>
+                <img src="https://ui-avatars.com/api/?name=Vandana+Enterprises&background=3b82f6&color=fff&size=120" style="border-radius:50%; border:3px solid #3b82f6; box-shadow:0 0 20px rgba(59, 130, 246, 0.4); margin-bottom:15px;">
                 <h2 style="margin:0; font-size:20px;">Vandana Enterprises</h2>
-                <p style="color:#a1a1aa; margin-top:5px; font-size:13px;">Manage Business & Payments</p>
+                <p style="color:#a1a1aa; margin-top:5px; font-size:13px;">Manage GST & Payments</p>
             </div>
 
             <div class="form-panel" style="background:#18181b; border:1px solid #27272a;">
                 <h3 class="section-title" style="color:#e4e4e7;">Firm Details (GST)</h3>
                 <div class="input-btn-group" style="margin-bottom:15px;">
                     <input type="text" class="form-control" placeholder="Enter GSTIN Number" style="background:#27272a; border-color:#3f3f46; color:white;">
-                    <button class="action-btn" style="background:#3b82f6; color:white; border:none;" onclick="alert('Note: Live GST Fetching requires a 3rd Party Paid API key. Basic saving active.')">Fetch</button>
+                    <button class="action-btn" style="background:#3b82f6; color:white; border:none;" onclick="alert('Note: Live GST Fetching requires a 3rd Party API key. Saving active.')">Fetch</button>
                 </div>
                 <input type="text" class="form-control" placeholder="Firm Name" style="background:#27272a; border-color:#3f3f46; color:white; margin-bottom:10px;" value="Vandana Enterprises">
-                <input type="text" class="form-control" placeholder="Address" style="background:#27272a; border-color:#3f3f46; color:white;">
             </div>
 
             <div class="form-panel" style="background:#18181b; border:1px solid #27272a;">
@@ -229,18 +233,14 @@
                 <input type="text" class="form-control" placeholder="Bank Account Number" style="background:#27272a; border-color:#3f3f46; color:white; margin-bottom:10px;">
                 <input type="text" class="form-control" placeholder="IFSC Code" style="background:#27272a; border-color:#3f3f46; color:white; margin-bottom:10px;">
                 <input type="text" class="form-control" placeholder="UPI ID (e.g. vandana@sbi)" style="background:#27272a; border-color:#3f3f46; color:white; margin-bottom:15px;">
-                <div style="border:1px dashed #3f3f46; padding:20px; text-align:center; border-radius:8px; color:#a1a1aa;">
+                <div style="border:1px dashed #3b82f6; padding:20px; text-align:center; border-radius:8px; color:#3b82f6; cursor:pointer;" onclick="alert('Upload your PhonePe/Paytm QR Code here.')">
                     📷 Upload QR Code (Prints on Invoice)
                 </div>
             </div>
-            <button class="btn-submit" style="background:linear-gradient(135deg, #3b82f6, #8b5cf6); border:none;" onclick="alert('Profile Saved!')">Save Changes</button>
+            <button class="btn-submit" style="background:#3b82f6; border:none;" onclick="alert('Profile Saved!')">Save Changes</button>
         </div>
     </div>
 
-
-    <!-- ======================================================== -->
-    <!-- 🧾 UPGRADED SALE INVOICE PAGE -->
-    <!-- ======================================================== -->
     <div class="page" id="pos-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('pos-page')">←</button>
@@ -248,13 +248,13 @@
         </div>
         <div class="page-content">
             <div class="form-panel">
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom:0;">
                     <label class="form-label">Customer Details</label>
                     <div class="input-btn-group" style="margin-bottom:10px;">
                         <input type="text" class="form-control" id="inv-party" placeholder="Enter Name">
                         <button class="action-btn" onclick="openPhonebook('inv-party', 'inv-phone')">👤 Contacts</button>
                     </div>
-                    <input type="tel" class="form-control" id="inv-phone" placeholder="10-digit mobile number">
+                    <input type="tel" class="form-control" id="inv-phone" placeholder="Mobile Number">
                 </div>
             </div>
             
@@ -262,13 +262,19 @@
                 <label class="form-label">Add Product</label>
                 <div class="input-btn-group" style="margin-bottom: 12px;">
                     <select class="form-control" id="inv-cat" style="flex:2;">
-                        <option>Kamlay Thread</option>
-                        <option>Zari</option>
+                        <option value="Kamlay Thread">Kamlay Thread</option>
+                        <option value="Zari">Zari</option>
+                        <option value="Cotton Yarn">Cotton Yarn</option>
+                        <option value="Viscose">Viscose</option>
+                        <option value="Metallic Coding">Metallic Coding</option>
+                        <option value="Cotton Coding">Cotton Coding</option>
+                        <option value="Nylon">Nylon</option>
+                        <option value="Bobin">Bobin</option>
                     </select>
-                    <input type="number" class="form-control" id="inv-shade" placeholder="Shade No" style="flex:1;">
+                    <input type="text" class="form-control" id="inv-shade" placeholder="Shade/Color" style="flex:1;">
                 </div>
                 <div class="input-btn-group" style="margin-bottom: 15px;">
-                    <input type="number" class="form-control" id="inv-qty" placeholder="Qty (Box/Cone)">
+                    <input type="number" class="form-control" id="inv-qty" placeholder="Qty">
                     <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)">
                 </div>
                 <button class="btn-submit" style="background:#1e293b;" onclick="addCartItem()">⬇ Add Item to Cart</button>
@@ -285,14 +291,15 @@
                 <span style="font-weight:700; font-size:15px; color:var(--primary-dark);">Grand Total:</span>
                 <span style="font-size:24px; font-weight:800; color:var(--primary-dark);" id="cart-grand-total">₹ 0</span>
             </div>
+            
             <button class="btn-submit" onclick="triggerSaveAndShare()">💾 Save & Generate Bill</button>
+            
+            <button id="pdf-share-btn" class="btn-submit" style="display:none; background:#25d366; margin-top:10px;" onclick="sharePDFOnWhatsApp()">
+                📲 Share PDF via WhatsApp
+            </button>
         </div>
     </div>
 
-
-    <!-- ======================================================== -->
-    <!-- 📦 UPGRADED STOCK IN PAGE -->
-    <!-- ======================================================== -->
     <div class="page" id="stock-in-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('stock-in-page')">←</button>
@@ -300,11 +307,14 @@
         </div>
         <div class="page-content">
             <div class="form-panel">
-                <h3 class="section-title" style="margin:0 0 15px 0;">Add Kamlay Thread Stock</h3>
+                <h3 class="section-title" style="margin:0 0 15px 0;">Add Stock</h3>
                 <div class="form-group">
-                    <label class="form-label">Shade Code & Quantity</label>
+                    <label class="form-label">Category</label>
+                    <select class="form-control" style="margin-bottom:10px;">
+                        <option>Kamlay Thread</option><option>Zari</option><option>Cotton Yarn</option><option>Viscose</option>
+                    </select>
                     <div class="input-btn-group" style="margin-bottom:15px;">
-                        <input type="number" class="form-control" id="kamlay-shade-input" placeholder="Shade (1-850)" style="flex:1;">
+                        <input type="text" class="form-control" id="kamlay-shade-input" placeholder="Shade/Code" style="flex:1;">
                         <input type="number" class="form-control" id="kamlay-qty-input" placeholder="Total Boxes" style="flex:1;">
                     </div>
                 </div>
@@ -313,10 +323,6 @@
         </div>
     </div>
 
-
-    <!-- ======================================================== -->
-    <!-- 👥 UPGRADED PARTIES & LEDGER (KHATABOOK STYLE) -->
-    <!-- ======================================================== -->
     <div class="page" id="parties-page">
         <div class="kb-header">
             <div style="display:flex; align-items:flex-start;">
@@ -330,7 +336,6 @@
                 </div>
             </div>
             
-            <!-- ACTIVE TABS -->
             <div class="kb-tabs">
                 <div class="kb-tab active" id="tab-cust" onclick="switchLedgerTab('cust')">CUSTOMERS</div>
                 <div class="kb-tab" id="tab-supp" onclick="switchLedgerTab('supp')">SUPPLIERS</div>
@@ -353,7 +358,6 @@
             </div>
         </div>
 
-        <!-- Dynamic List Container -->
         <div class="kb-list" id="kb-customer-list">
             <div class="kb-list-item" onclick="openLedgerDetail('NANDU JI MEENA', '831', 'give')">
                 <div class="kb-list-left">
@@ -375,14 +379,9 @@
             <div style="padding:40px; text-align:center; color:#9e9e9e; font-weight:500;">No Suppliers added yet.</div>
         </div>
 
-        <!-- 🔵 FIXED ICON ONLY FAB -->
         <button class="kb-fab" onclick="openPage('add-party-page')">+</button>
     </div>
 
-
-    <!-- ======================================================== -->
-    <!-- 📄 REPORT DOWNLOAD PAGE (NEW ACTIVE) -->
-    <!-- ======================================================== -->
     <div class="page" id="report-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('report-page')">←</button>
@@ -393,24 +392,20 @@
                 <h3 class="section-title" style="margin:0 0 15px 0;">Select Date Range</h3>
                 <div class="form-group">
                     <label class="form-label">From Date</label>
-                    <input type="date" class="form-control" id="rep-from">
+                    <input type="date" class="form-control date-picker" id="rep-from" style="width:100%; border-radius:6px; padding:12px;">
                 </div>
                 <div class="form-group">
                     <label class="form-label">To Date</label>
-                    <input type="date" class="form-control" id="rep-to">
+                    <input type="date" class="form-control date-picker" id="rep-to" style="width:100%; border-radius:6px; padding:12px;">
                 </div>
                 <div style="display:flex; gap:10px; margin-top:20px;">
                     <button class="btn-submit" style="background:var(--success);" onclick="alert('Downloading PDF Report...')">📥 Download PDF</button>
-                    <button class="btn-submit" onclick="alert('Sharing Report via WhatsApp...')">🔗 Share</button>
+                    <button class="btn-submit" onclick="alert('Sharing Report...')">🔗 Share</button>
                 </div>
             </div>
         </div>
     </div>
 
-
-    <!-- ======================================================== -->
-    <!-- 👤 ADD NEW PARTY PAGE -->
-    <!-- ======================================================== -->
     <div class="page" id="add-party-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('add-party-page')">←</button>
@@ -434,10 +429,6 @@
         </div>
     </div>
 
-
-    <!-- ======================================================== -->
-    <!-- 🔥 KHATABOOK DEEP LEDGER PAGE (Screen 1) -->
-    <!-- ======================================================== -->
     <div class="page" id="ledger-deep-page">
         <div class="ledger-header-area">
             <div class="ledger-top-row">
@@ -461,9 +452,9 @@
         </div>
 
         <div class="ledger-action-tabs">
-            <div class="l-tab active"><span>📄</span> Report</div>
-            <div class="l-tab"><span>💬</span> Reminder</div>
-            <div class="l-tab"><span>✉️</span> SMS</div>
+            <div class="l-tab active" onclick="openPage('report-page')"><span>📄</span> Report</div>
+            <div class="l-tab" onclick="alert('Sending Reminder...')"><span>💬</span> Reminder</div>
+            <div class="l-tab" onclick="alert('Sending SMS...')"><span>✉️</span> SMS</div>
         </div>
 
         <div class="entries-container">
@@ -474,8 +465,7 @@
             </div>
 
             <div id="ledger-entries-list">
-                <!-- Data populated dynamically -->
-            </div>
+                </div>
         </div>
 
         <div class="bottom-action-bar">
@@ -484,8 +474,25 @@
         </div>
     </div>
 
+    <div class="page" id="items-page">
+        <div class="page-header">
+            <button class="back-btn" onclick="closePage('items-page')">←</button>
+            <h2 class="page-title">Master Inventory</h2>
+        </div>
+        <div class="page-content">
+            <div style="background:white; border-radius:6px; overflow:hidden;">
+                <table class="invoice-table">
+                    <thead><tr><th>Item Details</th><th>Stock</th></tr></thead>
+                    <tbody>
+                        <tr><td>Kamlay Shade 264</td><td>145 BOX</td></tr>
+                        <tr><td>Kamlay Shade 105</td><td style="color:var(--danger); font-weight:bold;">2 BOX</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-    <!-- ================= JAVASCRIPT SYSTEM LOGIC ================= -->
+
     <script>
         // --- 1. HARDWARE BACK BUTTON LOCK ---
         window.history.pushState(null, null, window.location.href);
@@ -494,7 +501,12 @@
             alert("🚫 Security Alert: Back jaane ke liye kripya screen ke upar wale arrow (←) ka upyog karein.");
         };
 
-        // --- 2. DATE SETTINGS ---
+        // --- 2. MENU & DATE SETTINGS ---
+        function toggleMenu() { 
+            const menu = document.getElementById('dropdown-menu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; 
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             let today = new Date().toISOString().split('T')[0];
             document.getElementById('dash-date').value = today;
@@ -526,7 +538,7 @@
             }
         }
 
-        // --- 4. PHONEBOOK CONTACT API ---
+        // --- 4. PHONEBOOK API ---
         async function openPhonebook(nameInputId, phoneInputId) {
             if ('contacts' in navigator && 'ContactsManager' in window) {
                 try {
@@ -587,11 +599,19 @@
 
         function triggerSaveAndShare() {
             if (currentCart.length === 0) return alert("Cart is empty!");
-            const custName = document.getElementById('inv-party').value || "Customer";
-            alert(`✅ Invoice Saved! Total: ₹${grandInvoiceTotal}`);
+            alert(`✅ Invoice Generated! Total: ₹${grandInvoiceTotal}`);
+            
+            // SHOW THE SHARE PDF BUTTON
+            document.getElementById('pdf-share-btn').style.display = 'block';
         }
 
-        // --- 6. ADD NEW CUSTOMER LOGIC ---
+        function sharePDFOnWhatsApp() {
+            const custPhone = document.getElementById('inv-phone').value || "";
+            let msg = `📄 *INVOICE PDF* %0A🏛️ *VANDANA ENTERPRISES*%0A%0A*Grand Total:* ₹${grandInvoiceTotal}%0A%0A(Note: In real backend, a PDF link will be attached here).`;
+            window.open(`https://wa.me/91${custPhone}?text=${msg}`, '_blank');
+        }
+
+        // --- 6. ADD NEW CUSTOMER ---
         function addNewCustomer() {
             let name = document.getElementById('new-party-name').value;
             if(!name) return alert("Please enter name!");
@@ -602,7 +622,7 @@
             list.innerHTML = `
             <div class="kb-list-item" onclick="openLedgerDetail('${name}', '0', 'get')">
                 <div class="kb-list-left">
-                    <div class="kb-avatar">${initial}</div>
+                    <div class="kb-avatar" style="background:#e3f2fd; color:#1565c0;">${initial}</div>
                     <div><div class="kb-name">${name}</div><div class="kb-time">Just now</div></div>
                 </div>
                 <div class="kb-list-right" style="background:white;"><span style="color:#424242; font-weight:700;">₹ 0</span></div>
@@ -643,7 +663,7 @@
                 <div class="entry-card">
                     <div class="ec-left">
                         <div class="ec-time">11 Jul 26 • 03:03 PM</div>
-                        <div class="ec-bal-badge" style="background:#e8f5e9; color:#15803d;">Bal. ₹ 831</div>
+                        <div class="ec-bal-badge" style="display:inline-block; padding:2px 6px; font-size:10px; border-radius:4px; background:#e8f5e9; color:#15803d; margin-bottom:6px;">Bal. ₹ 831</div>
                         <div class="ec-detail">axis</div>
                     </div>
                     <div class="ec-gave"></div>
@@ -673,7 +693,7 @@
                 <div class="entry-card">
                     <div class="ec-left">
                         <div class="ec-time">${fullDateTime}</div>
-                        <div class="ec-bal-badge" style="background:#e3f2fd; color:var(--primary);">Bal. Pending</div>
+                        <div style="display:inline-block; padding:2px 6px; font-size:10px; border-radius:4px; background:#e3f2fd; color:var(--primary); margin-bottom:6px;">Bal. Pending</div>
                         <div class="ec-detail">${detail}</div>
                     </div>
                     <div class="ec-gave">${gaveHtml}</div>

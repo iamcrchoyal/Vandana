@@ -3,163 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#1e3a8a">
-    <title>Vandana ERP - Premium UI</title>
+    <meta name="theme-color" content="#0e53a7">
+    <title>Vandana ERP - Ultimate Premium</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         /* ================= 1. PREMIUM BASE SYSTEM CSS ================= */
         :root {
-            --bg-color: #f8fafc;
+            --bg-color: #f1f5f9;
             --surface: #ffffff;
             --text-dark: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
-            --primary: #2563eb;
+            --primary: #1d4ed8;
             --header-bg: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); 
             --success: #059669;
             --danger: #e11d48;
             --warning: #ea580c;
-            
-            /* Premium Shadows */
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.02);
-            --shadow-md: 0 8px 24px rgba(14, 23, 42, 0.05);
-            --shadow-btn: 0 8px 20px rgba(37, 99, 235, 0.25);
-            --radius-lg: 16px;
-            --radius-md: 12px;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; }
         body { background-color: var(--bg-color); color: var(--text-dark); overflow-x: hidden; font-size: 14px;}
 
+        /* 🌟 SPLASH SCREEN ANIMATION */
+        #splash-screen { position: fixed; inset: 0; background: var(--header-bg); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; transition: opacity 0.6s ease, visibility 0.6s; }
+        .splash-logo { font-size: 40px; font-weight: 800; margin-bottom: 10px; animation: pulse 1.5s infinite; text-shadow: 0 4px 20px rgba(0,0,0,0.2);}
+        .splash-text { font-size: 14px; font-weight: 600; letter-spacing: 2px; opacity: 0.8; text-transform: uppercase;}
+        @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.8; } }
+
+        /* 🚀 SLIDE UP ANIMATIONS */
+        .animate-up { opacity: 0; transform: translateY(20px); animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .delay-1 { animation-delay: 0.1s; } .delay-2 { animation-delay: 0.2s; } .delay-3 { animation-delay: 0.3s; }
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+
         /* 📱 PREMIUM HEADER */
-        .app-bar { position: fixed; top: 0; width: 100%; height: 60px; background: var(--header-bg); color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000; box-shadow: 0 4px 15px rgba(30, 58, 138, 0.2); }
-        .app-bar-left { display: flex; align-items: center; gap: 15px; }
+        .app-bar { position: fixed; top: 0; width: 100%; height: 60px; background: var(--header-bg); color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000; box-shadow: 0 4px 20px rgba(30, 58, 138, 0.3); border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;}
+        .app-bar-left { display: flex; align-items: center; gap: 12px; }
         .app-bar h1 { font-size: 17px; font-weight: 700; letter-spacing: 0.2px;}
         
         .menu-dots { font-size: 26px; cursor: pointer; padding: 5px; font-weight: bold; transition: 0.2s;}
         .menu-dots:active { transform: scale(0.9); }
         
-        .dropdown { position: absolute; right: 20px; top: 65px; background: white; border-radius: var(--radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: none; z-index: 2000; min-width: 180px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); }
+        .dropdown { position: absolute; right: 20px; top: 65px; background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); display: none; z-index: 2000; min-width: 180px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); }
         .dropdown div { padding: 15px 20px; border-bottom: 1px solid #f1f5f9; cursor: pointer; color: #334155; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 12px; transition: 0.2s;}
         .dropdown div:active { background: #f8fafc; padding-left: 25px;}
-        .dropdown div:last-child { border-bottom: none; }
 
         /* 🏠 DASHBOARD */
-        .main-content { padding: 85px 20px 90px 20px; max-width: 800px; margin: 0 auto; }
+        .main-content { padding: 85px 20px 100px 20px; max-width: 800px; margin: 0 auto; }
         .section-title { font-size: 13px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin: 20px 0 12px 0; letter-spacing: 1px; }
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         
         /* Premium Date Picker */
-        .date-picker { background: var(--surface); border: 1px solid transparent; color: var(--primary); font-weight: 700; padding: 10px 16px; border-radius: var(--radius-md); font-size: 14px; outline: none; cursor: pointer; box-shadow: var(--shadow-sm); transition: 0.3s; }
-        .date-picker:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        .date-picker { background: var(--surface); border: 1px solid transparent; color: var(--primary); font-weight: 700; padding: 10px 16px; border-radius: 10px; font-size: 14px; outline: none; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: 0.3s; }
+        .date-picker:focus { box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15); border-color: var(--primary);}
 
         .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 25px; }
-        .action-box { background: var(--surface); border: 1px solid rgba(0,0,0,0.02); border-radius: var(--radius-lg); padding: 18px 8px; display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; box-shadow: var(--shadow-md); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);}
-        .action-box:active { transform: scale(0.94); box-shadow: var(--shadow-sm); }
-        .action-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 22px; }
-        .bg-blue-light { background: #eff6ff; color: var(--primary); }
-        .bg-green-light { background: #ecfdf5; color: var(--success); }
-        .bg-purple-light { background: #faf5ff; color: #9333ea; }
-        .bg-orange-light { background: #fff7ed; color: var(--warning); }
+        .action-box { background: var(--surface); border-radius: 16px; padding: 18px 8px; display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.3s;}
+        .action-box:active { transform: scale(0.92); box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .action-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: inset 0 2px 4px rgba(255,255,255,0.5);}
+        .bg-blue-light { background: linear-gradient(135deg, #dbeafe, #eff6ff); color: var(--primary); }
+        .bg-green-light { background: linear-gradient(135deg, #d1fae5, #ecfdf5); color: var(--success); }
+        .bg-purple-light { background: linear-gradient(135deg, #f3e8ff, #faf5ff); color: #9333ea; }
+        .bg-orange-light { background: linear-gradient(135deg, #ffedd5, #fff7ed); color: var(--warning); }
         .action-label { font-size: 12px; font-weight: 700; color: var(--text-dark); text-align: center; }
 
-        .summary-box { background: var(--surface); border: none; border-radius: var(--radius-lg); padding: 10px 20px; margin-bottom: 25px; box-shadow: var(--shadow-md); }
+        .summary-box { background: var(--surface); border-radius: 16px; padding: 10px 20px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .summary-row { display: flex; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding: 18px 0; cursor: pointer; transition: 0.2s;}
-        .summary-row:active { opacity: 0.7; }
+        .summary-row:active { opacity: 0.6; }
         .summary-row:last-child { border: none; }
         .sum-title { font-size: 14px; color: var(--text-muted); font-weight: 600; }
         .sum-val { font-size: 17px; font-weight: 800; color: var(--text-dark); }
 
-        /* ⚓ GLASS BOTTOM NAV */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding-bottom: env(safe-area-inset-bottom);}
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 65px; height: 100%; color: #94a3b8; font-size: 11px; font-weight: 700; gap: 6px; cursor: pointer; transition: 0.3s; }
-        .nav-item i { font-size: 24px; font-style: normal; transition: 0.3s;}
+        /* ⚓ FLOATING GLASS NAV */
+        .bottom-nav { position: fixed; bottom: 15px; left: 5%; width: 90%; height: 65px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 20px; display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.4);}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 65px; height: 100%; color: #94a3b8; font-size: 11px; font-weight: 700; gap: 4px; cursor: pointer; transition: 0.3s; }
+        .nav-item i { font-size: 22px; font-style: normal; transition: 0.3s;}
         .nav-item.active { color: var(--primary); }
-        .nav-item.active i { transform: translateY(-3px); }
+        .nav-item.active i { transform: translateY(-4px) scale(1.1); text-shadow: 0 4px 10px rgba(37, 99, 235, 0.3); }
 
         /* ================= 2. PAGE SLIDER & PROFESSIONAL FORMS ================= */
         .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); overflow-y: auto; padding-bottom: 100px; }
         .page.active { transform: translateX(0); }
-        .page-header { position: sticky; top: 0; background: var(--surface); color: var(--text-dark); height: 60px; display: flex; align-items: center; padding: 0 20px; z-index: 10; border-bottom: 1px solid var(--border); }
-        .back-btn { background: #f1f5f9; border: none; color: var(--text-dark); width: 36px; height: 36px; border-radius: 50%; font-size: 18px; margin-right: 15px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
-        .back-btn:active { background: #e2e8f0; }
+        .page-header { position: sticky; top: 0; background: var(--surface); color: var(--text-dark); height: 60px; display: flex; align-items: center; padding: 0 20px; z-index: 10; border-bottom: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
+        .back-btn { background: #f1f5f9; border: none; color: var(--text-dark); width: 38px; height: 38px; border-radius: 50%; font-size: 20px; margin-right: 15px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+        .back-btn:active { transform: scale(0.9); background: #e2e8f0; }
         .page-title { font-size: 17px; font-weight: 800; margin: 0; }
         .page-content { padding: 20px; max-width: 800px; margin: 0 auto; }
 
-        .form-panel { background: var(--surface); border: none; padding: 24px; border-radius: var(--radius-lg); margin-bottom: 20px; box-shadow: var(--shadow-md); }
+        .form-panel { background: var(--surface); padding: 24px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .form-group { margin-bottom: 20px; }
         .form-label { display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;}
         
-        /* Premium Inputs */
-        .form-control { width: 100%; background: #f8fafc; border: 1.5px solid transparent; padding: 14px 16px; border-radius: var(--radius-md); font-size: 15px; outline: none; transition: 0.3s; font-weight: 600; color: var(--text-dark);}
-        .form-control:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        .form-control { width: 100%; background: #f8fafc; border: 1.5px solid transparent; padding: 14px 16px; border-radius: 10px; font-size: 15px; outline: none; transition: 0.3s; font-weight: 600; color: var(--text-dark);}
+        .form-control:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15); }
         .input-btn-group { display: flex; gap: 12px; }
         
-        .action-btn { background: #eff6ff; color: var(--primary); border: none; border-radius: var(--radius-md); padding: 0 18px; font-weight: 800; cursor: pointer; transition: 0.2s;}
+        .action-btn { background: #eff6ff; color: var(--primary); border: none; border-radius: 10px; padding: 0 18px; font-weight: 800; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(37, 99, 235, 0.1);}
         .action-btn:active { transform: scale(0.95); }
         
-        .btn-submit { width: 100%; background: var(--header-bg); color: white; border: none; padding: 18px; border-radius: var(--radius-md); font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: var(--shadow-btn); transition: 0.3s; letter-spacing: 0.5px;}
-        .btn-submit:active { transform: scale(0.97); box-shadow: var(--shadow-sm); }
-        
-        .btn-whatsapp { background: #10b981; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25); margin-top: 15px; }
+        .btn-submit { width: 100%; background: var(--header-bg); color: white; border: none; padding: 18px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 20px rgba(30, 58, 138, 0.3); transition: 0.3s; letter-spacing: 0.5px;}
+        .btn-submit:active { transform: scale(0.96); box-shadow: 0 4px 10px rgba(30, 58, 138, 0.2); }
+        .btn-whatsapp { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); margin-top: 15px; }
 
-        .invoice-table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; background: white; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border);}
-        .invoice-table th { background: #f8fafc; padding: 14px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px;}
-        .invoice-table td { padding: 14px; border-bottom: 1px solid #f1f5f9; font-weight: 600; }
+        .invoice-table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; background: white; border-radius: 12px; overflow: hidden; border: 1px solid var(--border);}
+        .invoice-table th { background: #f8fafc; padding: 16px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 800; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;}
+        .invoice-table td { padding: 16px; border-bottom: 1px solid #f1f5f9; font-weight: 600; }
 
-        /* ================= 3. KHATABOOK UI (POLISHED) ================= */
-        .kb-header { background: var(--header-bg); color: white; padding: 20px 20px 70px 20px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;}
+        /* ================= 3. KHATABOOK UI (PREMIUM POLISH) ================= */
+        .kb-header { background: var(--header-bg); color: white; padding: 20px 20px 70px 20px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;}
         .kb-header-title { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
         .kb-tabs { display: flex; gap: 25px; margin-top: 30px; font-size: 14px; font-weight: 800; }
         .kb-tab { padding-bottom: 12px; cursor: pointer; color: rgba(255,255,255,0.6); border-bottom: 3px solid transparent; transition: 0.3s;}
         .kb-tab.active { color: white; border-bottom: 3px solid #facc15; }
 
-        .kb-summary-card { background: white; border-radius: var(--radius-lg); margin: -50px 20px 20px 20px; box-shadow: var(--shadow-md); position: relative; z-index: 2; overflow: hidden;}
+        .kb-summary-card { background: white; border-radius: 16px; margin: -50px 20px 20px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; z-index: 2; overflow: hidden;}
         .kb-summary-split { display: flex; padding: 25px 0; }
         .kb-summary-box { flex: 1; text-align: center; border-right: 1px dashed #e2e8f0; }
         .kb-summary-box:last-child { border-right: none; }
-        .kb-summary-label { font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;}
-        .kb-summary-val { font-size: 22px; font-weight: 800; margin-top: 8px; }
+        .kb-summary-label { font-size: 12px; color: #64748b; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;}
+        .kb-summary-val { font-size: 24px; font-weight: 800; margin-top: 8px; }
         
-        .kb-list { background: transparent; padding-bottom: 90px; }
-        .kb-list-item { background: white; margin: 0 20px 12px 20px; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: stretch; cursor: pointer; box-shadow: var(--shadow-sm); transition: 0.2s;}
-        .kb-list-item:active { transform: scale(0.98); }
+        .kb-list { background: transparent; padding-bottom: 100px; }
+        .kb-list-item { background: white; margin: 0 20px 15px 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: stretch; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.2s;}
+        .kb-list-item:active { transform: scale(0.97); }
         .kb-list-left { display: flex; align-items: center; gap: 15px; padding: 18px; }
-        .kb-avatar { width: 48px; height: 48px; border-radius: 50%; background: #eff6ff; display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--primary); font-size: 18px; }
+        .kb-avatar { width: 50px; height: 50px; border-radius: 50%; background: #eff6ff; display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--primary); font-size: 18px; }
         .kb-name { font-size: 16px; font-weight: 700; color: var(--text-dark); }
-        .kb-time { font-size: 13px; color: #94a3b8; margin-top: 4px; font-weight: 500;}
-        .kb-list-right { display: flex; flex-direction: column; justify-content: center; padding: 18px; min-width: 120px; text-align: right; border-left: 1px solid #f8fafc;}
+        .kb-time { font-size: 13px; color: #94a3b8; margin-top: 4px; font-weight: 600;}
+        .kb-list-right { display: flex; flex-direction: column; justify-content: center; padding: 18px; min-width: 120px; text-align: right; border-left: 1px dashed #f1f5f9;}
         
-        .kb-fab { position: fixed; bottom: 95px; right: 25px; width: 60px; height: 60px; background: #e11d48; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; box-shadow: 0 8px 20px rgba(225, 29, 72, 0.4); border: none; z-index: 1001; cursor: pointer; transition: 0.3s;}
-        .kb-fab:active { transform: scale(0.9) rotate(45deg); }
+        .kb-fab { position: fixed; bottom: 100px; right: 25px; width: 65px; height: 65px; background: linear-gradient(135deg, #e11d48, #be123c); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 32px; box-shadow: 0 10px 25px rgba(225, 29, 72, 0.4); border: none; z-index: 1001; cursor: pointer; transition: 0.3s;}
+        .kb-fab:active { transform: scale(0.9) rotate(90deg); }
 
         /* ================= 4. KHATABOOK LEDGER DEEP PAGE ================= */
-        .ledger-header-area { background: var(--header-bg); color: white; padding: 15px 20px 25px 20px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;}
+        .ledger-header-area { background: var(--header-bg); color: white; padding: 15px 20px 35px 20px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;}
         .ledger-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .l-name { font-size: 18px; font-weight: 700; }
-        .ledger-bal-card { background: white; border-radius: var(--radius-md); padding: 18px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-md); margin-top: -40px; margin-left: 20px; margin-right: 20px; position: relative; z-index: 2;}
+        .ledger-bal-card { background: white; border-radius: 16px; padding: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-top: -50px; margin-left: 20px; margin-right: 20px; position: relative; z-index: 2;}
         
-        .ledger-action-tabs { background: transparent; display: flex; margin: 20px; gap: 10px;}
-        .l-tab { flex: 1; text-align: center; padding: 14px 0; font-size: 13px; color: var(--text-dark); font-weight: 700; background: white; border-radius: var(--radius-md); cursor: pointer; box-shadow: var(--shadow-sm); transition: 0.2s;}
+        .ledger-action-tabs { background: transparent; display: flex; margin: 25px 20px; gap: 12px;}
+        .l-tab { flex: 1; text-align: center; padding: 16px 0; font-size: 13px; color: var(--text-dark); font-weight: 800; background: white; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.2s;}
         .l-tab:active { transform: scale(0.95); }
 
         .entries-container { padding: 10px 20px 100px 20px; }
-        .entry-card { background: white; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 15px; cursor: pointer; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.02);}
-        .ec-left { padding: 18px; flex: 2; border-right: 1px solid #f8fafc; }
-        .ec-gave, .ec-got { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 800; }
+        .entry-card { background: white; border-radius: 12px; display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 15px; cursor: pointer; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);}
+        .ec-left { padding: 18px; flex: 2; border-right: 1px dashed #f1f5f9; }
+        .ec-gave, .ec-got { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; }
         .ec-gave { background: #fff1f2; color: var(--danger); }
         .ec-got { background: #ecfdf5; color: var(--success); }
 
-        .bottom-action-bar { position: fixed; bottom: 0; width: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(15px); padding: 15px 20px; display: flex; gap: 15px; border-top: 1px solid rgba(0,0,0,0.05); z-index: 1000; padding-bottom: calc(15px + env(safe-area-inset-bottom));}
-        .btn-l-gave { flex: 1; background: #be123c; color: white; border: none; padding: 18px; border-radius: var(--radius-md); font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(190, 18, 60, 0.3); transition: 0.2s;}
-        .btn-l-got { flex: 1; background: #15803d; color: white; border: none; padding: 18px; border-radius: var(--radius-md); font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(21, 128, 61, 0.3); transition: 0.2s;}
-        .btn-l-gave:active, .btn-l-got:active { transform: scale(0.97); }
+        .bottom-action-bar { position: fixed; bottom: 0; width: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(20px); padding: 15px 20px; display: flex; gap: 15px; border-top: 1px solid rgba(0,0,0,0.05); z-index: 1000; padding-bottom: calc(15px + env(safe-area-inset-bottom));}
+        .btn-l-gave { flex: 1; background: linear-gradient(135deg, #e11d48, #be123c); color: white; border: none; padding: 18px; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 8px 20px rgba(225, 29, 72, 0.3); transition: 0.2s;}
+        .btn-l-got { flex: 1; background: linear-gradient(135deg, #10b981, #15803d); color: white; border: none; padding: 18px; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); transition: 0.2s;}
+        .btn-l-gave:active, .btn-l-got:active { transform: scale(0.96); box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
 
     </style>
 </head>
 <body>
+
+    <!-- 🌟 SPLASH SCREEN -->
+    <div id="splash-screen">
+        <div class="splash-logo">💎 VANDANA ERP</div>
+        <div class="splash-text">Professional Edition</div>
+    </div>
 
     <!-- 📱 TOP BAR WITH 3-DOT MENU -->
     <header class="app-bar">
@@ -180,12 +187,12 @@
 
     <!-- 🏠 MAIN DASHBOARD -->
     <main class="main-content">
-        <div class="dash-header">
+        <div class="dash-header animate-up">
             <span class="section-title" style="margin:0;">Dashboard Overview</span>
             <input type="date" id="dash-date" class="date-picker">
         </div>
 
-        <div class="quick-actions">
+        <div class="quick-actions animate-up delay-1">
             <div class="action-box" onclick="openPage('pos-page')">
                 <div class="action-icon bg-blue-light">🧾</div>
                 <span class="action-label">Sale<br>Invoice</span>
@@ -204,8 +211,8 @@
             </div>
         </div>
 
-        <h3 class="section-title">Financial Summary</h3>
-        <div class="summary-box">
+        <h3 class="section-title animate-up delay-2">Financial Summary</h3>
+        <div class="summary-box animate-up delay-2">
             <div class="summary-row" onclick="openPage('report-page')">
                 <span class="sum-title">Total Sales Value</span>
                 <span class="sum-val" style="color:var(--primary);">₹ 45,200 ➔</span>
@@ -217,7 +224,7 @@
         </div>
     </main>
 
-    <!-- ⚓ BOTTOM NAV -->
+    <!-- ⚓ FLOATING BOTTOM NAV -->
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="goHome()">
             <i>🏠</i><span>Home</span>
@@ -237,14 +244,14 @@
     <!-- 💼 BUSINESS PROFILE (CRED STYLE - Dark Mode) -->
     <!-- ======================================================== -->
     <div class="page" id="profile-page" style="background: #020617;">
-        <div class="page-header" style="background:transparent; border:none;">
+        <div class="page-header" style="background:transparent; border:none; box-shadow:none;">
             <button class="back-btn" onclick="closePage('profile-page')" style="background:rgba(255,255,255,0.1); color:white;">←</button>
             <h2 class="page-title" style="color:white;">Business Profile</h2>
         </div>
         <div class="page-content" style="color:white;">
             
-            <div style="text-align:center; padding:30px 0;">
-                <img src="https://ui-avatars.com/api/?name=Vandana+Enterprises&background=3b82f6&color=fff&size=120" style="border-radius:50%; border:4px solid #1e293b; box-shadow:0 0 30px rgba(59, 130, 246, 0.3); margin-bottom:20px;">
+            <div style="text-align:center; padding:10px 0 30px 0;">
+                <img src="https://ui-avatars.com/api/?name=Vandana+Enterprises&background=3b82f6&color=fff&size=120" style="border-radius:50%; border:4px solid #1e293b; box-shadow:0 0 30px rgba(59, 130, 246, 0.4); margin-bottom:20px;">
                 <h2 style="margin:0; font-size:24px; font-weight:800;">Vandana Enterprises</h2>
                 <p style="color:#94a3b8; margin-top:8px; font-size:14px; font-weight:500;">Manage Business Identity & Payments</p>
             </div>
@@ -293,7 +300,7 @@
             
             <div class="form-panel">
                 <label class="form-label">Add Product</label>
-                <div class="input-btn-group" style="margin-bottom: 12px;">
+                <div class="input-btn-group" style="margin-bottom: 15px;">
                     <select class="form-control" id="inv-cat" style="flex:2;">
                         <option value="Kamlay Thread">Kamlay Thread</option>
                         <option value="Zari">Zari</option>
@@ -365,9 +372,9 @@
     <div class="page" id="parties-page">
         <div class="kb-header">
             <div style="display:flex; align-items:flex-start;">
-                <button class="back-btn" onclick="closePage('parties-page')" style="padding:0; margin-right:15px; background:transparent; border:none; color:white;">←</button>
+                <button class="back-btn" onclick="closePage('parties-page')" style="padding:0; margin-right:15px; background:transparent; border:none; color:white; box-shadow:none;">←</button>
                 <div style="display:flex; gap:12px;">
-                    <div style="background:rgba(255,255,255,0.2); color:white; padding:8px; border-radius:8px; font-size:18px;">📘</div>
+                    <div style="background:rgba(255,255,255,0.2); color:white; padding:8px; border-radius:10px; font-size:18px;">📘</div>
                     <div>
                         <div class="kb-header-title">Ledger Book <span>⌄</span></div>
                         <div style="font-size:13px; opacity:0.9; margin-top:2px; font-weight:500;">Manage Accounts</div>
@@ -392,7 +399,7 @@
                     <div class="kb-summary-val" style="color:var(--danger);">₹ 1,45,824</div>
                 </div>
             </div>
-            <div style="border-top:1px solid #f8fafc; padding:16px; text-align:center; font-size:14px; font-weight:800; color:var(--primary); cursor:pointer;" onclick="openPage('report-page')">
+            <div style="border-top:1px solid #f8fafc; padding:18px; text-align:center; font-size:14px; font-weight:800; color:var(--primary); cursor:pointer;" onclick="openPage('report-page')">
                 📄 View Reports
             </div>
         </div>
@@ -422,7 +429,7 @@
     </div>
 
     <!-- ======================================================== -->
-    <!-- 📄 REPORT PAGE (Active) -->
+    <!-- 📄 REPORT PAGE -->
     <!-- ======================================================== -->
     <div class="page" id="report-page">
         <div class="page-header">
@@ -475,13 +482,13 @@
     </div>
 
     <!-- ======================================================== -->
-    <!-- 🔥 KHATABOOK DEEP LEDGER PAGE (Screen 1) -->
+    <!-- 🔥 KHATABOOK DEEP LEDGER PAGE -->
     <!-- ======================================================== -->
     <div class="page" id="ledger-deep-page">
         <div class="ledger-header-area">
             <div class="ledger-top-row">
                 <div style="display:flex; align-items:center;">
-                    <button class="back-btn" onclick="closePage('ledger-deep-page')" style="padding:0; margin-right:15px; background:transparent; border:none; color:white;">←</button>
+                    <button class="back-btn" onclick="closePage('ledger-deep-page')" style="padding:0; margin-right:15px; background:transparent; border:none; color:white; box-shadow:none;">←</button>
                     <div class="l-avatar-name">
                         <div id="l-deep-avatar-text" class="kb-avatar" style="width:44px; height:44px; margin-right:0; font-size:18px;"></div>
                         <div>
@@ -492,10 +499,8 @@
                 </div>
                 <span style="font-size:24px; font-weight:bold; cursor:pointer;">📞</span>
             </div>
-            
         </div>
 
-        <!-- Pulled up Balance Card -->
         <div class="ledger-bal-card">
             <span style="font-size:16px; color:var(--text-muted); font-weight:700;" id="l-deep-bal-text">You will give</span>
             <span style="font-size:26px; font-weight:800;" id="l-deep-bal-amt">₹ 0</span>
@@ -513,10 +518,7 @@
                 <span style="flex:1; text-align:center; color:var(--danger);">YOU GAVE</span>
                 <span style="flex:1; text-align:right; color:var(--success);">YOU GOT</span>
             </div>
-
-            <div id="ledger-entries-list">
-                <!-- Data populated dynamically -->
-            </div>
+            <div id="ledger-entries-list"></div>
         </div>
 
         <div class="bottom-action-bar">
@@ -544,14 +546,22 @@
 
     <!-- ================= JAVASCRIPT SYSTEM LOGIC ================= -->
     <script>
-        // --- 1. HARDWARE BACK BUTTON LOCK ---
+        // --- SPLASH SCREEN LOGIC ---
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('splash-screen').style.opacity = '0';
+                document.getElementById('splash-screen').style.visibility = 'hidden';
+            }, 1500);
+        });
+
+        // --- HARDWARE BACK BUTTON LOCK ---
         window.history.pushState(null, null, window.location.href);
         window.onpopstate = function () {
             window.history.pushState(null, null, window.location.href);
             alert("🚫 Security Alert: Back jaane ke liye kripya screen ke upar wale arrow (←) ka upyog karein.");
         };
 
-        // --- 2. MENU & DATE SETTINGS ---
+        // --- MENU & DATE SETTINGS ---
         function toggleMenu() { 
             const menu = document.getElementById('dropdown-menu');
             menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; 
@@ -564,7 +574,7 @@
             if(document.getElementById('rep-to')) document.getElementById('rep-to').value = today;
         });
 
-        // --- 3. PAGE NAVIGATION & TABS ---
+        // --- PAGE NAVIGATION & TABS ---
         function openPage(id) { document.getElementById(id).classList.add('active'); }
         function closePage(id) { document.getElementById(id).classList.remove('active'); }
         function goHome() {
@@ -588,7 +598,7 @@
             }
         }
 
-        // --- 4. PHONEBOOK API ---
+        // --- PHONEBOOK API ---
         async function openPhonebook(nameInputId, phoneInputId) {
             if ('contacts' in navigator && 'ContactsManager' in window) {
                 try {
@@ -607,7 +617,7 @@
             }
         }
 
-        // --- 5. INVOICE CART LOGIC ---
+        // --- INVOICE CART LOGIC ---
         let currentCart = [];
         let grandInvoiceTotal = 0;
 
@@ -659,7 +669,7 @@
             window.open(`https://wa.me/91${custPhone}?text=${msg}`, '_blank');
         }
 
-        // --- 6. ADD NEW CUSTOMER ---
+        // --- ADD NEW CUSTOMER ---
         function addNewCustomer() {
             let name = document.getElementById('new-party-name').value;
             if(!name) return alert("Please enter name!");
@@ -681,7 +691,7 @@
             document.getElementById('new-party-name').value = '';
         }
 
-        // --- 7. LEDGER DEEP PAGE ---
+        // --- LEDGER DEEP PAGE ---
         let currentPartyName = "";
         function openLedgerDetail(name, balance, type) {
             currentPartyName = name;
@@ -701,7 +711,6 @@
 
             document.getElementById('l-deep-avatar-text').innerText = name.substring(0,2).toUpperCase();
 
-            // Load Dummy Entries
             const entryList = document.getElementById('ledger-entries-list');
             entryList.innerHTML = '';
 

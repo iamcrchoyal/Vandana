@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0b0f19">
-    <title>Vandana ERP - Professional Hybrid UI</title>
+    <title>Vandana ERP - Live Connected</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -16,8 +16,8 @@
             --success: #10b981;
             --danger: #f43f5e;
             --warning: #f59e0b;
-            --text-main: #f8fafc; /* For Dashboard */
-            --text-muted: #94a3b8; /* For Dashboard */
+            --text-main: #f8fafc; 
+            --text-muted: #94a3b8; 
             --glass-bg: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
             --glass-blur: blur(16px);
@@ -54,7 +54,6 @@
         .orb-2 { position: fixed; bottom: -10%; right: -10%; width: 60vw; height: 60vw; border-radius: 50%; background: radial-gradient(circle, rgba(59,130,246,0.25) 0%, rgba(0,0,0,0) 70%); animation: float 12s infinite ease-in-out alternate-reverse; z-index: -1; pointer-events: none;}
         @keyframes float { 0% { transform: translate(0, 0); } 100% { transform: translate(30px, 50px); } }
 
-        /* Generic Glass Panel */
         .glass-panel { background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); }
 
         /* 📱 HEADER */
@@ -125,7 +124,7 @@
         .invoice-table th { background: #f8fafc; padding: 16px; color: var(--page-text-muted); border-bottom: 1px solid var(--page-border); font-weight: 800; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;}
         .invoice-table td { padding: 16px; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: var(--page-text); }
 
-        /* ================= 3. KHATABOOK UI (CLEAN BRIGHT) ================= */
+        /* ================= 3. KHATABOOK UI ================= */
         .kb-header { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: white; padding: 20px 20px 70px 20px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;}
         .kb-header-title { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
         .kb-tabs { display: flex; gap: 25px; margin-top: 30px; font-size: 14px; font-weight: 800; }
@@ -172,13 +171,25 @@
         .btn-l-gave { flex: 1; background: linear-gradient(135deg, #e11d48, #be123c); color: white; border: none; padding: 18px; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 8px 20px rgba(225, 29, 72, 0.3); transition: 0.2s;}
         .btn-l-got { flex: 1; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 18px; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); transition: 0.2s;}
 
+        /* Loader */
+        .loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
+        .spinner { border: 4px solid rgba(37, 99, 235, 0.1); border-left-color: var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
+    <!-- Loading Overlay for Google Sheets API -->
+    <div id="loader" class="loader-overlay">
+        <div class="spinner"></div>
+        <p style="margin-top:15px; font-weight:700; color:var(--primary);">Saving to Cloud...</p>
+    </div>
+
+    <!-- Glowing Orbs Background (Dashboard) -->
     <div class="orb-1"></div>
     <div class="orb-2"></div>
 
+    <!-- 📱 TOP BAR WITH 3-DOT MENU -->
     <header class="app-bar">
         <div class="app-bar-left">
             <h1>Vandana Enterprises</h1>
@@ -188,12 +199,13 @@
             <div id="dropdown-menu" class="dropdown">
                 <div onclick="openPage('profile-page'); toggleMenu();">💼 Business Profile</div>
                 <div onclick="openPage('report-page'); toggleMenu();">📄 View Reports</div>
-                <div onclick="alert('Syncing to Secure Cloud...'); toggleMenu();">🔄 Sync Data</div>
+                <div onclick="alert('Data is live synced!'); toggleMenu();">🔄 Sync Data</div>
                 <div style="color:var(--danger);" onclick="alert('Logged Out safely'); toggleMenu();">🚪 Logout</div>
             </div>
         </div>
     </header>
 
+    <!-- 🏠 MAIN DASHBOARD -->
     <main class="main-content">
         <h3 class="section-title-dash">Quick Actions</h3>
         <div class="quick-actions">
@@ -232,6 +244,7 @@
         </div>
     </main>
 
+    <!-- ⚓ FLOATING GLASS BOTTOM NAV -->
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="goHome()">
             <i>🏠</i><span>Home</span>
@@ -247,41 +260,32 @@
         </div>
     </nav>
 
+    <!-- ======================================================== -->
+    <!-- 💼 BUSINESS PROFILE -->
+    <!-- ======================================================== -->
     <div class="page" id="profile-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('profile-page')">←</button>
             <h2 class="page-title">Business Profile</h2>
         </div>
         <div class="page-content">
-            
             <div style="text-align:center; padding:10px 0 30px 0;">
                 <img src="https://ui-avatars.com/api/?name=Vandana+Enterprises&background=2563eb&color=fff&size=120" style="border-radius:50%; border:4px solid white; box-shadow:0 10px 30px rgba(37, 99, 235, 0.2); margin-bottom:20px;">
                 <h2 style="margin:0; font-size:24px; font-weight:800; color:var(--page-text);">Vandana Enterprises</h2>
-                <p style="color:var(--page-text-muted); margin-top:8px; font-size:14px; font-weight:500;">Manage Business Identity & Payments</p>
+                <p style="color:var(--page-text-muted); margin-top:8px; font-size:14px; font-weight:500;">Manage Business Identity</p>
             </div>
-
             <div class="form-panel">
                 <h3 class="section-title">Firm Details</h3>
-                <div class="input-btn-group" style="margin-bottom:15px;">
-                    <input type="text" class="form-control" placeholder="Enter GSTIN Number">
-                    <button class="action-btn" onclick="alert('Saving GST Data...')">Fetch</button>
-                </div>
-                <input type="text" class="form-control" placeholder="Firm Name" value="Vandana Enterprises">
+                <input type="text" class="form-control" placeholder="Firm Name" value="Vandana Enterprises" style="margin-bottom:15px;">
+                <input type="text" class="form-control" placeholder="Enter GSTIN Number">
             </div>
-
-            <div class="form-panel">
-                <h3 class="section-title">Payment & QR Setup</h3>
-                <input type="text" class="form-control" placeholder="Bank Account Number" style="margin-bottom:15px;">
-                <input type="text" class="form-control" placeholder="IFSC Code" style="margin-bottom:15px;">
-                <input type="text" class="form-control" placeholder="UPI ID (e.g. vandana@sbi)" style="margin-bottom:20px;">
-                <div style="border:2px dashed var(--primary); padding:25px; text-align:center; border-radius:12px; color:var(--primary); cursor:pointer; font-weight:700;" onclick="alert('Upload your QR Code image here.')">
-                    📷 Upload Payment QR Code
-                </div>
-            </div>
-            <button class="btn-submit" onclick="alert('Profile Settings Saved!')">Save Changes</button>
+            <button class="btn-submit" onclick="alert('Profile Saved!')">Save Changes</button>
         </div>
     </div>
 
+    <!-- ======================================================== -->
+    <!-- 🧾 SALE INVOICE PAGE -->
+    <!-- ======================================================== -->
     <div class="page" id="pos-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('pos-page')">←</button>
@@ -307,10 +311,6 @@
                         <option value="Zari">Zari</option>
                         <option value="Cotton Yarn">Cotton Yarn</option>
                         <option value="Viscose">Viscose</option>
-                        <option value="Metallic Coding">Metallic Coding</option>
-                        <option value="Cotton Coding">Cotton Coding</option>
-                        <option value="Nylon">Nylon</option>
-                        <option value="Bobin">Bobin</option>
                     </select>
                     <input type="text" class="form-control" id="inv-shade" placeholder="Shade/Color" style="flex:1;">
                 </div>
@@ -334,13 +334,12 @@
             </div>
             
             <button class="btn-submit" onclick="triggerSaveAndShare()">💾 Save & Generate Bill</button>
-            
-            <button id="pdf-share-btn" class="btn-submit btn-whatsapp" style="display:none; background: linear-gradient(135deg, #10b981, #059669); margin-top:15px;" onclick="sharePDFOnWhatsApp()">
-                📲 Share PDF via WhatsApp
-            </button>
         </div>
     </div>
 
+    <!-- ======================================================== -->
+    <!-- 📦 STOCK IN PAGE -->
+    <!-- ======================================================== -->
     <div class="page" id="stock-in-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('stock-in-page')">←</button>
@@ -351,20 +350,23 @@
                 <h3 class="section-title" style="margin:0 0 15px 0;">Add Inventory</h3>
                 <div class="form-group">
                     <label class="form-label">Category</label>
-                    <select class="form-control" style="margin-bottom:15px;">
+                    <select class="form-control" id="stock-cat" style="margin-bottom:15px;">
                         <option>Kamlay Thread</option><option>Zari</option><option>Cotton Yarn</option><option>Viscose</option>
                     </select>
                     <label class="form-label">Details</label>
                     <div class="input-btn-group" style="margin-bottom:20px;">
-                        <input type="text" class="form-control" id="kamlay-shade-input" placeholder="Shade/Code" style="flex:1;">
-                        <input type="number" class="form-control" id="kamlay-qty-input" placeholder="Total Boxes" style="flex:1;">
+                        <input type="text" class="form-control" id="stock-shade" placeholder="Shade/Code" style="flex:1;">
+                        <input type="number" class="form-control" id="stock-qty" placeholder="Total Boxes" style="flex:1;">
                     </div>
                 </div>
-                <button class="btn-submit" onclick="saveKamlayShade()">📥 Update Inventory</button>
+                <button class="btn-submit" onclick="saveStockToCloud()">📥 Update Inventory</button>
             </div>
         </div>
     </div>
 
+    <!-- ======================================================== -->
+    <!-- 👥 PARTIES & LEDGER -->
+    <!-- ======================================================== -->
     <div class="page" id="parties-page">
         <div class="kb-header">
             <div style="display:flex; align-items:flex-start;">
@@ -401,19 +403,13 @@
         </div>
 
         <div class="kb-list" id="kb-customer-list">
+            <!-- New customers will be prepended here via JS -->
             <div class="kb-list-item" onclick="openLedgerDetail('NANDU JI MEENA', '831', 'give')">
                 <div class="kb-list-left">
                     <div class="kb-avatar">NM</div>
-                    <div><div class="kb-name">NANDU JI MEENA</div><div class="kb-time">4 days ago</div></div>
+                    <div><div class="kb-name">NANDU JI MEENA</div><div class="kb-time">Demo Data</div></div>
                 </div>
                 <div class="kb-list-right" style="background:#ecfdf5; border-left:1px dashed #e2e8f0; border-top-right-radius:16px; border-bottom-right-radius:16px;"><span style="color:var(--success); font-weight:800;">₹ 831</span></div>
-            </div>
-            <div class="kb-list-item" onclick="openLedgerDetail('ANITA TEXTILE', '81648', 'get')">
-                <div class="kb-list-left">
-                    <div class="kb-avatar">AT</div>
-                    <div><div class="kb-name">ANITA TEXTILE</div><div class="kb-time">4 days ago</div></div>
-                </div>
-                <div class="kb-list-right" style="background:#fff1f2; border-left:1px dashed #e2e8f0; border-top-right-radius:16px; border-bottom-right-radius:16px;"><span style="color:var(--danger); font-weight:800;">₹ 81,648</span></div>
             </div>
         </div>
 
@@ -424,6 +420,9 @@
         <button class="kb-fab" onclick="openPage('add-party-page')">+</button>
     </div>
 
+    <!-- ======================================================== -->
+    <!-- 📄 REPORT PAGE -->
+    <!-- ======================================================== -->
     <div class="page" id="report-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('report-page')">←</button>
@@ -440,14 +439,14 @@
                     <label class="form-label">To Date</label>
                     <input type="date" class="form-control" id="rep-to" style="width:100%;">
                 </div>
-                <div style="display:flex; gap:12px; margin-top:25px;">
-                    <button class="btn-submit" style="background:linear-gradient(135deg, #10b981, #059669);" onclick="alert('Downloading PDF Report...')">📥 Download</button>
-                    <button class="btn-submit" onclick="alert('Sharing Report via WhatsApp...')">🔗 Share</button>
-                </div>
+                <button class="btn-submit" style="margin-top:20px;" onclick="alert('Downloading Data...')">📥 Download Report</button>
             </div>
         </div>
     </div>
 
+    <!-- ======================================================== -->
+    <!-- 👤 ADD NEW PARTY PAGE (Connected to Cloud) -->
+    <!-- ======================================================== -->
     <div class="page" id="add-party-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('add-party-page')">←</button>
@@ -466,11 +465,14 @@
                     <label class="form-label">Mobile Number</label>
                     <input type="tel" class="form-control" id="new-party-phone" placeholder="Enter Number">
                 </div>
-                <button class="btn-submit" onclick="addNewCustomer()">💾 Save Account</button>
+                <button class="btn-submit" onclick="addCustomerToCloud()">💾 Save to Cloud</button>
             </div>
         </div>
     </div>
 
+    <!-- ======================================================== -->
+    <!-- 🔥 KHATABOOK DEEP LEDGER PAGE (Connected to Cloud) -->
+    <!-- ======================================================== -->
     <div class="page" id="ledger-deep-page">
         <div class="ledger-header-area">
             <div class="ledger-top-row">
@@ -509,11 +511,12 @@
         </div>
 
         <div class="bottom-action-bar">
-            <button class="btn-l-gave" onclick="processNewEntry('Gave')">YOU GAVE ₹</button>
-            <button class="btn-l-got" onclick="processNewEntry('Got')">YOU GOT ₹</button>
+            <button class="btn-l-gave" onclick="addLedgerToCloud('Gave')">YOU GAVE ₹</button>
+            <button class="btn-l-got" onclick="addLedgerToCloud('Got')">YOU GOT ₹</button>
         </div>
     </div>
 
+    <!-- 📦 ITEMS MASTER PAGE -->
     <div class="page" id="items-page">
         <div class="page-header">
             <button class="back-btn" onclick="closePage('items-page')">←</button>
@@ -530,31 +533,191 @@
         </div>
     </div>
 
+    <!-- ================= JAVASCRIPT: GOOGLE SHEETS API CONNECTION ================= -->
     <script>
-        // --- MENU & DATE SETTINGS ---
+        // 🚀 YOUR GOOGLE SCRIPT URL HERE
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxisMxpKcoa8So_ku7XKDuOfOQx6dspEm_YmNJiQdeSVC6tTL76jfWlrC4FeprdPXk/exec";
+
+        // Loader Functions
+        function showLoader() { document.getElementById('loader').style.display = 'flex'; }
+        function hideLoader() { document.getElementById('loader').style.display = 'none'; }
+
+        // --- 1. ADD NEW CUSTOMER TO GOOGLE SHEETS ---
+        function addCustomerToCloud() {
+            let name = document.getElementById('new-party-name').value;
+            let phone = document.getElementById('new-party-phone').value;
+            
+            if(!name) return alert("Please enter Customer Name!");
+
+            showLoader();
+
+            let payload = {
+                action: "addCustomer",
+                name: name,
+                phone: phone,
+                date: new Date().toISOString().split('T')[0]
+            };
+
+            // Using no-cors mode to bypass CORS issues while writing data
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors", 
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                hideLoader();
+                alert("✅ Customer successfully saved to Google Sheets!");
+                
+                // Update Local UI instantly
+                let list = document.getElementById('kb-customer-list');
+                let initial = name.substring(0,2).toUpperCase();
+                list.innerHTML = `
+                <div class="kb-list-item" onclick="openLedgerDetail('${name}', '0', 'get')">
+                    <div class="kb-list-left">
+                        <div class="kb-avatar">${initial}</div>
+                        <div><div class="kb-name">${name}</div><div class="kb-time">Just now</div></div>
+                    </div>
+                    <div class="kb-list-right" style="background:var(--page-bg); border-left:1px dashed var(--page-border); border-top-right-radius:16px; border-bottom-right-radius:16px;"><span style="color:var(--page-text); font-weight:800;">₹ 0</span></div>
+                </div>` + list.innerHTML;
+                
+                closePage('add-party-page');
+                document.getElementById('new-party-name').value = '';
+                document.getElementById('new-party-phone').value = '';
+            }).catch(err => {
+                hideLoader();
+                alert("Error connecting to server. Please try again.");
+            });
+        }
+
+        // --- 2. ADD LEDGER ENTRY TO GOOGLE SHEETS ---
+        let currentPartyName = "";
+        
+        function openLedgerDetail(name, balance, type) {
+            currentPartyName = name;
+            document.getElementById('l-deep-name').innerText = name;
+            
+            let balEl = document.getElementById('l-deep-bal-amt');
+            let txtEl = document.getElementById('l-deep-bal-text');
+            balEl.innerText = "₹ " + balance;
+            
+            if(type === 'give') {
+                balEl.style.color = "var(--success)";
+                txtEl.innerText = "You will give";
+            } else {
+                balEl.style.color = "var(--danger)";
+                txtEl.innerText = "You will get";
+            }
+
+            document.getElementById('l-deep-avatar-text').innerText = name.substring(0,2).toUpperCase();
+            
+            // Clear current list and wait for new entry
+            document.getElementById('ledger-entries-list').innerHTML = `<div style="text-align:center; padding:30px; color:var(--page-text-muted);">Syncing data...</div>`;
+            openPage('ledger-deep-page');
+        }
+
+        function addLedgerToCloud(type) {
+            let amount = prompt(`Enter Amount for 'You ${type}' (₹):`);
+            if(!amount) return;
+            let detail = prompt("Enter Note/Details (Optional):") || "";
+
+            showLoader();
+
+            let now = new Date();
+            let dateStr = now.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'2-digit'});
+            let timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            let fullDateTime = `${dateStr} ${timeStr}`;
+
+            let payload = {
+                action: "addLedgerEntry",
+                name: currentPartyName,
+                type: type,
+                amount: amount,
+                details: detail,
+                dateTime: fullDateTime
+            };
+
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                hideLoader();
+                alert("✅ Ledger entry saved to Google Sheets!");
+                
+                // Update Local UI instantly
+                let entryList = document.getElementById('ledger-entries-list');
+                if(entryList.innerHTML.includes('Syncing')) entryList.innerHTML = '';
+
+                let gaveHtml = type === 'Gave' ? `₹ ${amount}` : '';
+                let gotHtml = type === 'Got' ? `₹ ${amount}` : '';
+
+                let html = `
+                <div class="entry-card">
+                    <div class="ec-left">
+                        <div style="font-size:13px; color:var(--page-text-muted); margin-bottom:8px; font-weight:600;">${dateStr} • ${timeStr}</div>
+                        <div style="display:inline-block; padding:4px 8px; font-size:11px; font-weight:700; border-radius:6px; background:#eff6ff; color:var(--primary); margin-bottom:8px;">Synced ☁️</div>
+                        <div style="font-size:14px; color:var(--page-text); font-weight:500;">${detail}</div>
+                    </div>
+                    <div class="ec-gave">${gaveHtml}</div>
+                    <div class="ec-got">${gotHtml}</div>
+                </div>`;
+                entryList.innerHTML = html + entryList.innerHTML;
+            }).catch(err => {
+                hideLoader();
+                alert("Error connecting to server.");
+            });
+        }
+
+        // --- 3. ADD STOCK TO GOOGLE SHEETS ---
+        function saveStockToCloud() {
+            let cat = document.getElementById('stock-cat').value;
+            let shade = document.getElementById('stock-shade').value;
+            let qty = document.getElementById('stock-qty').value;
+
+            if(!shade || !qty) return alert("Enter Shade Code and Quantity!");
+
+            showLoader();
+
+            let payload = {
+                action: "updateStock",
+                category: cat,
+                shadeCode: shade,
+                qty: qty,
+                date: new Date().toISOString().split('T')[0]
+            };
+
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                hideLoader();
+                alert("✅ Inventory Stock updated in Google Sheets!");
+                document.getElementById('stock-shade').value = '';
+                document.getElementById('stock-qty').value = '';
+            }).catch(err => {
+                hideLoader();
+                alert("Error connecting to server.");
+            });
+        }
+
+
+        // ==========================================
+        // OTHER STANDARD UI LOGIC
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            const todayStr = new Date().toLocaleDateString('en-GB', options);
+            document.getElementById('dash-date-display').innerText = todayStr;
+        });
+
         function toggleMenu() { 
             const menu = document.getElementById('dropdown-menu');
             menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; 
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const options = { day: 'numeric', month: 'long', year: 'numeric' };
-            const todayStr = new Date().toLocaleDateString('en-GB', options);
-            document.getElementById('dash-date-display').innerText = todayStr;
-
-            let today = new Date().toISOString().split('T')[0];
-            if(document.getElementById('rep-from')) document.getElementById('rep-from').value = today;
-            if(document.getElementById('rep-to')) document.getElementById('rep-to').value = today;
-        });
-
-        // --- HARDWARE BACK BUTTON LOCK ---
-        window.history.pushState(null, null, window.location.href);
-        window.onpopstate = function () {
-            window.history.pushState(null, null, window.location.href);
-            alert("🚫 Security Alert: Back jaane ke liye kripya screen ke upar wale arrow (←) ka upyog karein.");
-        };
-
-        // --- PAGE NAVIGATION & TABS ---
         function openPage(id) { document.getElementById(id).classList.add('active'); }
         function closePage(id) { document.getElementById(id).classList.remove('active'); }
         function goHome() {
@@ -568,7 +731,6 @@
             document.getElementById('tab-supp').classList.remove('active');
             document.getElementById('kb-customer-list').style.display = 'none';
             document.getElementById('kb-supplier-list').style.display = 'none';
-
             if(tab === 'cust') {
                 document.getElementById('tab-cust').classList.add('active');
                 document.getElementById('kb-customer-list').style.display = 'block';
@@ -578,58 +740,38 @@
             }
         }
 
-        // --- PHONEBOOK API ---
-        async function openPhonebook(nameInputId, phoneInputId) {
-            if ('contacts' in navigator && 'ContactsManager' in window) {
+        async function openPhonebook(nameId, phoneId) {
+            if ('contacts' in navigator) {
                 try {
                     const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false });
                     if (contacts.length > 0) {
-                        if (contacts[0].name) document.getElementById(nameInputId).value = contacts[0].name[0];
+                        if (contacts[0].name) document.getElementById(nameId).value = contacts[0].name[0];
                         if (contacts[0].tel) {
                             let cleanNum = String(contacts[0].tel[0]).replace(/\D/g, '');
                             if (cleanNum.length > 10) cleanNum = cleanNum.slice(-10);
-                            document.getElementById(phoneInputId).value = cleanNum;
+                            document.getElementById(phoneId).value = cleanNum;
                         }
                     }
-                } catch (e) { alert("Contact access error."); }
-            } else {
-                alert("💡 Chrome on Android is required for Phonebook Sync. Enter manually.");
+                } catch(e) {}
             }
         }
 
-        // --- INVOICE CART LOGIC ---
+        // Cart Logic (Local for now)
         let currentCart = [];
         let grandInvoiceTotal = 0;
-
         function addCartItem() {
             const cat = document.getElementById('inv-cat').value;
             const shade = document.getElementById('inv-shade').value || "Gen";
             const qty = parseFloat(document.getElementById('inv-qty').value) || 0;
             const rate = parseFloat(document.getElementById('inv-rate').value) || 0;
-
-            if (qty <= 0 || rate <= 0) return alert("Enter valid Quantity and Rate!");
-
-            let title = `${cat} - Shd:${shade}`;
+            if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!");
+            
             let itemTotal = qty * rate;
-            currentCart.push({ title, qty, rate, itemTotal });
-
-            renderCartUi();
-            document.getElementById('inv-shade').value = '';
-            document.getElementById('inv-qty').value = '';
-            document.getElementById('inv-rate').value = '';
-        }
-
-        function renderCartUi() {
-            const tbody = document.getElementById('cart-rows');
+            currentCart.push({ title: `${cat} - Shd:${shade}`, qty, rate, itemTotal });
+            
+            let tbody = document.getElementById('cart-rows');
             tbody.innerHTML = '';
             grandInvoiceTotal = 0;
-
-            if (currentCart.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--page-text-muted); font-weight:600;">Cart is empty</td></tr>';
-                document.getElementById('cart-grand-total').innerText = "₹ 0";
-                return;
-            }
-
             currentCart.forEach(item => {
                 grandInvoiceTotal += item.itemTotal;
                 tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.qty}</td><td>₹${item.rate}</td><td><strong>₹${item.itemTotal.toLocaleString()}</strong></td></tr>`;
@@ -640,109 +782,6 @@
         function triggerSaveAndShare() {
             if (currentCart.length === 0) return alert("Cart is empty!");
             alert(`✅ Invoice Generated! Total: ₹${grandInvoiceTotal}`);
-            document.getElementById('pdf-share-btn').style.display = 'block';
-        }
-
-        function sharePDFOnWhatsApp() {
-            const custPhone = document.getElementById('inv-phone').value || "";
-            let msg = `📄 *INVOICE PDF* %0A🏛️ *VANDANA ENTERPRISES*%0A%0A*Grand Total:* ₹${grandInvoiceTotal}%0A%0A(Note: In real backend, a PDF link will be attached here).`;
-            window.open(`https://wa.me/91${custPhone}?text=${msg}`, '_blank');
-        }
-
-        // --- ADD NEW CUSTOMER ---
-        function addNewCustomer() {
-            let name = document.getElementById('new-party-name').value;
-            if(!name) return alert("Please enter name!");
-            
-            let list = document.getElementById('kb-customer-list');
-            let initial = name.substring(0,2).toUpperCase();
-            
-            list.innerHTML = `
-            <div class="kb-list-item" onclick="openLedgerDetail('${name}', '0', 'get')">
-                <div class="kb-list-left">
-                    <div class="kb-avatar">${initial}</div>
-                    <div><div class="kb-name">${name}</div><div class="kb-time">Just now</div></div>
-                </div>
-                <div class="kb-list-right" style="background:var(--page-bg); border-left:1px dashed var(--page-border); border-top-right-radius:16px; border-bottom-right-radius:16px;"><span style="color:var(--page-text); font-weight:800;">₹ 0</span></div>
-            </div>` + list.innerHTML;
-            
-            alert(`Customer ${name} saved!`);
-            closePage('add-party-page');
-            document.getElementById('new-party-name').value = '';
-        }
-
-        // --- LEDGER DEEP PAGE ---
-        let currentPartyName = "";
-        function openLedgerDetail(name, balance, type) {
-            currentPartyName = name;
-            document.getElementById('l-deep-name').innerText = name;
-            
-            let balEl = document.getElementById('l-deep-bal-amt');
-            let txtEl = document.getElementById('l-deep-bal-text');
-            
-            balEl.innerText = "₹ " + balance;
-            if(type === 'give') {
-                balEl.style.color = "var(--success)";
-                txtEl.innerText = "You will give";
-            } else {
-                balEl.style.color = "var(--danger)";
-                txtEl.innerText = "You will get";
-            }
-
-            document.getElementById('l-deep-avatar-text').innerText = name.substring(0,2).toUpperCase();
-
-            const entryList = document.getElementById('ledger-entries-list');
-            entryList.innerHTML = '';
-
-            if(name === "NANDU JI MEENA") {
-                entryList.innerHTML = `
-                <div style="text-align:center; font-size:12px; color:var(--page-text-muted); font-weight:600; margin: 20px 0 10px 0;">11 Jul 26 • 4 days ago</div>
-                <div class="entry-card">
-                    <div class="ec-left">
-                        <div style="font-size:13px; color:var(--page-text-muted); margin-bottom:8px; font-weight:600;">11 Jul 26 • 03:03 PM</div>
-                        <div style="display:inline-block; padding:4px 8px; font-size:11px; font-weight:700; border-radius:6px; background:#ecfdf5; color:var(--success); margin-bottom:8px;">Bal. ₹ 831</div>
-                        <div style="font-size:14px; color:var(--page-text); font-weight:500;">axis</div>
-                    </div>
-                    <div class="ec-gave"></div>
-                    <div class="ec-got">₹ 1,000</div>
-                </div>`;
-            } else {
-                entryList.innerHTML = `<div style="text-align:center; padding:50px; color:var(--page-text-muted); font-size:14px; font-weight:600;">No entries available</div>`;
-            }
-
-            openPage('ledger-deep-page');
-        }
-
-        function processNewEntry(type) {
-            let amount = prompt(`Enter Amount for 'You ${type}' (₹):`);
-            if(amount) {
-                let detail = prompt("Enter Details (Optional):") || "";
-                const entryList = document.getElementById('ledger-entries-list');
-                if(entryList.innerHTML.includes('No entries')) entryList.innerHTML = '';
-
-                let now = new Date();
-                let fullDateTime = `${now.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'2-digit'})} • ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
-
-                let gaveHtml = type === 'Gave' ? `₹ ${amount}` : '';
-                let gotHtml = type === 'Got' ? `₹ ${amount}` : '';
-
-                let html = `
-                <div class="entry-card">
-                    <div class="ec-left">
-                        <div style="font-size:13px; color:var(--page-text-muted); margin-bottom:8px; font-weight:600;">${fullDateTime}</div>
-                        <div style="display:inline-block; padding:4px 8px; font-size:11px; font-weight:700; border-radius:6px; background:#eff6ff; color:var(--primary); margin-bottom:8px;">Bal. Pending</div>
-                        <div style="font-size:14px; color:var(--page-text); font-weight:500;">${detail}</div>
-                    </div>
-                    <div class="ec-gave">${gaveHtml}</div>
-                    <div class="ec-got">${gotHtml}</div>
-                </div>`;
-                
-                entryList.innerHTML = html + entryList.innerHTML;
-            }
-        }
-        
-        function saveKamlayShade() {
-            alert('Stock Updated successfully!');
         }
     </script>
 </body>

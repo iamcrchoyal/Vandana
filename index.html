@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1e3a8a">
-    <title>Vandana ERP - Ultimate Master</title>
+    <title>Vandana ERP - Master Edition</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -33,7 +33,7 @@
 
         /* PAGES */
         .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 1000; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 90px; }
-        .page.active { transform: none; /* Fixed elements inside page work now */ }
+        .page.active { transform: none; }
         .page-header { position: sticky; top: 0; background: var(--primary); color: white; height: 56px; display: flex; align-items: center; padding: 0 16px; z-index: 50; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .back-btn { background: transparent; border: none; color: white; font-size: 24px; margin-right: 16px; cursor: pointer;}
         .page-title { font-size: 16px; font-weight: 600; margin: 0; }
@@ -60,15 +60,14 @@
         .action-box { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 12px 4px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer;}
         .action-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 18px; background: #f8fafc;}
 
-        /* PARTIES PAGE (STICKY HEADER) */
-        .parties-sticky-top { position: sticky; top: 0; background: var(--bg-color); z-index: 40; padding-bottom: 5px;}
+        /* PARTIES PAGE (STICKY HEADER + SEARCH AT BOTTOM) */
+        .parties-sticky-top { position: sticky; top: 0; background: var(--bg-color); z-index: 40; padding-bottom: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
         .thin-header { background: #1e3a8a; color: white; padding: 12px 16px; display: flex; align-items: center;}
         .kb-summary-card { background: white; border-radius: 8px; margin: 10px 16px; border: 1px solid var(--border); display: flex; padding: 12px 0;}
         .kb-summary-box { flex: 1; text-align: center; border-right: 1px dashed #e2e8f0; }
         .kb-summary-box:last-child { border-right: none; }
         .kb-summary-label { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;}
         .kb-summary-val { font-size: 16px; font-weight: 700; margin-top: 4px; }
-        
         .search-bar-container { background: white; margin: 0 16px 10px 16px; border-radius: 6px; padding: 4px 10px; display: flex; align-items: center; border: 1px solid var(--border);}
         .search-bar-container input { border: none; width: 100%; padding: 6px; outline: none; font-size: 13px; }
         
@@ -80,8 +79,9 @@
         .kb-fab { position: fixed; bottom: 80px; right: 20px; width: 50px; height: 50px; background: #b91c1c; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: 0 4px 10px rgba(185, 28, 28, 0.3); border: none; z-index: 2000; cursor: pointer;}
 
         /* DEEP LEDGER PAGE (STICKY HEADER) */
-        .ledger-sticky-top { position: sticky; top: 0; background: var(--bg-color); z-index: 40; padding-bottom: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
+        .ledger-sticky-top { position: sticky; top: 0; background: var(--bg-color); z-index: 40; padding-bottom: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
         .ledger-thin-header { background: #1e3a8a; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;}
+        
         .ledger-action-tabs { display: flex; margin: 10px 16px; gap: 8px;}
         .l-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 11px; font-weight: 600; background: white; border-radius: 6px; cursor: pointer; border: 1px solid var(--border);}
         .today-date-text { text-align: center; font-size: 11px; color: var(--text-muted); margin-bottom: 5px; font-weight: 500;}
@@ -97,17 +97,17 @@
         .btn-l-gave { flex: 1; background: var(--danger); color: white; border: none; padding: 14px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer;}
         .btn-l-got { flex: 1; background: var(--success); color: white; border: none; padding: 14px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer;}
 
-        /* CALCULATOR PAGE */
+        /* CALCULATOR PAGE (WORKING 100%) */
         .calc-header { background: white; color: var(--danger); height: 56px; display: flex; align-items: center; padding: 0 16px; z-index: 10; border-bottom: 1px solid var(--border); }
         .calc-title { font-size: 15px; font-weight: 600; margin: 0; }
         .amount-input-box { background: white; border: 1px solid var(--border); border-radius: 8px; margin: 16px; padding: 16px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
         .amount-symbol { font-size: 24px; color: var(--danger); font-weight: 600; margin-right: 8px;}
-        .amount-input-box input { border: none; outline: none; font-size: 28px; font-weight: 700; color: var(--danger); width: 100%;}
+        .amount-input-box input { border: none; outline: none; font-size: 28px; font-weight: 700; color: var(--danger); width: 100%; background: transparent;}
         .calc-details-input { background: white; border: 1px solid var(--border); border-radius: 8px; margin: 0 16px 16px 16px; padding: 14px; width: calc(100% - 32px); font-size: 14px; outline: none;}
         .calc-action-row { display: flex; justify-content: space-between; margin: 0 16px 16px 16px; gap: 10px;}
         .calc-date-btn { background: white; border: 1px solid var(--border); padding: 10px 12px; border-radius: 8px; display: flex; align-items: center; font-weight: 500; font-size: 13px; flex: 1; outline: none;}
         .calc-attach-btn { background: #f1f5f9; border: 1px solid var(--border); padding: 10px 12px; border-radius: 8px; font-weight: 500; font-size: 13px; color: var(--text-muted);}
-        .calculator-footer { position: fixed !important; bottom: 0; left: 0; width: 100%; background: #f8fafc; border-top: 1px solid var(--border); z-index: 2000;}
+        .calculator-footer { position: fixed !important; bottom: 0; left: 0; width: 100%; background: #f8fafc; border-top: 1px solid var(--border); z-index: 2500;}
         .calc-save-btn { background: var(--danger); color: white; font-weight: 700; font-size: 14px; width: 100%; padding: 16px; border: none; letter-spacing: 1px;}
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; background: #f1f5f9;}
         .calc-btn { background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 16px 0; font-size: 20px; font-weight: 600; cursor: pointer; color: #1e293b;}
@@ -236,11 +236,12 @@
         <!-- FIXED TOP SECTION -->
         <div class="ledger-sticky-top">
             <div class="ledger-thin-header">
-                <div style="display:flex; align-items:center;">
-                    <button class="back-btn" onclick="closePage('ledger-deep-page')" style="padding:0; margin-right:10px;">←</button>
+                <div style="display:flex; align-items:center; cursor:pointer;" onclick="openCustomerProfile()">
+                    <button class="back-btn" onclick="event.stopPropagation(); closePage('ledger-deep-page')" style="padding:0; margin-right:10px;">←</button>
+                    <div class="kb-avatar" id="l-deep-avatar-text" style="width:36px; height:36px; font-size:14px; margin-right:10px; background:white; color:var(--primary);"></div>
                     <div>
-                        <div style="font-size:10px; color:#bfdbfe; font-weight:600; margin-bottom:2px;">CUSTOMER</div>
-                        <div class="l-name" id="l-deep-name" onclick="openCustomerProfile()" style="cursor:pointer;">Name ➔</div>
+                        <div style="font-size:10px; color:#bfdbfe; font-weight:600; margin-bottom:2px; text-transform:uppercase;">CUSTOMER</div>
+                        <div class="l-name" id="l-deep-name">Name ➔</div>
                     </div>
                 </div>
                 <a href="#" id="l-call-btn" style="color:white; text-decoration:none; font-size:20px;">📞</a>
@@ -274,6 +275,7 @@
 
     <!-- ======================================================== -->
     <!-- 🧮 CALCULATOR PAGE -->
+    <!-- ======================================================== -->
     <div class="page" id="calculator-page" style="z-index: 2500;">
         <div class="calc-header" id="calc-header">
             <button class="back-btn" onclick="closePage('calculator-page')" id="calc-back-btn" style="color:var(--danger);">←</button>
@@ -326,6 +328,7 @@
 
     <!-- ======================================================== -->
     <!-- 📝 ENTRY DETAILS PAGE (Scroll Locked) -->
+    <!-- ======================================================== -->
     <div class="page" id="entry-details-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('entry-details-page')">←</button><h2 class="page-title">Entry Details</h2></div>
         <div class="page-content" style="padding:0; height:calc(100vh - 56px); background:#f1f5f9; display:flex; flex-direction:column;">
@@ -359,6 +362,7 @@
 
     <!-- ======================================================== -->
     <!-- 👤 CUSTOMER PROFILE PAGE -->
+    <!-- ======================================================== -->
     <div class="page" id="customer-profile-page">
         <div class="page-header" style="background:#1e3a8a;"><button class="back-btn" onclick="closePage('customer-profile-page')">←</button><h2 class="page-title">Customer Profile</h2></div>
         
@@ -374,7 +378,7 @@
         <div style="margin-top:10px;">
             <div class="profile-list-item">
                 <div style="font-size:18px; margin-right:12px;">👤</div>
-                <div style="flex:1;"><div style="font-size:11px; color:var(--text-muted);">Name</div><div style="font-size:14px; font-weight:600;" id="cp-name">Name</div></div>
+                <div style="flex:1;"><div style="font-size:11px; color:var(--text-muted);">Name</div><div style="font-size:14px; font-weight:600;" id="cp-name-display">Name</div></div>
             </div>
             <div class="profile-list-item">
                 <div style="font-size:18px; margin-right:12px;">📞</div>
@@ -394,6 +398,7 @@
 
     <!-- ======================================================== -->
     <!-- 🧾 OTHER PAGES (POS, STOCK, ITEMS, ADD PARTY) -->
+    <!-- ======================================================== -->
     <div class="page" id="pos-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('pos-page')">←</button><h2 class="page-title">Create Sale Invoice</h2></div>
         <div class="page-content">
@@ -559,6 +564,7 @@
         function openLedgerDetail(name, phone) {
             currentParty = { name, phone };
             document.getElementById('l-deep-name').innerText = name + " ➔";
+            document.getElementById('l-deep-avatar-text').innerText = name.substring(0,2).toUpperCase();
             document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#";
             document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}`, '_blank');
             document.getElementById('l-sms-btn').onclick = () => window.open(`sms:${phone}?body=Reminder from Vandana`, '_blank');
@@ -591,12 +597,13 @@
                     let dateStr = new Date(e.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
                     
                     let balText = e.runBal > 0 ? `Bal: ₹${e.runBal} (Get)` : (e.runBal < 0 ? `Bal: ₹${Math.abs(e.runBal)} (Give)` : `Settled`);
+                    let safeDetails = (e.details || 'Update').replace(/'/g, "\\'"); // Prevent click breaking
 
                     list.innerHTML += `
-                    <div class="entry-card" onclick="openEntryDetails('${e.id}', '${e.type}', ${amt}, '${dateStr}', '${e.details}', '${balText}')">
+                    <div class="entry-card" onclick="openEntryDetails('${e.id}', '${e.type}', ${amt}, '${dateStr}', '${safeDetails}', '${balText}')">
                         <div class="ec-left">
                             <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">${dateStr}</div>
-                            <div style="font-size:13px; font-weight:600; margin-bottom:4px;">${e.details || 'Update'}</div>
+                            <div style="font-size:13px; font-weight:600; margin-bottom:4px;">${safeDetails}</div>
                             <div style="font-size:10px; color:var(--primary); font-weight:600; background:#eff6ff; display:inline-block; padding:2px 6px; border-radius:4px;">${balText}</div>
                         </div>
                         <div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div>
@@ -627,7 +634,7 @@
         function calcPress(val) {
             if(val === 'C') calcValue = "";
             else if(val === 'BACK') calcValue = calcValue.slice(0, -1);
-            else if(val === '=') { try { calcValue = eval(calcValue).toString(); } catch(e){} }
+            else if(val === '=') { try { calcValue = eval(calcValue).toString(); } catch(e){ calcValue=""; } }
             else calcValue += val;
             document.getElementById('calc-amount').value = calcValue; updateCalcTitle();
         }
@@ -636,10 +643,10 @@
             document.getElementById('calc-title-text').innerText = `You ${calcType.toLowerCase()} ₹ ${amt} to ${currentParty.name}`;
         }
         function saveCalculatorEntry() {
-            let amount = eval(calcValue) || 0;
+            let amount = 0;
+            try { amount = eval(calcValue) || 0; } catch(e) { amount = 0; }
             if(amount <= 0) return alert("Enter valid amount!");
             let detail = document.getElementById('calc-details').value;
-            let dateVal = document.getElementById('calc-date').value;
 
             let newId = "TXN" + Date.now();
             let newEntry = { id: newId, date: new Date().toISOString(), name: currentParty.name, type: calcType, amount: amount, details: detail };
@@ -656,7 +663,7 @@
             currentEntry = { id, type, amt, details };
             document.getElementById('ed-name').innerText = currentParty.name;
             document.getElementById('ed-date').innerText = dateStr;
-            document.getElementById('ed-details').innerText = details !== 'undefined' ? details : "--";
+            document.getElementById('ed-details').innerText = (details && details !== 'undefined') ? details : "--";
             document.getElementById('ed-run-bal').innerText = balText;
             
             let amtEl = document.getElementById('ed-amt-val'); let typeEl = document.getElementById('ed-amt-type');
@@ -693,7 +700,7 @@
         // ================= PROFILE & CUSTOMER =================
         function openCustomerProfile() {
             let cust = globalCustomers.find(c => c.name === currentParty.name) || {};
-            document.getElementById('cp-name').innerText = currentParty.name;
+            document.getElementById('cp-name-display').innerText = currentParty.name;
             document.getElementById('cp-phone').innerText = currentParty.phone || "No Number";
             document.getElementById('cp-address').innerText = cust.address || "+ Add Address";
             

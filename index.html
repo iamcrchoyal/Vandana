@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0f172a">
-    <title>Vandana Inventory Master</title>
+    <title>Vandana Inventory Pro</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -40,7 +40,7 @@
         .page-content { padding: 16px; max-width: 800px; margin: 0 auto; }
 
         /* DASHBOARD */
-        .main-content { padding: 80px 16px 90px 16px; }
+        .main-content { padding: 80px 16px 90px 16px; max-width: 800px; margin: 0 auto;}
         .summary-box { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; border-radius: 12px; padding: 20px; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);}
         .summary-box-title { font-size: 12px; font-weight: 600; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;}
         .summary-box-val { font-size: 32px; font-weight: 800; margin-bottom: 20px;}
@@ -54,7 +54,6 @@
         
         .action-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px;}
         .action-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
-        .action-card:active { transform: scale(0.98); }
         .ac-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 22px; flex-shrink: 0;}
         .ac-text { font-size: 14px; font-weight: 700; color: var(--text-dark); }
         .ac-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px;}
@@ -113,12 +112,13 @@
     <!-- 📱 TOP BAR -->
     <header class="app-bar">
         <div style="display:flex; align-items:center; gap:12px;">
-            <div style="font-size:20px; cursor:pointer;">☰</div><h1>Vandana Inventory</h1>
+            <div style="font-size:20px; cursor:pointer;" onclick="toggleMenu()">☰</div>
+            <h1>Vandana Inventory</h1>
         </div>
         <div style="position: relative;">
-            <div class="menu-dots" onclick="toggleMenu()">⋮</div>
+            <div class="menu-dots" onclick="loadDataFromCloud()">🔄</div>
             <div id="dropdown-menu" class="dropdown">
-                <div onclick="loadDataFromCloud(); toggleMenu();">🔄 Sync Stock Data</div>
+                <div onclick="toggleMenu(); loadDataFromCloud();">Refresh Data</div>
             </div>
         </div>
     </header>
@@ -206,7 +206,7 @@
 
                 <button class="btn-submit btn-in" onclick="processStock('IN')">📥 SAVE STOCK IN</button>
             </div>
-            <div style="text-align:center; font-size:12px; color:var(--text-muted);">Stock will be added to Master Inventory.</div>
+            <div style="text-align:center; font-size:12px; color:var(--text-muted);">Stock will be automatically added to Master Inventory.</div>
         </div>
     </div>
 
@@ -275,24 +275,26 @@
 
     <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
-        // ⚠️ REPLACE WITH YOUR NEW SCRIPT URL
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxisMxpKcoa8So_ku7XKDuOfOQx6dspEm_YmNJiQdeSVC6tTL76jfWlrC4FeprdPXk/exec";
+        // ⚠️ यहाँ अपनी Google Apps Script का नया Web App URL डालें
+        const SCRIPT_URL = "अपना_नया_Web_App_URL_यहाँ_पेस्ट_करें";
 
         let fullLogData = []; 
-        let smartInventory = {}; // Format: { "Shri Kamlay Thread_105": 20 }
+        let smartInventory = {};
 
-        // --- 1. INITIALIZE ---
+        // --- 1. APP INITIALIZE ---
         window.addEventListener('DOMContentLoaded', () => {
             loadDataFromCloud();
         });
 
-        // --- 2. LOAD DATA ---
+        // --- 2. LOAD DATA FROM GOOGLE SHEET ---
         function loadDataFromCloud() {
             document.getElementById('loader').style.display = 'flex';
+            
             fetch(SCRIPT_URL)
             .then(res => res.json())
             .then(data => {
-                fullLogData = data.log || [];
+                // Handling format from the new Backend Script
+                fullLogData = Array.isArray(data) ? data : (data.log || []);
                 calculateLiveStock();
                 renderHistoryLog();
                 document.getElementById('loader').style.display = 'none';
@@ -303,13 +305,17 @@
             });
         }
 
-        // --- 3. CALCULATE LIVE STOCK (IN - OUT) ---
+        // --- 3. CALCULATE LIVE STOCK (IN minus OUT) ---
         function calculateLiveStock() {
             smartInventory = {};
             let totalBoxes = 0;
 
-            fullLogData.forEach(entry => {
-                let key = entry.category + "___" + entry.shade; // Using ___ as separator
+            // Loop from oldest to newest to build correct stock
+            // Since data comes reverse (newest first), we reverse it temporarily for math
+            let tempArray = [...fullLogData].reverse();
+
+            tempArray.forEach(entry => {
+                let key = entry.category + "___" + entry.shade; 
                 let qty = parseFloat(entry.qty) || 0;
                 
                 if(!smartInventory[key]) smartInventory[key] = 0;
@@ -323,7 +329,7 @@
 
             renderMasterStock();
 
-            // Update Dashboard
+            // Update Dashboard Counters
             let uniqueCount = 0;
             let lowCount = 0;
             for(let k in smartInventory) {
@@ -341,16 +347,15 @@
             document.getElementById('dash-low-alerts').innerText = lowCount;
         }
 
-        // --- 4. RENDER MASTER STOCK ---
+        // --- 4. RENDER MASTER STOCK UI ---
         function renderMasterStock() {
             let list = document.getElementById('master-stock-list');
             list.innerHTML = "";
-
             let hasItems = false;
 
             for(let key in smartInventory) {
                 let qty = smartInventory[key];
-                if(qty === 0) continue; // Don't show zero stock
+                if(qty <= 0) continue; // Hide zero or negative stock from master
 
                 hasItems = true;
                 let parts = key.split("___");
@@ -401,12 +406,12 @@
                 return;
             }
 
+            // The data is already newest-first
             fullLogData.forEach(entry => {
-                let dateStr = entry.dateTime; // Comes formatted from Script
+                let dateStr = entry.dateTime; 
                 let typeClass = entry.type === 'IN' ? 'in' : 'out';
                 let sign = entry.type === 'IN' ? '+' : '-';
                 let qtyColor = entry.type === 'IN' ? 'var(--success)' : 'var(--danger)';
-
                 let remarkHtml = entry.remark ? `<div class="hc-remark">📝 ${entry.remark}</div>` : '';
 
                 list.innerHTML += `
@@ -427,7 +432,7 @@
             });
         }
 
-        // --- 7. PROCESS STOCK (IN or OUT) ---
+        // --- 7. PROCESS NEW ENTRY (IN / OUT) ---
         function processStock(type) {
             let prefix = type === 'IN' ? 'in' : 'out';
             
@@ -439,7 +444,7 @@
             if(!shade) return alert("Please enter Shade/Color Number!");
             if(!qty || qty <= 0) return alert("Please enter valid Quantity!");
 
-            // Check if enough stock available for OUT
+            // Negative Stock Prevention
             if(type === 'OUT') {
                 let key = cat + "___" + shade;
                 let currentStock = smartInventory[key] || 0;
@@ -452,29 +457,7 @@
 
             let dateStr = new Date().toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
 
-            // 1. Optimistic Local Update
-            let newLogEntry = {
-                id: "TEMP",
-                dateTime: dateStr,
-                type: type,
-                category: cat,
-                shade: shade,
-                qty: qty,
-                remark: remark
-            };
-
-            fullLogData.unshift(newLogEntry); // Add to top of history
-            calculateLiveStock(); // Recalculate Master Stock
-            renderHistoryLog(); // Refresh History UI
-
-            // Clean inputs
-            document.getElementById(`${prefix}-shade`).value = "";
-            document.getElementById(`${prefix}-qty`).value = "";
-            document.getElementById(`${prefix}-remark`).value = "";
-            
-            closePage(`${prefix}-page`);
-
-            // 2. Background Cloud Sync
+            // Prepare Payload for Backend
             let payload = {
                 action: "addStock",
                 dateTime: dateStr,
@@ -485,6 +468,18 @@
                 remark: remark
             };
 
+            // 1. Optimistic Local Update (Make UI feel instant)
+            fullLogData.unshift(payload); 
+            calculateLiveStock(); 
+            renderHistoryLog(); 
+
+            // Clear inputs and close page
+            document.getElementById(`${prefix}-shade`).value = "";
+            document.getElementById(`${prefix}-qty`).value = "";
+            document.getElementById(`${prefix}-remark`).value = "";
+            closePage(`${prefix}-page`);
+
+            // 2. Sync to Cloud
             fetch(SCRIPT_URL, { 
                 method: "POST", 
                 mode: "no-cors", 
@@ -492,18 +487,33 @@
                 body: JSON.stringify(payload) 
             }).then(() => {
                 document.getElementById('loader').style.display = 'none';
-                // Silently synced!
             }).catch(err => {
                 document.getElementById('loader').style.display = 'none';
-                alert("Saved locally, but failed to sync to cloud. Check internet.");
+                alert("Data saved locally but sync failed. Check internet.");
             });
         }
 
-        // --- UTILS ---
-        function toggleMenu() { const menu = document.getElementById('dropdown-menu'); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; }
-        function openPage(id) { document.getElementById(id).classList.add('active'); }
-        function closePage(id) { document.getElementById(id).classList.remove('active'); }
-        function goHome() { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); }
+        // --- NAVIGATION & UI UTILS ---
+        function toggleMenu() { 
+            const menu = document.getElementById('dropdown-menu'); 
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; 
+        }
+        function openPage(id) { 
+            document.getElementById(id).classList.add('active'); 
+            // Highlight nav icon
+            if(id === 'master-stock-page' || id === 'history-page') {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                event.currentTarget.classList.add('active');
+            }
+        }
+        function closePage(id) { 
+            document.getElementById(id).classList.remove('active'); 
+        }
+        function goHome() { 
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.querySelector('.nav-item').classList.add('active'); // Set Home Active
+        }
     </script>
 </body>
 </html>

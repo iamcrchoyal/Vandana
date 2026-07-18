@@ -1,519 +1,146 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0f172a">
-    <title>Vandana Inventory Pro</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vandana Inventory</title>
     <style>
-        :root {
-            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
-            --bg-color: #f8fafc; --text-dark: #0f172a; --text-muted: #64748b; --border: #e2e8f0;
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
-        body { background-color: var(--bg-color); color: var(--text-dark); overflow-x: hidden; font-size: 14px; }
-
-        /* HEADER */
-        .app-bar { position: fixed; top: 0; width: 100%; height: 60px; background: #0f172a; color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 2000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .app-bar h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px;}
-        .menu-dots { font-size: 24px; cursor: pointer; font-weight: bold;}
-        
-        .dropdown { position: absolute; right: 16px; top: 65px; background: white; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: none; z-index: 3000; min-width: 180px; overflow: hidden; border: 1px solid var(--border); }
-        .dropdown div { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer; color: var(--text-dark); font-size: 14px; font-weight: 600;}
-
-        /* BOTTOM NAV */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 65px; background: white; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 2000;}
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; color: var(--text-muted); font-size: 11px; font-weight: 600; gap: 4px; cursor: pointer;}
-        .nav-item i { font-size: 20px; font-style: normal;}
-        .nav-item.active { color: var(--primary); }
-
-        /* PAGES */
-        .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 1000; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 90px; }
-        .page.active { transform: none; }
-        .page-header { position: sticky; top: 0; background: var(--primary); color: white; height: 60px; display: flex; align-items: center; padding: 0 16px; z-index: 50; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .back-btn { background: transparent; border: none; color: white; font-size: 24px; margin-right: 16px; cursor: pointer;}
-        .page-title { font-size: 17px; font-weight: 600; margin: 0; }
-        .page-content { padding: 16px; max-width: 800px; margin: 0 auto; }
-
-        /* DASHBOARD */
-        .main-content { padding: 80px 16px 90px 16px; max-width: 800px; margin: 0 auto;}
-        .summary-box { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; border-radius: 12px; padding: 20px; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);}
-        .summary-box-title { font-size: 12px; font-weight: 600; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;}
-        .summary-box-val { font-size: 32px; font-weight: 800; margin-bottom: 20px;}
-        
-        .dash-split { display: flex; gap: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;}
-        .split-item { flex: 1; }
-        .split-label { font-size: 11px; opacity: 0.8; margin-bottom: 4px; }
-        .split-val { font-size: 16px; font-weight: 700; }
-
-        .section-title { font-size: 13px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;}
-        
-        .action-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px;}
-        .action-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
-        .ac-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 22px; flex-shrink: 0;}
-        .ac-text { font-size: 14px; font-weight: 700; color: var(--text-dark); }
-        .ac-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px;}
-
-        /* FORMS */
-        .form-panel { background: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
-        .form-label { display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px;}
-        .form-control { width: 100%; background: #f8fafc; border: 1.5px solid #cbd5e1; padding: 14px; border-radius: 8px; font-size: 15px; outline: none; font-weight: 600; color: var(--text-dark); margin-bottom: 16px;}
-        .form-control:focus { border-color: var(--primary); background: white; }
-        .input-row { display: flex; gap: 12px; }
-        .btn-submit { width: 100%; padding: 16px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; color: white;}
-        .btn-in { background: var(--success); box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2); }
-        .btn-out { background: var(--danger); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2); }
-
-        /* MASTER STOCK PAGE */
-        .search-box { position: sticky; top: 60px; background: var(--bg-color); padding: 12px 16px; z-index: 40; border-bottom: 1px solid var(--border); }
-        .search-input { width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); font-size: 14px; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        
-        .stock-list { padding: 10px 16px 100px 16px; }
-        .stock-item { background: white; border-radius: 10px; padding: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
-        .si-cat { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; text-transform: uppercase;}
-        .si-shade { font-size: 16px; font-weight: 800; color: var(--text-dark); }
-        .si-qty-box { text-align: right; }
-        .si-qty { font-size: 20px; font-weight: 800; }
-        .si-status { font-size: 11px; font-weight: 700; margin-top: 4px; padding: 2px 8px; border-radius: 4px; display: inline-block;}
-        
-        .status-ok { color: var(--success); background: #ecfdf5; }
-        .status-low { color: var(--danger); background: #fef2f2; }
-
-        /* HISTORY PAGE */
-        .history-list { padding: 16px 16px 100px 16px; }
-        .hist-card { background: white; border-radius: 10px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); border-left: 4px solid var(--text-muted); box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
-        .hist-card.in { border-left-color: var(--success); }
-        .hist-card.out { border-left-color: var(--danger); }
-        .hc-top { display: flex; justify-content: space-between; margin-bottom: 8px; }
-        .hc-date { font-size: 11px; color: var(--text-muted); font-weight: 600;}
-        .hc-type { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px; }
-        .hc-type.in { background: #ecfdf5; color: var(--success); }
-        .hc-type.out { background: #fef2f2; color: var(--danger); }
-        .hc-mid { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;}
-        .hc-shade { font-size: 15px; font-weight: 700; color: var(--text-dark);}
-        .hc-qty { font-size: 16px; font-weight: 800;}
-        .hc-remark { font-size: 13px; color: var(--text-muted); background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px dashed var(--border);}
-
-        /* LOADER */
-        .loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 99999; justify-content: center; align-items: center;}
-        .spinner { border: 4px solid #f3f3f3; border-left-color: var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+        label { font-weight: bold; margin-top: 10px; display: block; }
+        input { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
+        .btn-group { display: flex; gap: 10px; }
+        button { flex: 1; padding: 12px; font-size: 16px; font-weight: bold; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .btn-in { background-color: #28a745; } /* Green */
+        .btn-out { background-color: #dc3545; } /* Red */
+        button:hover { opacity: 0.9; }
+        table { width: 100%; margin-top: 25px; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #007bff; color: white; }
     </style>
 </head>
 <body>
 
-    <!-- 🌟 LOADER -->
-    <div id="loader" class="loader-overlay"><div class="spinner"></div></div>
-
-    <!-- 📱 TOP BAR -->
-    <header class="app-bar">
-        <div style="display:flex; align-items:center; gap:12px;">
-            <div style="font-size:20px; cursor:pointer;" onclick="toggleMenu()">☰</div>
-            <h1>Vandana Inventory</h1>
-        </div>
-        <div style="position: relative;">
-            <div class="menu-dots" onclick="loadDataFromCloud()">🔄</div>
-            <div id="dropdown-menu" class="dropdown">
-                <div onclick="toggleMenu(); loadDataFromCloud();">Refresh Data</div>
-            </div>
-        </div>
-    </header>
-
-    <!-- 🏠 MAIN DASHBOARD -->
-    <main class="main-content">
-        <div class="summary-box">
-            <div class="summary-box-title">Total Boxes in Godown</div>
-            <div class="summary-box-val" id="dash-total-boxes">0 BOX</div>
-            <div class="dash-split">
-                <div class="split-item">
-                    <div class="split-label">Total Unique Shades</div>
-                    <div class="split-val" id="dash-unique-shades">0</div>
-                </div>
-                <div class="split-item" style="text-align:right;">
-                    <div class="split-label">Low Stock Alerts</div>
-                    <div class="split-val" id="dash-low-alerts" style="color:#fca5a5;">0</div>
-                </div>
-            </div>
-        </div>
-
-        <h3 class="section-title">Stock Management</h3>
-        <div class="action-cards">
-            <div class="action-card" onclick="openPage('stock-in-page')" style="border-color:#a7f3d0; background:#f0fdf4;">
-                <div class="ac-icon" style="background:#10b981; color:white;">📥</div>
-                <div><div class="ac-text">Stock IN</div><div class="ac-sub">Add New Stock</div></div>
-            </div>
-            
-            <div class="action-card" onclick="openPage('stock-out-page')" style="border-color:#fecaca; background:#fef2f2;">
-                <div class="ac-icon" style="background:#ef4444; color:white;">📤</div>
-                <div><div class="ac-text">Stock OUT</div><div class="ac-sub">Dispatch / Sale</div></div>
-            </div>
-        </div>
-
-        <h3 class="section-title">Reports & Overview</h3>
-        <div class="action-cards">
-            <div class="action-card" onclick="openPage('master-stock-page')">
-                <div class="ac-icon" style="background:#eff6ff; color:#2563eb;">📚</div>
-                <div><div class="ac-text">Master Stock</div><div class="ac-sub">View All Shades</div></div>
-            </div>
-            <div class="action-card" onclick="openPage('history-page')">
-                <div class="ac-icon" style="background:#fef3c7; color:#f59e0b;">⏳</div>
-                <div><div class="ac-text">History Log</div><div class="ac-sub">Recent Activity</div></div>
-            </div>
-        </div>
-    </main>
-
-    <!-- ⚓ BOTTOM NAV -->
-    <nav class="bottom-nav">
-        <div class="nav-item active" onclick="goHome()"><i>🏠</i><span>Home</span></div>
-        <div class="nav-item" onclick="openPage('master-stock-page')"><i>📚</i><span>Stock Book</span></div>
-        <div class="nav-item" onclick="openPage('history-page')"><i>⏳</i><span>History</span></div>
-    </nav>
-
-    <!-- ======================================================== -->
-    <!-- 📥 STOCK IN PAGE -->
-    <!-- ======================================================== -->
-    <div class="page" id="stock-in-page">
-        <div class="page-header"><button class="back-btn" onclick="closePage('stock-in-page')">←</button><h2 class="page-title">Stock IN (Add Material)</h2></div>
-        <div class="page-content">
-            <div class="form-panel">
-                <label class="form-label">Select Category</label>
-                <select class="form-control" id="in-cat">
-                    <option value="Shri Kamlay Thread">Shri Kamlay Thread</option>
-                    <option value="Zari">Zari</option>
-                    <option value="Cotton Yarn">Cotton Yarn</option>
-                    <option value="Viscose">Viscose</option>
-                    <option value="Metallic Coding">Metallic Coding</option>
-                    <option value="Nylon">Nylon</option>
-                </select>
-
-                <div class="input-row">
-                    <div style="flex:1;">
-                        <label class="form-label">Shade / Color</label>
-                        <input type="text" class="form-control" id="in-shade" placeholder="e.g. 105">
-                    </div>
-                    <div style="flex:1;">
-                        <label class="form-label">Quantity (Box)</label>
-                        <input type="number" class="form-control" id="in-qty" placeholder="Total Boxes">
-                    </div>
-                </div>
-
-                <label class="form-label">Remark (Optional)</label>
-                <input type="text" class="form-control" id="in-remark" placeholder="e.g. Received from factory">
-
-                <button class="btn-submit btn-in" onclick="processStock('IN')">📥 SAVE STOCK IN</button>
-            </div>
-            <div style="text-align:center; font-size:12px; color:var(--text-muted);">Stock will be automatically added to Master Inventory.</div>
-        </div>
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- 📤 STOCK OUT PAGE (Dispatch) -->
-    <!-- ======================================================== -->
-    <div class="page" id="stock-out-page">
-        <div class="page-header" style="background:var(--danger);"><button class="back-btn" onclick="closePage('stock-out-page')">←</button><h2 class="page-title">Stock OUT (Dispatch)</h2></div>
-        <div class="page-content">
-            <div class="form-panel">
-                <label class="form-label">Select Category</label>
-                <select class="form-control" id="out-cat">
-                    <option value="Shri Kamlay Thread">Shri Kamlay Thread</option>
-                    <option value="Zari">Zari</option>
-                    <option value="Cotton Yarn">Cotton Yarn</option>
-                    <option value="Viscose">Viscose</option>
-                    <option value="Metallic Coding">Metallic Coding</option>
-                    <option value="Nylon">Nylon</option>
-                </select>
-
-                <div class="input-row">
-                    <div style="flex:1;">
-                        <label class="form-label">Shade / Color</label>
-                        <input type="text" class="form-control" id="out-shade" placeholder="e.g. 105">
-                    </div>
-                    <div style="flex:1;">
-                        <label class="form-label">Quantity (Box)</label>
-                        <input type="number" class="form-control" id="out-qty" placeholder="Total Boxes">
-                    </div>
-                </div>
-
-                <label class="form-label">Dispatch Remark</label>
-                <input type="text" class="form-control" id="out-remark" placeholder="e.g. Given to Ramesh / Bill #405">
-
-                <button class="btn-submit btn-out" onclick="processStock('OUT')">📤 DISPATCH STOCK</button>
-            </div>
-            <div style="text-align:center; font-size:12px; color:var(--text-muted);">Stock will be deducted from Master Inventory.</div>
-        </div>
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- 📚 MASTER STOCK PAGE -->
-    <!-- ======================================================== -->
-    <div class="page" id="master-stock-page">
-        <div class="page-header"><button class="back-btn" onclick="closePage('master-stock-page')">←</button><h2 class="page-title">Master Stock Book</h2></div>
+    <div class="container">
+        <h2>📦 Vandana Inventory</h2>
         
-        <div class="search-box">
-            <input type="text" class="search-input" id="stock-search" placeholder="🔍 Search Shade No. or Category..." onkeyup="filterMasterStock()">
-        </div>
-
-        <div class="stock-list" id="master-stock-list">
-            <!-- Stock Items will render here -->
-        </div>
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- ⏳ HISTORY LOG PAGE -->
-    <!-- ======================================================== -->
-    <div class="page" id="history-page">
-        <div class="page-header" style="background:#0f172a;"><button class="back-btn" onclick="closePage('history-page')">←</button><h2 class="page-title">Stock History Log</h2></div>
+        <label>शेड नंबर / आइटम का नाम:</label>
+        <input type="text" id="shadeNo" placeholder="जैसे: 101 या लाल धागा">
         
-        <div class="history-list" id="history-log-list">
-            <!-- Logs will render here -->
+        <label>मात्रा (Quantity):</label>
+        <input type="number" id="qty" placeholder="कितने बॉक्स?">
+        
+        <div class="btn-group">
+            <button class="btn-in" id="btnIn">Stock IN (+)</button>
+            <button class="btn-out" id="btnOut">Stock OUT (-)</button>
         </div>
+
+        <h3>📊 मास्टर स्टॉक (Live)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>शेड नंबर</th>
+                    <th>कुल स्टॉक</th>
+                </tr>
+            </thead>
+            <tbody id="stockTableBody">
+                <!-- लाइव डेटा यहाँ आएगा -->
+            </tbody>
+        </table>
     </div>
 
-    <!-- ================= JAVASCRIPT LOGIC ================= -->
-    <script>
-        // ⚠️ यहाँ अपनी Google Apps Script का नया Web App URL डालें
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxisMxpKcoa8So_ku7XKDuOfOQx6dspEm_YmNJiQdeSVC6tTL76jfWlrC4FeprdPXk/exec";
+    <!-- Firebase Connection Script -->
+    <script type="module">
+        // Firebase को इम्पोर्ट करें
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+        import { getDatabase, ref, get, set, child, onValue } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 
-        let fullLogData = []; 
-        let smartInventory = {};
+        // आपकी Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAGcWUM4lqJKmV2Zz2Em3WtI-D0fcQeuzQ",
+            authDomain: "vandana-inventory.firebaseapp.com",
+            databaseURL: "https://vandana-inventory-default-rtdb.firebaseio.com",
+            projectId: "vandana-inventory",
+            storageBucket: "vandana-inventory.firebasestorage.app",
+            messagingSenderId: "714747540875",
+            appId: "1:714747540875:web:dfb72712b485039325eb8e"
+        };
 
-        // --- 1. APP INITIALIZE ---
-        window.addEventListener('DOMContentLoaded', () => {
-            loadDataFromCloud();
-        });
+        // Firebase चालू करें
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-        // --- 2. LOAD DATA FROM GOOGLE SHEET ---
-        function loadDataFromCloud() {
-            document.getElementById('loader').style.display = 'flex';
-            
-            fetch(SCRIPT_URL)
-            .then(res => res.json())
-            .then(data => {
-                // Handling format from the new Backend Script
-                fullLogData = Array.isArray(data) ? data : (data.log || []);
-                calculateLiveStock();
-                renderHistoryLog();
-                document.getElementById('loader').style.display = 'none';
-            })
-            .catch(err => {
-                console.log("Sync Error", err);
-                document.getElementById('loader').style.display = 'none';
-            });
-        }
+        // HTML से बटन और इनपुट बॉक्स को लिंक करना
+        const btnIn = document.getElementById("btnIn");
+        const btnOut = document.getElementById("btnOut");
+        const shadeNoInput = document.getElementById("shadeNo");
+        const qtyInput = document.getElementById("qty");
+        const stockTableBody = document.getElementById("stockTableBody");
 
-        // --- 3. CALCULATE LIVE STOCK (IN minus OUT) ---
-        function calculateLiveStock() {
-            smartInventory = {};
-            let totalBoxes = 0;
+        // माल अपडेट करने का फंक्शन (IN या OUT)
+        async function updateStock(type) {
+            const shade = shadeNoInput.value.trim().toUpperCase();
+            const qty = parseInt(qtyInput.value);
 
-            // Loop from oldest to newest to build correct stock
-            // Since data comes reverse (newest first), we reverse it temporarily for math
-            let tempArray = [...fullLogData].reverse();
-
-            tempArray.forEach(entry => {
-                let key = entry.category + "___" + entry.shade; 
-                let qty = parseFloat(entry.qty) || 0;
-                
-                if(!smartInventory[key]) smartInventory[key] = 0;
-
-                if(entry.type === 'IN') {
-                    smartInventory[key] += qty;
-                } else if(entry.type === 'OUT') {
-                    smartInventory[key] -= qty;
-                }
-            });
-
-            renderMasterStock();
-
-            // Update Dashboard Counters
-            let uniqueCount = 0;
-            let lowCount = 0;
-            for(let k in smartInventory) {
-                if(smartInventory[k] > 0) {
-                    totalBoxes += smartInventory[k];
-                    uniqueCount++;
-                }
-                if(smartInventory[k] <= 5 && smartInventory[k] > 0) {
-                    lowCount++;
-                }
-            }
-
-            document.getElementById('dash-total-boxes').innerText = totalBoxes + " BOX";
-            document.getElementById('dash-unique-shades').innerText = uniqueCount;
-            document.getElementById('dash-low-alerts').innerText = lowCount;
-        }
-
-        // --- 4. RENDER MASTER STOCK UI ---
-        function renderMasterStock() {
-            let list = document.getElementById('master-stock-list');
-            list.innerHTML = "";
-            let hasItems = false;
-
-            for(let key in smartInventory) {
-                let qty = smartInventory[key];
-                if(qty <= 0) continue; // Hide zero or negative stock from master
-
-                hasItems = true;
-                let parts = key.split("___");
-                let cat = parts[0];
-                let shade = parts[1];
-
-                let statusClass = qty <= 5 ? "status-low" : "status-ok";
-                let statusText = qty <= 5 ? "LOW STOCK" : "IN STOCK";
-                let qtyColor = qty <= 5 ? "var(--danger)" : "var(--text-dark)";
-
-                list.innerHTML += `
-                <div class="stock-item">
-                    <div>
-                        <div class="si-cat">${cat}</div>
-                        <div class="si-shade">Shade: ${shade}</div>
-                        <div class="si-status ${statusClass}">${statusText}</div>
-                    </div>
-                    <div class="si-qty-box">
-                        <div class="si-qty" style="color:${qtyColor};">${qty}</div>
-                        <div style="font-size:11px; color:var(--text-muted); font-weight:600;">BOX</div>
-                    </div>
-                </div>`;
-            }
-
-            if(!hasItems) {
-                list.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted);">No stock available in Godown.</div>`;
-            }
-        }
-
-        // --- 5. SEARCH MASTER STOCK ---
-        function filterMasterStock() {
-            let filter = document.getElementById('stock-search').value.toUpperCase();
-            let items = document.querySelectorAll('#master-stock-list .stock-item');
-            
-            items.forEach(item => {
-                let text = item.innerText.toUpperCase();
-                item.style.display = text.includes(filter) ? "" : "none";
-            });
-        }
-
-        // --- 6. RENDER HISTORY LOG ---
-        function renderHistoryLog() {
-            let list = document.getElementById('history-log-list');
-            list.innerHTML = "";
-
-            if(fullLogData.length === 0) {
-                list.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted);">No history found.</div>`;
+            if (!shade || isNaN(qty) || qty <= 0) {
+                alert("कृपया सही शेड नंबर और मात्रा डालें!");
                 return;
             }
 
-            // The data is already newest-first
-            fullLogData.forEach(entry => {
-                let dateStr = entry.dateTime; 
-                let typeClass = entry.type === 'IN' ? 'in' : 'out';
-                let sign = entry.type === 'IN' ? '+' : '-';
-                let qtyColor = entry.type === 'IN' ? 'var(--success)' : 'var(--danger)';
-                let remarkHtml = entry.remark ? `<div class="hc-remark">📝 ${entry.remark}</div>` : '';
-
-                list.innerHTML += `
-                <div class="hist-card ${typeClass}">
-                    <div class="hc-top">
-                        <div class="hc-date">${dateStr}</div>
-                        <div class="hc-type ${typeClass}">${entry.type}</div>
-                    </div>
-                    <div class="hc-mid">
-                        <div>
-                            <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;">${entry.category}</div>
-                            <div class="hc-shade">Shd: ${entry.shade}</div>
-                        </div>
-                        <div class="hc-qty" style="color:${qtyColor};">${sign}${entry.qty}</div>
-                    </div>
-                    ${remarkHtml}
-                </div>`;
-            });
-        }
-
-        // --- 7. PROCESS NEW ENTRY (IN / OUT) ---
-        function processStock(type) {
-            let prefix = type === 'IN' ? 'in' : 'out';
+            const stockRef = ref(db, 'MasterStock/' + shade);
             
-            let cat = document.getElementById(`${prefix}-cat`).value;
-            let shade = document.getElementById(`${prefix}-shade`).value;
-            let qty = parseInt(document.getElementById(`${prefix}-qty`).value);
-            let remark = document.getElementById(`${prefix}-remark`).value;
+            // पहले चेक करें कि गोदाम में कितना माल है
+            get(stockRef).then((snapshot) => {
+                let currentStock = snapshot.exists() ? snapshot.val().quantity : 0;
+                let newStock = 0;
 
-            if(!shade) return alert("Please enter Shade/Color Number!");
-            if(!qty || qty <= 0) return alert("Please enter valid Quantity!");
-
-            // Negative Stock Prevention
-            if(type === 'OUT') {
-                let key = cat + "___" + shade;
-                let currentStock = smartInventory[key] || 0;
-                if(qty > currentStock) {
-                    return alert(`Not enough stock! You only have ${currentStock} boxes of Shade ${shade}.`);
+                if (type === 'IN') {
+                    newStock = currentStock + qty;
+                } else if (type === 'OUT') {
+                    if (currentStock < qty) {
+                        alert("गोदाम में इतना माल नहीं है! (कुल स्टॉक: " + currentStock + ")");
+                        return;
+                    }
+                    newStock = currentStock - qty;
                 }
-            }
 
-            document.getElementById('loader').style.display = 'flex';
-
-            let dateStr = new Date().toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
-
-            // Prepare Payload for Backend
-            let payload = {
-                action: "addStock",
-                dateTime: dateStr,
-                type: type,
-                category: cat,
-                shade: shade,
-                qty: qty,
-                remark: remark
-            };
-
-            // 1. Optimistic Local Update (Make UI feel instant)
-            fullLogData.unshift(payload); 
-            calculateLiveStock(); 
-            renderHistoryLog(); 
-
-            // Clear inputs and close page
-            document.getElementById(`${prefix}-shade`).value = "";
-            document.getElementById(`${prefix}-qty`).value = "";
-            document.getElementById(`${prefix}-remark`).value = "";
-            closePage(`${prefix}-page`);
-
-            // 2. Sync to Cloud
-            fetch(SCRIPT_URL, { 
-                method: "POST", 
-                mode: "no-cors", 
-                headers: { "Content-Type": "text/plain" }, 
-                body: JSON.stringify(payload) 
-            }).then(() => {
-                document.getElementById('loader').style.display = 'none';
-            }).catch(err => {
-                document.getElementById('loader').style.display = 'none';
-                alert("Data saved locally but sync failed. Check internet.");
+                // नया स्टॉक फायरबेस में सेव करें
+                set(stockRef, { quantity: newStock })
+                .then(() => {
+                    shadeNoInput.value = "";
+                    qtyInput.value = "";
+                })
+                .catch((error) => {
+                    alert("एंट्री फेल हो गई: " + error);
+                });
             });
         }
 
-        // --- NAVIGATION & UI UTILS ---
-        function toggleMenu() { 
-            const menu = document.getElementById('dropdown-menu'); 
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; 
-        }
-        function openPage(id) { 
-            document.getElementById(id).classList.add('active'); 
-            // Highlight nav icon
-            if(id === 'master-stock-page' || id === 'history-page') {
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                event.currentTarget.classList.add('active');
+        // बटन दबाने पर फंक्शन चलाएं
+        btnIn.addEventListener("click", () => updateStock('IN'));
+        btnOut.addEventListener("click", () => updateStock('OUT'));
+
+        // लाइव डेटा (मास्टर स्टॉक) दिखाने के लिए
+        const masterStockRef = ref(db, 'MasterStock');
+        onValue(masterStockRef, (snapshot) => {
+            stockTableBody.innerHTML = ""; // पुरानी लिस्ट साफ करें
+            
+            if (snapshot.exists()) {
+                snapshot.forEach((childSnapshot) => {
+                    const shade = childSnapshot.key;
+                    const stockData = childSnapshot.val();
+                    
+                    const row = `<tr>
+                        <td>${shade}</td>
+                        <td><b>${stockData.quantity}</b> बॉक्स</td>
+                    </tr>`;
+                    stockTableBody.innerHTML += row;
+                });
+            } else {
+                stockTableBody.innerHTML = "<tr><td colspan='2'>अभी कोई स्टॉक नहीं है।</td></tr>";
             }
-        }
-        function closePage(id) { 
-            document.getElementById(id).classList.remove('active'); 
-        }
-        function goHome() { 
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.querySelector('.nav-item').classList.add('active'); // Set Home Active
-        }
+        });
     </script>
 </body>
 </html>

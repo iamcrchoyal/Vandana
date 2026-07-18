@@ -96,7 +96,6 @@
         .kb-time { font-size: 12px; color: var(--text-muted); margin-top: 4px;}
         .kb-list-right { display: flex; flex-direction: column; justify-content: center; padding: 16px; min-width: 100px; text-align: right; border-left: 1px dashed #e2e8f0; background: #f8fafc; border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
         
-        /* FIXED FAB BUTTON */
         .kb-fab { position: fixed !important; bottom: 80px; right: 20px; width: 56px; height: 56px; background: #ef4444; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); border: none; z-index: 1001; cursor: pointer;}
 
         /* Ledger Deep Page */
@@ -124,12 +123,11 @@
         .spinner { border: 4px solid #f3f3f3; border-left-color: var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* ================= 2. NEW CUSTOMER PROFILE UI (Matching Screenshot 1) ================= */
+        /* CUSTOMER PROFILE UI */
         .profile-header-img { display: flex; flex-direction: column; align-items: center; padding: 30px 16px 20px 16px; background: white; }
         .profile-pic-container { position: relative; margin-bottom: 10px; }
         .profile-pic { width: 90px; height: 90px; border-radius: 50%; background: #e2e8f0; display: flex; justify-content: center; align-items: center; font-size: 30px; color: var(--primary); font-weight: bold; }
         .btn-outline { border: 1px solid #ef4444; color: #ef4444; background: transparent; padding: 10px 20px; border-radius: 8px; font-weight: 600; width: 100%; max-width: 300px; margin-top: 15px; font-size: 13px; cursor: pointer;}
-        
         .profile-list { background: white; margin-top: 10px; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;}
         .profile-list-item { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer;}
         .pli-icon { font-size: 20px; color: #64748b; margin-right: 16px; width: 24px; text-align: center;}
@@ -139,7 +137,7 @@
         .pli-arrow { color: #cbd5e1; font-weight: bold; }
         .section-sub { font-size: 12px; color: #94a3b8; padding: 16px 16px 8px 16px; text-transform: uppercase; font-weight: 700;}
 
-        /* ================= 3. NEW ENTRY DETAILS UI (Matching Screenshot 2) ================= */
+        /* ENTRY DETAILS UI */
         .entry-detail-card { background: white; margin: 16px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; border: 1px solid var(--border);}
         .ed-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #f1f5f9;}
         .ed-header-left { display: flex; align-items: center; gap: 12px;}
@@ -150,9 +148,7 @@
         .ed-value { font-size: 15px; color: #0f172a; font-weight: 500;}
         .ed-flex-row { display: flex; justify-content: space-between; align-items: center;}
         .ed-edit-btn { text-align: center; padding: 16px; color: var(--primary); font-weight: 600; cursor: pointer; }
-        
         .ed-safe-badge { text-align: center; padding: 20px; color: var(--success); font-weight: 600; font-size: 13px; display: flex; justify-content: center; align-items: center; gap: 8px;}
-        
         .ed-bottom-bar { position: fixed; bottom: 0; width: 100%; background: white; padding: 16px; display: flex; gap: 12px; border-top: 1px solid #e2e8f0; z-index: 1000;}
         .btn-ed-del { flex: 1; border: 1px solid #ef4444; color: #ef4444; background: white; padding: 14px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer;}
         .btn-ed-share { flex: 1; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer;}
@@ -163,7 +159,6 @@
         .amount-input-box { background: white; border: 1px solid var(--border); border-radius: 8px; margin: 16px; padding: 16px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
         .amount-symbol { font-size: 24px; color: var(--danger); font-weight: 600; margin-right: 8px;}
         .amount-input-box input { border: none; outline: none; font-size: 28px; font-weight: 700; color: var(--danger); width: 100%;}
-        
         .calc-details-input { background: white; border: 1px solid var(--border); border-radius: 8px; margin: 0 16px 16px 16px; padding: 14px; width: calc(100% - 32px); font-size: 14px; outline: none;}
         .calc-action-row { display: flex; justify-content: space-between; margin: 0 16px 16px 16px; gap: 10px;}
         .calc-date-btn { background: white; border: 1px solid var(--border); padding: 10px 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 13px; color: var(--text-dark); flex: 1; outline: none; font-family: inherit;}
@@ -175,6 +170,70 @@
         .calc-btn:active { background: #e2e8f0; }
         .calc-btn.light-blue { background: #dbeafe; color: #1e3a8a;}
         .calc-btn.dark-blue { background: #1565c0; color: white; border: none;}
+
+        /* ================= NEW UI ADDITIONS CSS (Screenshots 1, 2, 3, 4) ================= */
+        
+        /* 1. SIDEBAR (Screenshot 1) */
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; display: none; }
+        .sidebar { position: fixed; top: 0; left: -300px; width: 280px; height: 100%; background: #0f172a; color: #f8fafc; z-index: 3001; transition: left 0.3s ease; overflow-y: auto; display: flex; flex-direction: column; }
+        .sidebar.active { left: 0; }
+        .sidebar-header { padding: 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #1e293b; }
+        .sidebar-logo { width: 40px; height: 40px; background: #3b82f6; color: white; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; }
+        .sidebar-title { flex: 1; }
+        .sidebar-title h2 { font-size: 16px; margin: 0; font-weight: 700; letter-spacing: 0.5px; }
+        .sidebar-title p { font-size: 10px; color: #94a3b8; margin: 0; letter-spacing: 1px; }
+        .sidebar-close { font-size: 24px; cursor: pointer; color: #94a3b8; }
+        .sidebar-menu-title { font-size: 10px; color: #64748b; font-weight: 700; padding: 20px 20px 10px 20px; letter-spacing: 1px; }
+        .sidebar-menu { list-style: none; padding: 0; margin: 0; flex: 1;}
+        .sidebar-menu li { padding: 12px 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; color: #cbd5e1; font-size: 14px; font-weight: 500; transition: background 0.2s; }
+        .sidebar-menu li:hover { background: #1e293b; color: white; }
+        .sidebar-menu li.active { background: #3b82f6; color: white; }
+        .sidebar-menu li i { font-style: normal; font-size: 18px; width: 24px; text-align: center; }
+        .sidebar-footer { padding: 20px; border-top: 1px solid #1e293b; display: flex; align-items: center; gap: 12px; }
+        .sidebar-footer .user-icon { width: 40px; height: 40px; background: #334155; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .sidebar-footer .user-info { flex: 1; }
+        .sidebar-footer .user-name { font-size: 14px; font-weight: 700; }
+        .sidebar-footer .user-email { font-size: 11px; color: #94a3b8; }
+        .sidebar-footer .user-role { font-size: 11px; color: #3b82f6; }
+
+        /* 2. DASHBOARD CARDS (Screenshot 2) */
+        .op-overview { padding: 10px 0; }
+        .op-title { font-size: 10px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .op-header { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 5px; }
+        .op-subtitle { font-size: 12px; color: #64748b; margin-bottom: 20px; }
+        .dash-card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        .dash-card-left { flex: 1; }
+        .dash-card-title { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .dash-card-value { font-size: 28px; font-weight: 800; color: #0f172a; line-height: 1; margin-bottom: 6px; }
+        .dash-card-sub { font-size: 12px; color: #94a3b8; }
+        .dash-card-icon { width: 48px; height: 48px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; }
+        .icon-blue { background: #eff6ff; color: #3b82f6; }
+        .icon-orange { background: #fff7ed; color: #f97316; }
+        .icon-purple { background: #faf5ff; color: #a855f7; }
+        .icon-green { background: #f0fdf4; color: #22c55e; }
+
+        /* 3. URGENT ACTIONS (Screenshot 3) */
+        .urgent-actions-box { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .ua-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .ua-title { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+        .ua-alert-icon { color: #f59e0b; font-size: 16px; }
+        .ua-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .ua-item:last-child { margin-bottom: 0; }
+        .ua-item-left { flex: 1; }
+        .ua-item-name { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 2px; }
+        .ua-item-desc { font-size: 12px; color: #94a3b8; }
+        .ua-item-right { display: flex; align-items: center; gap: 8px; }
+        .ua-item-count { font-size: 15px; font-weight: 700; color: #10b981; }
+        .ua-item-arrow { color: #cbd5e1; font-weight: bold; font-size: 16px; }
+
+        /* 4. STOCK OVERVIEW GRID (Screenshot 4) */
+        .stock-overview-title { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-top: 10px; }
+        .stock-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+        .stock-grid-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        .sg-title { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
+        .sg-value { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
+        .sg-sub { font-size: 11px; color: #94a3b8; }
+        .sg-icon { position: absolute; right: 16px; top: 16px; width: 32px; height: 32px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -185,10 +244,46 @@
         <p style="margin-top:16px; font-weight:600; color:var(--text-dark);">Syncing...</p>
     </div>
 
-    <!-- 📱 TOP BAR -->
+    <!-- 📱 NEW SIDEBAR MENU (Added from Screenshot 1) -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">S</div>
+            <div class="sidebar-title">
+                <h2>STITCHWISE</h2>
+                <p>GARMENT ERP</p>
+            </div>
+            <div class="sidebar-close" onclick="closeSidebar()">✕</div>
+        </div>
+        <div class="sidebar-menu-title">OPERATIONS</div>
+        <ul class="sidebar-menu">
+            <li class="active" onclick="goHome(); closeSidebar();"><i>⊞</i> Dashboard</li>
+            <li><i>📋</i> PO Master</li>
+            <li><i>🚚</i> Fabric Job Work</li>
+            <li><i>✂️</i> Cutting</li>
+            <li><i>✨</i> Embroidery</li>
+            <li><i>✂️</i> ReCutting</li>
+            <li><i>🧵</i> Stitching</li>
+            <li><i>✔️</i> Finishing</li>
+            <li onclick="openPage('items-page'); closeSidebar();"><i>📦</i> Inventory</li>
+            <li onclick="openPage('stock-in-page'); closeSidebar();"><i>🧊</i> Stock</li>
+            <li onclick="openPage('pos-page'); closeSidebar();"><i>🧾</i> Billing</li>
+            <li><i>🔌</i> API Integrations</li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="user-icon">A</div>
+            <div class="user-info">
+                <div class="user-name">ASHOK KUMAR</div>
+                <div class="user-email">ashokkirtani@gmail.com</div>
+                <div class="user-role">Owner</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📱 TOP BAR (Added openSidebar functionality) -->
     <header class="app-bar">
         <div style="display:flex; align-items:center; gap:12px;">
-            <div style="font-size:20px; cursor:pointer;">☰</div>
+            <div style="font-size:20px; cursor:pointer;" onclick="openSidebar()">☰</div>
             <h1>Vandana Enterprises</h1>
         </div>
         <div style="position: relative;">
@@ -208,6 +303,83 @@
             <div class="full-date-display" id="dash-date-display">--</div>
         </div>
 
+        <!-- ================= ADDED: DASHBOARD CARDS (Screenshot 2) ================= -->
+        <div class="op-overview">
+            <div class="op-title">OPERATIONS OVERVIEW</div>
+            <div class="op-header">Factory Dashboard</div>
+            <div class="op-subtitle">Total PO 0 • Active 0 • Fabric 0m • Finished 0 pcs</div>
+        </div>
+        
+        <div class="dash-card">
+            <div class="dash-card-left">
+                <div class="dash-card-title">ACTIVE POS</div>
+                <div class="dash-card-value">0</div>
+                <div class="dash-card-sub">of 0 total</div>
+            </div>
+            <div class="dash-card-icon icon-blue">📋</div>
+        </div>
+        <div class="dash-card">
+            <div class="dash-card-left">
+                <div class="dash-card-title">FABRIC STOCK</div>
+                <div class="dash-card-value">0m</div>
+                <div class="dash-card-sub">grey + processed stock</div>
+            </div>
+            <div class="dash-card-icon icon-orange">🧊</div>
+        </div>
+        <div class="dash-card">
+            <div class="dash-card-left">
+                <div class="dash-card-title">IN PRODUCTION</div>
+                <div class="dash-card-value">0</div>
+                <div class="dash-card-sub">active process pieces</div>
+            </div>
+            <div class="dash-card-icon icon-purple">🔗</div>
+        </div>
+        <div class="dash-card" onclick="openPage('report-page')">
+            <div class="dash-card-left">
+                <div class="dash-card-title">SALES</div>
+                <div class="dash-card-value" id="dash-card-sale-value">₹0</div>
+                <div class="dash-card-sub">1 invoices</div>
+            </div>
+            <div class="dash-card-icon icon-green">🧾</div>
+        </div>
+
+        <!-- ================= ADDED: URGENT ACTIONS (Screenshot 3) ================= -->
+        <div class="urgent-actions-box">
+            <div class="ua-header">
+                <div class="ua-title">URGENT ACTIONS</div>
+                <div class="ua-alert-icon">⚠️</div>
+            </div>
+            <div class="ua-item">
+                <div class="ua-item-left">
+                    <div class="ua-item-name">Vendor Pending</div>
+                    <div class="ua-item-desc">0m pending</div>
+                </div>
+                <div class="ua-item-right"><span class="ua-item-count">0</span><span class="ua-item-arrow">›</span></div>
+            </div>
+            <div class="ua-item">
+                <div class="ua-item-left">
+                    <div class="ua-item-name">Tailor Pending</div>
+                    <div class="ua-item-desc">0 pcs pending</div>
+                </div>
+                <div class="ua-item-right"><span class="ua-item-count">0</span><span class="ua-item-arrow">›</span></div>
+            </div>
+            <div class="ua-item">
+                <div class="ua-item-left">
+                    <div class="ua-item-name">Finishing Active</div>
+                    <div class="ua-item-desc">active finishing steps</div>
+                </div>
+                <div class="ua-item-right"><span class="ua-item-count">0</span><span class="ua-item-arrow">›</span></div>
+            </div>
+            <div class="ua-item">
+                <div class="ua-item-left">
+                    <div class="ua-item-name">Wastage Alerts</div>
+                    <div class="ua-item-desc">high wastage challans</div>
+                </div>
+                <div class="ua-item-right"><span class="ua-item-count">0</span><span class="ua-item-arrow">›</span></div>
+            </div>
+        </div>
+
+        <!-- EXISTING SUMMARY BOX & QUICK ACTIONS -->
         <div class="summary-box">
             <div class="summary-row" onclick="openPage('report-page')">
                 <span class="sum-title">Total Sales Value (Today)</span>
@@ -381,9 +553,7 @@
         </div>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- 📄 2. NEW CUSTOMER PROFILE PAGE (Screenshot 1 Match) -->
-    <!-- ======================================================== -->
+    <!-- 📄 CUSTOMER PROFILE PAGE -->
     <div class="page" id="customer-profile-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('customer-profile-page')">←</button><h2 class="page-title">Customer Profile</h2></div>
         
@@ -412,9 +582,7 @@
         </div>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- 💸 3. NEW ENTRY DETAILS PAGE (Screenshot 2 Match) -->
-    <!-- ======================================================== -->
+    <!-- 💸 ENTRY DETAILS PAGE -->
     <div class="page" id="entry-details-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('entry-details-page')">←</button><h2 class="page-title">Entry Details</h2></div>
         
@@ -495,10 +663,48 @@
         </div>
     </div>
 
-    <!-- 📦 ITEMS MASTER PAGE -->
+    <!-- 📦 ITEMS MASTER PAGE (Added Stock Grid from Screenshot 4) -->
     <div class="page" id="items-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('items-page')">←</button><h2 class="page-title">Master Inventory</h2></div>
         <div class="page-content">
+            
+            <!-- ================= ADDED: STOCK OVERVIEW GRID (Screenshot 4) ================= -->
+            <div class="stock-overview-title">STOCK OVERVIEW</div>
+            <div class="stock-grid">
+                <div class="stock-grid-card">
+                    <div class="sg-title">GREY</div>
+                    <div class="sg-value">0m</div>
+                    <div class="sg-icon" style="background:#f1f5f9; color:#64748b;">🥞</div>
+                </div>
+                <div class="stock-grid-card">
+                    <div class="sg-title">WASHING</div>
+                    <div class="sg-value">0m</div>
+                    <div class="sg-icon" style="background:#eff6ff; color:#3b82f6;">💧</div>
+                </div>
+                <div class="stock-grid-card">
+                    <div class="sg-title">DYEING</div>
+                    <div class="sg-value">0m</div>
+                    <div class="sg-icon" style="background:#fdf4ff; color:#d946ef;">🎨</div>
+                </div>
+                <div class="stock-grid-card">
+                    <div class="sg-title">PRINTING</div>
+                    <div class="sg-value">0m</div>
+                    <div class="sg-icon" style="background:#f5f3ff; color:#8b5cf6;">🖨️</div>
+                </div>
+                <div class="stock-grid-card">
+                    <div class="sg-title">READY TO CUT</div>
+                    <div class="sg-value">0m</div>
+                    <div class="sg-icon" style="background:#fff7ed; color:#f97316;">✂️</div>
+                </div>
+                <div class="stock-grid-card">
+                    <div class="sg-title">FINISHED</div>
+                    <div class="sg-value">0</div>
+                    <div class="sg-sub">pieces</div>
+                    <div class="sg-icon" style="background:#f0fdf4; color:#22c55e;">📦</div>
+                </div>
+            </div>
+
+            <!-- Existing Invoice Table remains unchanged -->
             <table class="invoice-table">
                 <thead><tr><th>Item Details</th><th>Total Stock</th></tr></thead>
                 <tbody id="inventory-list-table"><tr><td colspan="2" style="text-align:center;">Loading...</td></tr></tbody>
@@ -557,16 +763,14 @@
         let currentPartyName = ""; 
         let currentPartyPhone = ""; 
         let currentPartyKey = "";
-        let currentEntryData = null; // Stores details for the opened Entry
+        let currentEntryData = null; 
 
         // INIT & REALTIME LISTENERS
         window.addEventListener('DOMContentLoaded', () => {
-            // Setup Dashboard Date
             let options = { year: 'numeric', month: 'short', day: 'numeric' };
             document.getElementById('dash-date-display').innerText = new Date().toLocaleDateString('en-IN', options);
             document.getElementById('calc-date').value = new Date().toISOString().split('T')[0];
             
-            // Listeners
             onValue(ref(db, 'Inventory'), (snapshot) => { 
                 smartInventory = snapshot.val() || {}; 
                 renderInventoryList(); 
@@ -704,7 +908,6 @@
             window.open(`https://wa.me/91${currentPartyPhone}?text=${msg}`, '_blank');
         }
 
-
         // ================= INVENTORY STOCK LOGIC =================
         window.saveSmartStock = function() {
             let cat = document.getElementById('stock-cat').value; 
@@ -739,7 +942,6 @@
                     if(entry.type === 'Gave') totalGave += amt; if(entry.type === 'Got') totalGot += amt;
                     let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short'});
                     
-                    // Passing the exact Firebase KEY instead of stringifying the object
                     entryList.innerHTML += `
                     <div class="entry-card" onclick="openEntryDetails('${entry.key}')">
                         <div class="ec-left">
@@ -778,8 +980,7 @@
             let totalGive = 0; let totalGet = 0; let balances = {};
             let todayTotalSale = 0; let todayTotalBox = 0;
             
-            // Getting today's local date properly formatted for comparison
-            let todayLocal = new Date().toLocaleDateString('en-CA'); // 'YYYY-MM-DD' local time
+            let todayLocal = new Date().toLocaleDateString('en-CA'); 
 
             allLedgerData.forEach(entry => {
                 let amt = parseFloat(entry.amount) || 0; 
@@ -790,12 +991,10 @@
                     if (!isNaN(d)) entryDateString = d.toLocaleDateString('en-CA'); 
                 } catch(e){}
 
-                // Standard Ledger Logic
                 if(!balances[entry.name]) balances[entry.name] = 0;
                 if(entry.type === 'Gave') balances[entry.name] += amt;
                 if(entry.type === 'Got') balances[entry.name] -= amt;
 
-                // Today's Sales Logic Dashboard
                 if (entryDateString === todayLocal && entry.details && entry.details.includes("Invoice Sale")) {
                     todayTotalSale += amt;
                     let boxMatch = entry.details.match(/(\d+)\s*Box/i);
@@ -812,6 +1011,11 @@
             document.getElementById('total-get-all').innerText = "₹ " + totalGet.toLocaleString();
             document.getElementById('dash-total-sale').innerText = `₹ ${todayTotalSale.toLocaleString('en-IN')} ➔`; 
             document.getElementById('dash-total-box').innerText = `${todayTotalBox} BOX ➔`;
+            
+            // Updating the newly added Dashboard Card for SALES (Screenshot 2)
+            if(document.getElementById('dash-card-sale-value')) {
+                document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
+            }
         }
 
         window.openLedgerDetail = function(name, phone) {
@@ -852,13 +1056,11 @@
         window.triggerSaveAndShare = function() {
             if (currentCart.length === 0) return alert("Cart is empty!");
             
-            // Auto Reduce Inventory Stock
             currentCart.forEach(item => {
                 let key = item.cat + "_" + item.shade; let itemRef = ref(db, 'Inventory/' + key);
                 get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) - item.qty); });
             });
             
-            // Add Sale Entry to Ledger
             let partyName = document.getElementById('inv-party').value || "Cash Sale";
             push(ref(db, 'Ledger'), { 
                 date: new Date().toISOString(), 
@@ -904,8 +1106,19 @@
             document.getElementById('calc-title-text').innerText = `You ${calcType.toLowerCase()} ₹ ${calcValue || "0"} to ${currentPartyName}`; 
         }
 
-        // ================= NAVIGATION HELPERS =================
+        // ================= NAVIGATION HELPERS & SIDEBAR =================
         window.toggleMenu = function() { const menu = document.getElementById('dropdown-menu'); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; }
+        
+        // NEW SIDEBAR FUNCTIONALITY
+        window.openSidebar = function() {
+            document.getElementById('sidebar').classList.add('active');
+            document.getElementById('sidebar-overlay').style.display = 'block';
+        }
+        window.closeSidebar = function() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('sidebar-overlay').style.display = 'none';
+        }
+
         window.openPage = function(id) { document.getElementById(id).classList.add('active'); }
         window.closePage = function(id) { document.getElementById(id).classList.remove('active'); }
         window.goHome = function() { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); document.querySelector('.nav-item').classList.add('active'); }

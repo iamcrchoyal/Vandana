@@ -10,48 +10,44 @@
 
     <style>
         /* ================= 1. SUPERFAST SOLID UI ================= */
-        :root {
-            --primary: #1565c0; --primary-dark: #0d47a1; --success: #10b981; --danger: #b91c1c; --warning: #f59e0b;
-            --bg-color: #f8fafc; --surface: #ffffff; --text-dark: #0f172a; --text-muted: #64748b; --border: #e2e8f0;
-        }
+        :root { --primary: #1565c0; --primary-dark: #0d47a1; --success: #10b981; --danger: #b91c1c; --warning: #f59e0b; --bg-color: #f8fafc; --surface: #ffffff; --text-dark: #0f172a; --text-muted: #64748b; --border: #e2e8f0; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         body { background-color: var(--bg-color); color: var(--text-dark); overflow-x: hidden; font-size: 14px; }
         
-        /* HEADER */
         .app-bar { position: fixed; top: 0; width: 100%; height: 60px; background: #1e3a8a; color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .app-bar h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
         .menu-dots { font-size: 24px; cursor: pointer; padding: 5px; font-weight: bold;}
         .dropdown { position: absolute; right: 16px; top: 60px; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: none; z-index: 2000; min-width: 180px; overflow: hidden; border: 1px solid var(--border); }
         .dropdown div { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer; color: var(--text-dark); font-size: 14px; font-weight: 500;}
         
-        /* DASHBOARD */
         .main-content { padding: 75px 16px 90px 16px; max-width: 800px; margin: 0 auto; }
         .section-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;}
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;}
         .active-date-picker { font-size: 13px; font-weight: 700; color: var(--primary); background: #eff6ff; padding: 6px 12px; border-radius: 20px; border: 1px solid #bfdbfe; outline: none; font-family: inherit;}
+        
         .summary-box { background: white; border-radius: 12px; padding: 10px 20px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 24px;}
         .summary-row { display: flex; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding: 16px 0;}
         .summary-row:last-child { border: none; }
         .sum-title { font-size: 13px; color: var(--text-muted); font-weight: 500; }
         .sum-val { font-size: 16px; font-weight: 700; color: var(--text-dark); }
+        
         .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
         .action-box { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.05);}
         .action-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 22px; background: #f8fafc;}
         .action-label { font-size: 11px; font-weight: 600; color: var(--text-dark); text-align: center; line-height: 1.2;}
         
-        /* BOTTOM NAV */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: white; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);}
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; color: var(--text-muted); font-size: 10px; font-weight: 600; gap: 4px; cursor: pointer;}
         .nav-item i { font-size: 20px; font-style: normal;}
         .nav-item.active { color: var(--primary); }
         
-        /* PAGES & FORMS */
         .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 90px; }
         .page.active { transform: translateX(0); }
         .page-header { position: sticky; top: 0; background: var(--primary); color: white; height: 56px; display: flex; align-items: center; padding: 0 16px; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .back-btn { background: transparent; border: none; color: white; font-size: 24px; margin-right: 16px; cursor: pointer; padding: 5px;}
         .page-title { font-size: 16px; font-weight: 600; margin: 0; }
         .page-content { padding: 16px; max-width: 800px; margin: 0 auto; }
+        
         .form-panel { background: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
         .form-group { margin-bottom: 16px; }
         .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;}
@@ -61,12 +57,10 @@
         .action-btn { background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; border-radius: 8px; padding: 0 16px; font-weight: 600; cursor: pointer;}
         .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 6px rgba(21, 101, 192, 0.2);}
         
-        /* TABLE */
         .invoice-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; background: white; border-radius: 8px; overflow: hidden; border: 1px solid var(--border);}
         .invoice-table th { background: #f8fafc; padding: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 600;}
         .invoice-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-weight: 500; }
         
-        /* KHATABOOK UI */
         .kb-header { background: #1e3a8a; color: white; padding: 16px 16px 40px 16px;}
         .kb-header-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
         .kb-summary-card { background: white; border-radius: 12px; margin: 10px 16px 16px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: relative; z-index: 2; border: 1px solid var(--border);}
@@ -75,6 +69,7 @@
         .kb-summary-box:last-child { border-right: none; }
         .kb-summary-label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;}
         .kb-summary-val { font-size: 20px; font-weight: 700; margin-top: 6px; }
+        
         .search-bar-container { background: white; margin: 0 16px 16px 16px; border-radius: 8px; padding: 6px 12px; display: flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border);}
         .search-bar-container input { border: none; width: 100%; padding: 8px 5px; outline: none; font-size: 14px; }
         .kb-tabs { display: flex; gap: 20px; font-size: 13px; font-weight: 600; padding: 0 16px; margin-bottom: 10px;}
@@ -89,7 +84,6 @@
         .kb-list-right { display: flex; flex-direction: column; justify-content: center; padding: 16px; min-width: 100px; text-align: right; border-left: 1px dashed #e2e8f0; background: #f8fafc; border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
         .kb-fab { position: fixed !important; bottom: 80px; right: 20px; width: 56px; height: 56px; background: #b91c1c; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); border: none; z-index: 1001; cursor: pointer;}
         
-        /* Ledger Deep Page */
         .ledger-header-area { background: #1e3a8a; color: white; padding: 16px 16px 30px 16px;}
         .ledger-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .l-name { font-size: 16px; font-weight: 600; }
@@ -97,18 +91,16 @@
         .ledger-action-tabs { display: flex; margin: 20px 16px; gap: 10px;}
         .l-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 12px; color: var(--text-dark); font-weight: 600; background: white; border-radius: 8px; cursor: pointer; border: 1px solid var(--border);}
         .entries-container { padding: 10px 16px 100px 16px; }
-        .entry-card { background: white; border-radius: 10px; display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 12px; cursor: pointer; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.02);}
+        .entry-card { background: white; border-radius: 10px; display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 12px; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.02);}
         .ec-left { padding: 16px; flex: 2; border-right: 1px dashed #e2e8f0; }
         .ec-gave, .ec-got { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; }
         .ec-gave { background: #fef2f2; color: var(--danger); }
         .ec-got { background: #ecfdf5; color: var(--success); border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
         
-        /* Fixed Footer Give/Got */
         .bottom-action-bar { position: fixed !important; bottom: 0; left: 0; width: 100%; background: white; padding: 12px 16px; display: flex; gap: 12px; border-top: 1px solid var(--border); z-index: 9999; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);}
         .btn-l-gave { flex: 1; background: var(--danger); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer;}
         .btn-l-got { flex: 1; background: var(--success); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer;}
         
-        /* CALCULATOR */
         .calc-header { background: white; color: var(--danger); height: 56px; display: flex; align-items: center; padding: 0 16px; z-index: 10; border-bottom: 1px solid var(--border); }
         .calc-title { font-size: 15px; font-weight: 600; margin: 0; }
         .amount-input-box { background: white; border: 1px solid var(--border); border-radius: 8px; margin: 16px; padding: 16px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
@@ -126,20 +118,14 @@
         .calc-btn.light-blue { background: #dbeafe; color: #1e3a8a;}
         .calc-btn.dark-blue { background: #1565c0; color: white; border: none;}
         
-        /* Loader */
         .loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 99999; justify-content: center; align-items: center; flex-direction: column;}
         .spinner { border: 4px solid #f3f3f3; border-left-color: var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
+    <div id="loader" class="loader-overlay"><div class="spinner"></div></div>
 
-    <!-- 🌟 LOADER -->
-    <div id="loader" class="loader-overlay">
-        <div class="spinner"></div>
-    </div>
-
-    <!-- 📱 TOP BAR -->
     <header class="app-bar">
         <div style="display:flex; align-items:center; gap:12px;">
             <div style="font-size:20px; cursor:pointer;">☰</div>
@@ -154,13 +140,11 @@
         </div>
     </header>
 
-    <!-- 🏠 MAIN DASHBOARD -->
     <main class="main-content">
         <div class="dash-header">
             <h3 class="section-title" style="margin:0;">Dashboard Overview</h3>
             <input type="date" class="active-date-picker" id="dash-date-picker">
         </div>
-
         <div class="summary-box">
             <div class="summary-row" onclick="openPage('report-page')">
                 <span class="sum-title">Total Sales Value (Today)</span>
@@ -171,25 +155,15 @@
                 <span class="sum-val" id="dash-total-box">0 BOX ➔</span>
             </div>
         </div>
-
         <h3 class="section-title">Quick Actions</h3>
         <div class="quick-actions">
-            <div class="action-box" onclick="openPage('pos-page')">
-                <div class="action-icon" style="color: #2563eb;">🧾</div><span class="action-label">Sale Invoice</span>
-            </div>
-            <div class="action-box" onclick="openPage('stock-in-page')">
-                <div class="action-icon" style="color: #10b981;">📦</div><span class="action-label">Stock In</span>
-            </div>
-            <div class="action-box" onclick="openPage('parties-page')">
-                <div class="action-icon" style="color: #a855f7;">👥</div><span class="action-label">Ledger Book</span>
-            </div>
-            <div class="action-box" onclick="openPage('items-page')">
-                <div class="action-icon" style="color: #f59e0b;">📊</div><span class="action-label">All Items</span>
-            </div>
+            <div class="action-box" onclick="openPage('pos-page')"><div class="action-icon" style="color: #2563eb;">🧾</div><span class="action-label">Sale Invoice</span></div>
+            <div class="action-box" onclick="openPage('stock-in-page')"><div class="action-icon" style="color: #10b981;">📦</div><span class="action-label">Stock In</span></div>
+            <div class="action-box" onclick="openPage('parties-page')"><div class="action-icon" style="color: #a855f7;">👥</div><span class="action-label">Ledger Book</span></div>
+            <div class="action-box" onclick="openPage('items-page')"><div class="action-icon" style="color: #f59e0b;">📊</div><span class="action-label">All Items</span></div>
         </div>
     </main>
 
-    <!-- ⚓ BOTTOM NAV -->
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="goHome()"><i>🏠</i><span>Home</span></div>
         <div class="nav-item" onclick="openPage('items-page')"><i>📦</i><span>Items</span></div>
@@ -211,15 +185,11 @@
                     <input type="tel" class="form-control" id="inv-phone" placeholder="Mobile Number">
                 </div>
             </div>
-            
             <div class="form-panel">
                 <label class="form-label">Add Product</label>
                 <div class="input-btn-group" style="margin-bottom: 12px;">
                     <select class="form-control" id="inv-cat" style="flex:2;">
-                        <option value="Shri Kamlay Thread">Shri Kamlay Thread</option>
-                        <option value="Zari">Zari</option>
-                        <option value="Cotton Yarn">Cotton Yarn</option>
-                        <option value="Viscose">Viscose</option>
+                        <option value="Shri Kamlay Thread">Shri Kamlay Thread</option><option value="Zari">Zari</option><option value="Cotton Yarn">Cotton Yarn</option><option value="Viscose">Viscose</option>
                     </select>
                     <input type="text" class="form-control" id="inv-shade" placeholder="Shade/Color" style="flex:1;">
                 </div>
@@ -229,17 +199,14 @@
                 </div>
                 <button class="btn-submit" style="background:#1e293b;" onclick="addCartItem()">⬇ Add to Cart</button>
             </div>
-            
             <table class="invoice-table" style="margin-bottom: 16px;">
                 <thead><tr><th>Details</th><th>Qty</th><th>Rate</th><th>Total</th></tr></thead>
                 <tbody id="cart-rows"><tr><td colspan="4" style="text-align:center; padding:16px; color:var(--text-muted);">Cart is empty</td></tr></tbody>
             </table>
-            
             <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#eff6ff; border-color:#bfdbfe;">
                 <span style="font-weight:700; font-size:15px; color:var(--primary);">Grand Total:</span>
                 <span style="font-size:22px; font-weight:800; color:var(--primary);" id="cart-grand-total">₹ 0</span>
             </div>
-            
             <button id="save-bill-btn" class="btn-submit" onclick="triggerSaveAndShare()">💾 Generate Bill</button>
             <button id="pdf-share-btn" class="btn-submit" style="display:none; background: #10b981; margin-top:10px;" onclick="sharePDFOnWhatsApp()">📲 Share via WhatsApp</button>
         </div>
@@ -256,9 +223,8 @@
                     <select class="form-control" id="stock-cat" style="margin-bottom:12px;">
                         <option value="Shri Kamlay Thread">Shri Kamlay Thread</option><option value="Zari">Zari</option><option value="Cotton Yarn">Cotton Yarn</option><option value="Viscose">Viscose</option>
                     </select>
-                    
                     <div class="input-btn-group" style="margin-bottom:16px;">
-                        <input type="text" class="form-control" id="stock-shade" placeholder="Shade Code (e.g. 105)" style="flex:1;">
+                        <input type="text" class="form-control" id="stock-shade" placeholder="Shade Code" style="flex:1;">
                         <input type="number" class="form-control" id="stock-qty" placeholder="Total Boxes" style="flex:1;">
                     </div>
                 </div>
@@ -272,31 +238,20 @@
         <div class="kb-header">
             <div style="display:flex; align-items:center; margin-bottom: 15px;">
                 <button class="back-btn" onclick="closePage('parties-page')" style="padding:0; margin-right:15px; color:white;">←</button>
-                <div class="kb-header-title">Ledger Book <span>⌄</span></div>
+                <div class="kb-header-title">Ledger Book</div>
             </div>
         </div>
-
         <div class="kb-summary-card">
             <div class="kb-summary-split">
                 <div class="kb-summary-box"><div class="kb-summary-label">Total You Give</div><div class="kb-summary-val" style="color:var(--danger);" id="total-give-all">₹ 0</div></div>
                 <div class="kb-summary-box"><div class="kb-summary-label">Total You Get</div><div class="kb-summary-val" style="color:var(--success);" id="total-get-all">₹ 0</div></div>
             </div>
         </div>
-
         <div class="search-bar-container">
             <span style="color:var(--text-muted); font-size:16px;">🔍</span>
             <input type="text" id="party-search" placeholder="Search Customer Name..." onkeyup="searchParties()">
         </div>
-
-        <div class="kb-tabs" style="padding: 0 16px; margin-top:10px;">
-            <div class="kb-tab active" style="color:var(--primary); border-bottom-color:var(--primary);">CUSTOMERS</div>
-            <div class="kb-tab" style="color:var(--text-muted);">SUPPLIERS</div>
-        </div>
-
-        <div class="kb-list" id="kb-customer-list">
-            <!-- Firebase Customers will appear here -->
-        </div>
-
+        <div class="kb-list" id="kb-customer-list"></div>
         <button class="kb-fab" onclick="openPage('add-party-page')">+</button>
     </div>
 
@@ -309,6 +264,7 @@
                     <div class="kb-avatar" id="l-deep-avatar-text" style="width:36px; height:36px; font-size:14px; margin-right:10px; background:white; color:var(--primary);"></div>
                     <div>
                         <div class="l-name" id="l-deep-name">Name</div>
+                        <div style="font-size:11px; opacity:0.8; margin-top:2px; cursor:pointer;" onclick="manageCustomerSettings()">⚙️ View Settings (Address/Delete)</div>
                     </div>
                 </div>
                 <a href="#" id="l-call-btn" style="color:white; text-decoration:none; font-size:22px;">📞</a>
@@ -318,20 +274,16 @@
             <span style="font-size:14px; color:var(--text-muted); font-weight:600;" id="l-deep-bal-text">You will give</span>
             <span style="font-size:22px; font-weight:700;" id="l-deep-bal-amt">₹ 0</span>
         </div>
-        
         <div class="ledger-action-tabs">
             <div class="l-tab" id="l-wa-btn" style="color:#10b981; border-color:#10b981;">💬 Reminder</div>
             <div class="l-tab" id="l-sms-btn">✉️ SMS</div>
         </div>
-
         <div class="entries-container">
             <div style="display:flex; justify-content:space-between; padding:0 5px; font-size:10px; font-weight:700; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase;">
                 <span style="flex:2;">ENTRIES</span><span style="flex:1; text-align:center;">YOU GAVE</span><span style="flex:1; text-align:right;">YOU GOT</span>
             </div>
-            <!-- Firebase Entries List -->
             <div id="ledger-entries-list"></div>
         </div>
-        
         <div class="bottom-action-bar">
             <button class="btn-l-gave" onclick="openCalculator('Gave')">YOU GAVE ₹</button>
             <button class="btn-l-got" onclick="openCalculator('Got')">YOU GOT ₹</button>
@@ -342,9 +294,8 @@
     <div class="page" id="calculator-page" style="z-index: 2500;">
         <div class="calc-header" id="calc-header">
             <button class="back-btn" onclick="closePage('calculator-page')" id="calc-back-btn" style="color:var(--danger);">←</button>
-            <h2 class="calc-title" id="calc-title-text">You gave ₹ 0 to Name</h2>
+            <h2 class="calc-title" id="calc-title-text">You gave ₹ 0</h2>
         </div>
-        
         <div class="page-content" style="padding:0;">
             <div class="amount-input-box">
                 <span class="amount-symbol" id="calc-symbol">₹</span>
@@ -355,9 +306,8 @@
                 <input type="date" class="calc-date-btn" id="calc-date">
             </div>
         </div>
-
         <div class="calculator-footer">
-            <button class="calc-save-btn" id="calc-save-btn" onclick="saveCalculatorEntry()">SAVE TO FIREBASE</button>
+            <button class="calc-save-btn" id="calc-save-btn" onclick="saveCalculatorEntry()">SAVE</button>
             <div class="calc-grid">
                 <button class="calc-btn light-blue" onclick="calcPress('C')">C</button>
                 <button class="calc-btn light-blue">M+</button>
@@ -383,21 +333,18 @@
         </div>
     </div>
 
-
     <!-- 📦 ITEMS MASTER PAGE -->
     <div class="page" id="items-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('items-page')">←</button><h2 class="page-title">Master Inventory</h2></div>
         <div class="page-content">
             <table class="invoice-table">
                 <thead><tr><th>Item Details</th><th>Total Stock</th></tr></thead>
-                <tbody id="inventory-list-table">
-                    <tr><td colspan="2" style="text-align:center; padding:16px;">Loading Firebase Data...</td></tr>
-                </tbody>
+                <tbody id="inventory-list-table"><tr><td colspan="2" style="text-align:center;">Loading...</td></tr></tbody>
             </table>
         </div>
     </div>
 
-    <!-- 👤 ADD NEW PARTY PAGE -->
+    <!-- 👤 ADD NEW PARTY PAGE (Added Address Field) -->
     <div class="page" id="add-party-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('add-party-page')">←</button><h2 class="page-title">Add Account</h2></div>
         <div class="page-content">
@@ -409,18 +356,24 @@
                         <button class="action-btn" onclick="openPhonebook('new-party-name', 'new-party-phone')">👥</button>
                     </div>
                 </div>
-                <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="new-party-phone" placeholder="Enter Number"></div>
+                <div class="form-group">
+                    <label class="form-label">Mobile Number</label>
+                    <input type="tel" class="form-control" id="new-party-phone" placeholder="Enter Number">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Address (Optional)</label>
+                    <input type="text" class="form-control" id="new-party-address" placeholder="City or Address">
+                </div>
                 <button class="btn-submit" onclick="addCustomerToCloud()">💾 Save Customer</button>
             </div>
         </div>
     </div>
 
-    <!-- ================= JAVASCRIPT: FIREBASE INTEGRATION ================= -->
+    <!-- ================= FIREBASE JAVASCRIPT ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue, get, set, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, onValue, get, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // 1. Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAGcWUM4lqJKmV2Zz2Em3WtI-D0fcQeuzQ",
             authDomain: "vandana-inventory.firebaseapp.com",
@@ -434,38 +387,26 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Global Variables
-        let allLedgerData = []; 
-        let globalCustomers = [];
-        let smartInventory = {}; 
-        let todayTotalSale = 0;
-        let todayTotalBox = 0;
-        let currentPartyName = ""; 
-        let currentPartyPhone = "";
+        let allLedgerData = []; let globalCustomers = []; let smartInventory = {}; 
+        let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = "";
 
-        // 🚀 INIT & LISTENERS
+        // LISTENERS
         window.addEventListener('DOMContentLoaded', () => {
             let today = new Date().toISOString().split('T')[0];
             document.getElementById('dash-date-picker').value = today;
             document.getElementById('calc-date').value = today;
             
-            // Listen to Inventory Live
-            onValue(ref(db, 'Inventory'), (snapshot) => {
-                smartInventory = snapshot.val() || {};
-                renderInventoryList();
-            });
-
-            // Listen to Customers Live
+            onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); });
+            
             onValue(ref(db, 'Customers'), (snapshot) => {
                 let data = snapshot.val() || {};
-                globalCustomers = Object.values(data);
+                globalCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] }));
                 renderCustomerList(globalCustomers);
             });
 
-            // Listen to Ledger Live
             onValue(ref(db, 'Ledger'), (snapshot) => {
                 let data = snapshot.val() || {};
-                allLedgerData = Object.values(data).reverse(); // Show latest first
+                allLedgerData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse();
                 calculateGrandTotals();
                 if (document.getElementById('ledger-deep-page').classList.contains('active')) {
                     renderLedgerEntries(currentPartyName);
@@ -473,159 +414,157 @@
             });
         });
 
-        // 🚀 CORE FUNCTIONS
-        window.renderInventoryList = function() {
-            let html = "";
-            for (let key in smartInventory) {
-                let parts = key.split("_");
-                let qty = smartInventory[key];
-                let color = qty < 5 ? 'var(--danger)' : 'var(--text-dark)';
-                html += `<tr><td><strong>${parts[0]}</strong><br><span style="font-size:11px; color:gray;">Shd: ${parts[1]}</span></td><td style="color:${color}; font-weight:700;">${qty} BOX</td></tr>`;
-            }
-            document.getElementById('inventory-list-table').innerHTML = html || '<tr><td colspan="2" style="text-align:center;">No Stock in Firebase</td></tr>';
-        }
-
-        window.saveSmartStock = function() {
-            let cat = document.getElementById('stock-cat').value;
-            let shade = document.getElementById('stock-shade').value;
-            let qty = parseInt(document.getElementById('stock-qty').value);
-            if(!shade || !qty) return alert("Enter Shade Code and Quantity!");
-
-            let key = cat + "_" + shade;
-            let itemRef = ref(db, 'Inventory/' + key);
-            
-            get(itemRef).then((snap) => {
-                let currentQty = snap.val() || 0;
-                set(itemRef, currentQty + qty); // Update Firebase
-                alert("✅ Stock Added to Firebase!");
-                document.getElementById('stock-shade').value = ''; 
-                document.getElementById('stock-qty').value = '';
-            });
-        }
-
+        // 1. ADD CUSTOMER (With Address)
         window.addCustomerToCloud = function() {
             let name = document.getElementById('new-party-name').value;
             let phone = document.getElementById('new-party-phone').value;
-            if(!name) return alert("Please enter Customer Name!");
+            let address = document.getElementById('new-party-address').value;
+            if(!name) return alert("Please enter Name!");
 
-            push(ref(db, 'Customers'), { name: name, phone: phone });
+            push(ref(db, 'Customers'), { name, phone, address, date: new Date().toISOString(), status: "Active" });
             closePage('add-party-page');
-            document.getElementById('new-party-name').value = '';
-            document.getElementById('new-party-phone').value = '';
+            document.getElementById('new-party-name').value = ''; document.getElementById('new-party-phone').value = ''; document.getElementById('new-party-address').value = '';
         }
 
-        // ================= INVOICE & CART =================
-        let currentCart = []; 
-        let grandInvoiceTotal = 0; let invoiceBoxCount = 0;
-
-        window.addCartItem = function() {
-            const cat = document.getElementById('inv-cat').value; 
-            const shade = document.getElementById('inv-shade').value || "Gen";
-            const qty = parseFloat(document.getElementById('inv-qty').value) || 0; 
-            const rate = parseFloat(document.getElementById('inv-rate').value) || 0;
-            if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!");
+        // 2 & 3. DELETE CUSTOMER / UPDATE ADDRESS
+        window.manageCustomerSettings = function() {
+            let customer = globalCustomers.find(c => c.name === currentPartyName);
+            if(!customer) return;
             
-            let itemTotal = qty * rate; 
-            currentCart.push({ cat: cat, shade: shade, title: `${cat} - Shd:${shade}`, qty, rate, itemTotal });
-            renderCartUi();
+            let action = prompt(`Settings for ${currentPartyName}\n\n1. Type 'EDIT' to update address\n2. Type 'DELETE' to remove customer`);
+            if (action === 'EDIT' || action === 'edit' || action === '1') {
+                let newAddress = prompt("Enter New Address:", customer.address || "");
+                if (newAddress !== null) {
+                    update(ref(db, 'Customers/' + customer.key), { address: newAddress });
+                    alert("Address Updated!");
+                }
+            } else if (action === 'DELETE' || action === 'delete' || action === '2') {
+                if (confirm(`WARNING: Are you sure you want to delete ${currentPartyName}?`)) {
+                    remove(ref(db, 'Customers/' + customer.key));
+                    closePage('ledger-deep-page');
+                    alert("Customer Deleted!");
+                }
+            }
         }
 
-        function renderCartUi() {
-            let tbody = document.getElementById('cart-rows'); tbody.innerHTML = ''; 
-            grandInvoiceTotal = 0; invoiceBoxCount = 0;
-            currentCart.forEach(item => { 
-                grandInvoiceTotal += item.itemTotal; invoiceBoxCount += item.qty;
-                tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.qty}</td><td>₹${item.rate}</td><td><strong>₹${item.itemTotal.toLocaleString()}</strong></td></tr>`; 
+        // 4. ADD LEDGER ENTRY
+        window.saveCalculatorEntry = function() {
+            let amount = eval(calcValue) || 0;
+            if(amount <= 0) return alert("Enter valid amount!");
+            push(ref(db, 'Ledger'), { 
+                date: new Date().toISOString(), name: currentPartyName, type: calcType, 
+                amount: amount, details: document.getElementById('calc-details').value || "App Entry" 
             });
-            document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`;
-            document.getElementById('inv-shade').value=''; document.getElementById('inv-qty').value=''; document.getElementById('inv-rate').value='';
+            closePage('calculator-page');
         }
 
-        window.triggerSaveAndShare = function() {
-            if (currentCart.length === 0) return alert("Cart is empty!");
+        // 5. DELETE LEDGER ENTRY
+        window.deleteLedgerEntry = function(key) {
+            if(confirm("Are you sure you want to delete this entry? This will change the balance.")) {
+                remove(ref(db, 'Ledger/' + key));
+            }
+        }
+
+        // 6. EDIT LEDGER ENTRY
+        window.editLedgerEntry = function(key, oldAmt, oldDetails) {
+            let newAmt = prompt("Edit Amount:", oldAmt);
+            if(newAmt === null) return;
+            let newDetails = prompt("Edit Details:", oldDetails);
+            if(newDetails === null) return;
             
-            // 1. Auto Reduce Stock from Firebase
-            currentCart.forEach(item => {
-                let key = item.cat + "_" + item.shade;
-                let itemRef = ref(db, 'Inventory/' + key);
-                get(itemRef).then(snap => {
-                    let currentQty = snap.val() || 0;
-                    set(itemRef, currentQty - item.qty);
+            update(ref(db, 'Ledger/' + key), { 
+                amount: parseFloat(newAmt) || oldAmt, 
+                details: newDetails 
+            });
+        }
+
+        // INVENTORY STOCK UPDATE
+        window.saveSmartStock = function() {
+            let cat = document.getElementById('stock-cat').value; let shade = document.getElementById('stock-shade').value; let qty = parseInt(document.getElementById('stock-qty').value);
+            if(!shade || !qty) return alert("Enter Shade and Qty!");
+            let key = cat + "_" + shade; let itemRef = ref(db, 'Inventory/' + key);
+            get(itemRef).then((snap) => { set(itemRef, (snap.val() || 0) + qty); });
+            document.getElementById('stock-shade').value = ''; document.getElementById('stock-qty').value = ''; alert("Stock Added!");
+        }
+
+        window.renderInventoryList = function() {
+            let html = "";
+            for (let key in smartInventory) {
+                let parts = key.split("_"); let qty = smartInventory[key]; let color = qty < 5 ? 'var(--danger)' : 'var(--text-dark)';
+                html += `<tr><td><strong>${parts[0]}</strong><br><span style="font-size:11px; color:gray;">Shd: ${parts[1]}</span></td><td style="color:${color}; font-weight:700;">${qty} BOX</td></tr>`;
+            }
+            document.getElementById('inventory-list-table').innerHTML = html || '<tr><td colspan="2" style="text-align:center;">No Stock</td></tr>';
+        }
+
+        // LEDGER RENDER (With Edit/Delete Buttons)
+        window.renderLedgerEntries = function(name) {
+            let entryList = document.getElementById('ledger-entries-list'); entryList.innerHTML = '';
+            let totalGave = 0; let totalGot = 0;
+            let customerEntries = allLedgerData.filter(e => e.name === name);
+
+            if(customerEntries.length === 0) { entryList.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No entries.</div>`; } 
+            else {
+                customerEntries.forEach(entry => {
+                    let amt = parseFloat(entry.amount) || 0;
+                    let gaveHtml = entry.type === 'Gave' ? `₹ ${amt}` : ''; let gotHtml = entry.type === 'Got' ? `₹ ${amt}` : '';
+                    if(entry.type === 'Gave') totalGave += amt; if(entry.type === 'Got') totalGot += amt;
+                    let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short'});
+                    
+                    entryList.innerHTML += `
+                    <div class="entry-card">
+                        <div class="ec-left">
+                            <div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${dateStr}</div>
+                            <div style="font-size:13px; color:var(--text-dark); font-weight:500;">${entry.details || 'App Entry'}</div>
+                            <div style="margin-top:8px;">
+                                <span style="background:#f1f5f9; padding:4px 8px; border-radius:4px; color:var(--primary); font-size:11px; cursor:pointer; margin-right:8px;" onclick="editLedgerEntry('${entry.key}', '${amt}', '${entry.details}')">✏️ Edit</span>
+                                <span style="background:#fef2f2; padding:4px 8px; border-radius:4px; color:var(--danger); font-size:11px; cursor:pointer;" onclick="deleteLedgerEntry('${entry.key}')">🗑️ Delete</span>
+                            </div>
+                        </div>
+                        <div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div>
+                    </div>`;
                 });
-            });
-
-            // 2. Add Sale Invoice to Ledger
-            let partyName = document.getElementById('inv-party').value || "Cash Sale";
-            push(ref(db, 'Ledger'), {
-                date: new Date().toISOString(),
-                name: partyName,
-                type: "Got", // You Got Business/Money
-                amount: grandInvoiceTotal,
-                details: `Invoice Sale - ${invoiceBoxCount} Box`
-            });
-
-            document.getElementById('save-bill-btn').style.display = 'none';
-            document.getElementById('pdf-share-btn').style.display = 'block';
-            alert(`✅ Bill Generated! Stock reduced on Firebase.`);
+            }
+            let balEl = document.getElementById('l-deep-bal-amt'); let txtEl = document.getElementById('l-deep-bal-text');
+            let finalBal = totalGave - totalGot;
+            if(finalBal > 0) { balEl.innerText = "₹ " + finalBal.toLocaleString(); balEl.style.color = "var(--success)"; txtEl.innerText = "You will get"; } 
+            else if (finalBal < 0) { balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); balEl.style.color = "var(--danger)"; txtEl.innerText = "You will give"; } 
+            else { balEl.innerText = "₹ 0"; balEl.style.color = "var(--text-dark)"; txtEl.innerText = "Settled"; }
         }
 
-        window.sharePDFOnWhatsApp = function() {
-            const custPhone = document.getElementById('inv-phone').value || "";
-            let msg = `📄 *INVOICE BILL* %0A🏛️ *VANDANA ENTERPRISES*%0A%0A*Total Amount:* ₹${grandInvoiceTotal}`;
-            window.open(`https://wa.me/91${custPhone}?text=${msg}`, '_blank');
-        }
-
-        // ================= LEDGER UI & CALCULATOR & DASHBOARD LOGIC =================
         window.renderCustomerList = function(list) {
             let html = "";
             list.forEach(cust => {
                 let initial = cust.name ? cust.name.substring(0,2).toUpperCase() : "CU";
-                let phone = cust.phone || '';
+                let addr = cust.address ? ` | 📍 ${cust.address}` : "";
                 html += `
-                <div class="kb-list-item" onclick="openLedgerDetail('${cust.name}', '${phone}')">
+                <div class="kb-list-item" onclick="openLedgerDetail('${cust.name}', '${cust.phone}')">
                     <div class="kb-list-left">
                         <div class="kb-avatar">${initial}</div>
-                        <div><div class="kb-name">${cust.name}</div><div class="kb-time">📱 ${phone}</div></div>
+                        <div><div class="kb-name">${cust.name}</div><div class="kb-time">📱 ${cust.phone || 'N/A'}${addr}</div></div>
                     </div>
                     <div class="kb-list-right"><span style="color:var(--text-muted); font-size:18px;">›</span></div>
                 </div>`;
             });
-            document.getElementById('kb-customer-list').innerHTML = html || '<div style="padding:40px; text-align:center; color:gray;">No Customers in Firebase</div>';
+            document.getElementById('kb-customer-list').innerHTML = html || '<div style="padding:40px; text-align:center; color:gray;">No Customers</div>';
         }
 
         window.calculateGrandTotals = function() {
-            let totalGive = 0; let totalGet = 0;
-            let balances = {};
-            
-            todayTotalSale = 0; 
-            todayTotalBox = 0;
-            
-            // Get today's date from the dashboard date picker to allow filtering by date
+            let totalGive = 0; let totalGet = 0; let balances = {};
+            let todayTotalSale = 0; let todayTotalBox = 0;
             let selectedDateString = document.getElementById('dash-date-picker').value;
 
             allLedgerData.forEach(entry => {
-                let amt = parseFloat(entry.amount) || 0;
-                let entryDateString = "";
-                
-                try {
-                    let d = new Date(entry.date);
-                    if (!isNaN(d)) {
-                        entryDateString = d.toISOString().split('T')[0];
-                    }
-                } catch(e){}
+                let amt = parseFloat(entry.amount) || 0; let entryDateString = "";
+                try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){}
 
-                // Ledger Balance logic
                 if(!balances[entry.name]) balances[entry.name] = 0;
                 if(entry.type === 'Gave') balances[entry.name] += amt;
                 if(entry.type === 'Got') balances[entry.name] -= amt;
 
-                // Today's Sales Logic (Only counts 'Invoice Sale' entries for the selected date)
                 if (entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice Sale")) {
                     todayTotalSale += amt;
                     let boxMatch = entry.details.match(/(\d+)\s*Box/i);
-                    if (boxMatch && boxMatch[1]) {
-                        todayTotalBox += parseInt(boxMatch[1]);
-                    }
+                    if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]);
                 }
             });
 
@@ -634,132 +573,74 @@
                 if(balances[cust] < 0) totalGive += Math.abs(balances[cust]); 
             }
             
-            // Update UI
-            document.getElementById('total-give-all').innerText = "₹ " + totalGive.toLocaleString();
-            document.getElementById('total-get-all').innerText = "₹ " + totalGet.toLocaleString();
-            document.getElementById('dash-total-sale').innerText = `₹ ${todayTotalSale.toLocaleString('en-IN')} ➔`;
-            document.getElementById('dash-total-box').innerText = `${todayTotalBox} BOX ➔`;
+            document.getElementById('total-give-all').innerText = "₹ " + totalGive.toLocaleString(); document.getElementById('total-get-all').innerText = "₹ " + totalGet.toLocaleString();
+            document.getElementById('dash-total-sale').innerText = `₹ ${todayTotalSale.toLocaleString('en-IN')} ➔`; document.getElementById('dash-total-box').innerText = `${todayTotalBox} BOX ➔`;
         }
 
-        // Add event listener to recalculate today's sales if user changes the date on dashboard
         document.getElementById('dash-date-picker').addEventListener('change', calculateGrandTotals);
-
 
         window.openLedgerDetail = function(name, phone) {
             currentPartyName = name; currentPartyPhone = phone || "";
-            document.getElementById('l-deep-name').innerText = name;
-            document.getElementById('l-deep-avatar-text').innerText = name.substring(0,2).toUpperCase();
-            
+            document.getElementById('l-deep-name').innerText = name; document.getElementById('l-deep-avatar-text').innerText = name.substring(0,2).toUpperCase();
             document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#";
-            document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank');
-            document.getElementById('l-sms-btn').onclick = () => window.open(`sms:${phone}?body=Reminder from Vandana Enterprises`, '_blank');
-
-            renderLedgerEntries(name);
-            openPage('ledger-deep-page');
+            document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder.`, '_blank');
+            renderLedgerEntries(name); openPage('ledger-deep-page');
         }
 
-        window.renderLedgerEntries = function(name) {
-            let entryList = document.getElementById('ledger-entries-list');
-            entryList.innerHTML = '';
-            let totalGave = 0; let totalGot = 0;
-            let customerEntries = allLedgerData.filter(e => e.name === name);
-
-            if(customerEntries.length === 0) {
-                entryList.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted); font-size:13px;">No entries found.</div>`;
-            } else {
-                customerEntries.forEach(entry => {
-                    let amt = parseFloat(entry.amount) || 0;
-                    let gaveHtml = entry.type === 'Gave' ? `₹ ${amt}` : '';
-                    let gotHtml = entry.type === 'Got' ? `₹ ${amt}` : '';
-                    if(entry.type === 'Gave') totalGave += amt;
-                    if(entry.type === 'Got') totalGot += amt;
-                    let dateObj = new Date(entry.date);
-                    let dateStr = isNaN(dateObj) ? entry.date : dateObj.toLocaleString('en-GB', {day:'numeric', month:'short'});
-                    entryList.innerHTML += `
-                    <div class="entry-card">
-                        <div class="ec-left"><div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${dateStr}</div><div style="font-size:13px; color:var(--text-dark); font-weight:500;">${entry.details || 'Balance Update'}</div></div>
-                        <div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div>
-                    </div>`;
-                });
-            }
-
-            let balEl = document.getElementById('l-deep-bal-amt');
-            let txtEl = document.getElementById('l-deep-bal-text');
-            let finalBal = totalGave - totalGot;
-            if(finalBal > 0) { balEl.innerText = "₹ " + finalBal.toLocaleString(); balEl.style.color = "var(--success)"; txtEl.innerText = "You will get"; } 
-            else if (finalBal < 0) { balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); balEl.style.color = "var(--danger)"; txtEl.innerText = "You will give"; } 
-            else { balEl.innerText = "₹ 0"; balEl.style.color = "var(--text-dark)"; txtEl.innerText = "Settled"; }
+        // CART LOGIC
+        let currentCart = []; let grandInvoiceTotal = 0; let invoiceBoxCount = 0;
+        window.addCartItem = function() {
+            const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value || "Gen";
+            const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0;
+            if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!");
+            currentCart.push({ cat: cat, shade: shade, title: `${cat} - Shd:${shade}`, qty, rate, itemTotal: qty * rate });
+            renderCartUi();
         }
 
+        function renderCartUi() {
+            let tbody = document.getElementById('cart-rows'); tbody.innerHTML = ''; grandInvoiceTotal = 0; invoiceBoxCount = 0;
+            currentCart.forEach(item => { grandInvoiceTotal += item.itemTotal; invoiceBoxCount += item.qty; tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.qty}</td><td>₹${item.rate}</td><td><strong>₹${item.itemTotal.toLocaleString()}</strong></td></tr>`; });
+            document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`;
+            document.getElementById('inv-shade').value=''; document.getElementById('inv-qty').value=''; document.getElementById('inv-rate').value='';
+        }
+
+        window.triggerSaveAndShare = function() {
+            if (currentCart.length === 0) return alert("Cart is empty!");
+            currentCart.forEach(item => {
+                let key = item.cat + "_" + item.shade; let itemRef = ref(db, 'Inventory/' + key);
+                get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) - item.qty); });
+            });
+            let partyName = document.getElementById('inv-party').value || "Cash Sale";
+            push(ref(db, 'Ledger'), { date: new Date().toISOString(), name: partyName, type: "Got", amount: grandInvoiceTotal, details: `Invoice Sale - ${invoiceBoxCount} Box` });
+            document.getElementById('save-bill-btn').style.display = 'none'; document.getElementById('pdf-share-btn').style.display = 'block'; alert(`✅ Bill Generated!`);
+        }
+
+        window.sharePDFOnWhatsApp = function() {
+            const custPhone = document.getElementById('inv-phone').value || "";
+            window.open(`https://wa.me/91${custPhone}?text=📄 *INVOICE BILL* %0A🏛️ *VANDANA ENTERPRISES*%0A%0A*Total Amount:* ₹${grandInvoiceTotal}`, '_blank');
+        }
+
+        // CALCULATOR UI
         let calcType = "Gave"; let calcValue = "";
         window.openCalculator = function(type) {
-            calcType = type; calcValue = "";
-            document.getElementById('calc-amount').value = ""; document.getElementById('calc-details').value = "";
-            
+            calcType = type; calcValue = ""; document.getElementById('calc-amount').value = ""; document.getElementById('calc-details').value = "";
             let color = type === 'Gave' ? 'var(--danger)' : 'var(--success)';
-            document.getElementById('calc-header').style.color = color;
-            document.getElementById('calc-back-btn').style.color = color;
-            document.getElementById('calc-symbol').style.color = color;
-            document.getElementById('calc-amount').style.color = color;
-            document.getElementById('calc-save-btn').style.backgroundColor = color;
-            
+            document.getElementById('calc-header').style.color = color; document.getElementById('calc-back-btn').style.color = color; document.getElementById('calc-symbol').style.color = color; document.getElementById('calc-amount').style.color = color; document.getElementById('calc-save-btn').style.backgroundColor = color;
             updateCalcTitle(); openPage('calculator-page');
         }
-
         window.calcPress = function(val) {
-            if(val === 'C') calcValue = "";
-            else if(val === 'BACK') calcValue = calcValue.slice(0, -1);
-            else if(val === '=') { try { calcValue = eval(calcValue).toString(); } catch(e){} }
-            else calcValue += val;
-            
+            if(val === 'C') calcValue = ""; else if(val === 'BACK') calcValue = calcValue.slice(0, -1); else if(val === '=') { try { calcValue = eval(calcValue).toString(); } catch(e){} } else calcValue += val;
             document.getElementById('calc-amount').value = calcValue; updateCalcTitle();
         }
+        function updateCalcTitle() { document.getElementById('calc-title-text').innerText = `You ${calcType.toLowerCase()} ₹ ${calcValue || "0"} to ${currentPartyName}`; }
 
-        function updateCalcTitle() {
-            let amt = calcValue || "0";
-            document.getElementById('calc-title-text').innerText = `You ${calcType.toLowerCase()} ₹ ${amt} to ${currentPartyName}`;
-        }
-
-        window.saveCalculatorEntry = function() {
-            let amount = eval(calcValue) || 0;
-            if(amount <= 0) return alert("Enter valid amount!");
-            
-            let newEntry = { 
-                date: new Date().toISOString(), 
-                name: currentPartyName, 
-                type: calcType, 
-                amount: amount, 
-                details: document.getElementById('calc-details').value || "Ledger Entry" 
-            };
-            
-            push(ref(db, 'Ledger'), newEntry); // Save to Firebase
-            closePage('calculator-page');
-        }
-
-        // ================= UI HELPERS =================
+        // NAVIGATION
         window.toggleMenu = function() { const menu = document.getElementById('dropdown-menu'); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; }
         window.openPage = function(id) { document.getElementById(id).classList.add('active'); }
         window.closePage = function(id) { document.getElementById(id).classList.remove('active'); }
         window.goHome = function() { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); document.querySelector('.nav-item').classList.add('active'); }
-        window.searchParties = function() {
-            let filter = document.getElementById('party-search').value.toUpperCase();
-            let items = document.querySelectorAll('#kb-customer-list .kb-list-item');
-            items.forEach(item => {
-                let name = item.querySelector('.kb-name').innerText.toUpperCase();
-                item.style.display = name.indexOf(filter) > -1 ? "" : "none";
-            });
-        }
-        window.openPhonebook = async function(nameId, phoneId) {
-            if ('contacts' in navigator) {
-                try {
-                    const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false });
-                    if (contacts.length > 0) {
-                        if (contacts[0].name) document.getElementById(nameId).value = contacts[0].name[0];
-                        if (contacts[0].tel) { let cleanNum = String(contacts[0].tel[0]).replace(/\D/g, ''); document.getElementById(phoneId).value = cleanNum.slice(-10); }
-                    }
-                } catch(e) {}
-            }
-        }
+        window.searchParties = function() { let filter = document.getElementById('party-search').value.toUpperCase(); document.querySelectorAll('#kb-customer-list .kb-list-item').forEach(item => { item.style.display = item.querySelector('.kb-name').innerText.toUpperCase().indexOf(filter) > -1 ? "" : "none"; }); }
+        window.openPhonebook = async function(nameId, phoneId) { if ('contacts' in navigator) { try { const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false }); if (contacts.length > 0) { if (contacts[0].name) document.getElementById(nameId).value = contacts[0].name[0]; if (contacts[0].tel) document.getElementById(phoneId).value = String(contacts[0].tel[0]).replace(/\D/g, '').slice(-10); } } catch(e) {} } }
     </script>
 </body>
 </html>

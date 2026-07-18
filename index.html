@@ -18,7 +18,6 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         body { background-color: var(--bg-color); color: var(--text-dark); overflow-x: hidden; font-size: 14px; }
         
-        /* बैकग्राउंड स्क्रॉल लॉक करने के लिए स्पेशल क्लास */
         body.sidebar-locked { overflow: hidden; position: fixed; width: 100%; height: 100%; }
 
         /* HEADER */
@@ -26,16 +25,16 @@
         .app-bar h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
         
         /* DASHBOARD */
-        .main-content { padding: 75px 16px 90px 16px; max-width: 800px; margin: 0 auto; }
+        .main-content { padding: 75px 16px 30px 16px; max-width: 800px; margin: 0 auto; }
         .section-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;}
-        .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
+        
+        /* UPDATED: QUICK ACTIONS 2x2 GRID */
+        .quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
         .action-box { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.05);}
         .action-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 22px; background: #f8fafc;}
-        .action-label { font-size: 11px; font-weight: 600; color: var(--text-dark); text-align: center; line-height: 1.2;}
+        .action-label { font-size: 13px; font-weight: 600; color: var(--text-dark); text-align: center; line-height: 1.2;}
 
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;}
-        
-        /* PROFESSIONAL DATE PICKER */
         .professional-date-picker { background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 700; color: var(--primary); font-family: 'Inter', sans-serif; outline: none; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; }
         
         .summary-box { background: white; border-radius: 12px; padding: 10px 20px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
@@ -44,14 +43,11 @@
         .sum-title { font-size: 13px; color: var(--text-muted); font-weight: 500; }
         .sum-val { font-size: 16px; font-weight: 700; color: var(--text-dark); }
 
-        /* BOTTOM NAV */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: white; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);}
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 100%; color: var(--text-muted); font-size: 10px; font-weight: 600; gap: 4px; cursor: pointer;}
-        .nav-item i { font-size: 20px; font-style: normal;}
-        .nav-item.active { color: var(--primary); }
+        /* BOTTOM NAV (Hidden per user request, can be un-commented later) */
+        .bottom-nav { display: none; /* position: fixed; bottom: 0; width: 100%; height: 60px; background: white; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); */ }
 
         /* PAGES & FORMS */
-        .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 90px; }
+        .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 30px; }
         .page.active { transform: translateX(0); }
         .page-header { position: sticky; top: 0; background: var(--primary); color: white; height: 56px; display: flex; align-items: center; padding: 0 16px; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .back-btn { background: transparent; border: none; color: white; font-size: 24px; margin-right: 16px; cursor: pointer; padding: 5px;}
@@ -85,7 +81,6 @@
         .kb-summary-label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;}
         .kb-summary-val { font-size: 20px; font-weight: 700; margin-top: 6px; }
         
-        /* AJIO STYLE TABS */
         .ajio-tab-container { background: #cbd5e1; padding-top: 8px; border-radius: 14px 14px 0 0; margin: 0 16px; display: flex; overflow: hidden; }
         .kb-tab { flex: 1; text-align: center; padding: 14px 0; color: #475569; font-weight: 800; font-size: 13px; cursor: pointer; border-radius: 14px 14px 0 0; transition: all 0.3s; letter-spacing: 0.5px;}
         .kb-tab.active { background: #f1f5f9; color: #0f172a; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
@@ -97,7 +92,13 @@
         .kb-name { font-size: 15px; font-weight: 600; color: var(--text-dark); }
         .kb-time { font-size: 12px; color: var(--text-muted); margin-top: 4px;}
         .kb-list-right { display: flex; flex-direction: column; justify-content: center; padding: 16px; min-width: 100px; text-align: right; border-left: 1px dashed #e2e8f0; background: #f8fafc; border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
-        .kb-fab { position: fixed !important; bottom: 80px; right: 20px; width: 56px; height: 56px; background: #ef4444; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); border: none; z-index: 1001; cursor: pointer;}
+        
+        /* UPDATED: SMART FLOATING ACTION BUTTON */
+        .kb-fab { position: fixed !important; bottom: 30px; right: 20px; height: 56px; background: #ef4444; color: white; border-radius: 28px; display: flex; justify-content: center; align-items: center; font-size: 15px; font-weight: 700; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); border: none; z-index: 1001; cursor: pointer; padding: 0 20px; transition: all 0.3s ease; white-space: nowrap; overflow: hidden;}
+        .kb-fab .fab-icon { font-size: 24px; margin-right: 8px; transition: margin 0.3s; }
+        .kb-fab.collapsed { width: 56px; padding: 0; border-radius: 50%; }
+        .kb-fab.collapsed .fab-text { display: none; }
+        .kb-fab.collapsed .fab-icon { margin-right: 0; }
 
         /* LEDGER DEEP PAGE */
         .ledger-header-area { background: #1e3a8a; color: white; padding: 16px 16px 30px 16px;}
@@ -194,7 +195,6 @@
 
         /* 2x2 DASHBOARD CARDS GRID */
         .op-overview { padding: 10px 0; }
-        .op-title { font-size: 10px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
         .op-header { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 15px; }
         
         .dash-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
@@ -264,7 +264,7 @@
             <li onclick="openPage('profile-page'); closeSidebar();"><i>💼</i> Business Profile</li>
             <li onclick="openPage('report-page'); closeSidebar();"><i>📄</i> View Reports</li>
             <li onclick="closeSidebar();"><i>🔄</i> Sync Data</li>
-            <li onclick="closeSidebar();"><i>🔑</i> Login / Security</li>
+            <li onclick="alert('Firebase Login guide is at the bottom of the code!'); closeSidebar();"><i>🔑</i> Login / Security</li>
         </ul>
         <div class="sidebar-footer" onclick="openPage('customer-profile-page'); closeSidebar();">
             <div class="user-icon" id="sidebar-user-pic">A</div>
@@ -288,12 +288,10 @@
     <main class="main-content">
         <div class="dash-header">
             <h3 class="section-title" style="margin:0;">Dashboard Overview</h3>
-            <!-- Professional Date Picker -->
             <input type="date" class="professional-date-picker" id="dash-date-picker">
         </div>
 
         <div class="op-overview">
-            <div class="op-title">OPERATIONS OVERVIEW</div>
             <div class="op-header">Factory Dashboard</div>
         </div>
         
@@ -381,17 +379,17 @@
         </div>
     </main>
 
-    <!-- ⚓ BOTTOM NAV -->
+    <!-- ⚓ BOTTOM NAV (Hidden for now, can be restored later) -->
+    <!--
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="goHome()"><i>🏠</i><span>Home</span></div>
         <div class="nav-item" onclick="openPage('items-page')"><i>📦</i><span>Items</span></div>
         <div class="nav-item" onclick="openPage('pos-page')"><i>➕</i><span>Billing</span></div>
         <div class="nav-item" onclick="openPage('parties-page')"><i>👥</i><span>Parties</span></div>
     </nav>
+    -->
 
-    <!-- ======================================================== -->
-    <!-- 📄 NEW INVOICES LIST PAGE -->
-    <!-- ======================================================== -->
+    <!-- 📄 INVOICES LIST PAGE -->
     <div class="page" id="invoices-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('invoices-page')">←</button><h2 class="page-title">Today's Bills & Invoices</h2></div>
         <div class="page-content" id="invoices-list-container">
@@ -476,7 +474,7 @@
         
         <div class="search-bar-container">
             <span style="color:var(--text-muted); font-size:16px;">🔍</span>
-            <input type="text" id="party-search" placeholder="Search Customer Name..." onkeyup="searchParties()">
+            <input type="text" id="party-search" placeholder="Search Name..." onkeyup="searchParties()">
         </div>
 
         <div class="kb-summary-card">
@@ -488,15 +486,18 @@
 
         <!-- NEW AJIO STYLE TABS -->
         <div class="ajio-tab-container">
-            <div class="kb-tab active" id="tab-customers">CUSTOMERS</div>
-            <div class="kb-tab" id="tab-suppliers">SUPPLIERS</div>
+            <div class="kb-tab active" id="tab-customers" onclick="switchPartyTab('Customer')">CUSTOMERS</div>
+            <div class="kb-tab" id="tab-suppliers" onclick="switchPartyTab('Supplier')">SUPPLIERS</div>
         </div>
 
         <div class="kb-list" id="kb-customer-list" style="margin-top:15px;">
-            <!-- Customer List goes here -->
+            <!-- Dynamic List goes here -->
         </div>
 
-        <button class="kb-fab" onclick="openPage('add-party-page')">+</button>
+        <!-- NEW SMART DYNAMIC FAB -->
+        <button class="kb-fab" id="main-fab" onclick="openPage('add-party-page')">
+            <span class="fab-icon">+</span><span class="fab-text" id="fab-text">Add Customer</span>
+        </button>
     </div>
 
     <!-- 🔥 KHATABOOK DEEP LEDGER PAGE -->
@@ -536,7 +537,7 @@
         </div>
     </div>
 
-    <!-- 📄 CUSTOMER PROFILE PAGE -->
+    <!-- 📄 PROFILE PAGE (With Camera Upload) -->
     <div class="page" id="customer-profile-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('customer-profile-page')">←</button><h2 class="page-title">Profile</h2></div>
         
@@ -653,7 +654,6 @@
     <div class="page" id="items-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('items-page')">←</button><h2 class="page-title">Master Inventory</h2></div>
         <div class="page-content">
-            
             <div class="stock-overview-title">STOCK OVERVIEW</div>
             <div class="stock-grid">
                 <div class="stock-grid-card" onclick="openInvoicesPage()">
@@ -688,7 +688,6 @@
                     <div class="sg-icon" style="background:#f0fdf4; color:#22c55e;">📦</div>
                 </div>
             </div>
-
             <table class="invoice-table">
                 <thead><tr><th>Item Details</th><th>Total Stock</th></tr></thead>
                 <tbody id="inventory-list-table"><tr><td colspan="2" style="text-align:center;">Loading...</td></tr></tbody>
@@ -698,7 +697,7 @@
 
     <!-- 👤 ADD NEW PARTY PAGE -->
     <div class="page" id="add-party-page">
-        <div class="page-header"><button class="back-btn" onclick="closePage('add-party-page')">←</button><h2 class="page-title">Add Account</h2></div>
+        <div class="page-header"><button class="back-btn" onclick="closePage('add-party-page')">←</button><h2 class="page-title" id="add-party-title">Add Customer</h2></div>
         <div class="page-content">
             <div class="form-panel">
                 <div class="form-group">
@@ -716,7 +715,7 @@
                     <label class="form-label">Address (Optional)</label>
                     <input type="text" class="form-control" id="new-party-address" placeholder="City or Full Address">
                 </div>
-                <button class="btn-submit" onclick="addCustomerToCloud()">💾 Save Customer</button>
+                <button class="btn-submit" onclick="addCustomerToCloud()">💾 Save Details</button>
             </div>
         </div>
     </div>
@@ -748,6 +747,8 @@
         let currentPartyPhone = ""; 
         let currentPartyKey = "";
         let currentEntryData = null; 
+        
+        window.currentTabType = 'Customer'; // Default tab
 
         // INIT & REALTIME LISTENERS
         window.addEventListener('DOMContentLoaded', () => {
@@ -780,7 +781,30 @@
                     renderLedgerEntries(currentPartyName);
                 }
             });
+
+            // SMART FAB SCROLL LOGIC
+            document.getElementById('parties-page').addEventListener('scroll', function() {
+                let fab = document.getElementById('main-fab');
+                if (this.scrollTop > 50) {
+                    fab.classList.add('collapsed');
+                } else {
+                    fab.classList.remove('collapsed');
+                }
+            });
         });
+
+        // ================= SWITCH TABS (CUSTOMER / SUPPLIER) =================
+        window.switchPartyTab = function(type) {
+            currentTabType = type;
+            document.getElementById('tab-customers').classList.toggle('active', type === 'Customer');
+            document.getElementById('tab-suppliers').classList.toggle('active', type === 'Supplier');
+            
+            let btnText = type === 'Customer' ? 'Add Customer' : 'Add Supplier';
+            document.getElementById('fab-text').innerText = btnText;
+            document.getElementById('add-party-title').innerText = btnText;
+            
+            renderCustomerList(globalCustomers);
+        }
 
         // ================= INVOICE/PDF LIST PAGE LOGIC =================
         window.openInvoicesPage = function() {
@@ -816,7 +840,6 @@
             alert(`Generating PDF for Bill: ${name} (₹${amount})\n\n(PDF format template will be fully integrated next!)`);
         }
 
-        // ================= PROFILE PIC UPLOAD LOGIC =================
         window.handleProfilePic = function(event) {
             let file = event.target.files[0];
             if(file) {
@@ -831,14 +854,16 @@
             }
         }
 
-        // ================= CUSTOMER PROFILE LOGIC =================
+        // ================= CUSTOMER/SUPPLIER PROFILE LOGIC =================
         window.addCustomerToCloud = function() {
             let name = document.getElementById('new-party-name').value.trim();
             let phone = document.getElementById('new-party-phone').value;
             let address = document.getElementById('new-party-address').value;
             if(!name) return alert("Please enter Name!");
 
-            push(ref(db, 'Customers'), { name, phone, address, date: new Date().toISOString(), status: "Active" });
+            // Saving based on active tab (Customer or Supplier)
+            push(ref(db, 'Customers'), { name, phone, address, date: new Date().toISOString(), status: "Active", type: currentTabType });
+            
             closePage('add-party-page');
             document.getElementById('new-party-name').value = ''; document.getElementById('new-party-phone').value = ''; document.getElementById('new-party-address').value = '';
         }
@@ -872,11 +897,11 @@
                 remove(ref(db, 'Customers/' + currentPartyKey));
                 closePage('customer-profile-page');
                 closePage('ledger-deep-page');
-                alert("Customer Deleted Successfully!");
+                alert("Deleted Successfully!");
             }
         }
 
-        // ================= LEDGER ENTRIES & DETAILS LOGIC =================
+        // ================= LEDGER LOGIC =================
         window.saveCalculatorEntry = function() {
             let amount = eval(calcValue) || 0;
             if(amount <= 0) return alert("Enter valid amount!");
@@ -949,11 +974,9 @@
             window.open(`https://wa.me/91${currentPartyPhone}?text=${msg}`, '_blank');
         }
 
-        // ================= INVENTORY STOCK LOGIC =================
+        // ================= INVENTORY & RENDERING =================
         window.saveSmartStock = function() {
-            let cat = document.getElementById('stock-cat').value; 
-            let shade = document.getElementById('stock-shade').value; 
-            let qty = parseInt(document.getElementById('stock-qty').value);
+            let cat = document.getElementById('stock-cat').value; let shade = document.getElementById('stock-shade').value; let qty = parseInt(document.getElementById('stock-qty').value);
             if(!shade || !qty) return alert("Enter Shade and Qty!");
             let key = cat + "_" + shade; let itemRef = ref(db, 'Inventory/' + key);
             get(itemRef).then((snap) => { set(itemRef, (snap.val() || 0) + qty); });
@@ -969,7 +992,6 @@
             document.getElementById('inventory-list-table').innerHTML = html || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
         }
 
-        // ================= RENDERING & DASHBOARD LOGIC =================
         window.renderLedgerEntries = function(name) {
             let entryList = document.getElementById('ledger-entries-list'); entryList.innerHTML = '';
             let totalGave = 0; let totalGot = 0;
@@ -1001,8 +1023,11 @@
         }
 
         window.renderCustomerList = function(list) {
+            // FILTER BASED ON CURRENT TAB (Customer / Supplier)
+            let filteredList = list.filter(c => (c.type || 'Customer') === currentTabType);
+            
             let html = "";
-            list.forEach(cust => {
+            filteredList.forEach(cust => {
                 let initial = cust.name ? cust.name.substring(0,2).toUpperCase() : "CU";
                 let addr = cust.address ? `<br>📍 ${cust.address}` : "";
                 html += `
@@ -1014,13 +1039,12 @@
                     <div class="kb-list-right"><span style="color:var(--text-muted); font-size:18px;">›</span></div>
                 </div>`;
             });
-            document.getElementById('kb-customer-list').innerHTML = html || '<div style="padding:40px; text-align:center; color:gray;">No Customers found</div>';
+            document.getElementById('kb-customer-list').innerHTML = html || `<div style="padding:40px; text-align:center; color:gray;">No ${currentTabType}s found</div>`;
         }
 
         window.calculateGrandTotals = function() {
             let totalGive = 0; let totalGet = 0; let balances = {};
             let todayTotalSale = 0; let todayTotalBox = 0;
-            
             let selectedDateString = document.getElementById('dash-date-picker').value; 
 
             allLedgerData.forEach(entry => {
@@ -1105,11 +1129,7 @@
             
             let partyName = document.getElementById('inv-party').value || "Cash Sale";
             push(ref(db, 'Ledger'), { 
-                date: new Date().toISOString(), 
-                name: partyName, 
-                type: "Got", 
-                amount: grandInvoiceTotal, 
-                details: `Invoice Sale - ${invoiceBoxCount} Box` 
+                date: new Date().toISOString(), name: partyName, type: "Got", amount: grandInvoiceTotal, details: `Invoice Sale - ${invoiceBoxCount} Box` 
             });
             
             document.getElementById('save-bill-btn').style.display = 'none'; 
@@ -1125,64 +1145,36 @@
         // ================= CALCULATOR UI =================
         let calcType = "Gave"; let calcValue = "";
         window.openCalculator = function(type) {
-            calcType = type; calcValue = ""; 
-            document.getElementById('calc-amount').value = ""; document.getElementById('calc-details').value = "";
+            calcType = type; calcValue = ""; document.getElementById('calc-amount').value = ""; document.getElementById('calc-details').value = "";
             let color = type === 'Gave' ? 'var(--danger)' : 'var(--success)';
-            document.getElementById('calc-header').style.color = color; 
-            document.getElementById('calc-back-btn').style.color = color; 
-            document.getElementById('calc-symbol').style.color = color; 
-            document.getElementById('calc-amount').style.color = color; 
-            document.getElementById('calc-save-btn').style.backgroundColor = color;
-            updateCalcTitle(); 
-            openPage('calculator-page');
+            document.getElementById('calc-header').style.color = color; document.getElementById('calc-back-btn').style.color = color; document.getElementById('calc-symbol').style.color = color; document.getElementById('calc-amount').style.color = color; document.getElementById('calc-save-btn').style.backgroundColor = color;
+            updateCalcTitle(); openPage('calculator-page');
         }
         window.calcPress = function(val) {
-            if(val === 'C') calcValue = ""; 
-            else if(val === 'BACK') calcValue = calcValue.slice(0, -1); 
-            else if(val === '=') { try { calcValue = eval(calcValue).toString(); } catch(e){} } 
-            else calcValue += val;
-            document.getElementById('calc-amount').value = calcValue; 
-            updateCalcTitle();
+            if(val === 'C') calcValue = ""; else if(val === 'BACK') calcValue = calcValue.slice(0, -1); else if(val === '=') { try { calcValue = eval(calcValue).toString(); } catch(e){} } else calcValue += val;
+            document.getElementById('calc-amount').value = calcValue; updateCalcTitle();
         }
-        function updateCalcTitle() { 
-            document.getElementById('calc-title-text').innerText = `You ${calcType.toLowerCase()} ₹ ${calcValue || "0"} to ${currentPartyName}`; 
-        }
+        function updateCalcTitle() { document.getElementById('calc-title-text').innerText = `You ${calcType.toLowerCase()} ₹ ${calcValue || "0"} to ${currentPartyName}`; }
 
         // ================= NAVIGATION HELPERS & SIDEBAR =================
         window.toggleMenu = function() { const menu = document.getElementById('dropdown-menu'); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; }
         
-        // सुधरा हुआ साइडबार ओपन लॉजिक (बैकग्राउंड स्क्रॉल लॉक के साथ)
         window.openSidebar = function() {
             document.getElementById('sidebar').classList.add('active');
             document.getElementById('sidebar-overlay').style.display = 'block';
-            document.body.classList.add('sidebar-locked'); // बैकग्राउंड लॉक करें
+            document.body.classList.add('sidebar-locked'); 
         }
         window.closeSidebar = function() {
             document.getElementById('sidebar').classList.remove('active');
             document.getElementById('sidebar-overlay').style.display = 'none';
-            document.body.classList.remove('sidebar-locked'); // बैकग्राउंड अनलॉक करें
+            document.body.classList.remove('sidebar-locked'); 
         }
 
         window.openPage = function(id) { document.getElementById(id).classList.add('active'); }
         window.closePage = function(id) { document.getElementById(id).classList.remove('active'); }
-        window.goHome = function() { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); document.querySelector('.nav-item').classList.add('active'); }
-        window.searchParties = function() { 
-            let filter = document.getElementById('party-search').value.toUpperCase(); 
-            document.querySelectorAll('#kb-customer-list .kb-list-item').forEach(item => { 
-                item.style.display = item.querySelector('.kb-name').innerText.toUpperCase().indexOf(filter) > -1 ? "" : "none"; 
-            }); 
-        }
-        window.openPhonebook = async function(nameId, phoneId) { 
-            if ('contacts' in navigator) { 
-                try { 
-                    const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false }); 
-                    if (contacts.length > 0) { 
-                        if (contacts[0].name) document.getElementById(nameId).value = contacts[0].name[0]; 
-                        if (contacts[0].tel) document.getElementById(phoneId).value = String(contacts[0].tel[0]).replace(/\D/g, '').slice(-10); 
-                    } 
-                } catch(e) {} 
-            } 
-        }
+        window.goHome = function() { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); }
+        window.searchParties = function() { let filter = document.getElementById('party-search').value.toUpperCase(); document.querySelectorAll('#kb-customer-list .kb-list-item').forEach(item => { item.style.display = item.querySelector('.kb-name').innerText.toUpperCase().indexOf(filter) > -1 ? "" : "none"; }); }
+        window.openPhonebook = async function(nameId, phoneId) { if ('contacts' in navigator) { try { const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false }); if (contacts.length > 0) { if (contacts[0].name) document.getElementById(nameId).value = contacts[0].name[0]; if (contacts[0].tel) document.getElementById(phoneId).value = String(contacts[0].tel[0]).replace(/\D/g, '').slice(-10); } } catch(e) {} } }
     </script>
 </body>
 </html>

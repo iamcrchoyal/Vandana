@@ -17,6 +17,9 @@
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         body { background-color: var(--bg-color); color: var(--text-dark); overflow-x: hidden; font-size: 14px; }
+        
+        /* बैकग्राउंड स्क्रॉल लॉक करने के लिए स्पेशल क्लास */
+        body.sidebar-locked { overflow: hidden; position: fixed; width: 100%; height: 100%; }
 
         /* HEADER */
         .app-bar { position: fixed; top: 0; width: 100%; height: 60px; background: #1e3a8a; color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
@@ -189,7 +192,7 @@
         .sidebar-footer .user-email { font-size: 11px; color: #94a3b8; }
         .sidebar-footer .user-role { font-size: 11px; color: #3b82f6; }
 
-        /* 2x2 DASHBOARD CARDS (Screenshot 2) */
+        /* 2x2 DASHBOARD CARDS GRID */
         .op-overview { padding: 10px 0; }
         .op-title { font-size: 10px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
         .op-header { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 15px; }
@@ -387,7 +390,7 @@
     </nav>
 
     <!-- ======================================================== -->
-    <!-- 📄 NEW INVOICES LIST PAGE (PDF Download Page) -->
+    <!-- 📄 NEW INVOICES LIST PAGE -->
     <!-- ======================================================== -->
     <div class="page" id="invoices-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('invoices-page')">←</button><h2 class="page-title">Today's Bills & Invoices</h2></div>
@@ -533,14 +536,13 @@
         </div>
     </div>
 
-    <!-- 📄 CUSTOMER PROFILE PAGE (With Camera Upload) -->
+    <!-- 📄 CUSTOMER PROFILE PAGE -->
     <div class="page" id="customer-profile-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('customer-profile-page')">←</button><h2 class="page-title">Profile</h2></div>
         
         <div class="profile-header-img">
             <div class="profile-pic-container">
                 <div class="profile-pic" id="cp-avatar">C</div>
-                <!-- Camera Icon & Hidden File Input -->
                 <div class="camera-icon" onclick="document.getElementById('profile-upload').click()">📷</div>
             </div>
             <input type="file" id="profile-upload" accept="image/*" style="display:none;" onchange="handleProfilePic(event)">
@@ -694,7 +696,7 @@
         </div>
     </div>
 
-    <!-- 👤 ADD NEW PARTY PAGE (With Address) -->
+    <!-- 👤 ADD NEW PARTY PAGE -->
     <div class="page" id="add-party-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('add-party-page')">←</button><h2 class="page-title">Add Account</h2></div>
         <div class="page-content">
@@ -749,12 +751,10 @@
 
         // INIT & REALTIME LISTENERS
         window.addEventListener('DOMContentLoaded', () => {
-            // Setup Date Picker Default Value
             let todayStr = new Date().toISOString().split('T')[0];
             document.getElementById('dash-date-picker').value = todayStr;
             document.getElementById('calc-date').value = todayStr;
 
-            // Load saved profile pic from memory
             let savedPic = localStorage.getItem('v_profilePic');
             if(savedPic) {
                 document.getElementById('cp-avatar').innerHTML = `<img src="${savedPic}" style="width:100%; height:100%; object-fit:cover;">`;
@@ -786,7 +786,6 @@
         window.openInvoicesPage = function() {
             let listContainer = document.getElementById('invoices-list-container');
             listContainer.innerHTML = '';
-            
             let selectedDateString = document.getElementById('dash-date-picker').value;
             
             let todayInvoices = allLedgerData.filter(entry => {
@@ -826,7 +825,7 @@
                     let imgHtml = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
                     document.getElementById('cp-avatar').innerHTML = imgHtml;
                     document.getElementById('sidebar-user-pic').innerHTML = imgHtml;
-                    localStorage.setItem('v_profilePic', e.target.result); // Save permanently
+                    localStorage.setItem('v_profilePic', e.target.result);
                 }
                 reader.readAsDataURL(file);
             }
@@ -1022,7 +1021,6 @@
             let totalGive = 0; let totalGet = 0; let balances = {};
             let todayTotalSale = 0; let todayTotalBox = 0;
             
-            // Get selected Date from the dashboard Professional Date Picker
             let selectedDateString = document.getElementById('dash-date-picker').value; 
 
             allLedgerData.forEach(entry => {
@@ -1038,7 +1036,6 @@
                 if(entry.type === 'Gave') balances[entry.name] += amt;
                 if(entry.type === 'Got') balances[entry.name] -= amt;
 
-                // Sync Dashboard Sales with Selected Date
                 if (entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice Sale")) {
                     todayTotalSale += amt;
                     let boxMatch = entry.details.match(/(\d+)\s*Box/i);
@@ -1061,7 +1058,6 @@
             }
         }
         
-        // Listen to Date Picker Change
         document.getElementById('dash-date-picker').addEventListener('change', calculateGrandTotals);
 
         window.openLedgerDetail = function(name, phone) {
@@ -1155,13 +1151,16 @@
         // ================= NAVIGATION HELPERS & SIDEBAR =================
         window.toggleMenu = function() { const menu = document.getElementById('dropdown-menu'); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; }
         
+        // सुधरा हुआ साइडबार ओपन लॉजिक (बैकग्राउंड स्क्रॉल लॉक के साथ)
         window.openSidebar = function() {
             document.getElementById('sidebar').classList.add('active');
             document.getElementById('sidebar-overlay').style.display = 'block';
+            document.body.classList.add('sidebar-locked'); // बैकग्राउंड लॉक करें
         }
         window.closeSidebar = function() {
             document.getElementById('sidebar').classList.remove('active');
             document.getElementById('sidebar-overlay').style.display = 'none';
+            document.body.classList.remove('sidebar-locked'); // बैकग्राउंड अनलॉक करें
         }
 
         window.openPage = function(id) { document.getElementById(id).classList.add('active'); }

@@ -21,11 +21,7 @@
         /* HEADER */
         .app-bar { position: fixed; top: 0; width: 100%; height: 60px; background: #1e3a8a; color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .app-bar h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
-        .menu-dots { font-size: 24px; cursor: pointer; padding: 5px; font-weight: bold;}
         
-        .dropdown { position: absolute; right: 16px; top: 60px; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: none; z-index: 2000; min-width: 180px; overflow: hidden; border: 1px solid var(--border); }
-        .dropdown div { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer; color: var(--text-dark); font-size: 14px; font-weight: 500;}
-
         /* DASHBOARD */
         .main-content { padding: 75px 16px 90px 16px; max-width: 800px; margin: 0 auto; }
         .section-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;}
@@ -35,7 +31,9 @@
         .action-label { font-size: 11px; font-weight: 600; color: var(--text-dark); text-align: center; line-height: 1.2;}
 
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;}
-        .full-date-display { font-size: 12px; font-weight: 600; color: var(--primary); background: #eff6ff; padding: 6px 12px; border-radius: 20px; border: 1px solid #bfdbfe;}
+        
+        /* PROFESSIONAL DATE PICKER */
+        .professional-date-picker { background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 700; color: var(--primary); font-family: 'Inter', sans-serif; outline: none; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; }
         
         .summary-box { background: white; border-radius: 12px; padding: 10px 20px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .summary-row { display: flex; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding: 16px 0;}
@@ -66,28 +64,29 @@
         .action-btn { background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; border-radius: 8px; padding: 0 16px; font-weight: 600; cursor: pointer;}
         .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 6px rgba(21, 101, 192, 0.2);}
 
-        /* TABLE */
         .invoice-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; background: white; border-radius: 8px; overflow: hidden; border: 1px solid var(--border);}
         .invoice-table th { background: #f8fafc; padding: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 600;}
         .invoice-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-weight: 500; }
 
-        /* KHATABOOK UI */
-        .kb-header { background: #1e3a8a; color: white; padding: 16px 16px 50px 16px;}
-        .kb-header-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .kb-tabs { display: flex; gap: 20px; margin-top: 20px; font-size: 13px; font-weight: 600; }
-        .kb-tab { padding-bottom: 10px; cursor: pointer; color: rgba(255,255,255,0.7); border-bottom: 3px solid transparent;}
-        .kb-tab.active { color: white; border-bottom: 3px solid #facc15; }
-
-        .search-bar-container { background: white; margin: 10px 16px -10px 16px; border-radius: 8px; padding: 4px 12px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: relative; z-index: 3;}
+        /* KHATABOOK UI & AJIO TABS */
+        .kb-header { background: #1e3a8a; color: white; padding: 16px 16px 30px 16px;}
+        .kb-header-title { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        
+        .search-bar-container { background: white; margin: 10px 16px 16px 16px; border-radius: 8px; padding: 4px 12px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: relative; z-index: 3;}
         .search-bar-container input { border: none; width: 100%; padding: 10px 5px; outline: none; font-size: 14px; }
 
-        .kb-summary-card { background: white; border-radius: 12px; margin: 20px 16px 16px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: relative; z-index: 2; border: 1px solid var(--border);}
+        .kb-summary-card { background: white; border-radius: 12px; margin: 0 16px 16px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: relative; z-index: 2; border: 1px solid var(--border);}
         .kb-summary-split { display: flex; padding: 20px 0; }
         .kb-summary-box { flex: 1; text-align: center; border-right: 1px dashed #e2e8f0; }
         .kb-summary-box:last-child { border-right: none; }
         .kb-summary-label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;}
         .kb-summary-val { font-size: 20px; font-weight: 700; margin-top: 6px; }
         
+        /* AJIO STYLE TABS */
+        .ajio-tab-container { background: #cbd5e1; padding-top: 8px; border-radius: 14px 14px 0 0; margin: 0 16px; display: flex; overflow: hidden; }
+        .kb-tab { flex: 1; text-align: center; padding: 14px 0; color: #475569; font-weight: 800; font-size: 13px; cursor: pointer; border-radius: 14px 14px 0 0; transition: all 0.3s; letter-spacing: 0.5px;}
+        .kb-tab.active { background: #f1f5f9; color: #0f172a; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+
         .kb-list { padding-bottom: 90px; }
         .kb-list-item { background: white; margin: 0 16px 12px 16px; border-radius: 10px; display: flex; justify-content: space-between; align-items: stretch; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border);}
         .kb-list-left { display: flex; align-items: center; gap: 12px; padding: 16px; flex:1;}
@@ -95,38 +94,35 @@
         .kb-name { font-size: 15px; font-weight: 600; color: var(--text-dark); }
         .kb-time { font-size: 12px; color: var(--text-muted); margin-top: 4px;}
         .kb-list-right { display: flex; flex-direction: column; justify-content: center; padding: 16px; min-width: 100px; text-align: right; border-left: 1px dashed #e2e8f0; background: #f8fafc; border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
-        
         .kb-fab { position: fixed !important; bottom: 80px; right: 20px; width: 56px; height: 56px; background: #ef4444; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); border: none; z-index: 1001; cursor: pointer;}
 
-        /* Ledger Deep Page */
+        /* LEDGER DEEP PAGE */
         .ledger-header-area { background: #1e3a8a; color: white; padding: 16px 16px 30px 16px;}
         .ledger-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .l-name { font-size: 16px; font-weight: 600; }
-        
         .ledger-bal-card { background: white; border-radius: 10px; padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: -25px; margin-left: 16px; margin-right: 16px; position: relative; z-index: 2; border: 1px solid var(--border);}
         .ledger-action-tabs { display: flex; margin: 20px 16px; gap: 10px;}
         .l-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 12px; color: var(--text-dark); font-weight: 600; background: white; border-radius: 8px; cursor: pointer; border: 1px solid var(--border);}
-        
         .entries-container { padding: 10px 16px 100px 16px; }
         .entry-card { background: white; border-radius: 10px; display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 12px; cursor: pointer; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.02);}
         .ec-left { padding: 16px; flex: 2; border-right: 1px dashed #e2e8f0; }
         .ec-gave, .ec-got { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; }
         .ec-gave { background: #fef2f2; color: var(--danger); }
         .ec-got { background: #ecfdf5; color: var(--success); border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
-
         .bottom-action-bar { position: fixed; bottom: 0; width: 100%; background: white; padding: 12px 16px; display: flex; gap: 12px; border-top: 1px solid var(--border); z-index: 1000; }
         .btn-l-gave { flex: 1; background: #ef4444; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer;}
         .btn-l-got { flex: 1; background: #10b981; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer;}
 
-        /* Loader */
+        /* LOADER */
         .loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;}
         .spinner { border: 4px solid #f3f3f3; border-left-color: var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* CUSTOMER PROFILE UI */
+        /* CAMERA & PROFILE UI */
         .profile-header-img { display: flex; flex-direction: column; align-items: center; padding: 30px 16px 20px 16px; background: white; }
         .profile-pic-container { position: relative; margin-bottom: 10px; }
-        .profile-pic { width: 90px; height: 90px; border-radius: 50%; background: #e2e8f0; display: flex; justify-content: center; align-items: center; font-size: 30px; color: var(--primary); font-weight: bold; }
+        .profile-pic { width: 100px; height: 100px; border-radius: 50%; background: #e2e8f0; display: flex; justify-content: center; align-items: center; font-size: 35px; color: var(--primary); font-weight: bold; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .camera-icon { position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 3px solid white; font-size: 16px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .btn-outline { border: 1px solid #ef4444; color: #ef4444; background: transparent; padding: 10px 20px; border-radius: 8px; font-weight: 600; width: 100%; max-width: 300px; margin-top: 15px; font-size: 13px; cursor: pointer;}
         .profile-list { background: white; margin-top: 10px; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;}
         .profile-list-item { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer;}
@@ -162,7 +158,6 @@
         .calc-details-input { background: white; border: 1px solid var(--border); border-radius: 8px; margin: 0 16px 16px 16px; padding: 14px; width: calc(100% - 32px); font-size: 14px; outline: none;}
         .calc-action-row { display: flex; justify-content: space-between; margin: 0 16px 16px 16px; gap: 10px;}
         .calc-date-btn { background: white; border: 1px solid var(--border); padding: 10px 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 13px; color: var(--text-dark); flex: 1; outline: none; font-family: inherit;}
-        
         .calculator-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #f8fafc; border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); z-index: 9999;}
         .calc-save-btn { background: var(--danger); color: white; font-weight: 700; font-size: 14px; width: 100%; padding: 16px; border: none; letter-spacing: 1px; cursor: pointer;}
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; background: #f1f5f9;}
@@ -171,9 +166,7 @@
         .calc-btn.light-blue { background: #dbeafe; color: #1e3a8a;}
         .calc-btn.dark-blue { background: #1565c0; color: white; border: none;}
 
-        /* ================= NEW UI ADDITIONS CSS (Screenshots 1, 2, 3, 4) ================= */
-        
-        /* 1. SIDEBAR (Screenshot 1) */
+        /* SIDEBAR */
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; display: none; }
         .sidebar { position: fixed; top: 0; left: -300px; width: 280px; height: 100%; background: #0f172a; color: #f8fafc; z-index: 3001; transition: left 0.3s ease; overflow-y: auto; display: flex; flex-direction: column; }
         .sidebar.active { left: 0; }
@@ -189,30 +182,30 @@
         .sidebar-menu li:hover { background: #1e293b; color: white; }
         .sidebar-menu li.active { background: #3b82f6; color: white; }
         .sidebar-menu li i { font-style: normal; font-size: 18px; width: 24px; text-align: center; }
-        .sidebar-footer { padding: 20px; border-top: 1px solid #1e293b; display: flex; align-items: center; gap: 12px; }
-        .sidebar-footer .user-icon { width: 40px; height: 40px; background: #334155; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .sidebar-footer { padding: 20px; border-top: 1px solid #1e293b; display: flex; align-items: center; gap: 12px; cursor: pointer;}
+        .sidebar-footer .user-icon { width: 40px; height: 40px; background: #334155; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; overflow: hidden;}
         .sidebar-footer .user-info { flex: 1; }
         .sidebar-footer .user-name { font-size: 14px; font-weight: 700; }
         .sidebar-footer .user-email { font-size: 11px; color: #94a3b8; }
         .sidebar-footer .user-role { font-size: 11px; color: #3b82f6; }
 
-        /* 2. DASHBOARD CARDS (Screenshot 2) */
+        /* 2x2 DASHBOARD CARDS (Screenshot 2) */
         .op-overview { padding: 10px 0; }
         .op-title { font-size: 10px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-        .op-header { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 5px; }
-        .op-subtitle { font-size: 12px; color: #64748b; margin-bottom: 20px; }
-        .dash-card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
-        .dash-card-left { flex: 1; }
-        .dash-card-title { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
-        .dash-card-value { font-size: 28px; font-weight: 800; color: #0f172a; line-height: 1; margin-bottom: 6px; }
-        .dash-card-sub { font-size: 12px; color: #94a3b8; }
-        .dash-card-icon { width: 48px; height: 48px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; }
+        .op-header { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 15px; }
+        
+        .dash-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .dash-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;}
+        .dash-card-title { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
+        .dash-card-value { font-size: 24px; font-weight: 800; color: #0f172a; line-height: 1; margin-bottom: 4px; }
+        .dash-card-sub { font-size: 10px; color: #94a3b8; }
+        .dash-card-icon { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; }
         .icon-blue { background: #eff6ff; color: #3b82f6; }
         .icon-orange { background: #fff7ed; color: #f97316; }
         .icon-purple { background: #faf5ff; color: #a855f7; }
         .icon-green { background: #f0fdf4; color: #22c55e; }
 
-        /* 3. URGENT ACTIONS (Screenshot 3) */
+        /* URGENT ACTIONS */
         .urgent-actions-box { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
         .ua-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .ua-title { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -226,10 +219,10 @@
         .ua-item-count { font-size: 15px; font-weight: 700; color: #10b981; }
         .ua-item-arrow { color: #cbd5e1; font-weight: bold; font-size: 16px; }
 
-        /* 4. STOCK OVERVIEW GRID (Screenshot 4) */
+        /* STOCK OVERVIEW GRID */
         .stock-overview-title { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-top: 10px; }
         .stock-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
-        .stock-grid-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        .stock-grid-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.02); cursor: pointer;}
         .sg-title { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
         .sg-value { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
         .sg-sub { font-size: 11px; color: #94a3b8; }
@@ -244,55 +237,47 @@
         <p style="margin-top:16px; font-weight:600; color:var(--text-dark);">Syncing...</p>
     </div>
 
-    <!-- 📱 NEW SIDEBAR MENU (Added from Screenshot 1) -->
+    <!-- 📱 NEW SIDEBAR MENU -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="sidebar-logo">S</div>
+            <div class="sidebar-logo">V</div>
             <div class="sidebar-title">
-                <h2>STITCHWISE</h2>
-                <p>GARMENT ERP</p>
+                <h2>VANDANA ERP</h2>
+                <p>PRO EDITION</p>
             </div>
             <div class="sidebar-close" onclick="closeSidebar()">✕</div>
         </div>
         <div class="sidebar-menu-title">OPERATIONS</div>
         <ul class="sidebar-menu">
-            <li class="active" onclick="goHome(); closeSidebar();"><i>⊞</i> Dashboard</li>
-            <li><i>📋</i> PO Master</li>
-            <li><i>🚚</i> Fabric Job Work</li>
-            <li><i>✂️</i> Cutting</li>
-            <li><i>✨</i> Embroidery</li>
-            <li><i>✂️</i> ReCutting</li>
-            <li><i>🧵</i> Stitching</li>
-            <li><i>✔️</i> Finishing</li>
-            <li onclick="openPage('items-page'); closeSidebar();"><i>📦</i> Inventory</li>
-            <li onclick="openPage('stock-in-page'); closeSidebar();"><i>🧊</i> Stock</li>
-            <li onclick="openPage('pos-page'); closeSidebar();"><i>🧾</i> Billing</li>
-            <li><i>🔌</i> API Integrations</li>
+            <li class="active" onclick="goHome(); closeSidebar();"><i>🏠</i> Dashboard</li>
+            <li onclick="openPage('items-page'); closeSidebar();"><i>📦</i> Master Inventory</li>
+            <li onclick="openPage('pos-page'); closeSidebar();"><i>🧾</i> Billing & Invoice</li>
+            <li onclick="openPage('parties-page'); closeSidebar();"><i>👥</i> Ledger Book</li>
+            <li onclick="openPage('stock-in-page'); closeSidebar();"><i>📥</i> Stock IN</li>
         </ul>
-        <div class="sidebar-footer">
-            <div class="user-icon">A</div>
+        <div class="sidebar-menu-title">SETTINGS</div>
+        <ul class="sidebar-menu">
+            <li onclick="openPage('profile-page'); closeSidebar();"><i>💼</i> Business Profile</li>
+            <li onclick="openPage('report-page'); closeSidebar();"><i>📄</i> View Reports</li>
+            <li onclick="closeSidebar();"><i>🔄</i> Sync Data</li>
+            <li onclick="closeSidebar();"><i>🔑</i> Login / Security</li>
+        </ul>
+        <div class="sidebar-footer" onclick="openPage('customer-profile-page'); closeSidebar();">
+            <div class="user-icon" id="sidebar-user-pic">A</div>
             <div class="user-info">
-                <div class="user-name">ASHOK KUMAR</div>
-                <div class="user-email">ashokkirtani@gmail.com</div>
-                <div class="user-role">Owner</div>
+                <div class="user-name">ADMIN</div>
+                <div class="user-email">Vandana Enterprises</div>
+                <div class="user-role">Owner Profile ➔</div>
             </div>
         </div>
     </div>
 
-    <!-- 📱 TOP BAR (Added openSidebar functionality) -->
+    <!-- 📱 TOP BAR -->
     <header class="app-bar">
         <div style="display:flex; align-items:center; gap:12px;">
             <div style="font-size:20px; cursor:pointer;" onclick="openSidebar()">☰</div>
             <h1>Vandana Enterprises</h1>
-        </div>
-        <div style="position: relative;">
-            <div class="menu-dots" onclick="toggleMenu()">⋮</div>
-            <div id="dropdown-menu" class="dropdown">
-                <div onclick="openPage('profile-page'); toggleMenu();">💼 Business Profile</div>
-                <div onclick="openPage('report-page'); toggleMenu();">📄 View Reports</div>
-                <div onclick="toggleMenu();">🔄 Sync Data</div>
-            </div>
         </div>
     </header>
 
@@ -300,50 +285,43 @@
     <main class="main-content">
         <div class="dash-header">
             <h3 class="section-title" style="margin:0;">Dashboard Overview</h3>
-            <div class="full-date-display" id="dash-date-display">--</div>
+            <!-- Professional Date Picker -->
+            <input type="date" class="professional-date-picker" id="dash-date-picker">
         </div>
 
-        <!-- ================= ADDED: DASHBOARD CARDS (Screenshot 2) ================= -->
         <div class="op-overview">
             <div class="op-title">OPERATIONS OVERVIEW</div>
             <div class="op-header">Factory Dashboard</div>
-            <div class="op-subtitle">Total PO 0 • Active 0 • Fabric 0m • Finished 0 pcs</div>
         </div>
         
-        <div class="dash-card">
-            <div class="dash-card-left">
+        <!-- 2x2 DASHBOARD CARDS GRID -->
+        <div class="dash-card-grid">
+            <div class="dash-card">
                 <div class="dash-card-title">ACTIVE POS</div>
                 <div class="dash-card-value">0</div>
                 <div class="dash-card-sub">of 0 total</div>
+                <div class="dash-card-icon icon-blue">📋</div>
             </div>
-            <div class="dash-card-icon icon-blue">📋</div>
-        </div>
-        <div class="dash-card">
-            <div class="dash-card-left">
+            <div class="dash-card">
                 <div class="dash-card-title">FABRIC STOCK</div>
                 <div class="dash-card-value">0m</div>
-                <div class="dash-card-sub">grey + processed stock</div>
+                <div class="dash-card-sub">grey + processed</div>
+                <div class="dash-card-icon icon-orange">🧊</div>
             </div>
-            <div class="dash-card-icon icon-orange">🧊</div>
-        </div>
-        <div class="dash-card">
-            <div class="dash-card-left">
+            <div class="dash-card">
                 <div class="dash-card-title">IN PRODUCTION</div>
                 <div class="dash-card-value">0</div>
-                <div class="dash-card-sub">active process pieces</div>
+                <div class="dash-card-sub">active pieces</div>
+                <div class="dash-card-icon icon-purple">🔗</div>
             </div>
-            <div class="dash-card-icon icon-purple">🔗</div>
-        </div>
-        <div class="dash-card" onclick="openPage('report-page')">
-            <div class="dash-card-left">
-                <div class="dash-card-title">SALES</div>
+            <div class="dash-card" onclick="openInvoicesPage()">
+                <div class="dash-card-title">SALES (BILLS)</div>
                 <div class="dash-card-value" id="dash-card-sale-value">₹0</div>
-                <div class="dash-card-sub">1 invoices</div>
+                <div class="dash-card-sub">Tap to view bills</div>
+                <div class="dash-card-icon icon-green">🧾</div>
             </div>
-            <div class="dash-card-icon icon-green">🧾</div>
         </div>
 
-        <!-- ================= ADDED: URGENT ACTIONS (Screenshot 3) ================= -->
         <div class="urgent-actions-box">
             <div class="ua-header">
                 <div class="ua-title">URGENT ACTIONS</div>
@@ -370,18 +348,10 @@
                 </div>
                 <div class="ua-item-right"><span class="ua-item-count">0</span><span class="ua-item-arrow">›</span></div>
             </div>
-            <div class="ua-item">
-                <div class="ua-item-left">
-                    <div class="ua-item-name">Wastage Alerts</div>
-                    <div class="ua-item-desc">high wastage challans</div>
-                </div>
-                <div class="ua-item-right"><span class="ua-item-count">0</span><span class="ua-item-arrow">›</span></div>
-            </div>
         </div>
 
-        <!-- EXISTING SUMMARY BOX & QUICK ACTIONS -->
         <div class="summary-box">
-            <div class="summary-row" onclick="openPage('report-page')">
+            <div class="summary-row" onclick="openInvoicesPage()">
                 <span class="sum-title">Total Sales Value (Today)</span>
                 <span class="sum-val" style="color:var(--primary);" id="dash-total-sale">₹ 0 ➔</span>
             </div>
@@ -417,6 +387,15 @@
     </nav>
 
     <!-- ======================================================== -->
+    <!-- 📄 NEW INVOICES LIST PAGE (PDF Download Page) -->
+    <!-- ======================================================== -->
+    <div class="page" id="invoices-page">
+        <div class="page-header"><button class="back-btn" onclick="closePage('invoices-page')">←</button><h2 class="page-title">Today's Bills & Invoices</h2></div>
+        <div class="page-content" id="invoices-list-container">
+            <!-- Dynamic Invoice Cards will load here -->
+        </div>
+    </div>
+
     <!-- 🧾 SALE INVOICE PAGE -->
     <div class="page" id="pos-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('pos-page')">←</button><h2 class="page-title">Create Sale Invoice</h2></div>
@@ -489,7 +468,7 @@
     <!-- 👥 PARTIES (LEDGER BOOK) -->
     <div class="page" id="parties-page">
         <div class="kb-header">
-            <div class="kb-header-title"><button class="back-btn" onclick="closePage('parties-page')" style="padding:0; margin-right:15px;">←</button>Ledger Book <span>⌄</span></div>
+            <div class="kb-header-title"><button class="back-btn" onclick="closePage('parties-page')" style="padding:0; margin-right:15px;">←</button>Ledger Book</div>
         </div>
         
         <div class="search-bar-container">
@@ -504,9 +483,10 @@
             </div>
         </div>
 
-        <div class="kb-tabs" style="padding: 0 16px;">
-            <div class="kb-tab active" style="color:var(--primary); border-bottom-color:var(--primary);">CUSTOMERS</div>
-            <div class="kb-tab" style="color:var(--text-muted);">SUPPLIERS</div>
+        <!-- NEW AJIO STYLE TABS -->
+        <div class="ajio-tab-container">
+            <div class="kb-tab active" id="tab-customers">CUSTOMERS</div>
+            <div class="kb-tab" id="tab-suppliers">SUPPLIERS</div>
         </div>
 
         <div class="kb-list" id="kb-customer-list" style="margin-top:15px;">
@@ -553,14 +533,18 @@
         </div>
     </div>
 
-    <!-- 📄 CUSTOMER PROFILE PAGE -->
+    <!-- 📄 CUSTOMER PROFILE PAGE (With Camera Upload) -->
     <div class="page" id="customer-profile-page">
-        <div class="page-header"><button class="back-btn" onclick="closePage('customer-profile-page')">←</button><h2 class="page-title">Customer Profile</h2></div>
+        <div class="page-header"><button class="back-btn" onclick="closePage('customer-profile-page')">←</button><h2 class="page-title">Profile</h2></div>
         
         <div class="profile-header-img">
             <div class="profile-pic-container">
                 <div class="profile-pic" id="cp-avatar">C</div>
+                <!-- Camera Icon & Hidden File Input -->
+                <div class="camera-icon" onclick="document.getElementById('profile-upload').click()">📷</div>
             </div>
+            <input type="file" id="profile-upload" accept="image/*" style="display:none;" onchange="handleProfilePic(event)">
+
             <h2 id="cp-name" style="margin-top:10px; font-size:18px; color:#0f172a;">Customer Name</h2>
             <div style="color:var(--text-muted); font-size:13px; margin-top:4px;" id="cp-phone">Phone Number</div>
         </div>
@@ -578,7 +562,7 @@
         </div>
 
         <div style="padding: 20px 16px;">
-            <button class="btn-outline" onclick="deleteCurrentCustomer()">🗑️ Delete Customer</button>
+            <button class="btn-outline" onclick="deleteCurrentCustomer()">🗑️ Delete Account</button>
         </div>
     </div>
 
@@ -663,40 +647,39 @@
         </div>
     </div>
 
-    <!-- 📦 ITEMS MASTER PAGE (Added Stock Grid from Screenshot 4) -->
+    <!-- 📦 ITEMS MASTER PAGE -->
     <div class="page" id="items-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('items-page')">←</button><h2 class="page-title">Master Inventory</h2></div>
         <div class="page-content">
             
-            <!-- ================= ADDED: STOCK OVERVIEW GRID (Screenshot 4) ================= -->
             <div class="stock-overview-title">STOCK OVERVIEW</div>
             <div class="stock-grid">
-                <div class="stock-grid-card">
+                <div class="stock-grid-card" onclick="openInvoicesPage()">
                     <div class="sg-title">GREY</div>
                     <div class="sg-value">0m</div>
                     <div class="sg-icon" style="background:#f1f5f9; color:#64748b;">🥞</div>
                 </div>
-                <div class="stock-grid-card">
+                <div class="stock-grid-card" onclick="openInvoicesPage()">
                     <div class="sg-title">WASHING</div>
                     <div class="sg-value">0m</div>
                     <div class="sg-icon" style="background:#eff6ff; color:#3b82f6;">💧</div>
                 </div>
-                <div class="stock-grid-card">
+                <div class="stock-grid-card" onclick="openInvoicesPage()">
                     <div class="sg-title">DYEING</div>
                     <div class="sg-value">0m</div>
                     <div class="sg-icon" style="background:#fdf4ff; color:#d946ef;">🎨</div>
                 </div>
-                <div class="stock-grid-card">
+                <div class="stock-grid-card" onclick="openInvoicesPage()">
                     <div class="sg-title">PRINTING</div>
                     <div class="sg-value">0m</div>
                     <div class="sg-icon" style="background:#f5f3ff; color:#8b5cf6;">🖨️</div>
                 </div>
-                <div class="stock-grid-card">
+                <div class="stock-grid-card" onclick="openInvoicesPage()">
                     <div class="sg-title">READY TO CUT</div>
                     <div class="sg-value">0m</div>
                     <div class="sg-icon" style="background:#fff7ed; color:#f97316;">✂️</div>
                 </div>
-                <div class="stock-grid-card">
+                <div class="stock-grid-card" onclick="openInvoicesPage()">
                     <div class="sg-title">FINISHED</div>
                     <div class="sg-value">0</div>
                     <div class="sg-sub">pieces</div>
@@ -704,7 +687,6 @@
                 </div>
             </div>
 
-            <!-- Existing Invoice Table remains unchanged -->
             <table class="invoice-table">
                 <thead><tr><th>Item Details</th><th>Total Stock</th></tr></thead>
                 <tbody id="inventory-list-table"><tr><td colspan="2" style="text-align:center;">Loading...</td></tr></tbody>
@@ -767,9 +749,17 @@
 
         // INIT & REALTIME LISTENERS
         window.addEventListener('DOMContentLoaded', () => {
-            let options = { year: 'numeric', month: 'short', day: 'numeric' };
-            document.getElementById('dash-date-display').innerText = new Date().toLocaleDateString('en-IN', options);
-            document.getElementById('calc-date').value = new Date().toISOString().split('T')[0];
+            // Setup Date Picker Default Value
+            let todayStr = new Date().toISOString().split('T')[0];
+            document.getElementById('dash-date-picker').value = todayStr;
+            document.getElementById('calc-date').value = todayStr;
+
+            // Load saved profile pic from memory
+            let savedPic = localStorage.getItem('v_profilePic');
+            if(savedPic) {
+                document.getElementById('cp-avatar').innerHTML = `<img src="${savedPic}" style="width:100%; height:100%; object-fit:cover;">`;
+                document.getElementById('sidebar-user-pic').innerHTML = `<img src="${savedPic}" style="width:100%; height:100%; object-fit:cover;">`;
+            }
             
             onValue(ref(db, 'Inventory'), (snapshot) => { 
                 smartInventory = snapshot.val() || {}; 
@@ -792,7 +782,57 @@
             });
         });
 
-        // ================= CUSTOMER PROFILE LOGIC (Add/Edit/Delete) =================
+        // ================= INVOICE/PDF LIST PAGE LOGIC =================
+        window.openInvoicesPage = function() {
+            let listContainer = document.getElementById('invoices-list-container');
+            listContainer.innerHTML = '';
+            
+            let selectedDateString = document.getElementById('dash-date-picker').value;
+            
+            let todayInvoices = allLedgerData.filter(entry => {
+                let entryDateString = "";
+                try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){}
+                return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice Sale");
+            });
+
+            if(todayInvoices.length === 0) {
+                listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>';
+            } else {
+                todayInvoices.forEach(entry => {
+                    listContainer.innerHTML += `
+                    <div class="entry-card" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
+                            <div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div>
+                            <div style="color:var(--success); font-weight:800; font-size: 16px;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div>
+                        </div>
+                        <div style="font-size:12px; color:var(--text-muted); margin-bottom: 16px;">${entry.details}</div>
+                        <button class="btn-outline" style="margin-top:0; width:auto; padding: 8px 16px; font-size:13px; border-radius:6px; cursor:pointer;" onclick="downloadPDF('${entry.name}', '${entry.amount}')">📄 Download PDF</button>
+                    </div>`;
+                });
+            }
+            openPage('invoices-page');
+        }
+
+        window.downloadPDF = function(name, amount) {
+            alert(`Generating PDF for Bill: ${name} (₹${amount})\n\n(PDF format template will be fully integrated next!)`);
+        }
+
+        // ================= PROFILE PIC UPLOAD LOGIC =================
+        window.handleProfilePic = function(event) {
+            let file = event.target.files[0];
+            if(file) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let imgHtml = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+                    document.getElementById('cp-avatar').innerHTML = imgHtml;
+                    document.getElementById('sidebar-user-pic').innerHTML = imgHtml;
+                    localStorage.setItem('v_profilePic', e.target.result); // Save permanently
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ================= CUSTOMER PROFILE LOGIC =================
         window.addCustomerToCloud = function() {
             let name = document.getElementById('new-party-name').value.trim();
             let phone = document.getElementById('new-party-phone').value;
@@ -809,7 +849,9 @@
             if(!customer) return;
             currentPartyKey = customer.key;
 
-            document.getElementById('cp-avatar').innerText = customer.name.substring(0, 1).toUpperCase();
+            if(!localStorage.getItem('v_profilePic')) {
+                document.getElementById('cp-avatar').innerText = customer.name.substring(0, 1).toUpperCase();
+            }
             document.getElementById('cp-name').innerText = customer.name;
             document.getElementById('cp-phone').innerText = customer.phone || "No Phone Number";
             document.getElementById('cp-address').innerText = customer.address || "Not provided (Tap to add)";
@@ -980,7 +1022,8 @@
             let totalGive = 0; let totalGet = 0; let balances = {};
             let todayTotalSale = 0; let todayTotalBox = 0;
             
-            let todayLocal = new Date().toLocaleDateString('en-CA'); 
+            // Get selected Date from the dashboard Professional Date Picker
+            let selectedDateString = document.getElementById('dash-date-picker').value; 
 
             allLedgerData.forEach(entry => {
                 let amt = parseFloat(entry.amount) || 0; 
@@ -988,14 +1031,15 @@
                 
                 try { 
                     let d = new Date(entry.date); 
-                    if (!isNaN(d)) entryDateString = d.toLocaleDateString('en-CA'); 
+                    if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; 
                 } catch(e){}
 
                 if(!balances[entry.name]) balances[entry.name] = 0;
                 if(entry.type === 'Gave') balances[entry.name] += amt;
                 if(entry.type === 'Got') balances[entry.name] -= amt;
 
-                if (entryDateString === todayLocal && entry.details && entry.details.includes("Invoice Sale")) {
+                // Sync Dashboard Sales with Selected Date
+                if (entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice Sale")) {
                     todayTotalSale += amt;
                     let boxMatch = entry.details.match(/(\d+)\s*Box/i);
                     if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]);
@@ -1012,11 +1056,13 @@
             document.getElementById('dash-total-sale').innerText = `₹ ${todayTotalSale.toLocaleString('en-IN')} ➔`; 
             document.getElementById('dash-total-box').innerText = `${todayTotalBox} BOX ➔`;
             
-            // Updating the newly added Dashboard Card for SALES (Screenshot 2)
             if(document.getElementById('dash-card-sale-value')) {
                 document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
             }
         }
+        
+        // Listen to Date Picker Change
+        document.getElementById('dash-date-picker').addEventListener('change', calculateGrandTotals);
 
         window.openLedgerDetail = function(name, phone) {
             currentPartyName = name; currentPartyPhone = phone || "";
@@ -1109,7 +1155,6 @@
         // ================= NAVIGATION HELPERS & SIDEBAR =================
         window.toggleMenu = function() { const menu = document.getElementById('dropdown-menu'); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; }
         
-        // NEW SIDEBAR FUNCTIONALITY
         window.openSidebar = function() {
             document.getElementById('sidebar').classList.add('active');
             document.getElementById('sidebar-overlay').style.display = 'block';

@@ -28,7 +28,6 @@
         .main-content { padding: 75px 16px 30px 16px; max-width: 800px; margin: 0 auto; }
         .section-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;}
         
-        /* UPDATED: QUICK ACTIONS 2x2 GRID */
         .quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
         .action-box { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.05);}
         .action-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 22px; background: #f8fafc;}
@@ -44,7 +43,7 @@
         .sum-val { font-size: 16px; font-weight: 700; color: var(--text-dark); }
 
         /* BOTTOM NAV (Hidden per user request, can be un-commented later) */
-        .bottom-nav { display: none; /* position: fixed; bottom: 0; width: 100%; height: 60px; background: white; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); */ }
+        .bottom-nav { display: none; }
 
         /* PAGES & FORMS */
         .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 30px; }
@@ -93,7 +92,7 @@
         .kb-time { font-size: 12px; color: var(--text-muted); margin-top: 4px;}
         .kb-list-right { display: flex; flex-direction: column; justify-content: center; padding: 16px; min-width: 100px; text-align: right; border-left: 1px dashed #e2e8f0; background: #f8fafc; border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
         
-        /* UPDATED: SMART FLOATING ACTION BUTTON */
+        /* SMART FLOATING ACTION BUTTON */
         .kb-fab { position: fixed !important; bottom: 30px; right: 20px; height: 56px; background: #ef4444; color: white; border-radius: 28px; display: flex; justify-content: center; align-items: center; font-size: 15px; font-weight: 700; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); border: none; z-index: 1001; cursor: pointer; padding: 0 20px; transition: all 0.3s ease; white-space: nowrap; overflow: hidden;}
         .kb-fab .fab-icon { font-size: 24px; margin-right: 8px; transition: margin 0.3s; }
         .kb-fab.collapsed { width: 56px; padding: 0; border-radius: 50%; }
@@ -379,16 +378,6 @@
         </div>
     </main>
 
-    <!-- ⚓ BOTTOM NAV (Hidden for now, can be restored later) -->
-    <!--
-    <nav class="bottom-nav">
-        <div class="nav-item active" onclick="goHome()"><i>🏠</i><span>Home</span></div>
-        <div class="nav-item" onclick="openPage('items-page')"><i>📦</i><span>Items</span></div>
-        <div class="nav-item" onclick="openPage('pos-page')"><i>➕</i><span>Billing</span></div>
-        <div class="nav-item" onclick="openPage('parties-page')"><i>👥</i><span>Parties</span></div>
-    </nav>
-    -->
-
     <!-- 📄 INVOICES LIST PAGE -->
     <div class="page" id="invoices-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('invoices-page')">←</button><h2 class="page-title">Today's Bills & Invoices</h2></div>
@@ -650,47 +639,168 @@
         </div>
     </div>
 
-    <!-- 📦 ITEMS MASTER PAGE -->
+    <!-- ================= UPDATED: MASTER INVENTORY PAGE (6 BOXES ONLY) ================= -->
     <div class="page" id="items-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('items-page')">←</button><h2 class="page-title">Master Inventory</h2></div>
         <div class="page-content">
+            
             <div class="stock-overview-title">STOCK OVERVIEW</div>
             <div class="stock-grid">
-                <div class="stock-grid-card" onclick="openInvoicesPage()">
-                    <div class="sg-title">GREY</div>
-                    <div class="sg-value">0m</div>
-                    <div class="sg-icon" style="background:#f1f5f9; color:#64748b;">🥞</div>
+                <div class="stock-grid-card" onclick="openPage('thread-stock-page')">
+                    <div class="sg-title">THREAD (थ्रेड)</div>
+                    <div class="sg-value" id="stock-val-thread">0</div>
+                    <div class="sg-icon" style="background:#f1f5f9; color:#64748b;">🧵</div>
                 </div>
-                <div class="stock-grid-card" onclick="openInvoicesPage()">
-                    <div class="sg-title">WASHING</div>
-                    <div class="sg-value">0m</div>
-                    <div class="sg-icon" style="background:#eff6ff; color:#3b82f6;">💧</div>
+                <div class="stock-grid-card" onclick="openPage('zari-stock-page')">
+                    <div class="sg-title">ZARI (जरी)</div>
+                    <div class="sg-value" id="stock-val-zari">0</div>
+                    <div class="sg-icon" style="background:#eff6ff; color:#3b82f6;">✨</div>
                 </div>
-                <div class="stock-grid-card" onclick="openInvoicesPage()">
-                    <div class="sg-title">DYEING</div>
-                    <div class="sg-value">0m</div>
-                    <div class="sg-icon" style="background:#fdf4ff; color:#d946ef;">🎨</div>
+                <div class="stock-grid-card" onclick="openPage('nylon-stock-page')">
+                    <div class="sg-title">NYLON (नायलोन)</div>
+                    <div class="sg-value" id="stock-val-nylon">0</div>
+                    <div class="sg-icon" style="background:#fdf4ff; color:#d946ef;">🧶</div>
                 </div>
-                <div class="stock-grid-card" onclick="openInvoicesPage()">
-                    <div class="sg-title">PRINTING</div>
-                    <div class="sg-value">0m</div>
-                    <div class="sg-icon" style="background:#f5f3ff; color:#8b5cf6;">🖨️</div>
+                <div class="stock-grid-card" onclick="openPage('cording-stock-page')">
+                    <div class="sg-title">CORDING (कोडिंग)</div>
+                    <div class="sg-value" id="stock-val-cording">0</div>
+                    <div class="sg-icon" style="background:#f5f3ff; color:#8b5cf6;">🪢</div>
                 </div>
-                <div class="stock-grid-card" onclick="openInvoicesPage()">
-                    <div class="sg-title">READY TO CUT</div>
-                    <div class="sg-value">0m</div>
-                    <div class="sg-icon" style="background:#fff7ed; color:#f97316;">✂️</div>
+                <div class="stock-grid-card" onclick="openPage('bobbin-stock-page')">
+                    <div class="sg-title">BOBBIN (बोबिन)</div>
+                    <div class="sg-value" id="stock-val-bobbin">0</div>
+                    <div class="sg-icon" style="background:#fff7ed; color:#f97316;">🛞</div>
                 </div>
-                <div class="stock-grid-card" onclick="openInvoicesPage()">
-                    <div class="sg-title">FINISHED</div>
-                    <div class="sg-value">0</div>
-                    <div class="sg-sub">pieces</div>
+                <div class="stock-grid-card" onclick="openPage('dostock-stock-page')">
+                    <div class="sg-title">DO STOCK</div>
+                    <div class="sg-value" id="stock-val-dostock">0</div>
                     <div class="sg-icon" style="background:#f0fdf4; color:#22c55e;">📦</div>
                 </div>
             </div>
+            <!-- Inventory Table Removed per user request -->
+        </div>
+    </div>
+
+    <!-- 🧵 THREAD STOCK PAGE -->
+    <div class="page" id="thread-stock-page">
+        <div class="page-header"><button class="back-btn" onclick="closePage('thread-stock-page')">←</button><h2 class="page-title">Thread Stock</h2></div>
+        <div class="page-content">
+            <div class="search-bar-container" style="margin: 0 0 16px 0;">
+                <span>🔍</span><input type="text" id="search-thread" placeholder="Search Shade Number..." onkeyup="filterThreadStock()">
+            </div>
+            <div class="form-panel">
+                <div class="input-btn-group" style="margin-bottom: 12px;">
+                    <input type="text" class="form-control" id="thread-shade-input" placeholder="Shade No.">
+                    <input type="number" class="form-control" id="thread-box-input" placeholder="Boxes">
+                </div>
+                <button class="btn-submit" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-box-input')">💾 Save Stock</button>
+            </div>
             <table class="invoice-table">
-                <thead><tr><th>Item Details</th><th>Total Stock</th></tr></thead>
-                <tbody id="inventory-list-table"><tr><td colspan="2" style="text-align:center;">Loading...</td></tr></tbody>
+                <thead><tr><th>Shade No.</th><th>Total Boxes</th></tr></thead>
+                <tbody id="thread-stock-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ✨ ZARI STOCK PAGE -->
+    <div class="page" id="zari-stock-page">
+        <div class="page-header"><button class="back-btn" onclick="closePage('zari-stock-page')">←</button><h2 class="page-title">Zari Stock</h2></div>
+        <div class="page-content">
+            <div class="form-panel">
+                <select class="form-control" id="zari-item-select" style="margin-bottom: 12px;">
+                    <option value="Water 20">Water 20</option>
+                    <option value="Ice Silver">Ice Silver</option>
+                    <option value="Sike Water 150">Sike Water 150</option>
+                    <option value="Sike Water 180">Sike Water 180</option>
+                    <option value="S B C H Yellow">S B C H Yellow</option>
+                    <option value="Water 10">Water 10</option>
+                    <option value="Chandan">Chandan</option>
+                    <option value="J Gold 77">J Gold 77</option>
+                </select>
+                <input type="number" class="form-control" id="zari-box-input" placeholder="Boxes" style="margin-bottom: 12px;">
+                <button class="btn-submit" onclick="addSpecificStock('Zari', 'zari-item-select', 'zari-box-input')">💾 Save Stock</button>
+            </div>
+            <table class="invoice-table">
+                <thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead>
+                <tbody id="zari-stock-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 🪢 CORDING STOCK PAGE -->
+    <div class="page" id="cording-stock-page">
+        <div class="page-header"><button class="back-btn" onclick="closePage('cording-stock-page')">←</button><h2 class="page-title">Cording Stock</h2></div>
+        <div class="page-content">
+            <div class="form-panel">
+                <select class="form-control" id="cording-item-select" style="margin-bottom: 12px;">
+                    <option value="Cotton Cording">Cotton Cording</option>
+                    <option value="I Very 3 Taar">I Very 3 Taar</option>
+                    <option value="M 17 Taar">M 17 Taar</option>
+                    <option value="Anmol Two 5 Taar">Anmol Two 5 Taar</option>
+                    <option value="Anmol One 4 Taar">Anmol One 4 Taar</option>
+                    <option value="R Water 3 Taar">R Water 3 Taar</option>
+                    <option value="R Water 4 Taar">R Water 4 Taar</option>
+                </select>
+                <input type="number" class="form-control" id="cording-box-input" placeholder="Boxes" style="margin-bottom: 12px;">
+                <button class="btn-submit" onclick="addSpecificStock('Cording', 'cording-item-select', 'cording-box-input')">💾 Save Stock</button>
+            </div>
+            <table class="invoice-table">
+                <thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead>
+                <tbody id="cording-stock-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 🧶 NYLON STOCK PAGE -->
+    <div class="page" id="nylon-stock-page">
+        <div class="page-header"><button class="back-btn" onclick="closePage('nylon-stock-page')">←</button><h2 class="page-title">Nylon Stock</h2></div>
+        <div class="page-content">
+            <div class="form-panel">
+                <div class="input-btn-group" style="margin-bottom: 12px;">
+                    <input type="text" class="form-control" id="nylon-item-input" placeholder="Item Name / Shade">
+                    <input type="number" class="form-control" id="nylon-box-input" placeholder="Boxes">
+                </div>
+                <button class="btn-submit" onclick="addSpecificStock('Nylon', 'nylon-item-input', 'nylon-box-input')">💾 Save Stock</button>
+            </div>
+            <table class="invoice-table">
+                <thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead>
+                <tbody id="nylon-stock-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 🛞 BOBBIN STOCK PAGE -->
+    <div class="page" id="bobbin-stock-page">
+        <div class="page-header"><button class="back-btn" onclick="closePage('bobbin-stock-page')">←</button><h2 class="page-title">Bobbin Stock</h2></div>
+        <div class="page-content">
+            <div class="form-panel">
+                <div class="input-btn-group" style="margin-bottom: 12px;">
+                    <input type="text" class="form-control" id="bobbin-item-input" placeholder="Item Name">
+                    <input type="number" class="form-control" id="bobbin-box-input" placeholder="Boxes">
+                </div>
+                <button class="btn-submit" onclick="addSpecificStock('Bobbin', 'bobbin-item-input', 'bobbin-box-input')">💾 Save Stock</button>
+            </div>
+            <table class="invoice-table">
+                <thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead>
+                <tbody id="bobbin-stock-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 📦 DO STOCK PAGE -->
+    <div class="page" id="dostock-stock-page">
+        <div class="page-header"><button class="back-btn" onclick="closePage('dostock-stock-page')">←</button><h2 class="page-title">Do Stock</h2></div>
+        <div class="page-content">
+            <div class="form-panel">
+                <div class="input-btn-group" style="margin-bottom: 12px;">
+                    <input type="text" class="form-control" id="dostock-item-input" placeholder="Item Name">
+                    <input type="number" class="form-control" id="dostock-box-input" placeholder="Boxes">
+                </div>
+                <button class="btn-submit" onclick="addSpecificStock('Do Stock', 'dostock-item-input', 'dostock-box-input')">💾 Save Stock</button>
+            </div>
+            <table class="invoice-table">
+                <thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead>
+                <tbody id="dostock-stock-list"></tbody>
             </table>
         </div>
     </div>
@@ -748,7 +858,7 @@
         let currentPartyKey = "";
         let currentEntryData = null; 
         
-        window.currentTabType = 'Customer'; // Default tab
+        window.currentTabType = 'Customer';
 
         // INIT & REALTIME LISTENERS
         window.addEventListener('DOMContentLoaded', () => {
@@ -861,7 +971,6 @@
             let address = document.getElementById('new-party-address').value;
             if(!name) return alert("Please enter Name!");
 
-            // Saving based on active tab (Customer or Supplier)
             push(ref(db, 'Customers'), { name, phone, address, date: new Date().toISOString(), status: "Active", type: currentTabType });
             
             closePage('add-party-page');
@@ -974,7 +1083,7 @@
             window.open(`https://wa.me/91${currentPartyPhone}?text=${msg}`, '_blank');
         }
 
-        // ================= INVENTORY & RENDERING =================
+        // ================= UPDATED: NEW INVENTORY & RENDERING (THREAD, ZARI, ETC) =================
         window.saveSmartStock = function() {
             let cat = document.getElementById('stock-cat').value; let shade = document.getElementById('stock-shade').value; let qty = parseInt(document.getElementById('stock-qty').value);
             if(!shade || !qty) return alert("Enter Shade and Qty!");
@@ -983,13 +1092,72 @@
             document.getElementById('stock-shade').value = ''; document.getElementById('stock-qty').value = ''; alert("Stock Added Successfully!");
         }
 
-        window.renderInventoryList = function() {
-            let html = "";
-            for (let key in smartInventory) {
-                let parts = key.split("_"); let qty = smartInventory[key]; let color = qty < 5 ? 'var(--danger)' : 'var(--text-dark)';
-                html += `<tr><td><strong>${parts[0]}</strong><br><span style="font-size:11px; color:gray;">Shd: ${parts[1]}</span></td><td style="color:${color}; font-weight:700;">${qty} BOX</td></tr>`;
+        window.addSpecificStock = function(category, shadeId, qtyId) {
+            let shade = document.getElementById(shadeId).value; 
+            let qty = parseInt(document.getElementById(qtyId).value);
+            if(!shade || isNaN(qty)) return alert("Please enter Detail and Box Quantity!");
+            
+            let key = category + "_" + shade; 
+            let itemRef = ref(db, 'Inventory/' + key);
+            get(itemRef).then((snap) => { 
+                set(itemRef, (snap.val() || 0) + qty); 
+            });
+            
+            if(document.getElementById(shadeId).tagName !== 'SELECT') {
+                document.getElementById(shadeId).value = ''; 
             }
-            document.getElementById('inventory-list-table').innerHTML = html || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
+            document.getElementById(qtyId).value = ''; 
+            alert(category + " Stock Saved Successfully!");
+        }
+
+        window.filterThreadStock = function() {
+            let filter = document.getElementById('search-thread').value.toUpperCase();
+            let rows = document.querySelectorAll('#thread-stock-list .stock-row');
+            rows.forEach(row => {
+                let name = row.getAttribute('data-name');
+                if (name.includes(filter)) row.style.display = '';
+                else row.style.display = 'none';
+            });
+        }
+
+        window.renderInventoryList = function() {
+            let threadHtml = ""; let zariHtml = ""; let cordingHtml = ""; let nylonHtml = ""; let bobbinHtml = ""; let dostockHtml = "";
+            let threadCount = 0; let zariCount = 0; let nylonCount = 0; let cordingCount = 0; let bobbinCount = 0; let dostockCount = 0;
+
+            for (let key in smartInventory) {
+                let parts = key.split("_"); 
+                let cat = parts[0];
+                let shade = parts[1] || "";
+                let qty = smartInventory[key]; 
+                let color = qty < 5 ? 'var(--danger)' : 'var(--text-dark)';
+                
+                let rowHtml = `<tr class="stock-row" data-name="${shade.toUpperCase()}">
+                    <td><strong>${shade}</strong></td>
+                    <td style="color:${color}; font-weight:700;">${qty} BOX</td>
+                </tr>`;
+
+                if(cat === "Thread") { threadHtml += rowHtml; threadCount += qty; }
+                else if(cat === "Zari") { zariHtml += rowHtml; zariCount += qty; }
+                else if(cat === "Nylon") { nylonHtml += rowHtml; nylonCount += qty; }
+                else if(cat === "Cording") { cordingHtml += rowHtml; cordingCount += qty; }
+                else if(cat === "Bobbin") { bobbinHtml += rowHtml; bobbinCount += qty; }
+                else if(cat === "Do Stock") { dostockHtml += rowHtml; dostockCount += qty; }
+            }
+            
+            if(document.getElementById('thread-stock-list')) document.getElementById('thread-stock-list').innerHTML = threadHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
+            if(document.getElementById('zari-stock-list')) document.getElementById('zari-stock-list').innerHTML = zariHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
+            if(document.getElementById('nylon-stock-list')) document.getElementById('nylon-stock-list').innerHTML = nylonHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
+            if(document.getElementById('cording-stock-list')) document.getElementById('cording-stock-list').innerHTML = cordingHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
+            if(document.getElementById('bobbin-stock-list')) document.getElementById('bobbin-stock-list').innerHTML = bobbinHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
+            if(document.getElementById('dostock-stock-list')) document.getElementById('dostock-stock-list').innerHTML = dostockHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
+
+            // Updating Grid Box Totals
+            if(document.getElementById('stock-val-thread')) document.getElementById('stock-val-thread').innerText = threadCount;
+            if(document.getElementById('stock-val-zari')) document.getElementById('stock-val-zari').innerText = zariCount;
+            if(document.getElementById('stock-val-nylon')) document.getElementById('stock-val-nylon').innerText = nylonCount;
+            if(document.getElementById('stock-val-cording')) document.getElementById('stock-val-cording').innerText = cordingCount;
+            if(document.getElementById('stock-val-bobbin')) document.getElementById('stock-val-bobbin').innerText = bobbinCount;
+            if(document.getElementById('stock-val-dostock')) document.getElementById('stock-val-dostock').innerText = dostockCount;
         }
 
         window.renderLedgerEntries = function(name) {
@@ -1023,9 +1191,7 @@
         }
 
         window.renderCustomerList = function(list) {
-            // FILTER BASED ON CURRENT TAB (Customer / Supplier)
             let filteredList = list.filter(c => (c.type || 'Customer') === currentTabType);
-            
             let html = "";
             filteredList.forEach(cust => {
                 let initial = cust.name ? cust.name.substring(0,2).toUpperCase() : "CU";
@@ -1050,11 +1216,7 @@
             allLedgerData.forEach(entry => {
                 let amt = parseFloat(entry.amount) || 0; 
                 let entryDateString = "";
-                
-                try { 
-                    let d = new Date(entry.date); 
-                    if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; 
-                } catch(e){}
+                try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){}
 
                 if(!balances[entry.name]) balances[entry.name] = 0;
                 if(entry.type === 'Gave') balances[entry.name] += amt;

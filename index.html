@@ -7,9 +7,11 @@
     <title>Vandana ERP - Pro Edition</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- CONFETTI LIBRARY FOR FIREWORKS -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        /* ================= SUPERFAST SOLID UI (RESTORED TO ORIGINAL BEAUTY) ================= */
+        /* ================= SUPERFAST SOLID UI ================= */
         :root {
             --primary: #1565c0; --primary-dark: #0d47a1; --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
             --bg-color: #f1f5f9; --surface: #ffffff; --text-dark: #1e293b; --text-muted: #64748b; --border: #e2e8f0;
@@ -26,17 +28,22 @@
         /* DASHBOARD */
         .main-content { padding: 75px 16px 30px 16px; max-width: 800px; margin: 0 auto; }
         .section-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;}
-        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;}
         .professional-date-picker { background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 700; color: var(--primary); font-family: inherit; outline: none; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; }
 
-        /* PAGES & FORMS */
+        /* FLEX PAGE LAYOUT (FOR FREEZING TOP & BOTTOM) */
         .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 30px; }
         .page.active { transform: translateX(0); }
+        .flex-page { display: flex; flex-direction: column; overflow: hidden; padding-bottom: 0;}
+        .flex-page .page-header { flex-shrink: 0; }
+        .flex-page .fixed-top-section { flex-shrink: 0; background: var(--bg-color); z-index: 10; padding: 16px 16px 0 16px; }
+        .flex-page .scroll-content { flex: 1; overflow-y: auto; padding: 0 16px 100px 16px; }
+        
         .page-header { position: sticky; top: 0; background: var(--primary); color: white; height: 56px; display: flex; align-items: center; padding: 0 16px; z-index: 50; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .back-btn { background: transparent; border: none; color: white; font-size: 24px; margin-right: 16px; cursor: pointer; padding: 5px;}
         .page-title { font-size: 16px; font-weight: 600; margin: 0; }
         .page-content { padding: 16px; max-width: 800px; margin: 0 auto; }
 
+        /* FORMS & BUTTONS */
         .form-panel { background: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
         .form-group { margin-bottom: 16px; }
         .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;}
@@ -45,15 +52,16 @@
         .input-btn-group { display: flex; gap: 10px; }
         .action-btn { background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; border-radius: 8px; padding: 0 16px; font-weight: 600; cursor: pointer;}
         .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 6px rgba(21, 101, 192, 0.2);}
+        .btn-outline { border: 1px solid #ef4444; color: #ef4444; background: transparent; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer;}
 
         /* TABLES & STICKY HEADERS */
-        .invoice-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; background: white; border-radius: 8px; overflow: hidden; border: 1px solid var(--border);}
-        .invoice-table th { position: sticky; top: 0; background: #f8fafc; padding: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 600; z-index: 10;}
+        .invoice-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; background: white; border-radius: 8px; border: 1px solid var(--border);}
+        .invoice-table th { position: sticky; top: 0; background: #f8fafc; padding: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 700; z-index: 5; box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1);}
         .invoice-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-weight: 500; }
 
-        /* KHATABOOK UI & AJIO TABS */
-        .kb-header { background: #1e3a8a; color: white; padding: 16px 16px 30px 16px;}
-        .kb-header-title { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        /* KHATABOOK UI & LEDGER */
+        .kb-header { background: #1e3a8a; color: white; padding: 10px 16px 20px 16px;}
+        .kb-header-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
         .search-bar-container { background: white; margin: 10px 16px 16px 16px; border-radius: 8px; padding: 4px 12px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: relative; z-index: 3;}
         .search-bar-container input { border: none; width: 100%; padding: 10px 5px; outline: none; font-size: 14px; }
         .kb-summary-card { background: white; border-radius: 12px; margin: 0 16px 16px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: relative; z-index: 2; border: 1px solid var(--border);}
@@ -73,20 +81,13 @@
         .kb-time { font-size: 12px; color: var(--text-muted); margin-top: 4px;}
         .kb-list-right { display: flex; flex-direction: column; justify-content: center; padding: 16px; min-width: 100px; text-align: right; border-left: 1px dashed #e2e8f0; background: #f8fafc; border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
         
-        .kb-fab { position: fixed !important; bottom: 30px; right: 20px; height: 56px; background: #ef4444; color: white; border-radius: 28px; display: flex; justify-content: center; align-items: center; font-size: 15px; font-weight: 700; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); border: none; z-index: 1001; cursor: pointer; padding: 0 20px; transition: all 0.3s ease; white-space: nowrap; overflow: hidden;}
-        .kb-fab .fab-icon { font-size: 24px; margin-right: 8px; transition: margin 0.3s; }
-        .kb-fab.collapsed { width: 56px; padding: 0; border-radius: 50%; }
-        .kb-fab.collapsed .fab-text { display: none; }
-        .kb-fab.collapsed .fab-icon { margin-right: 0; }
+        .kb-fab { position: fixed !important; bottom: 30px; right: 20px; height: 56px; background: #ef4444; color: white; border-radius: 28px; display: flex; justify-content: center; align-items: center; font-size: 15px; font-weight: 700; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); border: none; z-index: 1001; cursor: pointer; padding: 0 20px; white-space: nowrap;}
 
-        /* LEDGER DEEP PAGE (Restored Full Beauty) */
+        /* LEDGER DEEP PAGE (Fixed layout) */
         .ledger-header-area { background: #1e3a8a; color: white; padding: 16px 16px 30px 16px;}
-        .ledger-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .l-name { font-size: 16px; font-weight: 600; }
         .ledger-bal-card { background: white; border-radius: 10px; padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: -25px; margin-left: 16px; margin-right: 16px; position: relative; z-index: 2; border: 1px solid var(--border);}
-        .ledger-action-tabs { display: flex; margin: 20px 16px; gap: 10px;}
+        .ledger-action-tabs { display: flex; margin: 20px 16px 5px 16px; gap: 10px;}
         .l-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 12px; color: var(--text-dark); font-weight: 600; background: white; border-radius: 8px; cursor: pointer; border: 1px solid var(--border);}
-        .entries-container { padding: 10px 16px 100px 16px; }
         .entry-card { background: white; border-radius: 10px; display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 12px; cursor: pointer; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.02);}
         .ec-left { padding: 16px; flex: 2; border-right: 1px dashed #e2e8f0; }
         .ec-gave, .ec-got { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; }
@@ -101,53 +102,19 @@
         .spinner { border: 4px solid #f3f3f3; border-left-color: var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* CAMERA & PROFILE UI (Restored) */
-        .profile-header-img { display: flex; flex-direction: column; align-items: center; padding: 30px 16px 20px 16px; background: white; }
-        .profile-pic-container { position: relative; margin-bottom: 10px; }
-        .profile-pic { width: 100px; height: 100px; border-radius: 50%; background: #e2e8f0; display: flex; justify-content: center; align-items: center; font-size: 35px; color: var(--primary); font-weight: bold; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .camera-icon { position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 3px solid white; font-size: 16px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .btn-outline { border: 1px solid #ef4444; color: #ef4444; background: transparent; padding: 10px 20px; border-radius: 8px; font-weight: 600; width: 100%; max-width: 300px; margin-top: 15px; font-size: 13px; cursor: pointer;}
-        .profile-list { background: white; margin-top: 10px; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;}
-        .profile-list-item { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer;}
-        .pli-icon { font-size: 20px; color: #64748b; margin-right: 16px; width: 24px; text-align: center;}
-        .pli-content { flex: 1; }
-        .pli-label { font-size: 12px; color: #94a3b8; margin-bottom: 2px;}
-        .pli-value { font-size: 15px; color: #0f172a; font-weight: 500;}
-        .pli-arrow { color: #cbd5e1; font-weight: bold; }
-        .section-sub { font-size: 12px; color: #94a3b8; padding: 16px 16px 8px 16px; text-transform: uppercase; font-weight: 700;}
-
-        /* ENTRY DETAILS UI (Restored) */
+        /* ENTRY DETAILS UI */
         .entry-detail-card { background: white; margin: 16px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; border: 1px solid var(--border);}
         .ed-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #f1f5f9;}
-        .ed-header-left { display: flex; align-items: center; gap: 12px;}
-        .ed-amount-box { text-align: right; }
         .ed-amt { font-size: 24px; font-weight: 700; }
         .ed-row { padding: 16px; border-bottom: 1px solid #f1f5f9; }
-        .ed-label { font-size: 12px; color: #64748b; margin-bottom: 4px;}
-        .ed-value { font-size: 15px; color: #0f172a; font-weight: 500;}
-        .ed-flex-row { display: flex; justify-content: space-between; align-items: center;}
         .ed-edit-btn { text-align: center; padding: 16px; color: var(--primary); font-weight: 600; cursor: pointer; }
-        .ed-safe-badge { text-align: center; padding: 20px; color: var(--success); font-weight: 600; font-size: 13px; display: flex; justify-content: center; align-items: center; gap: 8px;}
-        .ed-bottom-bar { position: fixed; bottom: 0; width: 100%; background: white; padding: 16px; display: flex; gap: 12px; border-top: 1px solid #e2e8f0; z-index: 1000;}
-        .btn-ed-del { flex: 1; border: 1px solid #ef4444; color: #ef4444; background: white; padding: 14px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer;}
-        .btn-ed-share { flex: 1; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer;}
 
-        /* CALCULATOR (Restored Full Size Grid) */
+        /* CALCULATOR */
         .calc-header { background: white; color: var(--danger); height: 56px; display: flex; align-items: center; padding: 0 16px; z-index: 10; border-bottom: 1px solid var(--border); }
-        .calc-title { font-size: 15px; font-weight: 600; margin: 0; }
         .amount-input-box { background: white; border: 1px solid var(--border); border-radius: 8px; margin: 16px; padding: 16px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
-        .amount-symbol { font-size: 24px; color: var(--danger); font-weight: 600; margin-right: 8px;}
         .amount-input-box input { border: none; outline: none; font-size: 28px; font-weight: 700; color: var(--danger); width: 100%;}
-        .calc-details-input { background: white; border: 1px solid var(--border); border-radius: 8px; margin: 0 16px 16px 16px; padding: 14px; width: calc(100% - 32px); font-size: 14px; outline: none;}
-        .calc-action-row { display: flex; justify-content: space-between; margin: 0 16px 16px 16px; gap: 10px;}
-        .calc-date-btn { background: white; border: 1px solid var(--border); padding: 10px 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 13px; color: var(--text-dark); flex: 1; outline: none; font-family: inherit;}
-        .calculator-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #f8fafc; border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); z-index: 9999;}
-        .calc-save-btn { background: var(--danger); color: white; font-weight: 700; font-size: 14px; width: 100%; padding: 16px; border: none; letter-spacing: 1px; cursor: pointer;}
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; background: #f1f5f9;}
         .calc-btn { background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 16px 0; font-size: 20px; font-weight: 600; cursor: pointer; color: #1e293b; display: flex; justify-content: center; align-items: center;}
-        .calc-btn:active { background: #e2e8f0; }
-        .calc-btn.light-blue { background: #dbeafe; color: #1e3a8a;}
-        .calc-btn.dark-blue { background: #1565c0; color: white; border: none;}
 
         /* SIDEBAR */
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; display: none; }
@@ -159,8 +126,6 @@
         .sidebar-menu { list-style: none; padding: 0; margin: 0; flex: 1;}
         .sidebar-menu li { padding: 12px 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; color: #cbd5e1; font-size: 14px; font-weight: 500; transition: background 0.2s; }
         .sidebar-menu li:hover { background: #1e293b; color: white; }
-        .sidebar-menu li.active { background: #3b82f6; color: white; }
-        .sidebar-menu li i { font-style: normal; font-size: 18px; width: 24px; text-align: center; }
         
         /* DASHBOARD CARDS GRID */
         .op-header { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 15px; }
@@ -168,41 +133,29 @@
         .dash-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;}
         .dash-card-title { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
         .dash-card-value { font-size: 24px; font-weight: 800; color: #0f172a; line-height: 1; margin-bottom: 4px; }
-        .dash-card-sub { font-size: 10px; color: #94a3b8; }
         .dash-card-icon { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; }
-        .icon-blue { background: #eff6ff; color: #3b82f6; }
-        .icon-orange { background: #fff7ed; color: #f97316; }
-        .icon-purple { background: #faf5ff; color: #a855f7; }
-        .icon-green { background: #f0fdf4; color: #22c55e; }
+        .icon-blue { background: #eff6ff; color: #3b82f6; } .icon-orange { background: #fff7ed; color: #f97316; } .icon-purple { background: #faf5ff; color: #a855f7; } .icon-green { background: #f0fdf4; color: #22c55e; }
 
-        /* TOP CUSTOMERS (Replaces Urgent Actions) */
+        /* TOP CUSTOMERS */
         .urgent-actions-box { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
         .ua-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .ua-title { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
         .ua-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s;}
-        .ua-item:hover { background: #f1f5f9; }
-        .ua-item-left { flex: 1; }
-        .ua-item-name { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 2px; display:flex; align-items:center; gap:6px;}
-        .ua-item-desc { font-size: 12px; color: #94a3b8; }
-        .ua-item-right { display: flex; align-items: center; gap: 8px; }
-        .ua-item-count { font-size: 15px; font-weight: 700; color: var(--primary); }
-        .ua-item-arrow { color: #cbd5e1; font-weight: bold; font-size: 16px; }
         
         /* CELEBRATION MODAL */
         .celebration-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; padding: 20px; text-align: center; }
-        .celeb-box { background: white; padding: 30px 20px; border-radius: 16px; max-width: 400px; position: relative; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .celeb-box { background: white; padding: 30px 20px; border-radius: 16px; max-width: 400px; position: relative; animation: popIn 0.5s forwards; }
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* STOCK OVERVIEW GRID */
+        /* STOCK OVERVIEW GRID (Professional UI) */
         .stock-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
-        .stock-grid-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.02); cursor: pointer;}
+        .stock-grid-card { background: linear-gradient(145deg, #ffffff, #f8fafc); border: 1px solid var(--border); border-radius: 16px; padding: 20px 16px; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;}
+        .stock-grid-card:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.05); }
         .sg-title { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
         .sg-value { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
         .sg-icon { position: absolute; right: 16px; top: 16px; width: 32px; height: 32px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 14px; }
 
-        /* STICKY HEADER & ANIMATED FORM FOR STOCK PAGES (Restored smoothness) */
-        .sticky-top-section { position: sticky; top: 56px; background: var(--bg-color); z-index: 20; padding: 16px 16px 1px 16px; margin: -16px -16px 16px -16px; border-bottom: 1px solid var(--border); box-shadow: 0 4px 6px -4px rgba(0,0,0,0.05); }
-        .anim-form { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; max-height: 500px; opacity: 1; }
+        /* FIXED FORM HEADER FOR STOCK PAGES */
+        .anim-form { transition: all 0.3s ease-in-out; overflow: hidden; max-height: 500px; opacity: 1; }
         .anim-form.hidden { max-height: 0; opacity: 0; margin-bottom: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; border: none !important; }
         .in-out-btn-group { display: flex; gap: 10px; }
         .btn-in { flex: 1; background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size:13px; }
@@ -217,21 +170,22 @@
         <p style="margin-top:16px; font-weight:600; color:var(--text-dark);">Syncing...</p>
     </div>
 
-    <!-- 🎆 CELEBRATION MODAL (TOP CUSTOMERS) -->
+    <!-- 🎆 CELEBRATION MODAL WITH FIREWORKS -->
     <div id="celebration-modal" class="celebration-modal">
         <div class="celeb-box">
-            <div style="font-size: 60px; margin-bottom: 15px; animation: bounce 1s infinite alternate;">🎊🎉</div>
+            <div style="font-size: 60px; margin-bottom: 15px;">🎊🎉</div>
             <div style="font-size: 16px; color: #1e293b; font-weight: 600; margin-bottom: 20px;">Dear <span id="celeb-name" style="color:var(--danger); font-weight:800;">Name</span>,<br><br>आपने 2% Additional Off के लिए अपना परचेज कोटा पूर्ण कर लिया है! 🏆<br><br>कृप्या लाभ लेने के लिए Godown पर आकर संपर्क करें।</div>
             <button class="btn-submit" onclick="document.getElementById('celebration-modal').style.display='none'">Okay, Thanks!</button>
         </div>
     </div>
-    <style>@keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }</style>
+    
+    <!-- POS DATALIST FOR AUTOCOMPLETE -->
+    <datalist id="pos-customers-dl"></datalist>
 
     <!-- 📱 SIDEBAR MENU -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-close" onclick="closeSidebar()">✕</div>
-        <!-- PROFESSIONAL ADMIN PROFILE IN SIDEBAR -->
         <div class="sidebar-header" onclick="openPage('admin-profile-page'); closeSidebar();" style="cursor:pointer;">
             <div class="profile-pic" id="sidebar-user-pic" style="width:70px; height:70px; margin-bottom:10px; background:#3b82f6; color:white; font-size:24px; display:flex; align-items:center; justify-content:center; border-radius:50%; overflow:hidden;">V</div>
             <h2 id="sidebar-name" style="font-size: 16px; margin: 0; font-weight: 700; letter-spacing: 0.5px;">Vandana Enterprises</h2>
@@ -250,7 +204,6 @@
         <div class="sidebar-menu-title">ADMINISTRATION</div>
         <ul class="sidebar-menu">
             <li onclick="openPage('admin-profile-page'); closeSidebar();"><i>⚙️</i> Settings & Profile</li>
-            <li onclick="alert('Firebase Login setup ready!'); closeSidebar();"><i>🔑</i> Login / Security</li>
         </ul>
     </div>
 
@@ -264,38 +217,36 @@
 
     <!-- 🏠 MAIN DASHBOARD -->
     <main class="main-content">
-        <div class="dash-header">
-            <h3 class="section-title" style="margin:0;">Dashboard Overview</h3>
+        <div class="dash-header" style="margin-top:10px;">
+            <div class="op-header" style="margin:0;">Dashboard</div>
             <input type="date" class="professional-date-picker" id="dash-date-picker">
         </div>
-
-        <div class="op-header">Factory Dashboard</div>
         
-        <div class="dash-card-grid">
+        <div class="dash-card-grid" style="margin-top:15px;">
             <div class="dash-card"><div class="dash-card-title">ACTIVE POS</div><div class="dash-card-value">0</div><div class="dash-card-sub">of 0 total</div><div class="dash-card-icon icon-blue">📋</div></div>
             <div class="dash-card"><div class="dash-card-title">FABRIC STOCK</div><div class="dash-card-value">0m</div><div class="dash-card-sub">grey + processed</div><div class="dash-card-icon icon-orange">🧊</div></div>
             <div class="dash-card"><div class="dash-card-title">IN PRODUCTION</div><div class="dash-card-value">0</div><div class="dash-card-sub">active pieces</div><div class="dash-card-icon icon-purple">🔗</div></div>
             <div class="dash-card" onclick="openInvoicesPage()"><div class="dash-card-title">SALES (BILLS)</div><div class="dash-card-value" id="dash-card-sale-value">₹0</div><div class="dash-card-sub">Tap to view bills</div><div class="dash-card-icon icon-green">🧾</div></div>
         </div>
 
-        <!-- TOP CUSTOMERS -->
+        <!-- TOP CUSTOMERS (Monthly) -->
         <div class="urgent-actions-box">
-            <div class="ua-header"><div class="ua-title" style="color:#f59e0b;">TOP CUSTOMERS 🏆</div></div>
+            <div class="ua-header"><div class="ua-title" style="color:#f59e0b;">TOP CUSTOMERS 🏆 (THIS MONTH)</div></div>
             <div id="top-customers-list"><div style="text-align:center; padding:10px; color:gray; font-size:12px;">Calculating top customers...</div></div>
         </div>
     </main>
 
     <!-- 📄 INVOICES LIST PAGE -->
-    <div class="page" id="invoices-page">
+    <div class="page flex-page" id="invoices-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('invoices-page')">←</button><h2 class="page-title">Today's Bills & Invoices</h2></div>
-        <div class="page-content" id="invoices-list-container"></div>
+        <div class="scroll-content" id="invoices-list-container" style="padding-top:16px;"></div>
     </div>
 
-    <!-- 🚚 GODOWN TRANSFER PAGE (Date Filter + Colored Arrows) -->
-    <div class="page" id="godown-page">
+    <!-- 🚚 GODOWN TRANSFER PAGE (FROZEN TOP, SCROLL HISTORY) -->
+    <div class="page flex-page" id="godown-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('godown-page')">←</button><h2 class="page-title">Godown Transfer</h2></div>
-        <div class="page-content">
-            <div class="form-panel">
+        <div class="fixed-top-section">
+            <div class="form-panel" style="margin-bottom:10px;">
                 <select id="gd-cat" class="form-control" style="margin-bottom:12px;">
                     <option value="Thread">Thread (थ्रेड)</option><option value="Zari">Zari (जरी)</option>
                     <option value="Nylon">Nylon (नायलोन)</option><option value="Cording">Cording (कोडिंग)</option><option value="Bobbin">Bobbin (बोबिन)</option>
@@ -307,11 +258,12 @@
                     <button class="btn-submit" style="background:var(--danger); flex:1;" onclick="processGodown('OUT')">🔴 Return OUT</button>
                 </div>
             </div>
-            
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">
                 <h3 class="section-title" style="margin:0;">Transfer History</h3>
                 <input type="date" class="professional-date-picker" id="godown-date-picker" style="padding:4px 8px; font-size:12px;" onchange="renderGodownHistory()">
             </div>
+        </div>
+        <div class="scroll-content" style="padding-top:0;">
             <table class="invoice-table">
                 <thead><tr><th>Date & Details</th><th>Qty / Type</th></tr></thead>
                 <tbody id="godown-history-list"><tr><td colspan="2" style="text-align:center; padding:16px;">No transfers yet.</td></tr></tbody>
@@ -319,18 +271,16 @@
         </div>
     </div>
 
-    <!-- 🧾 SALE INVOICE PAGE (Smart Dropdown + Auto Customer + Out of Stock) -->
+    <!-- 🧾 SALE INVOICE PAGE (Smart Auto-complete & Auto Customer) -->
     <div class="page" id="pos-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('pos-page')">←</button><h2 class="page-title">Create Sale Invoice</h2></div>
         <div class="page-content">
-            <!-- Billing Form -->
             <div id="billing-form-area">
                 <div class="form-panel">
                     <div class="form-group" style="margin-bottom:0;">
                         <label class="form-label">Customer Details</label>
                         <div class="input-btn-group" style="margin-bottom:12px;">
-                            <input type="text" class="form-control" id="inv-party" placeholder="Enter Name">
-                            <button class="action-btn" onclick="openPhonebook('inv-party', 'inv-phone')">👤</button>
+                            <input type="text" class="form-control" id="inv-party" list="pos-customers-dl" placeholder="Enter Name (Auto-fills Phone)">
                         </div>
                         <input type="tel" class="form-control" id="inv-phone" placeholder="Mobile Number (Auto Saves)">
                     </div>
@@ -366,9 +316,9 @@
             <div id="post-bill-area" style="display:none; text-align:center; margin-top:20px;">
                 <div style="font-size:50px; margin-bottom:10px;">✅</div>
                 <h3 style="margin-bottom:20px; color:var(--success);">Bill Generated Successfully!</h3>
-                <button class="btn-submit" style="background:var(--primary); margin-bottom:12px;" onclick="alert('Downloading Original PDF Format...')">📄 Download Original PDF</button>
+                <button class="btn-submit" style="background:var(--primary); margin-bottom:12px;" onclick="alert('Original PDF Format Download Coming Soon...')">📄 Download Original PDF</button>
                 <button class="btn-submit" style="background:#10b981; margin-bottom:20px;" onclick="sharePDFOnWhatsApp()">📲 Share Bill via WhatsApp</button>
-                <button class="btn-outline" onclick="resetBillingPage()">➕ Create New Bill</button>
+                <button class="btn-outline" style="width:100%; border-color:var(--primary); color:var(--primary);" onclick="resetBillingPage()">➕ Create New Bill</button>
             </div>
         </div>
     </div>
@@ -376,15 +326,15 @@
     <!-- 👥 PARTIES (LEDGER BOOK) -->
     <div class="page" id="parties-page">
         <div class="kb-header">
-            <div class="kb-header-title" style="justify-content:space-between; width:100%;">
-                <div style="display:flex; align-items:center;"><button class="back-btn" onclick="closePage('parties-page')" style="padding:0; margin-right:15px;">←</button>Ledger Book</div>
+            <div class="kb-header-title">
+                <button class="back-btn" onclick="closePage('parties-page')" style="padding:0; margin-right:15px;">←</button>Ledger Book
             </div>
         </div>
         <div class="search-bar-container"><span style="color:var(--text-muted); font-size:16px;">🔍</span><input type="text" id="party-search" placeholder="Search Name..." onkeyup="searchParties()"></div>
         <div class="kb-summary-card">
             <div class="kb-summary-split">
-                <div class="kb-summary-box"><div class="kb-summary-label">Total You Give</div><div class="kb-summary-val" style="color:var(--danger);" id="total-give-all">₹ 0</div></div>
-                <div class="kb-summary-box"><div class="kb-summary-label">Total You Get</div><div class="kb-summary-val" style="color:var(--success);" id="total-get-all">₹ 0</div></div>
+                <div class="kb-summary-box"><div class="kb-summary-label" id="lbl-give">Total You Give</div><div class="kb-summary-val" style="color:var(--danger);" id="total-give-all">₹ 0</div></div>
+                <div class="kb-summary-box"><div class="kb-summary-label" id="lbl-get">Total You Get</div><div class="kb-summary-val" style="color:var(--success);" id="total-get-all">₹ 0</div></div>
             </div>
         </div>
         <div class="ajio-tab-container">
@@ -392,57 +342,62 @@
             <div class="kb-tab" id="tab-suppliers" onclick="switchPartyTab('Supplier')">SUPPLIERS</div>
         </div>
         <div class="kb-list" id="kb-customer-list" style="margin-top:15px;"></div>
+        <!-- FIXED FAB (No Scroll hide) -->
         <button class="kb-fab" id="main-fab" onclick="openPage('add-party-page')"><span class="fab-icon">+</span><span class="fab-text" id="fab-text">Add Customer</span></button>
     </div>
 
-    <!-- 🔥 KHATABOOK DEEP LEDGER PAGE -->
-    <div class="page" id="ledger-deep-page">
-        <div class="ledger-header-area">
-            <div class="ledger-top-row">
-                <div style="display:flex; align-items:center;">
-                    <button class="back-btn" onclick="closePage('ledger-deep-page')" style="padding:0; margin-right:12px;">←</button>
-                    <div class="kb-avatar" id="l-deep-avatar-text" style="width:36px; height:36px; font-size:14px; margin-right:10px; background:white; color:var(--primary);" onclick="openCustomerProfile()"></div>
-                    <div onclick="openCustomerProfile()" style="cursor:pointer;"><div class="l-name" id="l-deep-name">Name</div></div>
+    <!-- 🔥 KHATABOOK DEEP LEDGER PAGE (FIXED TOP AND BOTTOM, SCROLL MIDDLE) -->
+    <div class="page flex-page" id="ledger-deep-page">
+        <div class="fixed-top-section" style="padding:0;">
+            <div class="ledger-header-area">
+                <div class="ledger-top-row">
+                    <div style="display:flex; align-items:center;">
+                        <button class="back-btn" onclick="closePage('ledger-deep-page')" style="padding:0; margin-right:12px;">←</button>
+                        <div class="kb-avatar" id="l-deep-avatar-text" style="width:36px; height:36px; font-size:14px; margin-right:10px; background:white; color:var(--primary);" onclick="openCustomerProfile()"></div>
+                        <div onclick="openCustomerProfile()" style="cursor:pointer;"><div class="l-name" id="l-deep-name">Name</div></div>
+                    </div>
+                    <a href="#" id="l-call-btn" style="color:white; text-decoration:none; font-size:22px;">📞</a>
                 </div>
-                <a href="#" id="l-call-btn" style="color:white; text-decoration:none; font-size:22px;">📞</a>
             </div>
+            <div class="ledger-bal-card">
+                <span style="font-size:14px; color:var(--text-muted); font-weight:600;" id="l-deep-bal-text">You will give</span>
+                <span style="font-size:22px; font-weight:700;" id="l-deep-bal-amt">₹ 0</span>
+            </div>
+            <div class="ledger-action-tabs">
+                <div class="l-tab" id="l-wa-btn" style="color:#10b981; border-color:#10b981;">💬 Reminder</div>
+                <div class="l-tab" id="l-sms-btn" onclick="alert('Downloading Party Statement...')">📄 Statement</div>
+            </div>
+            <div style="text-align:center; font-size:11px; font-weight:600; color:var(--text-muted); margin-bottom:12px;" id="l-deep-today-date"></div>
+            <div style="display:flex; justify-content:space-between; padding:0 20px; font-size:10px; font-weight:700; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase;"><span style="flex:2;">ENTRIES</span><span style="flex:1; text-align:center;">YOU GAVE</span><span style="flex:1; text-align:right;">YOU GOT</span></div>
         </div>
-        <div class="ledger-bal-card">
-            <span style="font-size:14px; color:var(--text-muted); font-weight:600;" id="l-deep-bal-text">You will give</span>
-            <span style="font-size:22px; font-weight:700;" id="l-deep-bal-amt">₹ 0</span>
-        </div>
-        <div class="ledger-action-tabs">
-            <div class="l-tab" id="l-wa-btn" style="color:#10b981; border-color:#10b981;">💬 Reminder</div>
-            <div class="l-tab" id="l-sms-btn" onclick="alert('Downloading Party Statement...')">📄 Statement</div>
-        </div>
-        <div class="entries-container">
-            <div style="display:flex; justify-content:space-between; padding:0 5px; font-size:10px; font-weight:700; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase;"><span style="flex:2;">ENTRIES</span><span style="flex:1; text-align:center;">YOU GAVE</span><span style="flex:1; text-align:right;">YOU GOT</span></div>
-            <div id="ledger-entries-list"></div>
-        </div>
+        <div class="scroll-content" id="ledger-entries-list" style="padding-top:0;"></div>
         <div class="bottom-action-bar">
             <button class="btn-l-gave" onclick="openCalculator('Gave')">YOU GAVE ₹</button>
             <button class="btn-l-got" onclick="openCalculator('Got')">YOU GOT ₹</button>
         </div>
     </div>
 
-    <!-- 📄 CUSTOMER PROFILE PAGE -->
-    <div class="page" id="customer-profile-page">
-        <div class="page-header"><button class="back-btn" onclick="closePage('customer-profile-page')">←</button><h2 class="page-title">Profile</h2></div>
-        <div class="profile-header-img">
-            <div class="profile-pic-container"><div class="profile-pic" id="cp-avatar">C</div></div>
-            <h2 id="cp-name" style="margin-top:10px; font-size:18px; color:#0f172a;">Customer Name</h2>
-            <div style="color:var(--text-muted); font-size:13px; margin-top:4px;" id="cp-phone">Phone Number</div>
-        </div>
-        <div class="section-sub">Details</div>
-        <div class="profile-list">
-            <div class="profile-list-item" onclick="editCustomerAddress()">
-                <div class="pli-icon">📍</div><div class="pli-content"><div class="pli-label">Address</div><div class="pli-value" id="cp-address">Not provided</div></div><div class="pli-arrow">›</div>
+    <!-- 📄 CUSTOMER PROFILE PAGE (EDITABLE + BOTTOM DELETE) -->
+    <div class="page flex-page" id="customer-profile-page">
+        <div class="page-header"><button class="back-btn" onclick="closePage('customer-profile-page')">←</button><h2 class="page-title">Profile Details</h2></div>
+        <div class="scroll-content" style="padding-top:16px;">
+            <div class="profile-header-img" style="border-radius:12px; margin-bottom:16px;">
+                <div class="profile-pic" id="cp-avatar" style="width:80px; height:80px; font-size:30px; margin-bottom:0;">C</div>
+            </div>
+            <div class="form-panel">
+                <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-control" id="cp-edit-name"></div>
+                <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="cp-edit-phone"></div>
+                <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-control" id="cp-edit-email" placeholder="Optional Email"></div>
+                <div class="form-group"><label class="form-label">Address</label><textarea class="form-control" id="cp-edit-address" rows="3" placeholder="Full Address"></textarea></div>
+                <button class="btn-submit" onclick="saveCustomerProfile()">💾 Save Profile Changes</button>
             </div>
         </div>
-        <div style="padding: 20px 16px;"><button class="btn-outline" onclick="deleteCurrentCustomer()">🗑️ Delete Account</button></div>
+        <div class="bottom-action-bar" style="justify-content:center; background:#f8fafc; border-top:none;">
+            <button class="btn-outline" style="width:100%; border-color:var(--danger); color:var(--danger);" onclick="deleteCurrentCustomer()">🗑️ Delete Account</button>
+        </div>
     </div>
 
-    <!-- ⚙️ NEW: ADMIN PROFILE PAGE (Professional Setting) -->
+    <!-- ⚙️ ADMIN PROFILE PAGE (Professional Setting) -->
     <div class="page" id="admin-profile-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('admin-profile-page')">←</button><h2 class="page-title">Business Profile</h2></div>
         <div class="page-content">
@@ -454,7 +409,6 @@
                 <input type="file" id="admin-upload" accept="image/*" style="display:none;" onchange="handleAdminPic(event)">
                 <p style="font-size:11px; color:var(--text-muted); margin-top:5px;">Tap 📷 to change/crop photo</p>
             </div>
-            
             <div class="form-panel">
                 <div class="form-group"><label class="form-label">Business Name</label><input type="text" class="form-control" id="ap-name" value="Vandana Enterprises"></div>
                 <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="ap-phone" placeholder="Enter Number"></div>
@@ -497,7 +451,7 @@
         </div>
     </div>
 
-    <!-- ================= MASTER INVENTORY PAGE (6 BOXES) ================= -->
+    <!-- ================= MASTER INVENTORY PAGE (Pro UI) ================= -->
     <div class="page" id="items-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('items-page')">←</button><h2 class="page-title">Master Inventory</h2></div>
         <div class="page-content">
@@ -525,106 +479,106 @@
         </div>
     </div>
 
-    <!-- 🧵 THREAD STOCK PAGE -->
-    <div class="page" id="thread-stock-page">
+    <!-- 🧵 THREAD STOCK PAGE (FROZEN TOP, SCROLL TABLE) -->
+    <div class="page flex-page" id="thread-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('thread-stock-page')">←</button><h2 class="page-title">Thread Stock</h2></div>
-        <div class="page-content" style="padding-top:0;">
-            <div class="sticky-top-section">
-                <div class="search-bar-container" style="margin: 0 0 16px 0;">
-                    <span>🔍</span><input type="text" id="search-thread" placeholder="Search Shade Number..." onfocus="document.getElementById('thread-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('thread-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-thread', 'thread-stock-list')">
-                </div>
-                <div class="form-panel anim-form" id="thread-anim-form">
-                    <div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="thread-shade-input" placeholder="Shade No."><input type="number" class="form-control" id="thread-box-input" placeholder="Boxes"></div>
-                    <div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-box-input', true)">➖ OUT</button></div>
-                </div>
+        <div class="fixed-top-section">
+            <div class="search-bar-container" style="margin: 0 0 16px 0;">
+                <span>🔍</span><input type="text" id="search-thread" placeholder="Search Shade Number..." onfocus="document.getElementById('thread-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('thread-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-thread', 'thread-stock-list')">
             </div>
+            <div class="form-panel anim-form" id="thread-anim-form" style="margin-bottom:10px;">
+                <div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="thread-shade-input" placeholder="Shade No."><input type="number" class="form-control" id="thread-box-input" placeholder="Boxes"></div>
+                <div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-box-input', true)">➖ OUT</button></div>
+            </div>
+        </div>
+        <div class="scroll-content" style="padding-top:0;">
             <table class="invoice-table"><thead><tr><th>Shade No.</th><th>Total Boxes</th></tr></thead><tbody id="thread-stock-list"></tbody></table>
         </div>
     </div>
 
-    <!-- ✨ ZARI STOCK PAGE -->
-    <div class="page" id="zari-stock-page">
+    <!-- ✨ ZARI STOCK PAGE (FROZEN TOP) -->
+    <div class="page flex-page" id="zari-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('zari-stock-page')">←</button><h2 class="page-title">Zari Stock</h2></div>
-        <div class="page-content" style="padding-top:0;">
-            <div class="sticky-top-section">
-                <div class="search-bar-container" style="margin: 0 0 16px 0;">
-                    <span>🔍</span><input type="text" id="search-zari" placeholder="Search Item..." onfocus="document.getElementById('zari-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('zari-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-zari', 'zari-stock-list')">
-                </div>
-                <div class="form-panel anim-form" id="zari-anim-form">
-                    <select class="form-control" id="zari-item-select" style="margin-bottom: 12px;">
-                        <option value="Water 20">Water 20</option><option value="Ice Silver">Ice Silver</option><option value="Sike Water 150">Sike Water 150</option><option value="Sike Water 180">Sike Water 180</option><option value="S B C H Yellow">S B C H Yellow</option><option value="Water 10">Water 10</option><option value="Chandan">Chandan</option><option value="J Gold 77">J Gold 77</option>
-                    </select>
-                    <input type="number" class="form-control" id="zari-box-input" placeholder="Boxes" style="margin-bottom: 12px;">
-                    <div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Zari', 'zari-item-select', 'zari-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Zari', 'zari-item-select', 'zari-box-input', true)">➖ OUT</button></div>
-                </div>
+        <div class="fixed-top-section">
+            <div class="search-bar-container" style="margin: 0 0 16px 0;">
+                <span>🔍</span><input type="text" id="search-zari" placeholder="Search Item..." onfocus="document.getElementById('zari-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('zari-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-zari', 'zari-stock-list')">
             </div>
+            <div class="form-panel anim-form" id="zari-anim-form" style="margin-bottom:10px;">
+                <select class="form-control" id="zari-item-select" style="margin-bottom: 12px;">
+                    <option value="Water 20">Water 20</option><option value="Ice Silver">Ice Silver</option><option value="Sike Water 150">Sike Water 150</option><option value="Sike Water 180">Sike Water 180</option><option value="S B C H Yellow">S B C H Yellow</option><option value="Water 10">Water 10</option><option value="Chandan">Chandan</option><option value="J Gold 77">J Gold 77</option>
+                </select>
+                <input type="number" class="form-control" id="zari-box-input" placeholder="Boxes" style="margin-bottom: 12px;">
+                <div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Zari', 'zari-item-select', 'zari-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Zari', 'zari-item-select', 'zari-box-input', true)">➖ OUT</button></div>
+            </div>
+        </div>
+        <div class="scroll-content" style="padding-top:0;">
             <table class="invoice-table"><thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead><tbody id="zari-stock-list"></tbody></table>
         </div>
     </div>
 
-    <!-- 🪢 CORDING STOCK PAGE -->
-    <div class="page" id="cording-stock-page">
+    <!-- 🪢 CORDING STOCK PAGE (FROZEN TOP) -->
+    <div class="page flex-page" id="cording-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('cording-stock-page')">←</button><h2 class="page-title">Cording Stock</h2></div>
-        <div class="page-content" style="padding-top:0;">
-            <div class="sticky-top-section">
-                <div class="search-bar-container" style="margin: 0 0 16px 0;">
-                    <span>🔍</span><input type="text" id="search-cording" placeholder="Search Item..." onfocus="document.getElementById('cording-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('cording-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-cording', 'cording-stock-list')">
-                </div>
-                <div class="form-panel anim-form" id="cording-anim-form">
-                    <select class="form-control" id="cording-item-select" style="margin-bottom: 12px;">
-                        <option value="Cotton Cording">Cotton Cording</option><option value="I Very 3 Taar">I Very 3 Taar</option><option value="M 17 Taar">M 17 Taar</option><option value="Anmol Two 5 Taar">Anmol Two 5 Taar</option><option value="Anmol One 4 Taar">Anmol One 4 Taar</option><option value="R Water 3 Taar">R Water 3 Taar</option><option value="R Water 4 Taar">R Water 4 Taar</option>
-                    </select>
-                    <input type="number" class="form-control" id="cording-box-input" placeholder="Boxes" style="margin-bottom: 12px;">
-                    <div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Cording', 'cording-item-select', 'cording-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Cording', 'cording-item-select', 'cording-box-input', true)">➖ OUT</button></div>
-                </div>
+        <div class="fixed-top-section">
+            <div class="search-bar-container" style="margin: 0 0 16px 0;">
+                <span>🔍</span><input type="text" id="search-cording" placeholder="Search Item..." onfocus="document.getElementById('cording-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('cording-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-cording', 'cording-stock-list')">
             </div>
+            <div class="form-panel anim-form" id="cording-anim-form" style="margin-bottom:10px;">
+                <select class="form-control" id="cording-item-select" style="margin-bottom: 12px;">
+                    <option value="Cotton Cording">Cotton Cording</option><option value="I Very 3 Taar">I Very 3 Taar</option><option value="M 17 Taar">M 17 Taar</option><option value="Anmol Two 5 Taar">Anmol Two 5 Taar</option><option value="Anmol One 4 Taar">Anmol One 4 Taar</option><option value="R Water 3 Taar">R Water 3 Taar</option><option value="R Water 4 Taar">R Water 4 Taar</option>
+                </select>
+                <input type="number" class="form-control" id="cording-box-input" placeholder="Boxes" style="margin-bottom: 12px;">
+                <div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Cording', 'cording-item-select', 'cording-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Cording', 'cording-item-select', 'cording-box-input', true)">➖ OUT</button></div>
+            </div>
+        </div>
+        <div class="scroll-content" style="padding-top:0;">
             <table class="invoice-table"><thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead><tbody id="cording-stock-list"></tbody></table>
         </div>
     </div>
 
-    <!-- 🧶 NYLON STOCK PAGE -->
-    <div class="page" id="nylon-stock-page">
+    <!-- 🧶 NYLON STOCK PAGE (FROZEN TOP) -->
+    <div class="page flex-page" id="nylon-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('nylon-stock-page')">←</button><h2 class="page-title">Nylon Stock</h2></div>
-        <div class="page-content" style="padding-top:0;">
-            <div class="sticky-top-section">
-                <div class="search-bar-container" style="margin: 0 0 16px 0;">
-                    <span>🔍</span><input type="text" id="search-nylon" placeholder="Search Item..." onfocus="document.getElementById('nylon-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('nylon-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-nylon', 'nylon-stock-list')">
-                </div>
-                <div class="form-panel anim-form" id="nylon-anim-form">
-                    <div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="nylon-item-input" placeholder="Item Name / Shade"><input type="number" class="form-control" id="nylon-box-input" placeholder="Boxes"></div>
-                    <div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Nylon', 'nylon-item-input', 'nylon-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Nylon', 'nylon-item-input', 'nylon-box-input', true)">➖ OUT</button></div>
-                </div>
+        <div class="fixed-top-section">
+            <div class="search-bar-container" style="margin: 0 0 16px 0;">
+                <span>🔍</span><input type="text" id="search-nylon" placeholder="Search Item..." onfocus="document.getElementById('nylon-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('nylon-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-nylon', 'nylon-stock-list')">
             </div>
+            <div class="form-panel anim-form" id="nylon-anim-form" style="margin-bottom:10px;">
+                <div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="nylon-item-input" placeholder="Item Name / Shade"><input type="number" class="form-control" id="nylon-box-input" placeholder="Boxes"></div>
+                <div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Nylon', 'nylon-item-input', 'nylon-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Nylon', 'nylon-item-input', 'nylon-box-input', true)">➖ OUT</button></div>
+            </div>
+        </div>
+        <div class="scroll-content" style="padding-top:0;">
             <table class="invoice-table"><thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead><tbody id="nylon-stock-list"></tbody></table>
         </div>
     </div>
 
-    <!-- 🛞 BOBBIN STOCK PAGE -->
-    <div class="page" id="bobbin-stock-page">
+    <!-- 🛞 BOBBIN STOCK PAGE (FROZEN TOP) -->
+    <div class="page flex-page" id="bobbin-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('bobbin-stock-page')">←</button><h2 class="page-title">Bobbin Stock</h2></div>
-        <div class="page-content" style="padding-top:0;">
-            <div class="sticky-top-section">
-                <div class="search-bar-container" style="margin: 0 0 16px 0;">
-                    <span>🔍</span><input type="text" id="search-bobbin" placeholder="Search Item..." onfocus="document.getElementById('bobbin-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('bobbin-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-bobbin', 'bobbin-stock-list')">
-                </div>
-                <div class="form-panel anim-form" id="bobbin-anim-form">
-                    <div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="bobbin-item-input" placeholder="Item Name"><input type="number" class="form-control" id="bobbin-box-input" placeholder="Boxes"></div>
-                    <div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Bobbin', 'bobbin-item-input', 'bobbin-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Bobbin', 'bobbin-item-input', 'bobbin-box-input', true)">➖ OUT</button></div>
-                </div>
+        <div class="fixed-top-section">
+            <div class="search-bar-container" style="margin: 0 0 16px 0;">
+                <span>🔍</span><input type="text" id="search-bobbin" placeholder="Search Item..." onfocus="document.getElementById('bobbin-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('bobbin-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-bobbin', 'bobbin-stock-list')">
             </div>
+            <div class="form-panel anim-form" id="bobbin-anim-form" style="margin-bottom:10px;">
+                <div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="bobbin-item-input" placeholder="Item Name"><input type="number" class="form-control" id="bobbin-box-input" placeholder="Boxes"></div>
+                <div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Bobbin', 'bobbin-item-input', 'bobbin-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Bobbin', 'bobbin-item-input', 'bobbin-box-input', true)">➖ OUT</button></div>
+            </div>
+        </div>
+        <div class="scroll-content" style="padding-top:0;">
             <table class="invoice-table"><thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead><tbody id="bobbin-stock-list"></tbody></table>
         </div>
     </div>
 
-    <!-- ⚠️ LOW STOCK PAGE -->
-    <div class="page" id="lowstock-page">
+    <!-- ⚠️ LOW STOCK PAGE (FROZEN TOP) -->
+    <div class="page flex-page" id="lowstock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('lowstock-page')">←</button><h2 class="page-title">Low Stock Alerts</h2></div>
-        <div class="page-content" style="padding-top:0;">
-            <div class="sticky-top-section" style="padding-bottom:10px;">
-                <div style="background:#fef2f2; color:#b91c1c; padding:12px; border-radius:8px; font-weight:600; font-size:13px; border: 1px solid #fca5a5; display:flex; align-items:center; gap:10px;">
-                    <span style="font-size:20px;">⚠️</span> <span>Below items have 5 or less boxes left. Time to re-order!</span>
-                </div>
+        <div class="fixed-top-section">
+            <div style="background:#fef2f2; color:#b91c1c; padding:12px; border-radius:8px; font-weight:600; font-size:13px; border: 1px solid #fca5a5; display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                <span style="font-size:20px;">⚠️</span> <span>Below items have 5 or less boxes left. Time to re-order!</span>
             </div>
+        </div>
+        <div class="scroll-content" style="padding-top:0;">
             <table class="invoice-table"><thead><tr><th>Item Details</th><th>Remaining</th></tr></thead><tbody id="lowstock-list"></tbody></table>
         </div>
     </div>
@@ -663,17 +617,22 @@
         let allLedgerData = []; let globalCustomers = []; let smartInventory = {}; let allGodownTransfers = [];
         let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null; 
         window.currentTabType = 'Customer';
+        window.ledgerTotals = { custGive:0, custGet:0, supGive:0, supGet:0 };
 
         window.addEventListener('DOMContentLoaded', () => {
             let todayStr = new Date().toISOString().split('T')[0];
             document.getElementById('dash-date-picker').value = todayStr;
             document.getElementById('calc-date').value = todayStr;
             document.getElementById('godown-date-picker').value = todayStr;
+            
+            // Set Today's Date in Deep Ledger
+            let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('l-deep-today-date').innerText = "Today: " + new Date().toLocaleDateString('en-IN', options);
 
             loadAdminProfile();
 
             onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); updatePosShades(); });
-            onValue(ref(db, 'Customers'), (snapshot) => { let data = snapshot.val() || {}; globalCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); renderCustomerList(globalCustomers); });
+            onValue(ref(db, 'Customers'), (snapshot) => { let data = snapshot.val() || {}; globalCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); renderCustomerList(globalCustomers); setupPOSAutocomplete(); });
             onValue(ref(db, 'GodownTransfers'), (snapshot) => { let data = snapshot.val() || {}; allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); renderGodownHistory(); });
             
             onValue(ref(db, 'Ledger'), (snapshot) => {
@@ -682,9 +641,11 @@
                 if (document.getElementById('ledger-deep-page').classList.contains('active')) renderLedgerEntries(currentPartyName);
             });
 
-            document.getElementById('parties-page').addEventListener('scroll', function() {
-                let fab = document.getElementById('main-fab');
-                if (this.scrollTop > 50) { fab.classList.add('collapsed'); } else { fab.classList.remove('collapsed'); }
+            // POS AUTOFILL PHONE LOGIC
+            document.getElementById('inv-party').addEventListener('input', function(e) {
+                let val = e.target.value;
+                let cust = globalCustomers.find(c => c.name.toLowerCase() === val.toLowerCase());
+                if(cust && cust.phone) { document.getElementById('inv-phone').value = cust.phone; }
             });
         });
 
@@ -757,27 +718,136 @@
             document.getElementById('godown-history-list').innerHTML = html;
         }
 
-        // ================= TOP CUSTOMERS LOGIC =================
-        window.showCelebration = function(name) { document.getElementById('celeb-name').innerText = name; document.getElementById('celebration-modal').style.display = 'flex'; }
-        window.switchPartyTab = function(type) { currentTabType = type; document.getElementById('tab-customers').classList.toggle('active', type === 'Customer'); document.getElementById('tab-suppliers').classList.toggle('active', type === 'Supplier'); let btnText = type === 'Customer' ? 'Add Customer' : 'Add Supplier'; document.getElementById('fab-text').innerText = btnText; document.getElementById('add-party-title').innerText = btnText; renderCustomerList(globalCustomers); }
+        // ================= TOP CUSTOMERS LOGIC (MONTHLY + FIREWORK) =================
+        window.showCelebration = function(name) { 
+            document.getElementById('celeb-name').innerText = name; 
+            document.getElementById('celebration-modal').style.display = 'flex'; 
+            
+            // FIREWORK ANIMATION (Confetti)
+            var duration = 3000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 1 }, colors: ['#ef4444', '#10b981', '#f59e0b', '#3b82f6'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1, y: 1 }, colors: ['#ef4444', '#10b981', '#f59e0b', '#3b82f6'] });
+                if (Date.now() < end) { requestAnimationFrame(frame); }
+            }());
+        }
 
-        // ================= CUSTOMER PROFILE LOGIC =================
+        // ================= CUSTOMER PROFILE (EDITABLE) =================
+        function setupPOSAutocomplete() {
+            let dlHtml = ""; globalCustomers.forEach(c => dlHtml += `<option value="${c.name}">`);
+            document.getElementById('pos-customers-dl').innerHTML = dlHtml;
+        }
+
+        window.openCustomerProfile = function() {
+            let customer = globalCustomers.find(c => c.name === currentPartyName); if(!customer) return; currentPartyKey = customer.key;
+            document.getElementById('cp-avatar').innerText = customer.name.substring(0, 1).toUpperCase(); 
+            document.getElementById('cp-edit-name').value = customer.name;
+            document.getElementById('cp-edit-phone').value = customer.phone || "";
+            document.getElementById('cp-edit-email').value = customer.email || "";
+            document.getElementById('cp-edit-address').value = customer.address || "";
+            openPage('customer-profile-page');
+        }
+
+        window.saveCustomerProfile = function() {
+            let nName = document.getElementById('cp-edit-name').value.trim();
+            let nPhone = document.getElementById('cp-edit-phone').value;
+            let nEmail = document.getElementById('cp-edit-email').value;
+            let nAddr = document.getElementById('cp-edit-address').value;
+            if(!nName) return alert("Name is required!");
+
+            update(ref(db, 'Customers/' + currentPartyKey), { name: nName, phone: nPhone, email: nEmail, address: nAddr });
+            
+            currentPartyName = nName; currentPartyPhone = nPhone;
+            document.getElementById('l-deep-name').innerText = nName;
+            document.getElementById('l-deep-avatar-text').innerText = nName.substring(0,2).toUpperCase();
+            
+            alert("Customer Profile Updated!");
+            closePage('customer-profile-page');
+        }
+
         window.addCustomerToCloud = function() {
             let name = document.getElementById('new-party-name').value.trim(); let phone = document.getElementById('new-party-phone').value; let address = document.getElementById('new-party-address').value;
             if(!name) return alert("Please enter Name!");
             push(ref(db, 'Customers'), { name, phone, address, date: new Date().toISOString(), status: "Active", type: currentTabType });
             closePage('add-party-page'); document.getElementById('new-party-name').value = ''; document.getElementById('new-party-phone').value = ''; document.getElementById('new-party-address').value = '';
         }
-        window.openCustomerProfile = function() {
-            let customer = globalCustomers.find(c => c.name === currentPartyName); if(!customer) return; currentPartyKey = customer.key;
-            if(!localStorage.getItem('v_profilePic')) { document.getElementById('cp-avatar').innerText = customer.name.substring(0, 1).toUpperCase(); }
-            document.getElementById('cp-name').innerText = customer.name; document.getElementById('cp-phone').innerText = customer.phone || "No Phone Number"; document.getElementById('cp-address').innerText = customer.address || "Not provided (Tap to add)";
-            openPage('customer-profile-page');
-        }
-        window.editCustomerAddress = function() { let customer = globalCustomers.find(c => c.key === currentPartyKey); let newAddr = prompt("Update Address for " + customer.name + ":", customer.address || ""); if (newAddr !== null) { update(ref(db, 'Customers/' + currentPartyKey), { address: newAddr }); document.getElementById('cp-address').innerText = newAddr || "Not provided (Tap to add)"; } }
         window.deleteCurrentCustomer = function() { if(confirm(`WARNING: Are you sure you want to permanently delete ${currentPartyName}?`)) { remove(ref(db, 'Customers/' + currentPartyKey)); closePage('customer-profile-page'); closePage('ledger-deep-page'); alert("Deleted Successfully!"); } }
 
         // ================= LEDGER LOGIC =================
+        window.switchPartyTab = function(type) { 
+            currentTabType = type; 
+            document.getElementById('tab-customers').classList.toggle('active', type === 'Customer'); 
+            document.getElementById('tab-suppliers').classList.toggle('active', type === 'Supplier'); 
+            let btnText = type === 'Customer' ? 'Add Customer' : 'Add Supplier'; 
+            document.getElementById('fab-text').innerText = btnText; document.getElementById('add-party-title').innerText = btnText; 
+            renderCustomerList(globalCustomers); 
+            updateLedgerTotalsUI();
+        }
+
+        window.updateLedgerTotalsUI = function() {
+            if(currentTabType === 'Customer') {
+                document.getElementById('total-give-all').innerText = "₹ " + window.ledgerTotals.custGive.toLocaleString(); 
+                document.getElementById('total-get-all').innerText = "₹ " + window.ledgerTotals.custGet.toLocaleString();
+            } else {
+                document.getElementById('total-give-all').innerText = "₹ " + window.ledgerTotals.supGive.toLocaleString(); 
+                document.getElementById('total-get-all').innerText = "₹ " + window.ledgerTotals.supGet.toLocaleString();
+            }
+        }
+
+        window.calculateGrandTotals = function() {
+            let balances = {}; let todayTotalSale = 0; let todayTotalBox = 0;
+            let customerPurchases = {}; // Monthly Top Customers
+            let selectedDateString = document.getElementById('dash-date-picker').value; 
+            
+            let currentMonth = new Date().toISOString().slice(0, 7); // "YYYY-MM"
+
+            allLedgerData.forEach(entry => {
+                let amt = parseFloat(entry.amount) || 0; let entryDateString = ""; let entryMonthString = "";
+                try { let d = new Date(entry.date); if (!isNaN(d)) { entryDateString = d.toISOString().split('T')[0]; entryMonthString = d.toISOString().slice(0, 7); } } catch(e){}
+                
+                if(!balances[entry.name]) balances[entry.name] = 0;
+                if(entry.type === 'Gave') balances[entry.name] += amt;
+                if(entry.type === 'Got') balances[entry.name] -= amt;
+
+                if (entry.details && entry.details.includes("Invoice Sale")) {
+                    if(entryMonthString === currentMonth) {
+                        if(!customerPurchases[entry.name]) customerPurchases[entry.name] = 0; customerPurchases[entry.name] += amt;
+                    }
+                    if(entryDateString === selectedDateString){ todayTotalSale += amt; let boxMatch = entry.details.match(/(\d+)\s*Box/i); if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); }
+                }
+            });
+
+            // Splitting Totals based on Tab (Customer vs Supplier)
+            let partyTypes = {}; globalCustomers.forEach(c => partyTypes[c.name] = c.type || 'Customer');
+            let cGive = 0, cGet = 0, sGive = 0, sGet = 0;
+
+            for(let cust in balances) { 
+                let pType = partyTypes[cust] || 'Customer';
+                let bal = balances[cust];
+                if(pType === 'Customer') {
+                    if(bal > 0) cGet += bal; if(bal < 0) cGive += Math.abs(bal);
+                } else {
+                    if(bal > 0) sGet += bal; if(bal < 0) sGive += Math.abs(bal);
+                }
+            }
+            
+            window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet };
+            updateLedgerTotalsUI();
+
+            if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
+
+            // Top Customers (Monthly Render)
+            let topCustHtml = "";
+            let sortedCustomers = Object.entries(customerPurchases).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            if(sortedCustomers.length === 0) { topCustHtml = '<div style="text-align:center; padding:10px; color:gray; font-size:12px;">No sales this month yet.</div>'; } 
+            else { sortedCustomers.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-left"><div class="ua-item-name">${cust[0]} <span style="font-size:10px; color:var(--danger); background:#fee2e2; padding:2px 6px; border-radius:4px;">2% OFF</span></div><div class="ua-item-desc">Monthly Top Buyer</div></div><div class="ua-item-right"><span class="ua-item-count">₹${cust[1].toLocaleString('en-IN')}</span><span class="ua-item-arrow">›</span></div></div>`; }); }
+            document.getElementById('top-customers-list').innerHTML = topCustHtml;
+        }
+        
+        document.getElementById('dash-date-picker').addEventListener('change', calculateGrandTotals);
+
+        window.openLedgerDetail = function(name, phone) { currentPartyName = name; currentPartyPhone = phone || ""; document.getElementById('l-deep-name').innerText = name; document.getElementById('l-deep-avatar-text').innerText = name.substring(0,2).toUpperCase(); document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#"; document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); renderLedgerEntries(name); openPage('ledger-deep-page'); }
+
         window.saveCalculatorEntry = function() {
             let amount = eval(calcValue) || 0; if(amount <= 0) return alert("Enter valid amount!");
             let dateVal = document.getElementById('calc-date').value; if(!dateVal) dateVal = new Date().toISOString().split('T')[0];
@@ -794,6 +864,21 @@
         window.editCurrentEntryDetails = function() { if(!currentEntryData) return; let newDetails = prompt("Edit Details/Bill No.:", currentEntryData.details); if(newDetails !== null) { update(ref(db, 'Ledger/' + currentEntryData.key), { details: newDetails }); document.getElementById('ed-details-text').innerText = newDetails || "App Entry"; currentEntryData.details = newDetails; } }
         window.deleteCurrentEntry = function() { if(confirm("Are you sure you want to delete this entry?")) { remove(ref(db, 'Ledger/' + currentEntryData.key)); closePage('entry-details-page'); } }
         window.shareCurrentEntry = function() { if(!currentEntryData) return; let typeStr = currentEntryData.type === 'Gave' ? 'You Gave' : 'You Got'; let msg = `📄 *Ledger Entry* %0A🏛️ *Vandana Enterprises*%0A%0A*Name:* ${currentEntryData.name}%0A*Type:* ${typeStr}%0A*Amount:* ₹${currentEntryData.amount}%0A*Details:* ${currentEntryData.details}`; window.open(`https://wa.me/91${currentPartyPhone}?text=${msg}`, '_blank'); }
+
+        window.renderLedgerEntries = function(name) {
+            let entryList = document.getElementById('ledger-entries-list'); entryList.innerHTML = '';
+            let totalGave = 0; let totalGot = 0; let customerEntries = allLedgerData.filter(e => e.name === name);
+            if(customerEntries.length === 0) { entryList.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No entries yet.</div>`; } 
+            else { customerEntries.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let gaveHtml = entry.type === 'Gave' ? `₹ ${amt}` : ''; let gotHtml = entry.type === 'Got' ? `₹ ${amt}` : ''; if(entry.type === 'Gave') totalGave += amt; if(entry.type === 'Got') totalGot += amt; let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short'}); entryList.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')"><div class="ec-left"><div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${dateStr}</div><div style="font-size:13px; color:var(--text-dark); font-weight:500;">${entry.details || 'App Entry'}</div></div><div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div></div>`; }); }
+            let balEl = document.getElementById('l-deep-bal-amt'); let txtEl = document.getElementById('l-deep-bal-text'); let finalBal = totalGave - totalGot;
+            if(finalBal > 0) { balEl.innerText = "₹ " + finalBal.toLocaleString(); balEl.style.color = "var(--success)"; txtEl.innerText = "You will get"; } else if (finalBal < 0) { balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); balEl.style.color = "var(--danger)"; txtEl.innerText = "You will give"; } else { balEl.innerText = "₹ 0"; balEl.style.color = "var(--text-dark)"; txtEl.innerText = "Settled"; }
+        }
+
+        window.renderCustomerList = function(list) {
+            let filteredList = list.filter(c => (c.type || 'Customer') === currentTabType); let html = "";
+            filteredList.forEach(cust => { let initial = cust.name ? cust.name.substring(0,2).toUpperCase() : "CU"; let addr = cust.address ? `<br>📍 ${cust.address}` : ""; html += `<div class="kb-list-item" onclick="openLedgerDetail('${cust.name}', '${cust.phone}')"><div class="kb-list-left"><div class="kb-avatar">${initial}</div><div><div class="kb-name">${cust.name}</div><div class="kb-time">📱 ${cust.phone || 'N/A'}${addr}</div></div></div><div class="kb-list-right"><span style="color:var(--text-muted); font-size:18px;">›</span></div></div>`; });
+            document.getElementById('kb-customer-list').innerHTML = html || `<div style="padding:40px; text-align:center; color:gray;">No ${currentTabType}s found</div>`;
+        }
 
         // ================= INVENTORY LOGIC =================
         window.addSpecificStock = function(category, shadeId, qtyId, isOut = false) {
@@ -840,54 +925,7 @@
             if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
         }
 
-        window.renderLedgerEntries = function(name) {
-            let entryList = document.getElementById('ledger-entries-list'); entryList.innerHTML = '';
-            let totalGave = 0; let totalGot = 0; let customerEntries = allLedgerData.filter(e => e.name === name);
-            if(customerEntries.length === 0) { entryList.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No entries yet.</div>`; } 
-            else { customerEntries.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let gaveHtml = entry.type === 'Gave' ? `₹ ${amt}` : ''; let gotHtml = entry.type === 'Got' ? `₹ ${amt}` : ''; if(entry.type === 'Gave') totalGave += amt; if(entry.type === 'Got') totalGot += amt; let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short'}); entryList.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')"><div class="ec-left"><div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${dateStr}</div><div style="font-size:13px; color:var(--text-dark); font-weight:500;">${entry.details || 'App Entry'}</div></div><div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div></div>`; }); }
-            let balEl = document.getElementById('l-deep-bal-amt'); let txtEl = document.getElementById('l-deep-bal-text'); let finalBal = totalGave - totalGot;
-            if(finalBal > 0) { balEl.innerText = "₹ " + finalBal.toLocaleString(); balEl.style.color = "var(--success)"; txtEl.innerText = "You will get"; } else if (finalBal < 0) { balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); balEl.style.color = "var(--danger)"; txtEl.innerText = "You will give"; } else { balEl.innerText = "₹ 0"; balEl.style.color = "var(--text-dark)"; txtEl.innerText = "Settled"; }
-        }
-
-        window.renderCustomerList = function(list) {
-            let filteredList = list.filter(c => (c.type || 'Customer') === currentTabType); let html = "";
-            filteredList.forEach(cust => { let initial = cust.name ? cust.name.substring(0,2).toUpperCase() : "CU"; let addr = cust.address ? `<br>📍 ${cust.address}` : ""; html += `<div class="kb-list-item" onclick="openLedgerDetail('${cust.name}', '${cust.phone}')"><div class="kb-list-left"><div class="kb-avatar">${initial}</div><div><div class="kb-name">${cust.name}</div><div class="kb-time">📱 ${cust.phone || 'N/A'}${addr}</div></div></div><div class="kb-list-right"><span style="color:var(--text-muted); font-size:18px;">›</span></div></div>`; });
-            document.getElementById('kb-customer-list').innerHTML = html || `<div style="padding:40px; text-align:center; color:gray;">No ${currentTabType}s found</div>`;
-        }
-
-        window.calculateGrandTotals = function() {
-            let totalGive = 0; let totalGet = 0; let balances = {}; let todayTotalSale = 0; let todayTotalBox = 0;
-            let customerPurchases = {}; let selectedDateString = document.getElementById('dash-date-picker').value; 
-
-            allLedgerData.forEach(entry => {
-                let amt = parseFloat(entry.amount) || 0; let entryDateString = "";
-                try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){}
-                if(!balances[entry.name]) balances[entry.name] = 0;
-                if(entry.type === 'Gave') balances[entry.name] += amt;
-                if(entry.type === 'Got') balances[entry.name] -= amt;
-
-                if (entry.details && entry.details.includes("Invoice Sale")) {
-                    if(!customerPurchases[entry.name]) customerPurchases[entry.name] = 0; customerPurchases[entry.name] += amt;
-                    if(entryDateString === selectedDateString){ todayTotalSale += amt; let boxMatch = entry.details.match(/(\d+)\s*Box/i); if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); }
-                }
-            });
-
-            for(let cust in balances) { if(balances[cust] > 0) totalGet += balances[cust]; if(balances[cust] < 0) totalGive += Math.abs(balances[cust]); }
-            
-            if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
-
-            let topCustHtml = "";
-            let sortedCustomers = Object.entries(customerPurchases).sort((a, b) => b[1] - a[1]).slice(0, 5);
-            if(sortedCustomers.length === 0) { topCustHtml = '<div style="text-align:center; padding:10px; color:gray; font-size:12px;">No sales data available yet.</div>'; } 
-            else { sortedCustomers.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-left"><div class="ua-item-name">${cust[0]} <span style="font-size:10px; color:var(--danger); background:#fee2e2; padding:2px 6px; border-radius:4px;">2% OFF</span></div><div class="ua-item-desc">Top Buyer</div></div><div class="ua-item-right"><span class="ua-item-count">₹${cust[1].toLocaleString('en-IN')}</span><span class="ua-item-arrow">›</span></div></div>`; }); }
-            document.getElementById('top-customers-list').innerHTML = topCustHtml;
-        }
-        
-        document.getElementById('dash-date-picker').addEventListener('change', calculateGrandTotals);
-
-        window.openLedgerDetail = function(name, phone) { currentPartyName = name; currentPartyPhone = phone || ""; document.getElementById('l-deep-name').innerText = name; document.getElementById('l-deep-avatar-text').innerText = name.substring(0,2).toUpperCase(); document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#"; document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); renderLedgerEntries(name); openPage('ledger-deep-page'); }
-
-        // ================= SMART BILLING (OUT OF STOCK & AUTO ADD) =================
+        // ================= SMART BILLING =================
         let currentCart = []; let grandInvoiceTotal = 0; let invoiceBoxCount = 0;
 
         window.updatePosShades = function() {

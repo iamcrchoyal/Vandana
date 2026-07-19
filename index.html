@@ -7,7 +7,6 @@
     <title>Vandana ERP - Pro Edition</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- CONFETTI LIBRARY FOR FIREWORKS -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
@@ -18,7 +17,7 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
-        body { background-color: var(--bg-color); color: var(--text-dark); overflow-x: hidden; font-size: 14px; }
+        body { background-color: var(--bg-color); color: var(--text-dark); overflow-x: hidden; font-size: 14px; user-select: none; }
         body.sidebar-locked { overflow: hidden; position: fixed; width: 100%; height: 100%; }
 
         /* HEADER */
@@ -28,9 +27,11 @@
         /* DASHBOARD */
         .main-content { padding: 75px 16px 30px 16px; max-width: 800px; margin: 0 auto; }
         .section-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;}
+        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; margin-top: 10px;}
+        .op-header { font-size: 22px; font-weight: 800; color: #0f172a; margin: 0;}
         .professional-date-picker { background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 700; color: var(--primary); font-family: inherit; outline: none; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; }
 
-        /* FLEX PAGE LAYOUT (FOR FREEZING TOP & BOTTOM) */
+        /* FLEX PAGE LAYOUT */
         .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 30px; }
         .page.active { transform: translateX(0); }
         .flex-page { display: flex; flex-direction: column; overflow: hidden; padding-bottom: 0;}
@@ -50,16 +51,16 @@
         .form-control { width: 100%; background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px 14px; border-radius: 8px; font-size: 14px; outline: none; font-weight: 500; color: var(--text-dark);}
         .form-control:focus { border-color: var(--primary); background: white; }
         .input-btn-group { display: flex; gap: 10px; }
-        .action-btn { background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; border-radius: 8px; padding: 0 16px; font-weight: 600; cursor: pointer;}
+        .action-btn { background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; border-radius: 8px; padding: 0 16px; font-weight: 600; cursor: pointer; display:flex; align-items:center; justify-content:center; font-size:18px;}
         .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 6px rgba(21, 101, 192, 0.2);}
         .btn-outline { border: 1px solid #ef4444; color: #ef4444; background: transparent; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer;}
 
-        /* TABLES & STICKY HEADERS */
+        /* TABLES */
         .invoice-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; background: white; border-radius: 8px; border: 1px solid var(--border);}
         .invoice-table th { position: sticky; top: 0; background: #f8fafc; padding: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 700; z-index: 5; box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1);}
         .invoice-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-weight: 500; }
 
-        /* KHATABOOK UI & LEDGER */
+        /* KHATABOOK UI */
         .kb-header { background: #1e3a8a; color: white; padding: 10px 16px 20px 16px;}
         .kb-header-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
         .search-bar-container { background: white; margin: 10px 16px 16px 16px; border-radius: 8px; padding: 4px 12px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: relative; z-index: 3;}
@@ -70,6 +71,7 @@
         .kb-summary-box:last-child { border-right: none; }
         .kb-summary-label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;}
         .kb-summary-val { font-size: 20px; font-weight: 700; margin-top: 6px; }
+        
         .ajio-tab-container { background: #cbd5e1; padding-top: 8px; border-radius: 14px 14px 0 0; margin: 0 16px; display: flex; overflow: hidden; }
         .kb-tab { flex: 1; text-align: center; padding: 14px 0; color: #475569; font-weight: 800; font-size: 13px; cursor: pointer; border-radius: 14px 14px 0 0; transition: all 0.3s; letter-spacing: 0.5px;}
         .kb-tab.active { background: #f1f5f9; color: #0f172a; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
@@ -81,10 +83,13 @@
         .kb-time { font-size: 12px; color: var(--text-muted); margin-top: 4px;}
         .kb-list-right { display: flex; flex-direction: column; justify-content: center; padding: 16px; min-width: 100px; text-align: right; border-left: 1px dashed #e2e8f0; background: #f8fafc; border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
         
+        /* FIXED ADD CUSTOMER FAB */
         .kb-fab { position: fixed !important; bottom: 30px; right: 20px; height: 56px; background: #ef4444; color: white; border-radius: 28px; display: flex; justify-content: center; align-items: center; font-size: 15px; font-weight: 700; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); border: none; z-index: 1001; cursor: pointer; padding: 0 20px; white-space: nowrap;}
+        .kb-fab .fab-icon { font-size: 24px; margin-right: 8px; }
 
-        /* LEDGER DEEP PAGE (Fixed layout) */
+        /* LEDGER DEEP PAGE */
         .ledger-header-area { background: #1e3a8a; color: white; padding: 16px 16px 30px 16px;}
+        .ledger-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .ledger-bal-card { background: white; border-radius: 10px; padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: -25px; margin-left: 16px; margin-right: 16px; position: relative; z-index: 2; border: 1px solid var(--border);}
         .ledger-action-tabs { display: flex; margin: 20px 16px 5px 16px; gap: 10px;}
         .l-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 12px; color: var(--text-dark); font-weight: 600; background: white; border-radius: 8px; cursor: pointer; border: 1px solid var(--border);}
@@ -93,28 +98,36 @@
         .ec-gave, .ec-got { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; }
         .ec-gave { background: #fef2f2; color: var(--danger); }
         .ec-got { background: #ecfdf5; color: var(--success); border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
-        .bottom-action-bar { position: fixed; bottom: 0; width: 100%; background: white; padding: 12px 16px; display: flex; gap: 12px; border-top: 1px solid var(--border); z-index: 1000; }
-        .btn-l-gave { flex: 1; background: #ef4444; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer;}
-        .btn-l-got { flex: 1; background: #10b981; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer;}
+        .bottom-action-bar { position: fixed; bottom: 0; left:0; width: 100%; background: white; padding: 12px 16px; display: flex; gap: 12px; border-top: 1px solid var(--border); z-index: 1000; }
+        .btn-l-gave { flex: 1; background: #ef4444; color: white; border: none; padding: 16px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer;}
+        .btn-l-got { flex: 1; background: #10b981; color: white; border: none; padding: 16px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer;}
 
         /* LOADER */
         .loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;}
         .spinner { border: 4px solid #f3f3f3; border-left-color: var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* ENTRY DETAILS UI */
-        .entry-detail-card { background: white; margin: 16px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; border: 1px solid var(--border);}
-        .ed-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #f1f5f9;}
-        .ed-amt { font-size: 24px; font-weight: 700; }
-        .ed-row { padding: 16px; border-bottom: 1px solid #f1f5f9; }
-        .ed-edit-btn { text-align: center; padding: 16px; color: var(--primary); font-weight: 600; cursor: pointer; }
+        /* ENTRY DETAILS UI (Professional) */
+        .entry-detail-card { background: white; margin: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid var(--border);}
+        .ed-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 16px; border-bottom: 1px solid #f1f5f9; background: #f8fafc;}
+        .ed-amt { font-size: 28px; font-weight: 800; }
+        .ed-row { padding: 20px 16px; border-bottom: 1px solid #f1f5f9; }
 
-        /* CALCULATOR */
+        /* CALCULATOR & ENTRY FORM */
         .calc-header { background: white; color: var(--danger); height: 56px; display: flex; align-items: center; padding: 0 16px; z-index: 10; border-bottom: 1px solid var(--border); }
-        .amount-input-box { background: white; border: 1px solid var(--border); border-radius: 8px; margin: 16px; padding: 16px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
-        .amount-input-box input { border: none; outline: none; font-size: 28px; font-weight: 700; color: var(--danger); width: 100%;}
+        .calc-title { font-size: 16px; font-weight: 700; margin: 0; }
+        .amount-input-box { background: white; border: 1px solid var(--border); border-radius: 12px; margin: 16px; padding: 20px; display: flex; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);}
+        .amount-symbol { font-size: 30px; color: var(--danger); font-weight: 700; margin-right: 12px;}
+        .amount-input-box input { border: none; outline: none; font-size: 36px; font-weight: 800; color: var(--danger); width: 100%;}
+        .calc-details-input { background: white; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; padding: 16px; width: 100%; font-size: 15px; outline: none; box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);}
+        .calc-date-btn { background: white; border: 1px solid var(--border); padding: 12px 16px; border-radius: 8px; display: block; width: 100%; font-weight: 600; font-size: 14px; color: var(--text-dark); outline: none; font-family: inherit;}
+        .calculator-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #f8fafc; border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); z-index: 9999;}
+        .calc-save-btn { background: var(--danger); color: white; font-weight: 800; font-size: 16px; width: 100%; padding: 18px; border: none; letter-spacing: 1px; cursor: pointer;}
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; background: #f1f5f9;}
-        .calc-btn { background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 16px 0; font-size: 20px; font-weight: 600; cursor: pointer; color: #1e293b; display: flex; justify-content: center; align-items: center;}
+        .calc-btn { background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 18px 0; font-size: 22px; font-weight: 700; cursor: pointer; color: #1e293b; display: flex; justify-content: center; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);}
+        .calc-btn:active { background: #e2e8f0; transform: scale(0.98);}
+        .calc-btn.light-blue { background: #dbeafe; color: #1e3a8a; border-color: #bfdbfe;}
+        .calc-btn.dark-blue { background: #1565c0; color: white; border: none;}
 
         /* SIDEBAR */
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; display: none; }
@@ -128,34 +141,35 @@
         .sidebar-menu li:hover { background: #1e293b; color: white; }
         
         /* DASHBOARD CARDS GRID */
-        .op-header { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 15px; }
         .dash-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .dash-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;}
         .dash-card-title { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
         .dash-card-value { font-size: 24px; font-weight: 800; color: #0f172a; line-height: 1; margin-bottom: 4px; }
+        .dash-card-sub { font-size: 10px; color: #94a3b8; }
         .dash-card-icon { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; }
         .icon-blue { background: #eff6ff; color: #3b82f6; } .icon-orange { background: #fff7ed; color: #f97316; } .icon-purple { background: #faf5ff; color: #a855f7; } .icon-green { background: #f0fdf4; color: #22c55e; }
 
         /* TOP CUSTOMERS */
         .urgent-actions-box { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
         .ua-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .ua-title { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
         .ua-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s;}
         
         /* CELEBRATION MODAL */
         .celebration-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; padding: 20px; text-align: center; }
-        .celeb-box { background: white; padding: 30px 20px; border-radius: 16px; max-width: 400px; position: relative; animation: popIn 0.5s forwards; }
+        .celeb-box { background: white; padding: 30px 20px; border-radius: 16px; max-width: 400px; position: relative; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
         /* STOCK OVERVIEW GRID (Professional UI) */
+        .stock-overview-title { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-top: 10px; }
         .stock-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
         .stock-grid-card { background: linear-gradient(145deg, #ffffff, #f8fafc); border: 1px solid var(--border); border-radius: 16px; padding: 20px 16px; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;}
-        .stock-grid-card:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.05); }
         .sg-title { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
         .sg-value { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
         .sg-icon { position: absolute; right: 16px; top: 16px; width: 32px; height: 32px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 14px; }
 
-        /* FIXED FORM HEADER FOR STOCK PAGES */
-        .anim-form { transition: all 0.3s ease-in-out; overflow: hidden; max-height: 500px; opacity: 1; }
+        /* FIXED FORM HEADER FOR STOCK & ANIMATIONS */
+        .anim-form { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; max-height: 500px; opacity: 1; }
         .anim-form.hidden { max-height: 0; opacity: 0; margin-bottom: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; border: none !important; }
         .in-out-btn-group { display: flex; gap: 10px; }
         .btn-in { flex: 1; background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size:13px; }
@@ -173,11 +187,12 @@
     <!-- 🎆 CELEBRATION MODAL WITH FIREWORKS -->
     <div id="celebration-modal" class="celebration-modal">
         <div class="celeb-box">
-            <div style="font-size: 60px; margin-bottom: 15px;">🎊🎉</div>
+            <div style="font-size: 60px; margin-bottom: 15px; animation: bounce 1s infinite alternate;">🎊🎉</div>
             <div style="font-size: 16px; color: #1e293b; font-weight: 600; margin-bottom: 20px;">Dear <span id="celeb-name" style="color:var(--danger); font-weight:800;">Name</span>,<br><br>आपने 2% Additional Off के लिए अपना परचेज कोटा पूर्ण कर लिया है! 🏆<br><br>कृप्या लाभ लेने के लिए Godown पर आकर संपर्क करें।</div>
             <button class="btn-submit" onclick="document.getElementById('celebration-modal').style.display='none'">Okay, Thanks!</button>
         </div>
     </div>
+    <style>@keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }</style>
     
     <!-- POS DATALIST FOR AUTOCOMPLETE -->
     <datalist id="pos-customers-dl"></datalist>
@@ -217,12 +232,12 @@
 
     <!-- 🏠 MAIN DASHBOARD -->
     <main class="main-content">
-        <div class="dash-header" style="margin-top:10px;">
-            <div class="op-header" style="margin:0;">Dashboard</div>
+        <div class="dash-header">
+            <h2 class="op-header">Dashboard</h2>
             <input type="date" class="professional-date-picker" id="dash-date-picker">
         </div>
         
-        <div class="dash-card-grid" style="margin-top:15px;">
+        <div class="dash-card-grid">
             <div class="dash-card"><div class="dash-card-title">ACTIVE POS</div><div class="dash-card-value">0</div><div class="dash-card-sub">of 0 total</div><div class="dash-card-icon icon-blue">📋</div></div>
             <div class="dash-card"><div class="dash-card-title">FABRIC STOCK</div><div class="dash-card-value">0m</div><div class="dash-card-sub">grey + processed</div><div class="dash-card-icon icon-orange">🧊</div></div>
             <div class="dash-card"><div class="dash-card-title">IN PRODUCTION</div><div class="dash-card-value">0</div><div class="dash-card-sub">active pieces</div><div class="dash-card-icon icon-purple">🔗</div></div>
@@ -271,7 +286,7 @@
         </div>
     </div>
 
-    <!-- 🧾 SALE INVOICE PAGE (Smart Auto-complete & Auto Customer) -->
+    <!-- 🧾 SALE INVOICE PAGE -->
     <div class="page" id="pos-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('pos-page')">←</button><h2 class="page-title">Create Sale Invoice</h2></div>
         <div class="page-content">
@@ -281,6 +296,7 @@
                         <label class="form-label">Customer Details</label>
                         <div class="input-btn-group" style="margin-bottom:12px;">
                             <input type="text" class="form-control" id="inv-party" list="pos-customers-dl" placeholder="Enter Name (Auto-fills Phone)">
+                            <button class="action-btn" onclick="openPhonebook('inv-party', 'inv-phone')">👤</button>
                         </div>
                         <input type="tel" class="form-control" id="inv-phone" placeholder="Mobile Number (Auto Saves)">
                     </div>
@@ -312,7 +328,6 @@
                 <button id="save-bill-btn" class="btn-submit" onclick="triggerSaveAndShare()">💾 Generate Bill</button>
             </div>
 
-            <!-- Post Bill Action Area -->
             <div id="post-bill-area" style="display:none; text-align:center; margin-top:20px;">
                 <div style="font-size:50px; margin-bottom:10px;">✅</div>
                 <h3 style="margin-bottom:20px; color:var(--success);">Bill Generated Successfully!</h3>
@@ -324,29 +339,37 @@
     </div>
 
     <!-- 👥 PARTIES (LEDGER BOOK) -->
-    <div class="page" id="parties-page">
-        <div class="kb-header">
-            <div class="kb-header-title">
-                <button class="back-btn" onclick="closePage('parties-page')" style="padding:0; margin-right:15px;">←</button>Ledger Book
+    <div class="page flex-page" id="parties-page">
+        <div class="fixed-top-section" style="padding:0;">
+            <div class="kb-header">
+                <div class="kb-header-title">
+                    <button class="back-btn" onclick="closePage('parties-page')" style="padding:0; margin-right:15px;">←</button>Ledger Book
+                </div>
+            </div>
+            <div class="search-bar-container">
+                <span style="color:var(--text-muted); font-size:16px;">🔍</span>
+                <input type="text" id="party-search" placeholder="Search Name..." 
+                       onfocus="document.getElementById('ledger-summary-card').classList.add('hidden')" 
+                       onblur="setTimeout(()=>document.getElementById('ledger-summary-card').classList.remove('hidden'), 200)" 
+                       onkeyup="searchParties()">
+            </div>
+            <div class="kb-summary-card anim-form" id="ledger-summary-card">
+                <div class="kb-summary-split">
+                    <div class="kb-summary-box"><div class="kb-summary-label" id="lbl-give">Total You Give</div><div class="kb-summary-val" style="color:var(--danger);" id="total-give-all">₹ 0</div></div>
+                    <div class="kb-summary-box"><div class="kb-summary-label" id="lbl-get">Total You Get</div><div class="kb-summary-val" style="color:var(--success);" id="total-get-all">₹ 0</div></div>
+                </div>
+            </div>
+            <div class="ajio-tab-container" style="margin-bottom:0; border-radius:0;">
+                <div class="kb-tab active" id="tab-customers" onclick="switchPartyTab('Customer')">CUSTOMERS</div>
+                <div class="kb-tab" id="tab-suppliers" onclick="switchPartyTab('Supplier')">SUPPLIERS</div>
             </div>
         </div>
-        <div class="search-bar-container"><span style="color:var(--text-muted); font-size:16px;">🔍</span><input type="text" id="party-search" placeholder="Search Name..." onkeyup="searchParties()"></div>
-        <div class="kb-summary-card">
-            <div class="kb-summary-split">
-                <div class="kb-summary-box"><div class="kb-summary-label" id="lbl-give">Total You Give</div><div class="kb-summary-val" style="color:var(--danger);" id="total-give-all">₹ 0</div></div>
-                <div class="kb-summary-box"><div class="kb-summary-label" id="lbl-get">Total You Get</div><div class="kb-summary-val" style="color:var(--success);" id="total-get-all">₹ 0</div></div>
-            </div>
-        </div>
-        <div class="ajio-tab-container">
-            <div class="kb-tab active" id="tab-customers" onclick="switchPartyTab('Customer')">CUSTOMERS</div>
-            <div class="kb-tab" id="tab-suppliers" onclick="switchPartyTab('Supplier')">SUPPLIERS</div>
-        </div>
-        <div class="kb-list" id="kb-customer-list" style="margin-top:15px;"></div>
-        <!-- FIXED FAB (No Scroll hide) -->
+        <div class="scroll-content" id="kb-customer-list" style="padding-top:15px; background:var(--bg-color);"></div>
+        <!-- FIXED FAB -->
         <button class="kb-fab" id="main-fab" onclick="openPage('add-party-page')"><span class="fab-icon">+</span><span class="fab-text" id="fab-text">Add Customer</span></button>
     </div>
 
-    <!-- 🔥 KHATABOOK DEEP LEDGER PAGE (FIXED TOP AND BOTTOM, SCROLL MIDDLE) -->
+    <!-- 🔥 KHATABOOK DEEP LEDGER PAGE -->
     <div class="page flex-page" id="ledger-deep-page">
         <div class="fixed-top-section" style="padding:0;">
             <div class="ledger-header-area">
@@ -354,9 +377,11 @@
                     <div style="display:flex; align-items:center;">
                         <button class="back-btn" onclick="closePage('ledger-deep-page')" style="padding:0; margin-right:12px;">←</button>
                         <div class="kb-avatar" id="l-deep-avatar-text" style="width:36px; height:36px; font-size:14px; margin-right:10px; background:white; color:var(--primary);" onclick="openCustomerProfile()"></div>
-                        <div onclick="openCustomerProfile()" style="cursor:pointer;"><div class="l-name" id="l-deep-name">Name</div></div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <div onclick="openCustomerProfile()" style="cursor:pointer;"><div class="l-name" id="l-deep-name" style="color:white; font-size:18px;">Name</div></div>
+                            <a href="#" id="l-call-btn" style="color:white; text-decoration:none; font-size:20px;">📞</a>
+                        </div>
                     </div>
-                    <a href="#" id="l-call-btn" style="color:white; text-decoration:none; font-size:22px;">📞</a>
                 </div>
             </div>
             <div class="ledger-bal-card">
@@ -383,6 +408,7 @@
         <div class="scroll-content" style="padding-top:16px;">
             <div class="profile-header-img" style="border-radius:12px; margin-bottom:16px;">
                 <div class="profile-pic" id="cp-avatar" style="width:80px; height:80px; font-size:30px; margin-bottom:0;">C</div>
+                <h2 id="cp-name" style="margin-top:10px; font-size:18px; color:#0f172a;">Name</h2>
             </div>
             <div class="form-panel">
                 <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-control" id="cp-edit-name"></div>
@@ -397,7 +423,7 @@
         </div>
     </div>
 
-    <!-- ⚙️ ADMIN PROFILE PAGE (Professional Setting) -->
+    <!-- ⚙️ ADMIN PROFILE PAGE -->
     <div class="page" id="admin-profile-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('admin-profile-page')">←</button><h2 class="page-title">Business Profile</h2></div>
         <div class="page-content">
@@ -420,24 +446,46 @@
         </div>
     </div>
 
-    <!-- 💸 ENTRY DETAILS PAGE -->
-    <div class="page" id="entry-details-page">
+    <!-- 💸 ENTRY DETAILS PAGE (Professional Redesign) -->
+    <div class="page flex-page" id="entry-details-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('entry-details-page')">←</button><h2 class="page-title">Entry Details</h2></div>
-        <div class="entry-detail-card">
-            <div class="ed-header"><div class="ed-header-left"><div style="font-size:24px;" id="ed-icon">💸</div><div><div style="font-weight:600; font-size:15px; color:#0f172a;" id="ed-party-name">Name</div><div style="font-size:12px; color:var(--text-muted);" id="ed-date">Date</div></div></div><div class="ed-amount-box"><div class="ed-amt" id="ed-amount">₹ 0</div><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;" id="ed-type">You Gave</div></div></div>
-            <div class="ed-row ed-flex-row"><div><div class="ed-label">Details / Bill No.</div><div class="ed-value" id="ed-details-text">App Entry</div></div><div style="color:var(--primary); font-weight:600; font-size:13px; cursor:pointer;" onclick="editCurrentEntryDetails()">✎ Edit</div></div>
-            <div class="ed-edit-btn" onclick="editCurrentEntryAmount()">✏️ Edit Amount</div>
+        <div class="scroll-content" style="padding-top:16px;">
+            <div class="entry-detail-card">
+                <div class="ed-header">
+                    <div>
+                        <div style="font-weight:700; font-size:16px; color:#0f172a;" id="ed-party-name">Name</div>
+                        <div style="font-size:12px; color:var(--text-muted); margin-top:4px;" id="ed-date">Date</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="ed-amt" id="ed-amount">₹ 0</div>
+                        <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; font-weight:700; margin-top:4px;" id="ed-type">You Gave</div>
+                    </div>
+                </div>
+                <div class="ed-row">
+                    <div class="ed-label">Details / Note</div>
+                    <div class="ed-value" id="ed-details-text" style="line-height:1.5;">App Entry</div>
+                </div>
+            </div>
+            
+            <button class="btn-outline" style="width:100%; border-color:var(--primary); color:var(--primary); margin-top:10px; display:flex; justify-content:center; align-items:center; gap:8px;" onclick="editCurrentEntryFull()">✏️ Edit Entry Details</button>
         </div>
-        <div class="ed-bottom-bar"><button class="btn-ed-del" onclick="deleteCurrentEntry()">🗑️ Delete</button><button class="btn-ed-share" onclick="shareCurrentEntry()">📲 Share</button></div>
+        <div class="bottom-action-bar">
+            <button class="btn-ed-del btn-submit" style="background:#fef2f2; color:#ef4444; border:1px solid #fca5a5; flex:1;" onclick="deleteCurrentEntry()">🗑️ Delete</button>
+            <button class="btn-ed-share btn-submit" style="flex:1;" onclick="shareCurrentEntry()">📲 Share Entry</button>
+        </div>
     </div>
 
-    <!-- 🧮 CALC SCREEN -->
+    <!-- 🧮 CALC SCREEN (Smart Hidden Details) -->
     <div class="page" id="calculator-page" style="z-index: 2500;">
         <div class="calc-header" id="calc-header"><button class="back-btn" onclick="closePage('calculator-page')" id="calc-back-btn" style="color:var(--danger);">←</button><h2 class="calc-title" id="calc-title-text">You gave ₹ 0</h2></div>
         <div class="page-content" style="padding:0;">
             <div class="amount-input-box"><span class="amount-symbol" id="calc-symbol">₹</span><input type="text" id="calc-amount" readonly placeholder="0" style="color:var(--danger);"></div>
-            <input type="text" class="calc-details-input" id="calc-details" placeholder="Enter details (Items, bill no., quantity, etc.)">
-            <div class="calc-action-row"><input type="date" class="calc-date-btn" id="calc-date"></div>
+            
+            <!-- Hidden until amount is typed -->
+            <div id="calc-ext-container" class="anim-form hidden" style="padding:0 16px;">
+                <input type="text" class="calc-details-input" id="calc-details" placeholder="Enter details (Items, bill no., quantity, etc.)">
+                <input type="date" class="calc-date-btn" id="calc-date">
+            </div>
         </div>
         <div class="calculator-footer">
             <button class="calc-save-btn" id="calc-save-btn" onclick="saveCalculatorEntry()">SAVE ENTRY</button>
@@ -479,7 +527,7 @@
         </div>
     </div>
 
-    <!-- 🧵 THREAD STOCK PAGE (FROZEN TOP, SCROLL TABLE) -->
+    <!-- 🧵 THREAD STOCK PAGE -->
     <div class="page flex-page" id="thread-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('thread-stock-page')">←</button><h2 class="page-title">Thread Stock</h2></div>
         <div class="fixed-top-section">
@@ -496,7 +544,7 @@
         </div>
     </div>
 
-    <!-- ✨ ZARI STOCK PAGE (FROZEN TOP) -->
+    <!-- ✨ ZARI STOCK PAGE -->
     <div class="page flex-page" id="zari-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('zari-stock-page')">←</button><h2 class="page-title">Zari Stock</h2></div>
         <div class="fixed-top-section">
@@ -516,7 +564,7 @@
         </div>
     </div>
 
-    <!-- 🪢 CORDING STOCK PAGE (FROZEN TOP) -->
+    <!-- 🪢 CORDING STOCK PAGE -->
     <div class="page flex-page" id="cording-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('cording-stock-page')">←</button><h2 class="page-title">Cording Stock</h2></div>
         <div class="fixed-top-section">
@@ -536,7 +584,7 @@
         </div>
     </div>
 
-    <!-- 🧶 NYLON STOCK PAGE (FROZEN TOP) -->
+    <!-- 🧶 NYLON STOCK PAGE -->
     <div class="page flex-page" id="nylon-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('nylon-stock-page')">←</button><h2 class="page-title">Nylon Stock</h2></div>
         <div class="fixed-top-section">
@@ -553,7 +601,7 @@
         </div>
     </div>
 
-    <!-- 🛞 BOBBIN STOCK PAGE (FROZEN TOP) -->
+    <!-- 🛞 BOBBIN STOCK PAGE -->
     <div class="page flex-page" id="bobbin-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('bobbin-stock-page')">←</button><h2 class="page-title">Bobbin Stock</h2></div>
         <div class="fixed-top-section">
@@ -570,7 +618,7 @@
         </div>
     </div>
 
-    <!-- ⚠️ LOW STOCK PAGE (FROZEN TOP) -->
+    <!-- ⚠️ LOW STOCK PAGE -->
     <div class="page flex-page" id="lowstock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('lowstock-page')">←</button><h2 class="page-title">Low Stock Alerts</h2></div>
         <div class="fixed-top-section">
@@ -596,7 +644,7 @@
         </div>
     </div>
 
-    <!-- ================= FIREBASE JAVASCRIPT ================= -->
+    <!-- ================= FIREBASE & LOGIC JAVASCRIPT ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, get, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -618,6 +666,13 @@
         let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null; 
         window.currentTabType = 'Customer';
         window.ledgerTotals = { custGive:0, custGet:0, supGive:0, supGet:0 };
+        let editingEntryKey = null; // Edit Flag
+
+        // BLOCK HARDWARE BACK BUTTON
+        window.history.pushState(null, "", window.location.href);
+        window.onpopstate = function() {
+            window.history.pushState(null, "", window.location.href);
+        };
 
         window.addEventListener('DOMContentLoaded', () => {
             let todayStr = new Date().toISOString().split('T')[0];
@@ -625,7 +680,6 @@
             document.getElementById('calc-date').value = todayStr;
             document.getElementById('godown-date-picker').value = todayStr;
             
-            // Set Today's Date in Deep Ledger
             let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('l-deep-today-date').innerText = "Today: " + new Date().toLocaleDateString('en-IN', options);
 
@@ -641,10 +695,8 @@
                 if (document.getElementById('ledger-deep-page').classList.contains('active')) renderLedgerEntries(currentPartyName);
             });
 
-            // POS AUTOFILL PHONE LOGIC
             document.getElementById('inv-party').addEventListener('input', function(e) {
-                let val = e.target.value;
-                let cust = globalCustomers.find(c => c.name.toLowerCase() === val.toLowerCase());
+                let val = e.target.value; let cust = globalCustomers.find(c => c.name.toLowerCase() === val.toLowerCase());
                 if(cust && cust.phone) { document.getElementById('inv-phone').value = cust.phone; }
             });
         });
@@ -667,29 +719,23 @@
 
             if(pPic) {
                 let imgHtml = `<img src="${pPic}" style="width:100%; height:100%; object-fit:cover;">`;
-                document.getElementById('ap-avatar').innerHTML = imgHtml;
-                document.getElementById('sidebar-user-pic').innerHTML = imgHtml;
+                document.getElementById('ap-avatar').innerHTML = imgHtml; document.getElementById('sidebar-user-pic').innerHTML = imgHtml;
             } else {
-                document.getElementById('ap-avatar').innerText = pName.charAt(0).toUpperCase();
-                document.getElementById('sidebar-user-pic').innerText = pName.charAt(0).toUpperCase();
+                document.getElementById('ap-avatar').innerText = pName.charAt(0).toUpperCase(); document.getElementById('sidebar-user-pic').innerText = pName.charAt(0).toUpperCase();
             }
         }
-
         window.saveAdminProfile = function() {
-            localStorage.setItem('v_adminName', document.getElementById('ap-name').value);
-            localStorage.setItem('v_adminPhone', document.getElementById('ap-phone').value);
-            localStorage.setItem('v_adminEmail', document.getElementById('ap-email').value);
-            localStorage.setItem('v_adminGst', document.getElementById('ap-gst').value.toUpperCase());
+            localStorage.setItem('v_adminName', document.getElementById('ap-name').value); localStorage.setItem('v_adminPhone', document.getElementById('ap-phone').value);
+            localStorage.setItem('v_adminEmail', document.getElementById('ap-email').value); localStorage.setItem('v_adminGst', document.getElementById('ap-gst').value.toUpperCase());
             localStorage.setItem('v_adminAddr', document.getElementById('ap-address').value);
             loadAdminProfile(); alert("Profile Saved Successfully!");
         }
-
         window.handleAdminPic = function(event) {
             let file = event.target.files[0];
             if(file) { let reader = new FileReader(); reader.onload = function(e) { localStorage.setItem('v_adminPic', e.target.result); loadAdminProfile(); }; reader.readAsDataURL(file); }
         }
 
-        // ================= 22 GODAM TRANSFER LOGIC =================
+        // ================= 22 GODAM TRANSFER =================
         window.processGodown = function(type) {
             let cat = document.getElementById('gd-cat').value; let item = document.getElementById('gd-item').value; let qty = parseInt(document.getElementById('gd-qty').value);
             if(!item || isNaN(qty) || qty <= 0) return alert("Please enter Item Name and Valid Quantity!");
@@ -702,7 +748,6 @@
             document.getElementById('gd-item').value = ''; document.getElementById('gd-qty').value = '';
             alert(type === 'IN' ? `Stock Received from Godown!` : `Stock Returned to Godown!`);
         }
-
         window.renderGodownHistory = function() {
             let filterDate = document.getElementById('godown-date-picker').value;
             let filteredTransfers = allGodownTransfers.filter(t => { let tDate = ""; try { tDate = new Date(t.date).toISOString().split('T')[0]; } catch(e){} return tDate === filterDate; });
@@ -718,12 +763,10 @@
             document.getElementById('godown-history-list').innerHTML = html;
         }
 
-        // ================= TOP CUSTOMERS LOGIC (MONTHLY + FIREWORK) =================
+        // ================= TOP CUSTOMERS (MONTHLY + FIREWORK) =================
         window.showCelebration = function(name) { 
             document.getElementById('celeb-name').innerText = name; 
             document.getElementById('celebration-modal').style.display = 'flex'; 
-            
-            // FIREWORK ANIMATION (Confetti)
             var duration = 3000; var end = Date.now() + duration;
             (function frame() {
                 confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 1 }, colors: ['#ef4444', '#10b981', '#f59e0b', '#3b82f6'] });
@@ -732,39 +775,39 @@
             }());
         }
 
-        // ================= CUSTOMER PROFILE (EDITABLE) =================
+        // ================= CUSTOMER PROFILE (EDITABLE + EMAIL VALIDATION) =================
         function setupPOSAutocomplete() {
             let dlHtml = ""; globalCustomers.forEach(c => dlHtml += `<option value="${c.name}">`);
             document.getElementById('pos-customers-dl').innerHTML = dlHtml;
         }
-
         window.openCustomerProfile = function() {
             let customer = globalCustomers.find(c => c.name === currentPartyName); if(!customer) return; currentPartyKey = customer.key;
             document.getElementById('cp-avatar').innerText = customer.name.substring(0, 1).toUpperCase(); 
+            document.getElementById('cp-name').innerText = customer.name; 
             document.getElementById('cp-edit-name').value = customer.name;
             document.getElementById('cp-edit-phone').value = customer.phone || "";
             document.getElementById('cp-edit-email').value = customer.email || "";
             document.getElementById('cp-edit-address').value = customer.address || "";
             openPage('customer-profile-page');
         }
-
         window.saveCustomerProfile = function() {
             let nName = document.getElementById('cp-edit-name').value.trim();
             let nPhone = document.getElementById('cp-edit-phone').value;
-            let nEmail = document.getElementById('cp-edit-email').value;
+            let nEmail = document.getElementById('cp-edit-email').value.trim();
             let nAddr = document.getElementById('cp-edit-address').value;
             if(!nName) return alert("Name is required!");
 
+            if (nEmail) {
+                let emailRegex = /^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9.-]+\.com|[a-zA-Z0-9.-]+\.in|gmail\.com)$/i;
+                if(!emailRegex.test(nEmail)) return alert("Please enter a valid email ending in @gmail.com, .com, or .in");
+            }
+
             update(ref(db, 'Customers/' + currentPartyKey), { name: nName, phone: nPhone, email: nEmail, address: nAddr });
-            
             currentPartyName = nName; currentPartyPhone = nPhone;
             document.getElementById('l-deep-name').innerText = nName;
             document.getElementById('l-deep-avatar-text').innerText = nName.substring(0,2).toUpperCase();
-            
-            alert("Customer Profile Updated!");
-            closePage('customer-profile-page');
+            alert("Customer Profile Updated!"); closePage('customer-profile-page');
         }
-
         window.addCustomerToCloud = function() {
             let name = document.getElementById('new-party-name').value.trim(); let phone = document.getElementById('new-party-phone').value; let address = document.getElementById('new-party-address').value;
             if(!name) return alert("Please enter Name!");
@@ -780,8 +823,7 @@
             document.getElementById('tab-suppliers').classList.toggle('active', type === 'Supplier'); 
             let btnText = type === 'Customer' ? 'Add Customer' : 'Add Supplier'; 
             document.getElementById('fab-text').innerText = btnText; document.getElementById('add-party-title').innerText = btnText; 
-            renderCustomerList(globalCustomers); 
-            updateLedgerTotalsUI();
+            renderCustomerList(globalCustomers); updateLedgerTotalsUI();
         }
 
         window.updateLedgerTotalsUI = function() {
@@ -796,10 +838,8 @@
 
         window.calculateGrandTotals = function() {
             let balances = {}; let todayTotalSale = 0; let todayTotalBox = 0;
-            let customerPurchases = {}; // Monthly Top Customers
-            let selectedDateString = document.getElementById('dash-date-picker').value; 
-            
-            let currentMonth = new Date().toISOString().slice(0, 7); // "YYYY-MM"
+            let customerPurchases = {}; let selectedDateString = document.getElementById('dash-date-picker').value; 
+            let currentMonth = new Date().toISOString().slice(0, 7); 
 
             allLedgerData.forEach(entry => {
                 let amt = parseFloat(entry.amount) || 0; let entryDateString = ""; let entryMonthString = "";
@@ -810,25 +850,18 @@
                 if(entry.type === 'Got') balances[entry.name] -= amt;
 
                 if (entry.details && entry.details.includes("Invoice Sale")) {
-                    if(entryMonthString === currentMonth) {
-                        if(!customerPurchases[entry.name]) customerPurchases[entry.name] = 0; customerPurchases[entry.name] += amt;
-                    }
+                    if(entryMonthString === currentMonth) { if(!customerPurchases[entry.name]) customerPurchases[entry.name] = 0; customerPurchases[entry.name] += amt; }
                     if(entryDateString === selectedDateString){ todayTotalSale += amt; let boxMatch = entry.details.match(/(\d+)\s*Box/i); if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); }
                 }
             });
 
-            // Splitting Totals based on Tab (Customer vs Supplier)
             let partyTypes = {}; globalCustomers.forEach(c => partyTypes[c.name] = c.type || 'Customer');
             let cGive = 0, cGet = 0, sGive = 0, sGet = 0;
 
             for(let cust in balances) { 
-                let pType = partyTypes[cust] || 'Customer';
-                let bal = balances[cust];
-                if(pType === 'Customer') {
-                    if(bal > 0) cGet += bal; if(bal < 0) cGive += Math.abs(bal);
-                } else {
-                    if(bal > 0) sGet += bal; if(bal < 0) sGive += Math.abs(bal);
-                }
+                let pType = partyTypes[cust] || 'Customer'; let bal = balances[cust];
+                if(pType === 'Customer') { if(bal > 0) cGet += bal; if(bal < 0) cGive += Math.abs(bal); } 
+                else { if(bal > 0) sGet += bal; if(bal < 0) sGive += Math.abs(bal); }
             }
             
             window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet };
@@ -836,7 +869,6 @@
 
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
 
-            // Top Customers (Monthly Render)
             let topCustHtml = "";
             let sortedCustomers = Object.entries(customerPurchases).sort((a, b) => b[1] - a[1]).slice(0, 5);
             if(sortedCustomers.length === 0) { topCustHtml = '<div style="text-align:center; padding:10px; color:gray; font-size:12px;">No sales this month yet.</div>'; } 
@@ -848,20 +880,70 @@
 
         window.openLedgerDetail = function(name, phone) { currentPartyName = name; currentPartyPhone = phone || ""; document.getElementById('l-deep-name').innerText = name; document.getElementById('l-deep-avatar-text').innerText = name.substring(0,2).toUpperCase(); document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#"; document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); renderLedgerEntries(name); openPage('ledger-deep-page'); }
 
+        // ================= CALCULATOR & EDIT ENTRY LOGIC =================
+        window.openCalculator = function(type, editKey = null) {
+            calcType = type; editingEntryKey = editKey;
+            
+            let color = type === 'Gave' ? 'var(--danger)' : 'var(--success)';
+            document.getElementById('calc-header').style.color = color; document.getElementById('calc-back-btn').style.color = color; document.getElementById('calc-symbol').style.color = color; document.getElementById('calc-amount').style.color = color; document.getElementById('calc-save-btn').style.backgroundColor = color;
+
+            if(editKey) {
+                let entry = allLedgerData.find(e => e.key === editKey);
+                calcValue = entry.amount.toString();
+                document.getElementById('calc-details').value = entry.details || "";
+                document.getElementById('calc-date').value = entry.date.split('T')[0];
+            } else {
+                calcValue = ""; document.getElementById('calc-details').value = ""; document.getElementById('calc-date').value = new Date().toISOString().split('T')[0];
+            }
+            
+            document.getElementById('calc-amount').value = calcValue; 
+            updateCalcTitle();
+            toggleDetailsBox(); // Show details if amount > 0
+            openPage('calculator-page');
+        }
+
+        window.calcPress = function(val) { 
+            if(val === 'C') calcValue = ""; else if(val === 'BACK') calcValue = calcValue.slice(0, -1); else if(val === '=') { try { calcValue = eval(calcValue).toString(); } catch(e){} } else calcValue += val; 
+            document.getElementById('calc-amount').value = calcValue; 
+            updateCalcTitle();
+            toggleDetailsBox();
+        }
+        function updateCalcTitle() { document.getElementById('calc-title-text').innerText = `You ${calcType.toLowerCase()} ₹ ${calcValue || "0"} to ${currentPartyName}`; }
+        function toggleDetailsBox() {
+            let amt = parseFloat(calcValue) || 0;
+            if(amt > 0) { document.getElementById('calc-ext-container').classList.remove('hidden'); } 
+            else { document.getElementById('calc-ext-container').classList.add('hidden'); }
+        }
+
         window.saveCalculatorEntry = function() {
             let amount = eval(calcValue) || 0; if(amount <= 0) return alert("Enter valid amount!");
             let dateVal = document.getElementById('calc-date').value; if(!dateVal) dateVal = new Date().toISOString().split('T')[0];
-            push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: calcType, amount: amount, details: document.getElementById('calc-details').value || "App Entry" }); closePage('calculator-page');
+            let details = document.getElementById('calc-details').value || "App Entry";
+
+            if (editingEntryKey) {
+                update(ref(db, 'Ledger/' + editingEntryKey), { amount: amount, details: details, date: new Date(dateVal).toISOString() });
+                editingEntryKey = null; closePage('calculator-page'); closePage('entry-details-page'); // Close to show updated list
+            } else {
+                push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: calcType, amount: amount, details: details });
+                closePage('calculator-page');
+            }
         }
+
+        // ================= ENTRY DETAILS PAGE =================
         window.openEntryDetails = function(key) {
             currentEntryData = allLedgerData.find(e => e.key === key); if(!currentEntryData) return;
             document.getElementById('ed-party-name').innerText = currentEntryData.name;
             let d = new Date(currentEntryData.date); document.getElementById('ed-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
             let color = currentEntryData.type === 'Gave' ? 'var(--danger)' : 'var(--success)'; let icon = currentEntryData.type === 'Gave' ? '💸' : '💰';
-            document.getElementById('ed-icon').innerText = icon; document.getElementById('ed-amount').innerText = `₹ ${parseFloat(currentEntryData.amount).toLocaleString()}`; document.getElementById('ed-amount').style.color = color; document.getElementById('ed-type').innerText = `You ${currentEntryData.type}`; document.getElementById('ed-type').style.color = color; document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry"; openPage('entry-details-page');
+            document.getElementById('ed-icon').innerText = icon; document.getElementById('ed-amount').innerText = `₹ ${parseFloat(currentEntryData.amount).toLocaleString()}`; document.getElementById('ed-amount').style.color = color; document.getElementById('ed-type').innerText = `You ${currentEntryData.type}`; document.getElementById('ed-type').style.color = color; document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry"; 
+            openPage('entry-details-page');
         }
-        window.editCurrentEntryAmount = function() { if(!currentEntryData) return; let newAmt = prompt("Edit Amount:", currentEntryData.amount); if(newAmt !== null && !isNaN(newAmt)) { update(ref(db, 'Ledger/' + currentEntryData.key), { amount: parseFloat(newAmt) }); document.getElementById('ed-amount').innerText = `₹ ${parseFloat(newAmt).toLocaleString()}`; currentEntryData.amount = parseFloat(newAmt); } }
-        window.editCurrentEntryDetails = function() { if(!currentEntryData) return; let newDetails = prompt("Edit Details/Bill No.:", currentEntryData.details); if(newDetails !== null) { update(ref(db, 'Ledger/' + currentEntryData.key), { details: newDetails }); document.getElementById('ed-details-text').innerText = newDetails || "App Entry"; currentEntryData.details = newDetails; } }
+
+        window.editCurrentEntryFull = function() {
+            if(!currentEntryData) return;
+            openCalculator(currentEntryData.type, currentEntryData.key);
+        }
+
         window.deleteCurrentEntry = function() { if(confirm("Are you sure you want to delete this entry?")) { remove(ref(db, 'Ledger/' + currentEntryData.key)); closePage('entry-details-page'); } }
         window.shareCurrentEntry = function() { if(!currentEntryData) return; let typeStr = currentEntryData.type === 'Gave' ? 'You Gave' : 'You Got'; let msg = `📄 *Ledger Entry* %0A🏛️ *Vandana Enterprises*%0A%0A*Name:* ${currentEntryData.name}%0A*Type:* ${typeStr}%0A*Amount:* ₹${currentEntryData.amount}%0A*Details:* ${currentEntryData.details}`; window.open(`https://wa.me/91${currentPartyPhone}?text=${msg}`, '_blank'); }
 
@@ -974,17 +1056,6 @@
         }
 
         window.sharePDFOnWhatsApp = function() { const custPhone = document.getElementById('inv-phone').value || ""; window.open(`https://wa.me/91${custPhone}?text=📄 *INVOICE BILL* %0A🏛️ *VANDANA ENTERPRISES*%0A%0A*Total Amount:* ₹${grandInvoiceTotal}`, '_blank'); }
-
-        // ================= CALCULATOR UI =================
-        let calcType = "Gave"; let calcValue = "";
-        window.openCalculator = function(type) {
-            calcType = type; calcValue = ""; document.getElementById('calc-amount').value = ""; document.getElementById('calc-details').value = "";
-            let color = type === 'Gave' ? 'var(--danger)' : 'var(--success)';
-            document.getElementById('calc-header').style.color = color; document.getElementById('calc-back-btn').style.color = color; document.getElementById('calc-symbol').style.color = color; document.getElementById('calc-amount').style.color = color; document.getElementById('calc-save-btn').style.backgroundColor = color;
-            updateCalcTitle(); openPage('calculator-page');
-        }
-        window.calcPress = function(val) { if(val === 'C') calcValue = ""; else if(val === 'BACK') calcValue = calcValue.slice(0, -1); else if(val === '=') { try { calcValue = eval(calcValue).toString(); } catch(e){} } else calcValue += val; document.getElementById('calc-amount').value = calcValue; updateCalcTitle(); }
-        function updateCalcTitle() { document.getElementById('calc-title-text').innerText = `You ${calcType.toLowerCase()} ₹ ${calcValue || "0"} to ${currentPartyName}`; }
 
         // ================= NAVIGATION HELPERS =================
         window.toggleMenu = function() { const menu = document.getElementById('dropdown-menu'); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; }

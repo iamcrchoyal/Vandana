@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1e3a8a">
-    <title>Vandana ERP - Fast Edition</title>
+    <title>Vandana ERP - Pro Edition</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -17,7 +17,6 @@
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         body { background-color: var(--bg-color); color: var(--text-dark); overflow-x: hidden; font-size: 14px; }
-        
         body.sidebar-locked { overflow: hidden; position: fixed; width: 100%; height: 100%; }
 
         /* HEADER */
@@ -28,20 +27,9 @@
         .main-content { padding: 75px 16px 30px 16px; max-width: 800px; margin: 0 auto; }
         .section-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;}
         
-        .quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
-        .action-box { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.05);}
-        .action-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 22px; background: #f8fafc;}
-        .action-label { font-size: 13px; font-weight: 600; color: var(--text-dark); text-align: center; line-height: 1.2;}
-
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;}
         .professional-date-picker { background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 700; color: var(--primary); font-family: 'Inter', sans-serif; outline: none; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; }
         
-        .summary-box { background: white; border-radius: 12px; padding: 10px 20px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .summary-row { display: flex; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding: 16px 0;}
-        .summary-row:last-child { border: none; }
-        .sum-title { font-size: 13px; color: var(--text-muted); font-weight: 500; }
-        .sum-val { font-size: 16px; font-weight: 700; color: var(--text-dark); }
-
         .bottom-nav { display: none; }
 
         /* PAGES & FORMS */
@@ -69,10 +57,8 @@
         /* KHATABOOK UI & AJIO TABS */
         .kb-header { background: #1e3a8a; color: white; padding: 16px 16px 30px 16px;}
         .kb-header-title { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        
         .search-bar-container { background: white; margin: 10px 16px 16px 16px; border-radius: 8px; padding: 4px 12px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: relative; z-index: 3;}
         .search-bar-container input { border: none; width: 100%; padding: 10px 5px; outline: none; font-size: 14px; }
-
         .kb-summary-card { background: white; border-radius: 12px; margin: 0 16px 16px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: relative; z-index: 2; border: 1px solid var(--border);}
         .kb-summary-split { display: flex; padding: 20px 0; }
         .kb-summary-box { flex: 1; text-align: center; border-right: 1px dashed #e2e8f0; }
@@ -205,19 +191,29 @@
         .icon-purple { background: #faf5ff; color: #a855f7; }
         .icon-green { background: #f0fdf4; color: #22c55e; }
 
-        /* URGENT ACTIONS */
+        /* TOP CUSTOMERS (Previously Urgent Actions) */
         .urgent-actions-box { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
         .ua-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .ua-title { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
-        .ua-alert-icon { color: #f59e0b; font-size: 16px; }
-        .ua-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .ua-alert-icon { color: #f59e0b; font-size: 18px; }
+        .ua-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s;}
+        .ua-item:hover { background: #f1f5f9; }
         .ua-item:last-child { margin-bottom: 0; }
         .ua-item-left { flex: 1; }
-        .ua-item-name { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 2px; }
+        .ua-item-name { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 2px; display:flex; align-items:center; gap:6px;}
         .ua-item-desc { font-size: 12px; color: #94a3b8; }
         .ua-item-right { display: flex; align-items: center; gap: 8px; }
-        .ua-item-count { font-size: 15px; font-weight: 700; color: #10b981; }
+        .ua-item-count { font-size: 15px; font-weight: 700; color: var(--primary); }
         .ua-item-arrow { color: #cbd5e1; font-weight: bold; font-size: 16px; }
+
+        /* CELEBRATION MODAL */
+        .celebration-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; padding: 20px; text-align: center; }
+        .celeb-box { background: white; padding: 30px 20px; border-radius: 16px; max-width: 400px; position: relative; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .celeb-icon { font-size: 60px; margin-bottom: 15px; animation: bounce 1s infinite alternate; }
+        .celeb-text { font-size: 16px; color: #1e293b; line-height: 1.5; font-weight: 600; margin-bottom: 20px;}
+        .celeb-btn { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 20px; font-weight: 700; font-size: 14px; cursor: pointer; }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
 
         /* STOCK OVERVIEW GRID */
         .stock-overview-title { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-top: 10px; }
@@ -227,19 +223,15 @@
         .sg-value { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
         .sg-icon { position: absolute; right: 16px; top: 16px; width: 32px; height: 32px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 14px; }
 
-        /* ================= NEW: STICKY HEADER & ANIMATED FORM FOR STOCK PAGES ================= */
+        /* STICKY HEADER & ANIMATED FORM FOR STOCK PAGES */
         .sticky-top-section {
             position: sticky; top: 56px; background: var(--bg-color); z-index: 20;
             padding: 16px 16px 1px 16px; margin: -16px -16px 16px -16px;
             border-bottom: 1px solid var(--border);
             box-shadow: 0 4px 6px -4px rgba(0,0,0,0.05);
         }
-        .anim-form {
-            transition: all 0.3s ease-in-out; overflow: hidden; max-height: 500px; opacity: 1;
-        }
-        .anim-form.hidden {
-            max-height: 0; opacity: 0; margin-bottom: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; border: none !important;
-        }
+        .anim-form { transition: all 0.3s ease-in-out; overflow: hidden; max-height: 500px; opacity: 1; }
+        .anim-form.hidden { max-height: 0; opacity: 0; margin-bottom: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; border: none !important; }
         .in-out-btn-group { display: flex; gap: 10px; }
         .btn-in { flex: 1; background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size:13px; }
         .btn-out { flex: 1; background: var(--danger); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size:13px;}
@@ -251,6 +243,15 @@
     <div id="loader" class="loader-overlay" style="display: none;">
         <div class="spinner"></div>
         <p style="margin-top:16px; font-weight:600; color:var(--text-dark);">Syncing...</p>
+    </div>
+
+    <!-- 🎆 CELEBRATION MODAL (TOP CUSTOMERS) -->
+    <div id="celebration-modal" class="celebration-modal">
+        <div class="celeb-box">
+            <div class="celeb-icon">🎊🎉</div>
+            <div class="celeb-text">Dear <span id="celeb-name" style="color:var(--danger); font-weight:800;">Name</span>,<br><br>आपने 2% Additional Off के लिए अपना परचेज कोटा पूर्ण कर लिया है! 🏆<br><br>कृप्या लाभ लेने के लिए Godown पर आकर संपर्क करें।</div>
+            <button class="celeb-btn" onclick="document.getElementById('celebration-modal').style.display='none'">Okay, Thanks!</button>
+        </div>
     </div>
 
     <!-- 📱 NEW SIDEBAR MENU -->
@@ -265,9 +266,9 @@
         <ul class="sidebar-menu">
             <li class="active" onclick="goHome(); closeSidebar();"><i>🏠</i> Dashboard</li>
             <li onclick="openPage('items-page'); closeSidebar();"><i>📦</i> Master Inventory</li>
+            <li onclick="openPage('godown-page'); closeSidebar();"><i>🚚</i> 22 Godam Transfer</li>
             <li onclick="openPage('pos-page'); closeSidebar();"><i>🧾</i> Billing & Invoice</li>
             <li onclick="openPage('parties-page'); closeSidebar();"><i>👥</i> Ledger Book</li>
-            <li onclick="openPage('stock-in-page'); closeSidebar();"><i>📥</i> Stock IN</li>
         </ul>
         <div class="sidebar-menu-title">SETTINGS</div>
         <ul class="sidebar-menu">
@@ -310,24 +311,13 @@
             <div class="dash-card" onclick="openInvoicesPage()"><div class="dash-card-title">SALES (BILLS)</div><div class="dash-card-value" id="dash-card-sale-value">₹0</div><div class="dash-card-sub">Tap to view bills</div><div class="dash-card-icon icon-green">🧾</div></div>
         </div>
 
+        <!-- NEW: TOP CUSTOMERS (Replaced Urgent Actions) -->
         <div class="urgent-actions-box">
-            <div class="ua-header"><div class="ua-title">URGENT ACTIONS</div><div class="ua-alert-icon">⚠️</div></div>
-            <div class="ua-item"><div class="ua-item-left"><div class="ua-item-name">Vendor Pending</div><div class="ua-item-desc">0m pending</div></div><div class="ua-item-right"><span class="ua-item-count">0</span><span class="ua-item-arrow">›</span></div></div>
-            <div class="ua-item"><div class="ua-item-left"><div class="ua-item-name">Tailor Pending</div><div class="ua-item-desc">0 pcs pending</div></div><div class="ua-item-right"><span class="ua-item-count">0</span><span class="ua-item-arrow">›</span></div></div>
-            <div class="ua-item"><div class="ua-item-left"><div class="ua-item-name">Finishing Active</div><div class="ua-item-desc">active finishing steps</div></div><div class="ua-item-right"><span class="ua-item-count">0</span><span class="ua-item-arrow">›</span></div></div>
-        </div>
-
-        <div class="summary-box">
-            <div class="summary-row" onclick="openInvoicesPage()"><span class="sum-title">Total Sales Value (Today)</span><span class="sum-val" style="color:var(--primary);" id="dash-total-sale">₹ 0 ➔</span></div>
-            <div class="summary-row" onclick="openPage('items-page')"><span class="sum-title">Total Box Sold (Today)</span><span class="sum-val" id="dash-total-box">0 BOX ➔</span></div>
-        </div>
-
-        <h3 class="section-title" style="margin-top:20px;">Quick Actions</h3>
-        <div class="quick-actions">
-            <div class="action-box" onclick="openPage('pos-page')"><div class="action-icon" style="color: #2563eb;">🧾</div><span class="action-label">Sale Invoice</span></div>
-            <div class="action-box" onclick="openPage('stock-in-page')"><div class="action-icon" style="color: #10b981;">📦</div><span class="action-label">Stock In</span></div>
-            <div class="action-box" onclick="openPage('parties-page')"><div class="action-icon" style="color: #a855f7;">👥</div><span class="action-label">Ledger Book</span></div>
-            <div class="action-box" onclick="openPage('items-page')"><div class="action-icon" style="color: #f59e0b;">📊</div><span class="action-label">All Items</span></div>
+            <div class="ua-header"><div class="ua-title">TOP CUSTOMERS 🏆</div><div class="ua-alert-icon">⭐</div></div>
+            <div id="top-customers-list">
+                <!-- Auto generated Top 5 Customers will appear here -->
+                <div style="text-align:center; padding:10px; color:gray; font-size:12px;">Calculating top customers...</div>
+            </div>
         </div>
     </main>
 
@@ -335,6 +325,37 @@
     <div class="page" id="invoices-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('invoices-page')">←</button><h2 class="page-title">Today's Bills & Invoices</h2></div>
         <div class="page-content" id="invoices-list-container"></div>
+    </div>
+
+    <!-- 🚚 22 GODAM TRANSFER PAGE (NEW SYSTEM) -->
+    <div class="page" id="godown-page">
+        <div class="page-header"><button class="back-btn" onclick="closePage('godown-page')">←</button><h2 class="page-title">22 Godam Transfer</h2></div>
+        <div class="page-content">
+            <div style="background:#eff6ff; color:#1e3a8a; padding:12px; border-radius:8px; font-weight:600; font-size:13px; margin-bottom:16px; border: 1px solid #bfdbfe;">
+                💡 यह एंट्री सिर्फ़ स्टॉक (मास्टर इन्वेंटरी) को अपडेट करेगी। लेजर में कोई उधारी नहीं चढ़ेगी।
+            </div>
+            <div class="form-panel">
+                <select id="gd-cat" class="form-control" style="margin-bottom:12px;">
+                    <option value="Thread">Thread (थ्रेड)</option>
+                    <option value="Zari">Zari (जरी)</option>
+                    <option value="Nylon">Nylon (नायलोन)</option>
+                    <option value="Cording">Cording (कोडिंग)</option>
+                    <option value="Bobbin">Bobbin (बोबिन)</option>
+                </select>
+                <input type="text" id="gd-item" class="form-control" placeholder="Item Name / Shade No." style="margin-bottom:12px;">
+                <input type="number" id="gd-qty" class="form-control" placeholder="Total Boxes" style="margin-bottom:16px;">
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-submit" style="background:var(--success); flex:1;" onclick="processGodown('IN')">📥 Receive (IN)</button>
+                    <button class="btn-submit" style="background:var(--danger); flex:1;" onclick="processGodown('OUT')">📤 Return (OUT)</button>
+                </div>
+            </div>
+            
+            <h3 class="section-title" style="margin-top:20px;">Transfer History</h3>
+            <table class="invoice-table">
+                <thead><tr><th>Date & Details</th><th>Qty / Type</th></tr></thead>
+                <tbody id="godown-history-list"><tr><td colspan="2" style="text-align:center; padding:16px;">No transfers yet.</td></tr></tbody>
+            </table>
+        </div>
     </div>
 
     <!-- 🧾 SALE INVOICE PAGE -->
@@ -375,27 +396,6 @@
             </div>
             <button id="save-bill-btn" class="btn-submit" onclick="triggerSaveAndShare()">💾 Generate Bill</button>
             <button id="pdf-share-btn" class="btn-submit" style="display:none; background: #10b981; margin-top:10px;" onclick="sharePDFOnWhatsApp()">📲 Share via WhatsApp</button>
-        </div>
-    </div>
-
-    <!-- 📦 STOCK IN PAGE -->
-    <div class="page" id="stock-in-page">
-        <div class="page-header"><button class="back-btn" onclick="closePage('stock-in-page')">←</button><h2 class="page-title">Stock In Management</h2></div>
-        <div class="page-content">
-            <div class="form-panel">
-                <h3 class="section-title" style="margin:0 0 15px 0; color:var(--primary);">➕ Add New Stock</h3>
-                <div class="form-group">
-                    <label class="form-label">Category</label>
-                    <select class="form-control" id="stock-cat" style="margin-bottom:12px;">
-                        <option value="Shri Kamlay Thread">Shri Kamlay Thread</option><option value="Zari">Zari</option><option value="Cotton Yarn">Cotton Yarn</option><option value="Viscose">Viscose</option>
-                    </select>
-                    <div class="input-btn-group" style="margin-bottom:16px;">
-                        <input type="text" class="form-control" id="stock-shade" placeholder="Shade Code" style="flex:1;">
-                        <input type="number" class="form-control" id="stock-qty" placeholder="Total Boxes" style="flex:1;">
-                    </div>
-                </div>
-                <button class="btn-submit" onclick="saveSmartStock()">📥 Update Inventory</button>
-            </div>
         </div>
     </div>
 
@@ -447,7 +447,7 @@
         </div>
     </div>
 
-    <!-- 📄 PROFILE PAGE (With Camera Upload) -->
+    <!-- 📄 PROFILE PAGE -->
     <div class="page" id="customer-profile-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('customer-profile-page')">←</button><h2 class="page-title">Profile</h2></div>
         <div class="profile-header-img">
@@ -493,88 +493,53 @@
 
     <!-- 🧮 CALC SCREEN -->
     <div class="page" id="calculator-page" style="z-index: 2500;">
-        <div class="calc-header" id="calc-header">
-            <button class="back-btn" onclick="closePage('calculator-page')" id="calc-back-btn" style="color:var(--danger);">←</button>
-            <h2 class="calc-title" id="calc-title-text">You gave ₹ 0</h2>
-        </div>
+        <div class="calc-header" id="calc-header"><button class="back-btn" onclick="closePage('calculator-page')" id="calc-back-btn" style="color:var(--danger);">←</button><h2 class="calc-title" id="calc-title-text">You gave ₹ 0</h2></div>
         <div class="page-content" style="padding:0;">
-            <div class="amount-input-box">
-                <span class="amount-symbol" id="calc-symbol">₹</span>
-                <input type="text" id="calc-amount" readonly placeholder="0" style="color:var(--danger);">
-            </div>
+            <div class="amount-input-box"><span class="amount-symbol" id="calc-symbol">₹</span><input type="text" id="calc-amount" readonly placeholder="0" style="color:var(--danger);"></div>
             <input type="text" class="calc-details-input" id="calc-details" placeholder="Enter details (Items, bill no., quantity, etc.)">
-            <div class="calc-action-row">
-                <input type="date" class="calc-date-btn" id="calc-date">
-            </div>
+            <div class="calc-action-row"><input type="date" class="calc-date-btn" id="calc-date"></div>
         </div>
         <div class="calculator-footer">
             <button class="calc-save-btn" id="calc-save-btn" onclick="saveCalculatorEntry()">SAVE ENTRY</button>
             <div class="calc-grid">
-                <button class="calc-btn light-blue" onclick="calcPress('C')">C</button>
-                <button class="calc-btn light-blue">M+</button>
-                <button class="calc-btn light-blue">M-</button>
-                <button class="calc-btn light-blue" onclick="calcPress('BACK')">⌫</button>
-                <button class="calc-btn" onclick="calcPress('7')">7</button>
-                <button class="calc-btn" onclick="calcPress('8')">8</button>
-                <button class="calc-btn" onclick="calcPress('9')">9</button>
-                <button class="calc-btn light-blue" onclick="calcPress('/')">÷</button>
-                <button class="calc-btn" onclick="calcPress('4')">4</button>
-                <button class="calc-btn" onclick="calcPress('5')">5</button>
-                <button class="calc-btn" onclick="calcPress('6')">6</button>
-                <button class="calc-btn light-blue" onclick="calcPress('*')">×</button>
-                <button class="calc-btn" onclick="calcPress('1')">1</button>
-                <button class="calc-btn" onclick="calcPress('2')">2</button>
-                <button class="calc-btn" onclick="calcPress('3')">3</button>
-                <button class="calc-btn dark-blue" onclick="calcPress('-')">-</button>
-                <button class="calc-btn" onclick="calcPress('0')">0</button>
-                <button class="calc-btn" onclick="calcPress('.')">.</button>
-                <button class="calc-btn" onclick="calcPress('=')">=</button>
-                <button class="calc-btn dark-blue" onclick="calcPress('+')">+</button>
+                <button class="calc-btn light-blue" onclick="calcPress('C')">C</button><button class="calc-btn light-blue">M+</button><button class="calc-btn light-blue">M-</button><button class="calc-btn light-blue" onclick="calcPress('BACK')">⌫</button>
+                <button class="calc-btn" onclick="calcPress('7')">7</button><button class="calc-btn" onclick="calcPress('8')">8</button><button class="calc-btn" onclick="calcPress('9')">9</button><button class="calc-btn light-blue" onclick="calcPress('/')">÷</button>
+                <button class="calc-btn" onclick="calcPress('4')">4</button><button class="calc-btn" onclick="calcPress('5')">5</button><button class="calc-btn" onclick="calcPress('6')">6</button><button class="calc-btn light-blue" onclick="calcPress('*')">×</button>
+                <button class="calc-btn" onclick="calcPress('1')">1</button><button class="calc-btn" onclick="calcPress('2')">2</button><button class="calc-btn" onclick="calcPress('3')">3</button><button class="calc-btn dark-blue" onclick="calcPress('-')">-</button>
+                <button class="calc-btn" onclick="calcPress('0')">0</button><button class="calc-btn" onclick="calcPress('.')">.</button><button class="calc-btn" onclick="calcPress('=')">=</button><button class="calc-btn dark-blue" onclick="calcPress('+')">+</button>
             </div>
         </div>
     </div>
 
-    <!-- ================= UPDATED: MASTER INVENTORY PAGE (6 BOXES ONLY) ================= -->
+    <!-- ================= MASTER INVENTORY PAGE (6 BOXES) ================= -->
     <div class="page" id="items-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('items-page')">←</button><h2 class="page-title">Master Inventory</h2></div>
         <div class="page-content">
             <div class="stock-overview-title">STOCK OVERVIEW</div>
             <div class="stock-grid">
                 <div class="stock-grid-card" onclick="openPage('thread-stock-page')">
-                    <div class="sg-title">THREAD (थ्रेड)</div>
-                    <div class="sg-value" id="stock-val-thread">0</div>
-                    <div class="sg-icon" style="background:#f1f5f9; color:#64748b;">🧵</div>
+                    <div class="sg-title">THREAD (थ्रेड)</div><div class="sg-value" id="stock-val-thread">0</div><div class="sg-icon" style="background:#f1f5f9; color:#64748b;">🧵</div>
                 </div>
                 <div class="stock-grid-card" onclick="openPage('zari-stock-page')">
-                    <div class="sg-title">ZARI (जरी)</div>
-                    <div class="sg-value" id="stock-val-zari">0</div>
-                    <div class="sg-icon" style="background:#eff6ff; color:#3b82f6;">✨</div>
+                    <div class="sg-title">ZARI (जरी)</div><div class="sg-value" id="stock-val-zari">0</div><div class="sg-icon" style="background:#eff6ff; color:#3b82f6;">✨</div>
                 </div>
                 <div class="stock-grid-card" onclick="openPage('nylon-stock-page')">
-                    <div class="sg-title">NYLON (नायलोन)</div>
-                    <div class="sg-value" id="stock-val-nylon">0</div>
-                    <div class="sg-icon" style="background:#fdf4ff; color:#d946ef;">🧶</div>
+                    <div class="sg-title">NYLON (नायलोन)</div><div class="sg-value" id="stock-val-nylon">0</div><div class="sg-icon" style="background:#fdf4ff; color:#d946ef;">🧶</div>
                 </div>
                 <div class="stock-grid-card" onclick="openPage('cording-stock-page')">
-                    <div class="sg-title">CORDING (कोडिंग)</div>
-                    <div class="sg-value" id="stock-val-cording">0</div>
-                    <div class="sg-icon" style="background:#f5f3ff; color:#8b5cf6;">🪢</div>
+                    <div class="sg-title">CORDING (कोडिंग)</div><div class="sg-value" id="stock-val-cording">0</div><div class="sg-icon" style="background:#f5f3ff; color:#8b5cf6;">🪢</div>
                 </div>
                 <div class="stock-grid-card" onclick="openPage('bobbin-stock-page')">
-                    <div class="sg-title">BOBBIN (बोबिन)</div>
-                    <div class="sg-value" id="stock-val-bobbin">0</div>
-                    <div class="sg-icon" style="background:#fff7ed; color:#f97316;">🛞</div>
+                    <div class="sg-title">BOBBIN (बोबिन)</div><div class="sg-value" id="stock-val-bobbin">0</div><div class="sg-icon" style="background:#fff7ed; color:#f97316;">🛞</div>
                 </div>
                 <div class="stock-grid-card" onclick="openPage('lowstock-page')">
-                    <div class="sg-title">LOW STOCK</div>
-                    <div class="sg-value" id="stock-val-lowstock">0</div>
-                    <div class="sg-icon" style="background:#fef2f2; color:#ef4444;">⚠️</div>
+                    <div class="sg-title">LOW STOCK</div><div class="sg-value" id="stock-val-lowstock">0</div><div class="sg-icon" style="background:#fef2f2; color:#ef4444;">⚠️</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 🧵 THREAD STOCK PAGE (With Fixed Header & Animation) -->
+    <!-- 🧵 THREAD STOCK PAGE -->
     <div class="page" id="thread-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('thread-stock-page')">←</button><h2 class="page-title">Thread Stock</h2></div>
         <div class="page-content">
@@ -597,22 +562,23 @@
                     </div>
                 </div>
             </div>
-            <table class="invoice-table">
-                <thead><tr><th>Shade No.</th><th>Total Boxes</th></tr></thead>
-                <tbody id="thread-stock-list"></tbody>
-            </table>
+            <table class="invoice-table"><thead><tr><th>Shade No.</th><th>Total Boxes</th></tr></thead><tbody id="thread-stock-list"></tbody></table>
         </div>
     </div>
 
-    <!-- ✨ ZARI STOCK PAGE -->
+    <!-- ✨ ZARI STOCK PAGE (Animated & Sticky) -->
     <div class="page" id="zari-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('zari-stock-page')">←</button><h2 class="page-title">Zari Stock</h2></div>
         <div class="page-content">
             <div class="sticky-top-section">
                 <div class="search-bar-container" style="margin: 0 0 16px 0;">
-                    <span>🔍</span><input type="text" id="search-zari" placeholder="Search Item..." onkeyup="filterStockList('search-zari', 'zari-stock-list')">
+                    <span>🔍</span>
+                    <input type="text" id="search-zari" placeholder="Search Item..." 
+                           onfocus="document.getElementById('zari-anim-form').classList.add('hidden')" 
+                           onblur="setTimeout(()=>document.getElementById('zari-anim-form').classList.remove('hidden'), 200)" 
+                           onkeyup="filterStockList('search-zari', 'zari-stock-list')">
                 </div>
-                <div class="form-panel">
+                <div class="form-panel anim-form" id="zari-anim-form">
                     <select class="form-control" id="zari-item-select" style="margin-bottom: 12px;">
                         <option value="Water 20">Water 20</option><option value="Ice Silver">Ice Silver</option>
                         <option value="Sike Water 150">Sike Water 150</option><option value="Sike Water 180">Sike Water 180</option>
@@ -626,22 +592,23 @@
                     </div>
                 </div>
             </div>
-            <table class="invoice-table">
-                <thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead>
-                <tbody id="zari-stock-list"></tbody>
-            </table>
+            <table class="invoice-table"><thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead><tbody id="zari-stock-list"></tbody></table>
         </div>
     </div>
 
-    <!-- 🪢 CORDING STOCK PAGE -->
+    <!-- 🪢 CORDING STOCK PAGE (Animated & Sticky) -->
     <div class="page" id="cording-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('cording-stock-page')">←</button><h2 class="page-title">Cording Stock</h2></div>
         <div class="page-content">
             <div class="sticky-top-section">
                 <div class="search-bar-container" style="margin: 0 0 16px 0;">
-                    <span>🔍</span><input type="text" id="search-cording" placeholder="Search Item..." onkeyup="filterStockList('search-cording', 'cording-stock-list')">
+                    <span>🔍</span>
+                    <input type="text" id="search-cording" placeholder="Search Item..." 
+                           onfocus="document.getElementById('cording-anim-form').classList.add('hidden')" 
+                           onblur="setTimeout(()=>document.getElementById('cording-anim-form').classList.remove('hidden'), 200)" 
+                           onkeyup="filterStockList('search-cording', 'cording-stock-list')">
                 </div>
-                <div class="form-panel">
+                <div class="form-panel anim-form" id="cording-anim-form">
                     <select class="form-control" id="cording-item-select" style="margin-bottom: 12px;">
                         <option value="Cotton Cording">Cotton Cording</option><option value="I Very 3 Taar">I Very 3 Taar</option>
                         <option value="M 17 Taar">M 17 Taar</option><option value="Anmol Two 5 Taar">Anmol Two 5 Taar</option>
@@ -655,22 +622,23 @@
                     </div>
                 </div>
             </div>
-            <table class="invoice-table">
-                <thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead>
-                <tbody id="cording-stock-list"></tbody>
-            </table>
+            <table class="invoice-table"><thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead><tbody id="cording-stock-list"></tbody></table>
         </div>
     </div>
 
-    <!-- 🧶 NYLON STOCK PAGE -->
+    <!-- 🧶 NYLON STOCK PAGE (Animated & Sticky) -->
     <div class="page" id="nylon-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('nylon-stock-page')">←</button><h2 class="page-title">Nylon Stock</h2></div>
         <div class="page-content">
             <div class="sticky-top-section">
                 <div class="search-bar-container" style="margin: 0 0 16px 0;">
-                    <span>🔍</span><input type="text" id="search-nylon" placeholder="Search Item..." onkeyup="filterStockList('search-nylon', 'nylon-stock-list')">
+                    <span>🔍</span>
+                    <input type="text" id="search-nylon" placeholder="Search Item..." 
+                           onfocus="document.getElementById('nylon-anim-form').classList.add('hidden')" 
+                           onblur="setTimeout(()=>document.getElementById('nylon-anim-form').classList.remove('hidden'), 200)" 
+                           onkeyup="filterStockList('search-nylon', 'nylon-stock-list')">
                 </div>
-                <div class="form-panel">
+                <div class="form-panel anim-form" id="nylon-anim-form">
                     <div class="input-btn-group" style="margin-bottom: 12px;">
                         <input type="text" class="form-control" id="nylon-item-input" placeholder="Item Name / Shade">
                         <input type="number" class="form-control" id="nylon-box-input" placeholder="Boxes">
@@ -681,22 +649,23 @@
                     </div>
                 </div>
             </div>
-            <table class="invoice-table">
-                <thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead>
-                <tbody id="nylon-stock-list"></tbody>
-            </table>
+            <table class="invoice-table"><thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead><tbody id="nylon-stock-list"></tbody></table>
         </div>
     </div>
 
-    <!-- 🛞 BOBBIN STOCK PAGE -->
+    <!-- 🛞 BOBBIN STOCK PAGE (Animated & Sticky) -->
     <div class="page" id="bobbin-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('bobbin-stock-page')">←</button><h2 class="page-title">Bobbin Stock</h2></div>
         <div class="page-content">
             <div class="sticky-top-section">
                 <div class="search-bar-container" style="margin: 0 0 16px 0;">
-                    <span>🔍</span><input type="text" id="search-bobbin" placeholder="Search Item..." onkeyup="filterStockList('search-bobbin', 'bobbin-stock-list')">
+                    <span>🔍</span>
+                    <input type="text" id="search-bobbin" placeholder="Search Item..." 
+                           onfocus="document.getElementById('bobbin-anim-form').classList.add('hidden')" 
+                           onblur="setTimeout(()=>document.getElementById('bobbin-anim-form').classList.remove('hidden'), 200)" 
+                           onkeyup="filterStockList('search-bobbin', 'bobbin-stock-list')">
                 </div>
-                <div class="form-panel">
+                <div class="form-panel anim-form" id="bobbin-anim-form">
                     <div class="input-btn-group" style="margin-bottom: 12px;">
                         <input type="text" class="form-control" id="bobbin-item-input" placeholder="Item Name">
                         <input type="number" class="form-control" id="bobbin-box-input" placeholder="Boxes">
@@ -707,24 +676,20 @@
                     </div>
                 </div>
             </div>
-            <table class="invoice-table">
-                <thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead>
-                <tbody id="bobbin-stock-list"></tbody>
-            </table>
+            <table class="invoice-table"><thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead><tbody id="bobbin-stock-list"></tbody></table>
         </div>
     </div>
 
-    <!-- ⚠️ LOW STOCK PAGE (Automated Alert Page) -->
+    <!-- ⚠️ LOW STOCK PAGE -->
     <div class="page" id="lowstock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('lowstock-page')">←</button><h2 class="page-title">Low Stock Alerts</h2></div>
         <div class="page-content">
-            <div style="background:#fef2f2; color:#b91c1c; padding:12px; border-radius:8px; font-weight:600; font-size:13px; margin-bottom:16px; border: 1px solid #fca5a5; display:flex; align-items:center; gap:10px;">
-                <span style="font-size:20px;">⚠️</span> <span>Below items have 5 or less boxes left. Time to re-order!</span>
+            <div class="sticky-top-section" style="padding-bottom:10px;">
+                <div style="background:#fef2f2; color:#b91c1c; padding:12px; border-radius:8px; font-weight:600; font-size:13px; border: 1px solid #fca5a5; display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:20px;">⚠️</span> <span>Below items have 5 or less boxes left. Time to re-order!</span>
+                </div>
             </div>
-            <table class="invoice-table">
-                <thead><tr><th>Item Details</th><th>Remaining</th></tr></thead>
-                <tbody id="lowstock-list"></tbody>
-            </table>
+            <table class="invoice-table"><thead><tr><th>Item Details</th><th>Remaining</th></tr></thead><tbody id="lowstock-list"></tbody></table>
         </div>
     </div>
 
@@ -733,21 +698,9 @@
         <div class="page-header"><button class="back-btn" onclick="closePage('add-party-page')">←</button><h2 class="page-title" id="add-party-title">Add Customer</h2></div>
         <div class="page-content">
             <div class="form-panel">
-                <div class="form-group">
-                    <label class="form-label">Full Name</label>
-                    <div class="input-btn-group">
-                        <input type="text" class="form-control" id="new-party-name" placeholder="Enter Full Name">
-                        <button class="action-btn" onclick="openPhonebook('new-party-name', 'new-party-phone')">👥</button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Mobile Number</label>
-                    <input type="tel" class="form-control" id="new-party-phone" placeholder="Enter Number">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Address (Optional)</label>
-                    <input type="text" class="form-control" id="new-party-address" placeholder="City or Full Address">
-                </div>
+                <div class="form-group"><label class="form-label">Full Name</label><div class="input-btn-group"><input type="text" class="form-control" id="new-party-name" placeholder="Enter Full Name"><button class="action-btn" onclick="openPhonebook('new-party-name', 'new-party-phone')">👥</button></div></div>
+                <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="new-party-phone" placeholder="Enter Number"></div>
+                <div class="form-group"><label class="form-label">Address (Optional)</label><input type="text" class="form-control" id="new-party-address" placeholder="City or Full Address"></div>
                 <button class="btn-submit" onclick="addCustomerToCloud()">💾 Save Details</button>
             </div>
         </div>
@@ -758,7 +711,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, get, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // FIREBASE CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyAGcWUM4lqJKmV2Zz2Em3WtI-D0fcQeuzQ",
             authDomain: "vandana-inventory.firebaseapp.com",
@@ -772,18 +724,13 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // GLOBAL VARIABLES
         let allLedgerData = []; 
         let globalCustomers = []; 
         let smartInventory = {}; 
-        let currentPartyName = ""; 
-        let currentPartyPhone = ""; 
-        let currentPartyKey = "";
-        let currentEntryData = null; 
-        
+        let allGodownTransfers = [];
+        let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null; 
         window.currentTabType = 'Customer';
 
-        // INIT & REALTIME LISTENERS
         window.addEventListener('DOMContentLoaded', () => {
             let todayStr = new Date().toISOString().split('T')[0];
             document.getElementById('dash-date-picker').value = todayStr;
@@ -795,210 +742,149 @@
                 document.getElementById('sidebar-user-pic').innerHTML = `<img src="${savedPic}" style="width:100%; height:100%; object-fit:cover;">`;
             }
             
-            onValue(ref(db, 'Inventory'), (snapshot) => { 
-                smartInventory = snapshot.val() || {}; 
-                renderInventoryList(); 
-            });
+            onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); });
+            onValue(ref(db, 'Customers'), (snapshot) => { let data = snapshot.val() || {}; globalCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); renderCustomerList(globalCustomers); });
+            onValue(ref(db, 'GodownTransfers'), (snapshot) => { let data = snapshot.val() || {}; allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); renderGodownHistory(); });
             
-            onValue(ref(db, 'Customers'), (snapshot) => {
-                let data = snapshot.val() || {};
-                globalCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] }));
-                renderCustomerList(globalCustomers);
-            });
-
             onValue(ref(db, 'Ledger'), (snapshot) => {
-                let data = snapshot.val() || {};
-                allLedgerData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse();
+                let data = snapshot.val() || {}; allLedgerData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse();
                 calculateGrandTotals();
-                if (document.getElementById('ledger-deep-page').classList.contains('active')) {
-                    renderLedgerEntries(currentPartyName);
-                }
+                if (document.getElementById('ledger-deep-page').classList.contains('active')) renderLedgerEntries(currentPartyName);
             });
 
             document.getElementById('parties-page').addEventListener('scroll', function() {
                 let fab = document.getElementById('main-fab');
-                if (this.scrollTop > 50) { fab.classList.add('collapsed'); } 
-                else { fab.classList.remove('collapsed'); }
+                if (this.scrollTop > 50) { fab.classList.add('collapsed'); } else { fab.classList.remove('collapsed'); }
             });
         });
+
+        // ================= 22 GODAM TRANSFER LOGIC =================
+        window.processGodown = function(type) {
+            let cat = document.getElementById('gd-cat').value; 
+            let item = document.getElementById('gd-item').value; 
+            let qty = parseInt(document.getElementById('gd-qty').value);
+            
+            if(!item || isNaN(qty) || qty <= 0) return alert("Please enter Item Name and Valid Quantity!");
+
+            let key = cat + "_" + item; 
+            let itemRef = ref(db, 'Inventory/' + key);
+            
+            get(itemRef).then((snap) => { 
+                let currentQty = snap.val() || 0;
+                let newQty = type === 'OUT' ? currentQty - qty : currentQty + qty;
+                if(newQty < 0) newQty = 0; 
+                set(itemRef, newQty); 
+            });
+
+            push(ref(db, 'GodownTransfers'), { 
+                date: new Date().toISOString(), cat: cat, item: item, qty: qty, type: type 
+            });
+
+            document.getElementById('gd-item').value = ''; document.getElementById('gd-qty').value = '';
+            alert(type === 'IN' ? `Stock Received from 22 Godam!` : `Stock Returned to 22 Godam!`);
+        }
+
+        window.renderGodownHistory = function() {
+            let html = "";
+            if(allGodownTransfers.length === 0) {
+                html = '<tr><td colspan="2" style="text-align:center; padding:16px;">No transfers yet.</td></tr>';
+            } else {
+                allGodownTransfers.forEach(t => {
+                    let d = new Date(t.date); let dateStr = isNaN(d) ? t.date : d.toLocaleString('en-GB', {day:'numeric', month:'short'});
+                    let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)';
+                    let icon = t.type === 'IN' ? '📥' : '📤';
+                    html += `<tr>
+                        <td><div style="font-weight:600;">${t.item} <span style="font-size:10px; color:gray;">(${t.cat})</span></div><div style="font-size:11px; color:var(--text-muted);">${dateStr}</div></td>
+                        <td style="color:${color}; font-weight:700;">${icon} ${t.qty} BOX</td>
+                    </tr>`;
+                });
+            }
+            document.getElementById('godown-history-list').innerHTML = html;
+        }
+
+        // ================= TOP CUSTOMERS LOGIC =================
+        window.showCelebration = function(name) {
+            document.getElementById('celeb-name').innerText = name;
+            document.getElementById('celebration-modal').style.display = 'flex';
+        }
 
         // ================= SWITCH TABS =================
         window.switchPartyTab = function(type) {
             currentTabType = type;
             document.getElementById('tab-customers').classList.toggle('active', type === 'Customer');
             document.getElementById('tab-suppliers').classList.toggle('active', type === 'Supplier');
-            
             let btnText = type === 'Customer' ? 'Add Customer' : 'Add Supplier';
-            document.getElementById('fab-text').innerText = btnText;
-            document.getElementById('add-party-title').innerText = btnText;
-            
+            document.getElementById('fab-text').innerText = btnText; document.getElementById('add-party-title').innerText = btnText;
             renderCustomerList(globalCustomers);
         }
 
         // ================= INVOICE/PDF LIST PAGE LOGIC =================
         window.openInvoicesPage = function() {
-            let listContainer = document.getElementById('invoices-list-container');
-            listContainer.innerHTML = '';
+            let listContainer = document.getElementById('invoices-list-container'); listContainer.innerHTML = '';
             let selectedDateString = document.getElementById('dash-date-picker').value;
-            
             let todayInvoices = allLedgerData.filter(entry => {
-                let entryDateString = "";
-                try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){}
+                let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){}
                 return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice Sale");
             });
 
-            if(todayInvoices.length === 0) {
-                listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>';
-            } else {
+            if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } 
+            else {
                 todayInvoices.forEach(entry => {
-                    listContainer.innerHTML += `
-                    <div class="entry-card" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
-                            <div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div>
-                            <div style="color:var(--success); font-weight:800; font-size: 16px;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div>
-                        </div>
-                        <div style="font-size:12px; color:var(--text-muted); margin-bottom: 16px;">${entry.details}</div>
-                        <button class="btn-outline" style="margin-top:0; width:auto; padding: 8px 16px; font-size:13px; border-radius:6px; cursor:pointer;" onclick="downloadPDF('${entry.name}', '${entry.amount}')">📄 Download PDF</button>
-                    </div>`;
+                    listContainer.innerHTML += `<div class="entry-card" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--success); font-weight:800; font-size: 16px;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); margin-bottom: 16px;">${entry.details}</div><button class="btn-outline" style="margin-top:0; width:auto; padding: 8px 16px; font-size:13px; border-radius:6px; cursor:pointer;" onclick="downloadPDF('${entry.name}', '${entry.amount}')">📄 Download PDF</button></div>`;
                 });
-            }
-            openPage('invoices-page');
+            } openPage('invoices-page');
         }
-
         window.downloadPDF = function(name, amount) { alert(`Generating PDF for Bill: ${name} (₹${amount})`); }
-        window.handleProfilePic = function(event) {
-            let file = event.target.files[0];
-            if(file) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    let imgHtml = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
-                    document.getElementById('cp-avatar').innerHTML = imgHtml; document.getElementById('sidebar-user-pic').innerHTML = imgHtml;
-                    localStorage.setItem('v_profilePic', e.target.result);
-                }
-                reader.readAsDataURL(file);
-            }
-        }
 
         // ================= CUSTOMER/SUPPLIER PROFILE LOGIC =================
         window.addCustomerToCloud = function() {
-            let name = document.getElementById('new-party-name').value.trim();
-            let phone = document.getElementById('new-party-phone').value;
-            let address = document.getElementById('new-party-address').value;
+            let name = document.getElementById('new-party-name').value.trim(); let phone = document.getElementById('new-party-phone').value; let address = document.getElementById('new-party-address').value;
             if(!name) return alert("Please enter Name!");
-
             push(ref(db, 'Customers'), { name, phone, address, date: new Date().toISOString(), status: "Active", type: currentTabType });
-            closePage('add-party-page');
-            document.getElementById('new-party-name').value = ''; document.getElementById('new-party-phone').value = ''; document.getElementById('new-party-address').value = '';
+            closePage('add-party-page'); document.getElementById('new-party-name').value = ''; document.getElementById('new-party-phone').value = ''; document.getElementById('new-party-address').value = '';
         }
-
         window.openCustomerProfile = function() {
-            let customer = globalCustomers.find(c => c.name === currentPartyName);
-            if(!customer) return;
-            currentPartyKey = customer.key;
-
+            let customer = globalCustomers.find(c => c.name === currentPartyName); if(!customer) return; currentPartyKey = customer.key;
             if(!localStorage.getItem('v_profilePic')) { document.getElementById('cp-avatar').innerText = customer.name.substring(0, 1).toUpperCase(); }
-            document.getElementById('cp-name').innerText = customer.name;
-            document.getElementById('cp-phone').innerText = customer.phone || "No Phone Number";
-            document.getElementById('cp-address').innerText = customer.address || "Not provided (Tap to add)";
+            document.getElementById('cp-name').innerText = customer.name; document.getElementById('cp-phone').innerText = customer.phone || "No Phone Number"; document.getElementById('cp-address').innerText = customer.address || "Not provided (Tap to add)";
             openPage('customer-profile-page');
         }
-
-        window.editCustomerAddress = function() {
-            let customer = globalCustomers.find(c => c.key === currentPartyKey);
-            let newAddr = prompt("Update Address for " + customer.name + ":", customer.address || "");
-            if (newAddr !== null) {
-                update(ref(db, 'Customers/' + currentPartyKey), { address: newAddr });
-                document.getElementById('cp-address').innerText = newAddr || "Not provided (Tap to add)";
-            }
-        }
-
-        window.deleteCurrentCustomer = function() {
-            if(confirm(`WARNING: Are you sure you want to permanently delete ${currentPartyName}?`)) {
-                remove(ref(db, 'Customers/' + currentPartyKey));
-                closePage('customer-profile-page'); closePage('ledger-deep-page'); alert("Deleted Successfully!");
-            }
-        }
+        window.editCustomerAddress = function() { let customer = globalCustomers.find(c => c.key === currentPartyKey); let newAddr = prompt("Update Address for " + customer.name + ":", customer.address || ""); if (newAddr !== null) { update(ref(db, 'Customers/' + currentPartyKey), { address: newAddr }); document.getElementById('cp-address').innerText = newAddr || "Not provided (Tap to add)"; } }
+        window.deleteCurrentCustomer = function() { if(confirm(`WARNING: Are you sure you want to permanently delete ${currentPartyName}?`)) { remove(ref(db, 'Customers/' + currentPartyKey)); closePage('customer-profile-page'); closePage('ledger-deep-page'); alert("Deleted Successfully!"); } }
 
         // ================= LEDGER LOGIC =================
         window.saveCalculatorEntry = function() {
-            let amount = eval(calcValue) || 0;
-            if(amount <= 0) return alert("Enter valid amount!");
+            let amount = eval(calcValue) || 0; if(amount <= 0) return alert("Enter valid amount!");
             let dateVal = document.getElementById('calc-date').value; if(!dateVal) dateVal = new Date().toISOString().split('T')[0];
-
-            push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: calcType, amount: amount, details: document.getElementById('calc-details').value || "App Entry" });
-            closePage('calculator-page');
+            push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: calcType, amount: amount, details: document.getElementById('calc-details').value || "App Entry" }); closePage('calculator-page');
         }
-
         window.openEntryDetails = function(key) {
             currentEntryData = allLedgerData.find(e => e.key === key); if(!currentEntryData) return;
             document.getElementById('ed-party-name').innerText = currentEntryData.name;
             let d = new Date(currentEntryData.date); document.getElementById('ed-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
-            let color = currentEntryData.type === 'Gave' ? 'var(--danger)' : 'var(--success)';
-            let icon = currentEntryData.type === 'Gave' ? '💸' : '💰';
-            document.getElementById('ed-icon').innerText = icon; document.getElementById('ed-amount').innerText = `₹ ${parseFloat(currentEntryData.amount).toLocaleString()}`;
-            document.getElementById('ed-amount').style.color = color; document.getElementById('ed-type').innerText = `You ${currentEntryData.type}`;
-            document.getElementById('ed-type').style.color = color; document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry";
-            openPage('entry-details-page');
+            let color = currentEntryData.type === 'Gave' ? 'var(--danger)' : 'var(--success)'; let icon = currentEntryData.type === 'Gave' ? '💸' : '💰';
+            document.getElementById('ed-icon').innerText = icon; document.getElementById('ed-amount').innerText = `₹ ${parseFloat(currentEntryData.amount).toLocaleString()}`; document.getElementById('ed-amount').style.color = color; document.getElementById('ed-type').innerText = `You ${currentEntryData.type}`; document.getElementById('ed-type').style.color = color; document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry"; openPage('entry-details-page');
         }
+        window.editCurrentEntryAmount = function() { if(!currentEntryData) return; let newAmt = prompt("Edit Amount:", currentEntryData.amount); if(newAmt !== null && !isNaN(newAmt)) { update(ref(db, 'Ledger/' + currentEntryData.key), { amount: parseFloat(newAmt) }); document.getElementById('ed-amount').innerText = `₹ ${parseFloat(newAmt).toLocaleString()}`; currentEntryData.amount = parseFloat(newAmt); } }
+        window.editCurrentEntryDetails = function() { if(!currentEntryData) return; let newDetails = prompt("Edit Details/Bill No.:", currentEntryData.details); if(newDetails !== null) { update(ref(db, 'Ledger/' + currentEntryData.key), { details: newDetails }); document.getElementById('ed-details-text').innerText = newDetails || "App Entry"; currentEntryData.details = newDetails; } }
+        window.deleteCurrentEntry = function() { if(confirm("Are you sure you want to delete this entry?")) { remove(ref(db, 'Ledger/' + currentEntryData.key)); closePage('entry-details-page'); } }
+        window.shareCurrentEntry = function() { if(!currentEntryData) return; let typeStr = currentEntryData.type === 'Gave' ? 'You Gave' : 'You Got'; let msg = `📄 *Ledger Entry* %0A🏛️ *Vandana Enterprises*%0A%0A*Name:* ${currentEntryData.name}%0A*Type:* ${typeStr}%0A*Amount:* ₹${currentEntryData.amount}%0A*Details:* ${currentEntryData.details}`; window.open(`https://wa.me/91${currentPartyPhone}?text=${msg}`, '_blank'); }
 
-        window.editCurrentEntryAmount = function() {
-            if(!currentEntryData) return; let newAmt = prompt("Edit Amount:", currentEntryData.amount);
-            if(newAmt !== null && !isNaN(newAmt)) { update(ref(db, 'Ledger/' + currentEntryData.key), { amount: parseFloat(newAmt) }); document.getElementById('ed-amount').innerText = `₹ ${parseFloat(newAmt).toLocaleString()}`; currentEntryData.amount = parseFloat(newAmt); }
-        }
-
-        window.editCurrentEntryDetails = function() {
-            if(!currentEntryData) return; let newDetails = prompt("Edit Details/Bill No.:", currentEntryData.details);
-            if(newDetails !== null) { update(ref(db, 'Ledger/' + currentEntryData.key), { details: newDetails }); document.getElementById('ed-details-text').innerText = newDetails || "App Entry"; currentEntryData.details = newDetails; }
-        }
-
-        window.deleteCurrentEntry = function() {
-            if(confirm("Are you sure you want to delete this entry?")) { remove(ref(db, 'Ledger/' + currentEntryData.key)); closePage('entry-details-page'); }
-        }
-
-        window.shareCurrentEntry = function() {
-            if(!currentEntryData) return; let typeStr = currentEntryData.type === 'Gave' ? 'You Gave' : 'You Got';
-            let msg = `📄 *Ledger Entry* %0A🏛️ *Vandana Enterprises*%0A%0A*Name:* ${currentEntryData.name}%0A*Type:* ${typeStr}%0A*Amount:* ₹${currentEntryData.amount}%0A*Details:* ${currentEntryData.details}`;
-            window.open(`https://wa.me/91${currentPartyPhone}?text=${msg}`, '_blank');
-        }
-
-        // ================= UPDATED: INVENTORY (IN/OUT & LOW STOCK) =================
-        window.saveSmartStock = function() {
-            let cat = document.getElementById('stock-cat').value; let shade = document.getElementById('stock-shade').value; let qty = parseInt(document.getElementById('stock-qty').value);
-            if(!shade || isNaN(qty)) return alert("Enter Shade and Qty!");
-            let key = cat + "_" + shade; let itemRef = ref(db, 'Inventory/' + key);
-            get(itemRef).then((snap) => { set(itemRef, (snap.val() || 0) + qty); });
-            document.getElementById('stock-shade').value = ''; document.getElementById('stock-qty').value = ''; alert("Stock Added!");
-        }
-
-        // NEW: Specific Stock Add/Remove function with IN/OUT logic
+        // ================= INVENTORY (IN/OUT & LOW STOCK) =================
         window.addSpecificStock = function(category, shadeId, qtyId, isOut = false) {
-            let shade = document.getElementById(shadeId).value; 
-            let qty = parseInt(document.getElementById(qtyId).value);
+            let shade = document.getElementById(shadeId).value; let qty = parseInt(document.getElementById(qtyId).value);
             if(!shade || isNaN(qty)) return alert("Please enter Detail and Box Quantity!");
-            
-            let key = category + "_" + shade; 
-            let itemRef = ref(db, 'Inventory/' + key);
-            
+            let key = category + "_" + shade; let itemRef = ref(db, 'Inventory/' + key);
             get(itemRef).then((snap) => { 
-                let currentQty = snap.val() || 0;
-                let newQty = isOut ? currentQty - qty : currentQty + qty;
-                if(newQty < 0) newQty = 0; // Negative stock lock
-                set(itemRef, newQty); 
+                let currentQty = snap.val() || 0; let newQty = isOut ? currentQty - qty : currentQty + qty; if(newQty < 0) newQty = 0; set(itemRef, newQty); 
             });
-            
             if(document.getElementById(shadeId).tagName !== 'SELECT') { document.getElementById(shadeId).value = ''; }
-            document.getElementById(qtyId).value = ''; 
-            alert(isOut ? "Stock Reduced (OUT) Successfully!" : "Stock Added (IN) Successfully!");
+            document.getElementById(qtyId).value = ''; alert(isOut ? "Stock Reduced (OUT) Successfully!" : "Stock Added (IN) Successfully!");
         }
 
-        // NEW: Live Search Filter function
         window.filterStockList = function(inputId, listId) {
-            let filter = document.getElementById(inputId).value.toUpperCase();
-            let rows = document.querySelectorAll('#' + listId + ' .stock-row');
-            rows.forEach(row => {
-                let name = row.getAttribute('data-name');
-                row.style.display = name.includes(filter) ? '' : 'none';
-            });
+            let filter = document.getElementById(inputId).value.toUpperCase(); let rows = document.querySelectorAll('#' + listId + ' .stock-row');
+            rows.forEach(row => { let name = row.getAttribute('data-name'); row.style.display = name.includes(filter) ? '' : 'none'; });
         }
 
         window.renderInventoryList = function() {
@@ -1008,20 +894,10 @@
             for (let key in smartInventory) {
                 let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let qty = smartInventory[key]; 
                 let color = qty <= 5 ? 'var(--danger)' : 'var(--text-dark)';
-                
                 let rowHtml = `<tr class="stock-row" data-name="${shade.toUpperCase()}"><td><strong>${shade}</strong></td><td style="color:${color}; font-weight:700;">${qty} BOX</td></tr>`;
 
-                if(cat === "Thread") { threadHtml += rowHtml; threadCount += qty; }
-                else if(cat === "Zari") { zariHtml += rowHtml; zariCount += qty; }
-                else if(cat === "Nylon") { nylonHtml += rowHtml; nylonCount += qty; }
-                else if(cat === "Cording") { cordingHtml += rowHtml; cordingCount += qty; }
-                else if(cat === "Bobbin") { bobbinHtml += rowHtml; bobbinCount += qty; }
-                
-                // LOW STOCK SCANNER (qty <= 5)
-                if(qty <= 5 && qty > 0) {
-                    lowstockCount++;
-                    lowstockHtml += `<tr><td><strong>${shade}</strong><br><span style="font-size:10px; color:gray;">${cat}</span></td><td style="color:var(--danger); font-weight:700;">${qty} BOX</td></tr>`;
-                }
+                if(cat === "Thread") { threadHtml += rowHtml; threadCount += qty; } else if(cat === "Zari") { zariHtml += rowHtml; zariCount += qty; } else if(cat === "Nylon") { nylonHtml += rowHtml; nylonCount += qty; } else if(cat === "Cording") { cordingHtml += rowHtml; cordingCount += qty; } else if(cat === "Bobbin") { bobbinHtml += rowHtml; bobbinCount += qty; }
+                if(qty <= 5 && qty > 0) { lowstockCount++; lowstockHtml += `<tr><td><strong>${shade}</strong><br><span style="font-size:10px; color:gray;">${cat}</span></td><td style="color:var(--danger); font-weight:700;">${qty} BOX</td></tr>`; }
             }
             
             if(document.getElementById('thread-stock-list')) document.getElementById('thread-stock-list').innerHTML = threadHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
@@ -1029,11 +905,8 @@
             if(document.getElementById('nylon-stock-list')) document.getElementById('nylon-stock-list').innerHTML = nylonHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
             if(document.getElementById('cording-stock-list')) document.getElementById('cording-stock-list').innerHTML = cordingHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
             if(document.getElementById('bobbin-stock-list')) document.getElementById('bobbin-stock-list').innerHTML = bobbinHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
-            
-            // Render Automated Low Stock Alert List
             if(document.getElementById('lowstock-list')) document.getElementById('lowstock-list').innerHTML = lowstockHtml || '<tr><td colspan="2" style="text-align:center;">All stocks are healthy! 🎉</td></tr>';
 
-            // Update Grids
             if(document.getElementById('stock-val-thread')) document.getElementById('stock-val-thread').innerText = threadCount;
             if(document.getElementById('stock-val-zari')) document.getElementById('stock-val-zari').innerText = zariCount;
             if(document.getElementById('stock-val-nylon')) document.getElementById('stock-val-nylon').innerText = nylonCount;
@@ -1046,51 +919,21 @@
         window.renderLedgerEntries = function(name) {
             let entryList = document.getElementById('ledger-entries-list'); entryList.innerHTML = '';
             let totalGave = 0; let totalGot = 0; let customerEntries = allLedgerData.filter(e => e.name === name);
-
             if(customerEntries.length === 0) { entryList.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No entries yet.</div>`; } 
-            else {
-                customerEntries.forEach(entry => {
-                    let amt = parseFloat(entry.amount) || 0;
-                    let gaveHtml = entry.type === 'Gave' ? `₹ ${amt}` : ''; let gotHtml = entry.type === 'Got' ? `₹ ${amt}` : '';
-                    if(entry.type === 'Gave') totalGave += amt; if(entry.type === 'Got') totalGot += amt;
-                    let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short'});
-                    
-                    entryList.innerHTML += `
-                    <div class="entry-card" onclick="openEntryDetails('${entry.key}')">
-                        <div class="ec-left">
-                            <div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${dateStr}</div>
-                            <div style="font-size:13px; color:var(--text-dark); font-weight:500;">${entry.details || 'App Entry'}</div>
-                        </div>
-                        <div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div>
-                    </div>`;
-                });
-            }
+            else { customerEntries.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let gaveHtml = entry.type === 'Gave' ? `₹ ${amt}` : ''; let gotHtml = entry.type === 'Got' ? `₹ ${amt}` : ''; if(entry.type === 'Gave') totalGave += amt; if(entry.type === 'Got') totalGot += amt; let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short'}); entryList.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')"><div class="ec-left"><div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${dateStr}</div><div style="font-size:13px; color:var(--text-dark); font-weight:500;">${entry.details || 'App Entry'}</div></div><div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div></div>`; }); }
             let balEl = document.getElementById('l-deep-bal-amt'); let txtEl = document.getElementById('l-deep-bal-text'); let finalBal = totalGave - totalGot;
-            if(finalBal > 0) { balEl.innerText = "₹ " + finalBal.toLocaleString(); balEl.style.color = "var(--success)"; txtEl.innerText = "You will get"; } 
-            else if (finalBal < 0) { balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); balEl.style.color = "var(--danger)"; txtEl.innerText = "You will give"; } 
-            else { balEl.innerText = "₹ 0"; balEl.style.color = "var(--text-dark)"; txtEl.innerText = "Settled"; }
+            if(finalBal > 0) { balEl.innerText = "₹ " + finalBal.toLocaleString(); balEl.style.color = "var(--success)"; txtEl.innerText = "You will get"; } else if (finalBal < 0) { balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); balEl.style.color = "var(--danger)"; txtEl.innerText = "You will give"; } else { balEl.innerText = "₹ 0"; balEl.style.color = "var(--text-dark)"; txtEl.innerText = "Settled"; }
         }
 
         window.renderCustomerList = function(list) {
-            let filteredList = list.filter(c => (c.type || 'Customer') === currentTabType);
-            let html = "";
-            filteredList.forEach(cust => {
-                let initial = cust.name ? cust.name.substring(0,2).toUpperCase() : "CU";
-                let addr = cust.address ? `<br>📍 ${cust.address}` : "";
-                html += `
-                <div class="kb-list-item" onclick="openLedgerDetail('${cust.name}', '${cust.phone}')">
-                    <div class="kb-list-left">
-                        <div class="kb-avatar">${initial}</div>
-                        <div><div class="kb-name">${cust.name}</div><div class="kb-time">📱 ${cust.phone || 'N/A'}${addr}</div></div>
-                    </div>
-                    <div class="kb-list-right"><span style="color:var(--text-muted); font-size:18px;">›</span></div>
-                </div>`;
-            });
+            let filteredList = list.filter(c => (c.type || 'Customer') === currentTabType); let html = "";
+            filteredList.forEach(cust => { let initial = cust.name ? cust.name.substring(0,2).toUpperCase() : "CU"; let addr = cust.address ? `<br>📍 ${cust.address}` : ""; html += `<div class="kb-list-item" onclick="openLedgerDetail('${cust.name}', '${cust.phone}')"><div class="kb-list-left"><div class="kb-avatar">${initial}</div><div><div class="kb-name">${cust.name}</div><div class="kb-time">📱 ${cust.phone || 'N/A'}${addr}</div></div></div><div class="kb-list-right"><span style="color:var(--text-muted); font-size:18px;">›</span></div></div>`; });
             document.getElementById('kb-customer-list').innerHTML = html || `<div style="padding:40px; text-align:center; color:gray;">No ${currentTabType}s found</div>`;
         }
 
         window.calculateGrandTotals = function() {
             let totalGive = 0; let totalGet = 0; let balances = {}; let todayTotalSale = 0; let todayTotalBox = 0;
+            let customerPurchases = {}; // For Top 5 Customers
             let selectedDateString = document.getElementById('dash-date-picker').value; 
 
             allLedgerData.forEach(entry => {
@@ -1101,84 +944,67 @@
                 if(entry.type === 'Gave') balances[entry.name] += amt;
                 if(entry.type === 'Got') balances[entry.name] -= amt;
 
-                if (entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice Sale")) {
-                    todayTotalSale += amt; let boxMatch = entry.details.match(/(\d+)\s*Box/i);
-                    if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]);
+                if (entry.details && entry.details.includes("Invoice Sale")) {
+                    // Accumulate all-time sale for Top Customers logic
+                    if(!customerPurchases[entry.name]) customerPurchases[entry.name] = 0;
+                    customerPurchases[entry.name] += amt;
+                    
+                    if(entryDateString === selectedDateString){
+                        todayTotalSale += amt; let boxMatch = entry.details.match(/(\d+)\s*Box/i);
+                        if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]);
+                    }
                 }
             });
 
-            for(let cust in balances) {
-                if(balances[cust] > 0) totalGet += balances[cust]; 
-                if(balances[cust] < 0) totalGive += Math.abs(balances[cust]); 
-            }
+            for(let cust in balances) { if(balances[cust] > 0) totalGet += balances[cust]; if(balances[cust] < 0) totalGive += Math.abs(balances[cust]); }
             
-            document.getElementById('total-give-all').innerText = "₹ " + totalGive.toLocaleString(); 
-            document.getElementById('total-get-all').innerText = "₹ " + totalGet.toLocaleString();
-            document.getElementById('dash-total-sale').innerText = `₹ ${todayTotalSale.toLocaleString('en-IN')} ➔`; 
-            document.getElementById('dash-total-box').innerText = `${todayTotalBox} BOX ➔`;
+            document.getElementById('total-give-all').innerText = "₹ " + totalGive.toLocaleString(); document.getElementById('total-get-all').innerText = "₹ " + totalGet.toLocaleString();
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
+
+            // Render Top 5 Customers
+            let topCustHtml = "";
+            let sortedCustomers = Object.entries(customerPurchases).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            
+            if(sortedCustomers.length === 0) {
+                topCustHtml = '<div style="text-align:center; padding:10px; color:gray; font-size:12px;">No sales data available yet.</div>';
+            } else {
+                sortedCustomers.forEach(cust => {
+                    topCustHtml += `
+                    <div class="ua-item" onclick="showCelebration('${cust[0]}')">
+                        <div class="ua-item-left">
+                            <div class="ua-item-name">${cust[0]} <span style="font-size:10px; color:var(--danger); background:#fee2e2; padding:2px 6px; border-radius:4px;">2% OFF</span></div>
+                            <div class="ua-item-desc">Top Buyer</div>
+                        </div>
+                        <div class="ua-item-right"><span class="ua-item-count">₹${cust[1].toLocaleString('en-IN')}</span><span class="ua-item-arrow">›</span></div>
+                    </div>`;
+                });
+            }
+            document.getElementById('top-customers-list').innerHTML = topCustHtml;
         }
         
         document.getElementById('dash-date-picker').addEventListener('change', calculateGrandTotals);
 
-        window.openLedgerDetail = function(name, phone) {
-            currentPartyName = name; currentPartyPhone = phone || "";
-            document.getElementById('l-deep-name').innerText = name; 
-            document.getElementById('l-deep-avatar-text').innerText = name.substring(0,2).toUpperCase();
-            document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#";
-            document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank');
-            renderLedgerEntries(name); openPage('ledger-deep-page');
-        }
+        window.openLedgerDetail = function(name, phone) { currentPartyName = name; currentPartyPhone = phone || ""; document.getElementById('l-deep-name').innerText = name; document.getElementById('l-deep-avatar-text').innerText = name.substring(0,2).toUpperCase(); document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#"; document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); renderLedgerEntries(name); openPage('ledger-deep-page'); }
 
         // ================= CART & BILLING LOGIC =================
         let currentCart = []; let grandInvoiceTotal = 0; let invoiceBoxCount = 0;
-        
         window.addCartItem = function() {
-            const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value || "Gen";
-            const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0;
+            const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value || "Gen"; const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0;
             if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!");
             currentCart.push({ cat: cat, shade: shade, title: `${cat} - Shd:${shade}`, qty, rate, itemTotal: qty * rate }); renderCartUi();
         }
-
         function renderCartUi() {
             let tbody = document.getElementById('cart-rows'); tbody.innerHTML = ''; grandInvoiceTotal = 0; invoiceBoxCount = 0;
-            currentCart.forEach(item => { 
-                grandInvoiceTotal += item.itemTotal; invoiceBoxCount += item.qty; 
-                tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.qty}</td><td>₹${item.rate}</td><td><strong>₹${item.itemTotal.toLocaleString()}</strong></td></tr>`; 
-            });
-            document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`;
-            document.getElementById('inv-shade').value=''; document.getElementById('inv-qty').value=''; document.getElementById('inv-rate').value='';
+            currentCart.forEach(item => { grandInvoiceTotal += item.itemTotal; invoiceBoxCount += item.qty; tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.qty}</td><td>₹${item.rate}</td><td><strong>₹${item.itemTotal.toLocaleString()}</strong></td></tr>`; });
+            document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`; document.getElementById('inv-shade').value=''; document.getElementById('inv-qty').value=''; document.getElementById('inv-rate').value='';
         }
-
         window.triggerSaveAndShare = function() {
             if (currentCart.length === 0) return alert("Cart is empty!");
-            currentCart.forEach(item => {
-                let key = item.cat + "_" + item.shade; let itemRef = ref(db, 'Inventory/' + key);
-                get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) - item.qty); });
-            });
-            let partyName = document.getElementById('inv-party').value || "Cash Sale";
-            push(ref(db, 'Ledger'), { date: new Date().toISOString(), name: partyName, type: "Got", amount: grandInvoiceTotal, details: `Invoice Sale - ${invoiceBoxCount} Box` });
+            currentCart.forEach(item => { let key = item.cat + "_" + item.shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) - item.qty); }); });
+            let partyName = document.getElementById('inv-party').value || "Cash Sale"; push(ref(db, 'Ledger'), { date: new Date().toISOString(), name: partyName, type: "Got", amount: grandInvoiceTotal, details: `Invoice Sale - ${invoiceBoxCount} Box` });
             document.getElementById('save-bill-btn').style.display = 'none'; document.getElementById('pdf-share-btn').style.display = 'block'; alert(`✅ Bill Generated! Stock reduced.`);
         }
-
-        window.sharePDFOnWhatsApp = function() {
-            const custPhone = document.getElementById('inv-phone').value || "";
-            window.open(`https://wa.me/91${custPhone}?text=📄 *INVOICE BILL* %0A🏛️ *VANDANA ENTERPRISES*%0A%0A*Total Amount:* ₹${grandInvoiceTotal}`, '_blank');
-        }
-
-        // ================= CALCULATOR UI =================
-        let calcType = "Gave"; let calcValue = "";
-        window.openCalculator = function(type) {
-            calcType = type; calcValue = ""; document.getElementById('calc-amount').value = ""; document.getElementById('calc-details').value = "";
-            let color = type === 'Gave' ? 'var(--danger)' : 'var(--success)';
-            document.getElementById('calc-header').style.color = color; document.getElementById('calc-back-btn').style.color = color; document.getElementById('calc-symbol').style.color = color; document.getElementById('calc-amount').style.color = color; document.getElementById('calc-save-btn').style.backgroundColor = color;
-            updateCalcTitle(); openPage('calculator-page');
-        }
-        window.calcPress = function(val) {
-            if(val === 'C') calcValue = ""; else if(val === 'BACK') calcValue = calcValue.slice(0, -1); else if(val === '=') { try { calcValue = eval(calcValue).toString(); } catch(e){} } else calcValue += val;
-            document.getElementById('calc-amount').value = calcValue; updateCalcTitle();
-        }
-        function updateCalcTitle() { document.getElementById('calc-title-text').innerText = `You ${calcType.toLowerCase()} ₹ ${calcValue || "0"} to ${currentPartyName}`; }
+        window.sharePDFOnWhatsApp = function() { const custPhone = document.getElementById('inv-phone').value || ""; window.open(`https://wa.me/91${custPhone}?text=📄 *INVOICE BILL* %0A🏛️ *VANDANA ENTERPRISES*%0A%0A*Total Amount:* ₹${grandInvoiceTotal}`, '_blank'); }
 
         // ================= NAVIGATION HELPERS & SIDEBAR =================
         window.toggleMenu = function() { const menu = document.getElementById('dropdown-menu'); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; }

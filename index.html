@@ -42,13 +42,12 @@
         .sum-title { font-size: 13px; color: var(--text-muted); font-weight: 500; }
         .sum-val { font-size: 16px; font-weight: 700; color: var(--text-dark); }
 
-        /* BOTTOM NAV (Hidden per user request, can be un-commented later) */
         .bottom-nav { display: none; }
 
         /* PAGES & FORMS */
         .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 30px; }
         .page.active { transform: translateX(0); }
-        .page-header { position: sticky; top: 0; background: var(--primary); color: white; height: 56px; display: flex; align-items: center; padding: 0 16px; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .page-header { position: sticky; top: 0; background: var(--primary); color: white; height: 56px; display: flex; align-items: center; padding: 0 16px; z-index: 50; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .back-btn { background: transparent; border: none; color: white; font-size: 24px; margin-right: 16px; cursor: pointer; padding: 5px;}
         .page-title { font-size: 16px; font-weight: 600; margin: 0; }
         .page-content { padding: 16px; max-width: 800px; margin: 0 auto; }
@@ -59,6 +58,7 @@
         .form-control { width: 100%; background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px 14px; border-radius: 8px; font-size: 14px; outline: none; font-weight: 500; color: var(--text-dark);}
         .form-control:focus { border-color: var(--primary); background: white; }
         .input-btn-group { display: flex; gap: 10px; }
+        
         .action-btn { background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; border-radius: 8px; padding: 0 16px; font-weight: 600; cursor: pointer;}
         .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 6px rgba(21, 101, 192, 0.2);}
 
@@ -92,7 +92,6 @@
         .kb-time { font-size: 12px; color: var(--text-muted); margin-top: 4px;}
         .kb-list-right { display: flex; flex-direction: column; justify-content: center; padding: 16px; min-width: 100px; text-align: right; border-left: 1px dashed #e2e8f0; background: #f8fafc; border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
         
-        /* SMART FLOATING ACTION BUTTON */
         .kb-fab { position: fixed !important; bottom: 30px; right: 20px; height: 56px; background: #ef4444; color: white; border-radius: 28px; display: flex; justify-content: center; align-items: center; font-size: 15px; font-weight: 700; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); border: none; z-index: 1001; cursor: pointer; padding: 0 20px; transition: all 0.3s ease; white-space: nowrap; overflow: hidden;}
         .kb-fab .fab-icon { font-size: 24px; margin-right: 8px; transition: margin 0.3s; }
         .kb-fab.collapsed { width: 56px; padding: 0; border-radius: 50%; }
@@ -195,7 +194,6 @@
         /* 2x2 DASHBOARD CARDS GRID */
         .op-overview { padding: 10px 0; }
         .op-header { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 15px; }
-        
         .dash-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .dash-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;}
         .dash-card-title { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
@@ -227,8 +225,24 @@
         .stock-grid-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.02); cursor: pointer;}
         .sg-title { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
         .sg-value { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
-        .sg-sub { font-size: 11px; color: #94a3b8; }
         .sg-icon { position: absolute; right: 16px; top: 16px; width: 32px; height: 32px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 14px; }
+
+        /* ================= NEW: STICKY HEADER & ANIMATED FORM FOR STOCK PAGES ================= */
+        .sticky-top-section {
+            position: sticky; top: 56px; background: var(--bg-color); z-index: 20;
+            padding: 16px 16px 1px 16px; margin: -16px -16px 16px -16px;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 4px 6px -4px rgba(0,0,0,0.05);
+        }
+        .anim-form {
+            transition: all 0.3s ease-in-out; overflow: hidden; max-height: 500px; opacity: 1;
+        }
+        .anim-form.hidden {
+            max-height: 0; opacity: 0; margin-bottom: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; border: none !important;
+        }
+        .in-out-btn-group { display: flex; gap: 10px; }
+        .btn-in { flex: 1; background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size:13px; }
+        .btn-out { flex: 1; background: var(--danger); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size:13px;}
     </style>
 </head>
 <body>
@@ -244,10 +258,7 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo">V</div>
-            <div class="sidebar-title">
-                <h2>VANDANA ERP</h2>
-                <p>PRO EDITION</p>
-            </div>
+            <div class="sidebar-title"><h2>VANDANA ERP</h2><p>PRO EDITION</p></div>
             <div class="sidebar-close" onclick="closeSidebar()">✕</div>
         </div>
         <div class="sidebar-menu-title">OPERATIONS</div>
@@ -263,7 +274,7 @@
             <li onclick="openPage('profile-page'); closeSidebar();"><i>💼</i> Business Profile</li>
             <li onclick="openPage('report-page'); closeSidebar();"><i>📄</i> View Reports</li>
             <li onclick="closeSidebar();"><i>🔄</i> Sync Data</li>
-            <li onclick="alert('Firebase Login guide is at the bottom of the code!'); closeSidebar();"><i>🔑</i> Login / Security</li>
+            <li onclick="alert('Firebase Login setup ready!'); closeSidebar();"><i>🔑</i> Login / Security</li>
         </ul>
         <div class="sidebar-footer" onclick="openPage('customer-profile-page'); closeSidebar();">
             <div class="user-icon" id="sidebar-user-pic">A</div>
@@ -290,100 +301,40 @@
             <input type="date" class="professional-date-picker" id="dash-date-picker">
         </div>
 
-        <div class="op-overview">
-            <div class="op-header">Factory Dashboard</div>
-        </div>
+        <div class="op-overview"><div class="op-header">Factory Dashboard</div></div>
         
-        <!-- 2x2 DASHBOARD CARDS GRID -->
         <div class="dash-card-grid">
-            <div class="dash-card">
-                <div class="dash-card-title">ACTIVE POS</div>
-                <div class="dash-card-value">0</div>
-                <div class="dash-card-sub">of 0 total</div>
-                <div class="dash-card-icon icon-blue">📋</div>
-            </div>
-            <div class="dash-card">
-                <div class="dash-card-title">FABRIC STOCK</div>
-                <div class="dash-card-value">0m</div>
-                <div class="dash-card-sub">grey + processed</div>
-                <div class="dash-card-icon icon-orange">🧊</div>
-            </div>
-            <div class="dash-card">
-                <div class="dash-card-title">IN PRODUCTION</div>
-                <div class="dash-card-value">0</div>
-                <div class="dash-card-sub">active pieces</div>
-                <div class="dash-card-icon icon-purple">🔗</div>
-            </div>
-            <div class="dash-card" onclick="openInvoicesPage()">
-                <div class="dash-card-title">SALES (BILLS)</div>
-                <div class="dash-card-value" id="dash-card-sale-value">₹0</div>
-                <div class="dash-card-sub">Tap to view bills</div>
-                <div class="dash-card-icon icon-green">🧾</div>
-            </div>
+            <div class="dash-card"><div class="dash-card-title">ACTIVE POS</div><div class="dash-card-value">0</div><div class="dash-card-sub">of 0 total</div><div class="dash-card-icon icon-blue">📋</div></div>
+            <div class="dash-card"><div class="dash-card-title">FABRIC STOCK</div><div class="dash-card-value">0m</div><div class="dash-card-sub">grey + processed</div><div class="dash-card-icon icon-orange">🧊</div></div>
+            <div class="dash-card"><div class="dash-card-title">IN PRODUCTION</div><div class="dash-card-value">0</div><div class="dash-card-sub">active pieces</div><div class="dash-card-icon icon-purple">🔗</div></div>
+            <div class="dash-card" onclick="openInvoicesPage()"><div class="dash-card-title">SALES (BILLS)</div><div class="dash-card-value" id="dash-card-sale-value">₹0</div><div class="dash-card-sub">Tap to view bills</div><div class="dash-card-icon icon-green">🧾</div></div>
         </div>
 
         <div class="urgent-actions-box">
-            <div class="ua-header">
-                <div class="ua-title">URGENT ACTIONS</div>
-                <div class="ua-alert-icon">⚠️</div>
-            </div>
-            <div class="ua-item">
-                <div class="ua-item-left">
-                    <div class="ua-item-name">Vendor Pending</div>
-                    <div class="ua-item-desc">0m pending</div>
-                </div>
-                <div class="ua-item-right"><span class="ua-item-count">0</span><span class="ua-item-arrow">›</span></div>
-            </div>
-            <div class="ua-item">
-                <div class="ua-item-left">
-                    <div class="ua-item-name">Tailor Pending</div>
-                    <div class="ua-item-desc">0 pcs pending</div>
-                </div>
-                <div class="ua-item-right"><span class="ua-item-count">0</span><span class="ua-item-arrow">›</span></div>
-            </div>
-            <div class="ua-item">
-                <div class="ua-item-left">
-                    <div class="ua-item-name">Finishing Active</div>
-                    <div class="ua-item-desc">active finishing steps</div>
-                </div>
-                <div class="ua-item-right"><span class="ua-item-count">0</span><span class="ua-item-arrow">›</span></div>
-            </div>
+            <div class="ua-header"><div class="ua-title">URGENT ACTIONS</div><div class="ua-alert-icon">⚠️</div></div>
+            <div class="ua-item"><div class="ua-item-left"><div class="ua-item-name">Vendor Pending</div><div class="ua-item-desc">0m pending</div></div><div class="ua-item-right"><span class="ua-item-count">0</span><span class="ua-item-arrow">›</span></div></div>
+            <div class="ua-item"><div class="ua-item-left"><div class="ua-item-name">Tailor Pending</div><div class="ua-item-desc">0 pcs pending</div></div><div class="ua-item-right"><span class="ua-item-count">0</span><span class="ua-item-arrow">›</span></div></div>
+            <div class="ua-item"><div class="ua-item-left"><div class="ua-item-name">Finishing Active</div><div class="ua-item-desc">active finishing steps</div></div><div class="ua-item-right"><span class="ua-item-count">0</span><span class="ua-item-arrow">›</span></div></div>
         </div>
 
         <div class="summary-box">
-            <div class="summary-row" onclick="openInvoicesPage()">
-                <span class="sum-title">Total Sales Value (Today)</span>
-                <span class="sum-val" style="color:var(--primary);" id="dash-total-sale">₹ 0 ➔</span>
-            </div>
-            <div class="summary-row" onclick="openPage('items-page')">
-                <span class="sum-title">Total Box Sold (Today)</span>
-                <span class="sum-val" id="dash-total-box">0 BOX ➔</span>
-            </div>
+            <div class="summary-row" onclick="openInvoicesPage()"><span class="sum-title">Total Sales Value (Today)</span><span class="sum-val" style="color:var(--primary);" id="dash-total-sale">₹ 0 ➔</span></div>
+            <div class="summary-row" onclick="openPage('items-page')"><span class="sum-title">Total Box Sold (Today)</span><span class="sum-val" id="dash-total-box">0 BOX ➔</span></div>
         </div>
 
         <h3 class="section-title" style="margin-top:20px;">Quick Actions</h3>
         <div class="quick-actions">
-            <div class="action-box" onclick="openPage('pos-page')">
-                <div class="action-icon" style="color: #2563eb;">🧾</div><span class="action-label">Sale Invoice</span>
-            </div>
-            <div class="action-box" onclick="openPage('stock-in-page')">
-                <div class="action-icon" style="color: #10b981;">📦</div><span class="action-label">Stock In</span>
-            </div>
-            <div class="action-box" onclick="openPage('parties-page')">
-                <div class="action-icon" style="color: #a855f7;">👥</div><span class="action-label">Ledger Book</span>
-            </div>
-            <div class="action-box" onclick="openPage('items-page')">
-                <div class="action-icon" style="color: #f59e0b;">📊</div><span class="action-label">All Items</span>
-            </div>
+            <div class="action-box" onclick="openPage('pos-page')"><div class="action-icon" style="color: #2563eb;">🧾</div><span class="action-label">Sale Invoice</span></div>
+            <div class="action-box" onclick="openPage('stock-in-page')"><div class="action-icon" style="color: #10b981;">📦</div><span class="action-label">Stock In</span></div>
+            <div class="action-box" onclick="openPage('parties-page')"><div class="action-icon" style="color: #a855f7;">👥</div><span class="action-label">Ledger Book</span></div>
+            <div class="action-box" onclick="openPage('items-page')"><div class="action-icon" style="color: #f59e0b;">📊</div><span class="action-label">All Items</span></div>
         </div>
     </main>
 
     <!-- 📄 INVOICES LIST PAGE -->
     <div class="page" id="invoices-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('invoices-page')">←</button><h2 class="page-title">Today's Bills & Invoices</h2></div>
-        <div class="page-content" id="invoices-list-container">
-            <!-- Dynamic Invoice Cards will load here -->
-        </div>
+        <div class="page-content" id="invoices-list-container"></div>
     </div>
 
     <!-- 🧾 SALE INVOICE PAGE -->
@@ -400,15 +351,11 @@
                     <input type="tel" class="form-control" id="inv-phone" placeholder="Mobile Number">
                 </div>
             </div>
-            
             <div class="form-panel">
                 <label class="form-label">Add Product</label>
                 <div class="input-btn-group" style="margin-bottom: 12px;">
                     <select class="form-control" id="inv-cat" style="flex:2;">
-                        <option value="Shri Kamlay Thread">Shri Kamlay Thread</option>
-                        <option value="Zari">Zari</option>
-                        <option value="Cotton Yarn">Cotton Yarn</option>
-                        <option value="Viscose">Viscose</option>
+                        <option value="Shri Kamlay Thread">Shri Kamlay Thread</option><option value="Zari">Zari</option><option value="Cotton Yarn">Cotton Yarn</option><option value="Viscose">Viscose</option>
                     </select>
                     <input type="text" class="form-control" id="inv-shade" placeholder="Shade/Color" style="flex:1;">
                 </div>
@@ -418,17 +365,14 @@
                 </div>
                 <button class="btn-submit" style="background:#1e293b;" onclick="addCartItem()">⬇ Add to Cart</button>
             </div>
-            
             <table class="invoice-table" style="margin-bottom: 16px;">
                 <thead><tr><th>Details</th><th>Qty</th><th>Rate</th><th>Total</th></tr></thead>
                 <tbody id="cart-rows"><tr><td colspan="4" style="text-align:center; padding:16px; color:var(--text-muted);">Cart is empty</td></tr></tbody>
             </table>
-            
             <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#eff6ff; border-color:#bfdbfe;">
                 <span style="font-weight:700; font-size:15px; color:var(--primary);">Grand Total:</span>
                 <span style="font-size:22px; font-weight:800; color:var(--primary);" id="cart-grand-total">₹ 0</span>
             </div>
-            
             <button id="save-bill-btn" class="btn-submit" onclick="triggerSaveAndShare()">💾 Generate Bill</button>
             <button id="pdf-share-btn" class="btn-submit" style="display:none; background: #10b981; margin-top:10px;" onclick="sharePDFOnWhatsApp()">📲 Share via WhatsApp</button>
         </div>
@@ -457,36 +401,20 @@
 
     <!-- 👥 PARTIES (LEDGER BOOK) -->
     <div class="page" id="parties-page">
-        <div class="kb-header">
-            <div class="kb-header-title"><button class="back-btn" onclick="closePage('parties-page')" style="padding:0; margin-right:15px;">←</button>Ledger Book</div>
-        </div>
-        
-        <div class="search-bar-container">
-            <span style="color:var(--text-muted); font-size:16px;">🔍</span>
-            <input type="text" id="party-search" placeholder="Search Name..." onkeyup="searchParties()">
-        </div>
-
+        <div class="kb-header"><div class="kb-header-title"><button class="back-btn" onclick="closePage('parties-page')" style="padding:0; margin-right:15px;">←</button>Ledger Book</div></div>
+        <div class="search-bar-container"><span style="color:var(--text-muted); font-size:16px;">🔍</span><input type="text" id="party-search" placeholder="Search Name..." onkeyup="searchParties()"></div>
         <div class="kb-summary-card">
             <div class="kb-summary-split">
                 <div class="kb-summary-box"><div class="kb-summary-label">Total You Give</div><div class="kb-summary-val" style="color:var(--danger);" id="total-give-all">₹ 0</div></div>
                 <div class="kb-summary-box"><div class="kb-summary-label">Total You Get</div><div class="kb-summary-val" style="color:var(--success);" id="total-get-all">₹ 0</div></div>
             </div>
         </div>
-
-        <!-- NEW AJIO STYLE TABS -->
         <div class="ajio-tab-container">
             <div class="kb-tab active" id="tab-customers" onclick="switchPartyTab('Customer')">CUSTOMERS</div>
             <div class="kb-tab" id="tab-suppliers" onclick="switchPartyTab('Supplier')">SUPPLIERS</div>
         </div>
-
-        <div class="kb-list" id="kb-customer-list" style="margin-top:15px;">
-            <!-- Dynamic List goes here -->
-        </div>
-
-        <!-- NEW SMART DYNAMIC FAB -->
-        <button class="kb-fab" id="main-fab" onclick="openPage('add-party-page')">
-            <span class="fab-icon">+</span><span class="fab-text" id="fab-text">Add Customer</span>
-        </button>
+        <div class="kb-list" id="kb-customer-list" style="margin-top:15px;"></div>
+        <button class="kb-fab" id="main-fab" onclick="openPage('add-party-page')"><span class="fab-icon">+</span><span class="fab-text" id="fab-text">Add Customer</span></button>
     </div>
 
     <!-- 🔥 KHATABOOK DEEP LEDGER PAGE -->
@@ -496,10 +424,7 @@
                 <div style="display:flex; align-items:center;">
                     <button class="back-btn" onclick="closePage('ledger-deep-page')" style="padding:0; margin-right:12px;">←</button>
                     <div class="kb-avatar" id="l-deep-avatar-text" style="width:36px; height:36px; font-size:14px; margin-right:10px; background:white; color:var(--primary);" onclick="openCustomerProfile()"></div>
-                    <div onclick="openCustomerProfile()" style="cursor:pointer;">
-                        <div class="l-name" id="l-deep-name">Name</div>
-                        <div style="font-size:11px; opacity:0.8; margin-top:2px;">⚙️ View Profile ➔</div>
-                    </div>
+                    <div onclick="openCustomerProfile()" style="cursor:pointer;"><div class="l-name" id="l-deep-name">Name</div><div style="font-size:11px; opacity:0.8; margin-top:2px;">⚙️ View Profile ➔</div></div>
                 </div>
                 <a href="#" id="l-call-btn" style="color:white; text-decoration:none; font-size:22px;">📞</a>
             </div>
@@ -512,14 +437,10 @@
             <div class="l-tab" id="l-wa-btn" style="color:#10b981; border-color:#10b981;">💬 Reminder</div>
             <div class="l-tab" id="l-sms-btn">✉️ SMS</div>
         </div>
-
         <div class="entries-container">
-            <div style="display:flex; justify-content:space-between; padding:0 5px; font-size:10px; font-weight:700; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase;">
-                <span style="flex:2;">ENTRIES</span><span style="flex:1; text-align:center;">YOU GAVE</span><span style="flex:1; text-align:right;">YOU GOT</span>
-            </div>
+            <div style="display:flex; justify-content:space-between; padding:0 5px; font-size:10px; font-weight:700; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase;"><span style="flex:2;">ENTRIES</span><span style="flex:1; text-align:center;">YOU GAVE</span><span style="flex:1; text-align:right;">YOU GOT</span></div>
             <div id="ledger-entries-list"></div>
         </div>
-        
         <div class="bottom-action-bar">
             <button class="btn-l-gave" onclick="openCalculator('Gave')">YOU GAVE ₹</button>
             <button class="btn-l-got" onclick="openCalculator('Got')">YOU GOT ₹</button>
@@ -529,67 +450,41 @@
     <!-- 📄 PROFILE PAGE (With Camera Upload) -->
     <div class="page" id="customer-profile-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('customer-profile-page')">←</button><h2 class="page-title">Profile</h2></div>
-        
         <div class="profile-header-img">
             <div class="profile-pic-container">
                 <div class="profile-pic" id="cp-avatar">C</div>
                 <div class="camera-icon" onclick="document.getElementById('profile-upload').click()">📷</div>
             </div>
             <input type="file" id="profile-upload" accept="image/*" style="display:none;" onchange="handleProfilePic(event)">
-
             <h2 id="cp-name" style="margin-top:10px; font-size:18px; color:#0f172a;">Customer Name</h2>
             <div style="color:var(--text-muted); font-size:13px; margin-top:4px;" id="cp-phone">Phone Number</div>
         </div>
-
         <div class="section-sub">Details</div>
         <div class="profile-list">
             <div class="profile-list-item" onclick="editCustomerAddress()">
                 <div class="pli-icon">📍</div>
-                <div class="pli-content">
-                    <div class="pli-label">Address</div>
-                    <div class="pli-value" id="cp-address">Not provided (Tap to add)</div>
-                </div>
+                <div class="pli-content"><div class="pli-label">Address</div><div class="pli-value" id="cp-address">Not provided (Tap to add)</div></div>
                 <div class="pli-arrow">›</div>
             </div>
         </div>
-
-        <div style="padding: 20px 16px;">
-            <button class="btn-outline" onclick="deleteCurrentCustomer()">🗑️ Delete Account</button>
-        </div>
+        <div style="padding: 20px 16px;"><button class="btn-outline" onclick="deleteCurrentCustomer()">🗑️ Delete Account</button></div>
     </div>
 
     <!-- 💸 ENTRY DETAILS PAGE -->
     <div class="page" id="entry-details-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('entry-details-page')">←</button><h2 class="page-title">Entry Details</h2></div>
-        
         <div class="entry-detail-card">
             <div class="ed-header">
-                <div class="ed-header-left">
-                    <div style="font-size:24px;" id="ed-icon">💸</div>
-                    <div>
-                        <div style="font-weight:600; font-size:15px; color:#0f172a;" id="ed-party-name">Name</div>
-                        <div style="font-size:12px; color:var(--text-muted);" id="ed-date">Date</div>
-                    </div>
-                </div>
-                <div class="ed-amount-box">
-                    <div class="ed-amt" id="ed-amount">₹ 0</div>
-                    <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;" id="ed-type">You Gave</div>
-                </div>
+                <div class="ed-header-left"><div style="font-size:24px;" id="ed-icon">💸</div><div><div style="font-weight:600; font-size:15px; color:#0f172a;" id="ed-party-name">Name</div><div style="font-size:12px; color:var(--text-muted);" id="ed-date">Date</div></div></div>
+                <div class="ed-amount-box"><div class="ed-amt" id="ed-amount">₹ 0</div><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;" id="ed-type">You Gave</div></div>
             </div>
-            
             <div class="ed-row ed-flex-row">
-                <div>
-                    <div class="ed-label">Details / Bill No.</div>
-                    <div class="ed-value" id="ed-details-text">App Entry</div>
-                </div>
+                <div><div class="ed-label">Details / Bill No.</div><div class="ed-value" id="ed-details-text">App Entry</div></div>
                 <div style="color:var(--primary); font-weight:600; font-size:13px; cursor:pointer;" onclick="editCurrentEntryDetails()">✎ Edit</div>
             </div>
-            
             <div class="ed-edit-btn" onclick="editCurrentEntryAmount()">✏️ Edit Amount</div>
         </div>
-
         <div class="ed-safe-badge">🔒 100% Safe & Secure</div>
-        
         <div class="ed-bottom-bar">
             <button class="btn-ed-del" onclick="deleteCurrentEntry()">🗑️ Delete</button>
             <button class="btn-ed-share" onclick="shareCurrentEntry()">📲 Share</button>
@@ -643,7 +538,6 @@
     <div class="page" id="items-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('items-page')">←</button><h2 class="page-title">Master Inventory</h2></div>
         <div class="page-content">
-            
             <div class="stock-overview-title">STOCK OVERVIEW</div>
             <div class="stock-grid">
                 <div class="stock-grid-card" onclick="openPage('thread-stock-page')">
@@ -671,29 +565,37 @@
                     <div class="sg-value" id="stock-val-bobbin">0</div>
                     <div class="sg-icon" style="background:#fff7ed; color:#f97316;">🛞</div>
                 </div>
-                <div class="stock-grid-card" onclick="openPage('dostock-stock-page')">
-                    <div class="sg-title">DO STOCK</div>
-                    <div class="sg-value" id="stock-val-dostock">0</div>
-                    <div class="sg-icon" style="background:#f0fdf4; color:#22c55e;">📦</div>
+                <div class="stock-grid-card" onclick="openPage('lowstock-page')">
+                    <div class="sg-title">LOW STOCK</div>
+                    <div class="sg-value" id="stock-val-lowstock">0</div>
+                    <div class="sg-icon" style="background:#fef2f2; color:#ef4444;">⚠️</div>
                 </div>
             </div>
-            <!-- Inventory Table Removed per user request -->
         </div>
     </div>
 
-    <!-- 🧵 THREAD STOCK PAGE -->
+    <!-- 🧵 THREAD STOCK PAGE (With Fixed Header & Animation) -->
     <div class="page" id="thread-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('thread-stock-page')">←</button><h2 class="page-title">Thread Stock</h2></div>
         <div class="page-content">
-            <div class="search-bar-container" style="margin: 0 0 16px 0;">
-                <span>🔍</span><input type="text" id="search-thread" placeholder="Search Shade Number..." onkeyup="filterThreadStock()">
-            </div>
-            <div class="form-panel">
-                <div class="input-btn-group" style="margin-bottom: 12px;">
-                    <input type="text" class="form-control" id="thread-shade-input" placeholder="Shade No.">
-                    <input type="number" class="form-control" id="thread-box-input" placeholder="Boxes">
+            <div class="sticky-top-section">
+                <div class="search-bar-container" style="margin: 0 0 16px 0;">
+                    <span>🔍</span>
+                    <input type="text" id="search-thread" placeholder="Search Shade Number..." 
+                           onfocus="document.getElementById('thread-anim-form').classList.add('hidden')" 
+                           onblur="setTimeout(()=>document.getElementById('thread-anim-form').classList.remove('hidden'), 200)" 
+                           onkeyup="filterStockList('search-thread', 'thread-stock-list')">
                 </div>
-                <button class="btn-submit" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-box-input')">💾 Save Stock</button>
+                <div class="form-panel anim-form" id="thread-anim-form">
+                    <div class="input-btn-group" style="margin-bottom: 12px;">
+                        <input type="text" class="form-control" id="thread-shade-input" placeholder="Shade No.">
+                        <input type="number" class="form-control" id="thread-box-input" placeholder="Boxes">
+                    </div>
+                    <div class="in-out-btn-group">
+                        <button class="btn-in" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-box-input', false)">➕ IN</button>
+                        <button class="btn-out" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-box-input', true)">➖ OUT</button>
+                    </div>
+                </div>
             </div>
             <table class="invoice-table">
                 <thead><tr><th>Shade No.</th><th>Total Boxes</th></tr></thead>
@@ -706,19 +608,23 @@
     <div class="page" id="zari-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('zari-stock-page')">←</button><h2 class="page-title">Zari Stock</h2></div>
         <div class="page-content">
-            <div class="form-panel">
-                <select class="form-control" id="zari-item-select" style="margin-bottom: 12px;">
-                    <option value="Water 20">Water 20</option>
-                    <option value="Ice Silver">Ice Silver</option>
-                    <option value="Sike Water 150">Sike Water 150</option>
-                    <option value="Sike Water 180">Sike Water 180</option>
-                    <option value="S B C H Yellow">S B C H Yellow</option>
-                    <option value="Water 10">Water 10</option>
-                    <option value="Chandan">Chandan</option>
-                    <option value="J Gold 77">J Gold 77</option>
-                </select>
-                <input type="number" class="form-control" id="zari-box-input" placeholder="Boxes" style="margin-bottom: 12px;">
-                <button class="btn-submit" onclick="addSpecificStock('Zari', 'zari-item-select', 'zari-box-input')">💾 Save Stock</button>
+            <div class="sticky-top-section">
+                <div class="search-bar-container" style="margin: 0 0 16px 0;">
+                    <span>🔍</span><input type="text" id="search-zari" placeholder="Search Item..." onkeyup="filterStockList('search-zari', 'zari-stock-list')">
+                </div>
+                <div class="form-panel">
+                    <select class="form-control" id="zari-item-select" style="margin-bottom: 12px;">
+                        <option value="Water 20">Water 20</option><option value="Ice Silver">Ice Silver</option>
+                        <option value="Sike Water 150">Sike Water 150</option><option value="Sike Water 180">Sike Water 180</option>
+                        <option value="S B C H Yellow">S B C H Yellow</option><option value="Water 10">Water 10</option>
+                        <option value="Chandan">Chandan</option><option value="J Gold 77">J Gold 77</option>
+                    </select>
+                    <input type="number" class="form-control" id="zari-box-input" placeholder="Boxes" style="margin-bottom: 12px;">
+                    <div class="in-out-btn-group">
+                        <button class="btn-in" onclick="addSpecificStock('Zari', 'zari-item-select', 'zari-box-input', false)">➕ IN</button>
+                        <button class="btn-out" onclick="addSpecificStock('Zari', 'zari-item-select', 'zari-box-input', true)">➖ OUT</button>
+                    </div>
+                </div>
             </div>
             <table class="invoice-table">
                 <thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead>
@@ -731,18 +637,23 @@
     <div class="page" id="cording-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('cording-stock-page')">←</button><h2 class="page-title">Cording Stock</h2></div>
         <div class="page-content">
-            <div class="form-panel">
-                <select class="form-control" id="cording-item-select" style="margin-bottom: 12px;">
-                    <option value="Cotton Cording">Cotton Cording</option>
-                    <option value="I Very 3 Taar">I Very 3 Taar</option>
-                    <option value="M 17 Taar">M 17 Taar</option>
-                    <option value="Anmol Two 5 Taar">Anmol Two 5 Taar</option>
-                    <option value="Anmol One 4 Taar">Anmol One 4 Taar</option>
-                    <option value="R Water 3 Taar">R Water 3 Taar</option>
-                    <option value="R Water 4 Taar">R Water 4 Taar</option>
-                </select>
-                <input type="number" class="form-control" id="cording-box-input" placeholder="Boxes" style="margin-bottom: 12px;">
-                <button class="btn-submit" onclick="addSpecificStock('Cording', 'cording-item-select', 'cording-box-input')">💾 Save Stock</button>
+            <div class="sticky-top-section">
+                <div class="search-bar-container" style="margin: 0 0 16px 0;">
+                    <span>🔍</span><input type="text" id="search-cording" placeholder="Search Item..." onkeyup="filterStockList('search-cording', 'cording-stock-list')">
+                </div>
+                <div class="form-panel">
+                    <select class="form-control" id="cording-item-select" style="margin-bottom: 12px;">
+                        <option value="Cotton Cording">Cotton Cording</option><option value="I Very 3 Taar">I Very 3 Taar</option>
+                        <option value="M 17 Taar">M 17 Taar</option><option value="Anmol Two 5 Taar">Anmol Two 5 Taar</option>
+                        <option value="Anmol One 4 Taar">Anmol One 4 Taar</option><option value="R Water 3 Taar">R Water 3 Taar</option>
+                        <option value="R Water 4 Taar">R Water 4 Taar</option>
+                    </select>
+                    <input type="number" class="form-control" id="cording-box-input" placeholder="Boxes" style="margin-bottom: 12px;">
+                    <div class="in-out-btn-group">
+                        <button class="btn-in" onclick="addSpecificStock('Cording', 'cording-item-select', 'cording-box-input', false)">➕ IN</button>
+                        <button class="btn-out" onclick="addSpecificStock('Cording', 'cording-item-select', 'cording-box-input', true)">➖ OUT</button>
+                    </div>
+                </div>
             </div>
             <table class="invoice-table">
                 <thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead>
@@ -755,12 +666,20 @@
     <div class="page" id="nylon-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('nylon-stock-page')">←</button><h2 class="page-title">Nylon Stock</h2></div>
         <div class="page-content">
-            <div class="form-panel">
-                <div class="input-btn-group" style="margin-bottom: 12px;">
-                    <input type="text" class="form-control" id="nylon-item-input" placeholder="Item Name / Shade">
-                    <input type="number" class="form-control" id="nylon-box-input" placeholder="Boxes">
+            <div class="sticky-top-section">
+                <div class="search-bar-container" style="margin: 0 0 16px 0;">
+                    <span>🔍</span><input type="text" id="search-nylon" placeholder="Search Item..." onkeyup="filterStockList('search-nylon', 'nylon-stock-list')">
                 </div>
-                <button class="btn-submit" onclick="addSpecificStock('Nylon', 'nylon-item-input', 'nylon-box-input')">💾 Save Stock</button>
+                <div class="form-panel">
+                    <div class="input-btn-group" style="margin-bottom: 12px;">
+                        <input type="text" class="form-control" id="nylon-item-input" placeholder="Item Name / Shade">
+                        <input type="number" class="form-control" id="nylon-box-input" placeholder="Boxes">
+                    </div>
+                    <div class="in-out-btn-group">
+                        <button class="btn-in" onclick="addSpecificStock('Nylon', 'nylon-item-input', 'nylon-box-input', false)">➕ IN</button>
+                        <button class="btn-out" onclick="addSpecificStock('Nylon', 'nylon-item-input', 'nylon-box-input', true)">➖ OUT</button>
+                    </div>
+                </div>
             </div>
             <table class="invoice-table">
                 <thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead>
@@ -773,12 +692,20 @@
     <div class="page" id="bobbin-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('bobbin-stock-page')">←</button><h2 class="page-title">Bobbin Stock</h2></div>
         <div class="page-content">
-            <div class="form-panel">
-                <div class="input-btn-group" style="margin-bottom: 12px;">
-                    <input type="text" class="form-control" id="bobbin-item-input" placeholder="Item Name">
-                    <input type="number" class="form-control" id="bobbin-box-input" placeholder="Boxes">
+            <div class="sticky-top-section">
+                <div class="search-bar-container" style="margin: 0 0 16px 0;">
+                    <span>🔍</span><input type="text" id="search-bobbin" placeholder="Search Item..." onkeyup="filterStockList('search-bobbin', 'bobbin-stock-list')">
                 </div>
-                <button class="btn-submit" onclick="addSpecificStock('Bobbin', 'bobbin-item-input', 'bobbin-box-input')">💾 Save Stock</button>
+                <div class="form-panel">
+                    <div class="input-btn-group" style="margin-bottom: 12px;">
+                        <input type="text" class="form-control" id="bobbin-item-input" placeholder="Item Name">
+                        <input type="number" class="form-control" id="bobbin-box-input" placeholder="Boxes">
+                    </div>
+                    <div class="in-out-btn-group">
+                        <button class="btn-in" onclick="addSpecificStock('Bobbin', 'bobbin-item-input', 'bobbin-box-input', false)">➕ IN</button>
+                        <button class="btn-out" onclick="addSpecificStock('Bobbin', 'bobbin-item-input', 'bobbin-box-input', true)">➖ OUT</button>
+                    </div>
+                </div>
             </div>
             <table class="invoice-table">
                 <thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead>
@@ -787,20 +714,16 @@
         </div>
     </div>
 
-    <!-- 📦 DO STOCK PAGE -->
-    <div class="page" id="dostock-stock-page">
-        <div class="page-header"><button class="back-btn" onclick="closePage('dostock-stock-page')">←</button><h2 class="page-title">Do Stock</h2></div>
+    <!-- ⚠️ LOW STOCK PAGE (Automated Alert Page) -->
+    <div class="page" id="lowstock-page">
+        <div class="page-header"><button class="back-btn" onclick="closePage('lowstock-page')">←</button><h2 class="page-title">Low Stock Alerts</h2></div>
         <div class="page-content">
-            <div class="form-panel">
-                <div class="input-btn-group" style="margin-bottom: 12px;">
-                    <input type="text" class="form-control" id="dostock-item-input" placeholder="Item Name">
-                    <input type="number" class="form-control" id="dostock-box-input" placeholder="Boxes">
-                </div>
-                <button class="btn-submit" onclick="addSpecificStock('Do Stock', 'dostock-item-input', 'dostock-box-input')">💾 Save Stock</button>
+            <div style="background:#fef2f2; color:#b91c1c; padding:12px; border-radius:8px; font-weight:600; font-size:13px; margin-bottom:16px; border: 1px solid #fca5a5; display:flex; align-items:center; gap:10px;">
+                <span style="font-size:20px;">⚠️</span> <span>Below items have 5 or less boxes left. Time to re-order!</span>
             </div>
             <table class="invoice-table">
-                <thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead>
-                <tbody id="dostock-stock-list"></tbody>
+                <thead><tr><th>Item Details</th><th>Remaining</th></tr></thead>
+                <tbody id="lowstock-list"></tbody>
             </table>
         </div>
     </div>
@@ -892,18 +815,14 @@
                 }
             });
 
-            // SMART FAB SCROLL LOGIC
             document.getElementById('parties-page').addEventListener('scroll', function() {
                 let fab = document.getElementById('main-fab');
-                if (this.scrollTop > 50) {
-                    fab.classList.add('collapsed');
-                } else {
-                    fab.classList.remove('collapsed');
-                }
+                if (this.scrollTop > 50) { fab.classList.add('collapsed'); } 
+                else { fab.classList.remove('collapsed'); }
             });
         });
 
-        // ================= SWITCH TABS (CUSTOMER / SUPPLIER) =================
+        // ================= SWITCH TABS =================
         window.switchPartyTab = function(type) {
             currentTabType = type;
             document.getElementById('tab-customers').classList.toggle('active', type === 'Customer');
@@ -946,18 +865,14 @@
             openPage('invoices-page');
         }
 
-        window.downloadPDF = function(name, amount) {
-            alert(`Generating PDF for Bill: ${name} (₹${amount})\n\n(PDF format template will be fully integrated next!)`);
-        }
-
+        window.downloadPDF = function(name, amount) { alert(`Generating PDF for Bill: ${name} (₹${amount})`); }
         window.handleProfilePic = function(event) {
             let file = event.target.files[0];
             if(file) {
                 let reader = new FileReader();
                 reader.onload = function(e) {
                     let imgHtml = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
-                    document.getElementById('cp-avatar').innerHTML = imgHtml;
-                    document.getElementById('sidebar-user-pic').innerHTML = imgHtml;
+                    document.getElementById('cp-avatar').innerHTML = imgHtml; document.getElementById('sidebar-user-pic').innerHTML = imgHtml;
                     localStorage.setItem('v_profilePic', e.target.result);
                 }
                 reader.readAsDataURL(file);
@@ -972,7 +887,6 @@
             if(!name) return alert("Please enter Name!");
 
             push(ref(db, 'Customers'), { name, phone, address, date: new Date().toISOString(), status: "Active", type: currentTabType });
-            
             closePage('add-party-page');
             document.getElementById('new-party-name').value = ''; document.getElementById('new-party-phone').value = ''; document.getElementById('new-party-address').value = '';
         }
@@ -982,13 +896,10 @@
             if(!customer) return;
             currentPartyKey = customer.key;
 
-            if(!localStorage.getItem('v_profilePic')) {
-                document.getElementById('cp-avatar').innerText = customer.name.substring(0, 1).toUpperCase();
-            }
+            if(!localStorage.getItem('v_profilePic')) { document.getElementById('cp-avatar').innerText = customer.name.substring(0, 1).toUpperCase(); }
             document.getElementById('cp-name').innerText = customer.name;
             document.getElementById('cp-phone').innerText = customer.phone || "No Phone Number";
             document.getElementById('cp-address').innerText = customer.address || "Not provided (Tap to add)";
-            
             openPage('customer-profile-page');
         }
 
@@ -1004,9 +915,7 @@
         window.deleteCurrentCustomer = function() {
             if(confirm(`WARNING: Are you sure you want to permanently delete ${currentPartyName}?`)) {
                 remove(ref(db, 'Customers/' + currentPartyKey));
-                closePage('customer-profile-page');
-                closePage('ledger-deep-page');
-                alert("Deleted Successfully!");
+                closePage('customer-profile-page'); closePage('ledger-deep-page'); alert("Deleted Successfully!");
             }
         }
 
@@ -1014,134 +923,105 @@
         window.saveCalculatorEntry = function() {
             let amount = eval(calcValue) || 0;
             if(amount <= 0) return alert("Enter valid amount!");
-            
-            let dateVal = document.getElementById('calc-date').value;
-            if(!dateVal) dateVal = new Date().toISOString().split('T')[0];
+            let dateVal = document.getElementById('calc-date').value; if(!dateVal) dateVal = new Date().toISOString().split('T')[0];
 
-            push(ref(db, 'Ledger'), { 
-                date: new Date(dateVal).toISOString(), 
-                name: currentPartyName, 
-                type: calcType, 
-                amount: amount, 
-                details: document.getElementById('calc-details').value || "App Entry" 
-            });
+            push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: calcType, amount: amount, details: document.getElementById('calc-details').value || "App Entry" });
             closePage('calculator-page');
         }
 
         window.openEntryDetails = function(key) {
-            currentEntryData = allLedgerData.find(e => e.key === key);
-            if(!currentEntryData) return;
-
+            currentEntryData = allLedgerData.find(e => e.key === key); if(!currentEntryData) return;
             document.getElementById('ed-party-name').innerText = currentEntryData.name;
-            let d = new Date(currentEntryData.date);
-            document.getElementById('ed-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
-            
+            let d = new Date(currentEntryData.date); document.getElementById('ed-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
             let color = currentEntryData.type === 'Gave' ? 'var(--danger)' : 'var(--success)';
             let icon = currentEntryData.type === 'Gave' ? '💸' : '💰';
-            
-            document.getElementById('ed-icon').innerText = icon;
-            document.getElementById('ed-amount').innerText = `₹ ${parseFloat(currentEntryData.amount).toLocaleString()}`;
-            document.getElementById('ed-amount').style.color = color;
-            document.getElementById('ed-type').innerText = `You ${currentEntryData.type}`;
-            document.getElementById('ed-type').style.color = color;
-            document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry";
-
+            document.getElementById('ed-icon').innerText = icon; document.getElementById('ed-amount').innerText = `₹ ${parseFloat(currentEntryData.amount).toLocaleString()}`;
+            document.getElementById('ed-amount').style.color = color; document.getElementById('ed-type').innerText = `You ${currentEntryData.type}`;
+            document.getElementById('ed-type').style.color = color; document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry";
             openPage('entry-details-page');
         }
 
         window.editCurrentEntryAmount = function() {
-            if(!currentEntryData) return;
-            let newAmt = prompt("Edit Amount:", currentEntryData.amount);
-            if(newAmt !== null && !isNaN(newAmt)) {
-                update(ref(db, 'Ledger/' + currentEntryData.key), { amount: parseFloat(newAmt) });
-                document.getElementById('ed-amount').innerText = `₹ ${parseFloat(newAmt).toLocaleString()}`;
-                currentEntryData.amount = parseFloat(newAmt);
-            }
+            if(!currentEntryData) return; let newAmt = prompt("Edit Amount:", currentEntryData.amount);
+            if(newAmt !== null && !isNaN(newAmt)) { update(ref(db, 'Ledger/' + currentEntryData.key), { amount: parseFloat(newAmt) }); document.getElementById('ed-amount').innerText = `₹ ${parseFloat(newAmt).toLocaleString()}`; currentEntryData.amount = parseFloat(newAmt); }
         }
 
         window.editCurrentEntryDetails = function() {
-            if(!currentEntryData) return;
-            let newDetails = prompt("Edit Details/Bill No.:", currentEntryData.details);
-            if(newDetails !== null) {
-                update(ref(db, 'Ledger/' + currentEntryData.key), { details: newDetails });
-                document.getElementById('ed-details-text').innerText = newDetails || "App Entry";
-                currentEntryData.details = newDetails;
-            }
+            if(!currentEntryData) return; let newDetails = prompt("Edit Details/Bill No.:", currentEntryData.details);
+            if(newDetails !== null) { update(ref(db, 'Ledger/' + currentEntryData.key), { details: newDetails }); document.getElementById('ed-details-text').innerText = newDetails || "App Entry"; currentEntryData.details = newDetails; }
         }
 
         window.deleteCurrentEntry = function() {
-            if(confirm("Are you sure you want to delete this entry? This will update the party balance.")) {
-                remove(ref(db, 'Ledger/' + currentEntryData.key));
-                closePage('entry-details-page');
-            }
+            if(confirm("Are you sure you want to delete this entry?")) { remove(ref(db, 'Ledger/' + currentEntryData.key)); closePage('entry-details-page'); }
         }
 
         window.shareCurrentEntry = function() {
-            if(!currentEntryData) return;
-            let typeStr = currentEntryData.type === 'Gave' ? 'You Gave' : 'You Got';
+            if(!currentEntryData) return; let typeStr = currentEntryData.type === 'Gave' ? 'You Gave' : 'You Got';
             let msg = `📄 *Ledger Entry* %0A🏛️ *Vandana Enterprises*%0A%0A*Name:* ${currentEntryData.name}%0A*Type:* ${typeStr}%0A*Amount:* ₹${currentEntryData.amount}%0A*Details:* ${currentEntryData.details}`;
             window.open(`https://wa.me/91${currentPartyPhone}?text=${msg}`, '_blank');
         }
 
-        // ================= UPDATED: NEW INVENTORY & RENDERING (THREAD, ZARI, ETC) =================
+        // ================= UPDATED: INVENTORY (IN/OUT & LOW STOCK) =================
         window.saveSmartStock = function() {
             let cat = document.getElementById('stock-cat').value; let shade = document.getElementById('stock-shade').value; let qty = parseInt(document.getElementById('stock-qty').value);
-            if(!shade || !qty) return alert("Enter Shade and Qty!");
+            if(!shade || isNaN(qty)) return alert("Enter Shade and Qty!");
             let key = cat + "_" + shade; let itemRef = ref(db, 'Inventory/' + key);
             get(itemRef).then((snap) => { set(itemRef, (snap.val() || 0) + qty); });
-            document.getElementById('stock-shade').value = ''; document.getElementById('stock-qty').value = ''; alert("Stock Added Successfully!");
+            document.getElementById('stock-shade').value = ''; document.getElementById('stock-qty').value = ''; alert("Stock Added!");
         }
 
-        window.addSpecificStock = function(category, shadeId, qtyId) {
+        // NEW: Specific Stock Add/Remove function with IN/OUT logic
+        window.addSpecificStock = function(category, shadeId, qtyId, isOut = false) {
             let shade = document.getElementById(shadeId).value; 
             let qty = parseInt(document.getElementById(qtyId).value);
             if(!shade || isNaN(qty)) return alert("Please enter Detail and Box Quantity!");
             
             let key = category + "_" + shade; 
             let itemRef = ref(db, 'Inventory/' + key);
+            
             get(itemRef).then((snap) => { 
-                set(itemRef, (snap.val() || 0) + qty); 
+                let currentQty = snap.val() || 0;
+                let newQty = isOut ? currentQty - qty : currentQty + qty;
+                if(newQty < 0) newQty = 0; // Negative stock lock
+                set(itemRef, newQty); 
             });
             
-            if(document.getElementById(shadeId).tagName !== 'SELECT') {
-                document.getElementById(shadeId).value = ''; 
-            }
+            if(document.getElementById(shadeId).tagName !== 'SELECT') { document.getElementById(shadeId).value = ''; }
             document.getElementById(qtyId).value = ''; 
-            alert(category + " Stock Saved Successfully!");
+            alert(isOut ? "Stock Reduced (OUT) Successfully!" : "Stock Added (IN) Successfully!");
         }
 
-        window.filterThreadStock = function() {
-            let filter = document.getElementById('search-thread').value.toUpperCase();
-            let rows = document.querySelectorAll('#thread-stock-list .stock-row');
+        // NEW: Live Search Filter function
+        window.filterStockList = function(inputId, listId) {
+            let filter = document.getElementById(inputId).value.toUpperCase();
+            let rows = document.querySelectorAll('#' + listId + ' .stock-row');
             rows.forEach(row => {
                 let name = row.getAttribute('data-name');
-                if (name.includes(filter)) row.style.display = '';
-                else row.style.display = 'none';
+                row.style.display = name.includes(filter) ? '' : 'none';
             });
         }
 
         window.renderInventoryList = function() {
-            let threadHtml = ""; let zariHtml = ""; let cordingHtml = ""; let nylonHtml = ""; let bobbinHtml = ""; let dostockHtml = "";
-            let threadCount = 0; let zariCount = 0; let nylonCount = 0; let cordingCount = 0; let bobbinCount = 0; let dostockCount = 0;
+            let threadHtml = ""; let zariHtml = ""; let nylonHtml = ""; let cordingHtml = ""; let bobbinHtml = ""; let lowstockHtml = "";
+            let threadCount = 0; let zariCount = 0; let nylonCount = 0; let cordingCount = 0; let bobbinCount = 0; let lowstockCount = 0;
 
             for (let key in smartInventory) {
-                let parts = key.split("_"); 
-                let cat = parts[0];
-                let shade = parts[1] || "";
-                let qty = smartInventory[key]; 
-                let color = qty < 5 ? 'var(--danger)' : 'var(--text-dark)';
+                let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let qty = smartInventory[key]; 
+                let color = qty <= 5 ? 'var(--danger)' : 'var(--text-dark)';
                 
-                let rowHtml = `<tr class="stock-row" data-name="${shade.toUpperCase()}">
-                    <td><strong>${shade}</strong></td>
-                    <td style="color:${color}; font-weight:700;">${qty} BOX</td>
-                </tr>`;
+                let rowHtml = `<tr class="stock-row" data-name="${shade.toUpperCase()}"><td><strong>${shade}</strong></td><td style="color:${color}; font-weight:700;">${qty} BOX</td></tr>`;
 
                 if(cat === "Thread") { threadHtml += rowHtml; threadCount += qty; }
                 else if(cat === "Zari") { zariHtml += rowHtml; zariCount += qty; }
                 else if(cat === "Nylon") { nylonHtml += rowHtml; nylonCount += qty; }
                 else if(cat === "Cording") { cordingHtml += rowHtml; cordingCount += qty; }
                 else if(cat === "Bobbin") { bobbinHtml += rowHtml; bobbinCount += qty; }
-                else if(cat === "Do Stock") { dostockHtml += rowHtml; dostockCount += qty; }
+                
+                // LOW STOCK SCANNER (qty <= 5)
+                if(qty <= 5 && qty > 0) {
+                    lowstockCount++;
+                    lowstockHtml += `<tr><td><strong>${shade}</strong><br><span style="font-size:10px; color:gray;">${cat}</span></td><td style="color:var(--danger); font-weight:700;">${qty} BOX</td></tr>`;
+                }
             }
             
             if(document.getElementById('thread-stock-list')) document.getElementById('thread-stock-list').innerHTML = threadHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
@@ -1149,21 +1029,23 @@
             if(document.getElementById('nylon-stock-list')) document.getElementById('nylon-stock-list').innerHTML = nylonHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
             if(document.getElementById('cording-stock-list')) document.getElementById('cording-stock-list').innerHTML = cordingHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
             if(document.getElementById('bobbin-stock-list')) document.getElementById('bobbin-stock-list').innerHTML = bobbinHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
-            if(document.getElementById('dostock-stock-list')) document.getElementById('dostock-stock-list').innerHTML = dostockHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
+            
+            // Render Automated Low Stock Alert List
+            if(document.getElementById('lowstock-list')) document.getElementById('lowstock-list').innerHTML = lowstockHtml || '<tr><td colspan="2" style="text-align:center;">All stocks are healthy! 🎉</td></tr>';
 
-            // Updating Grid Box Totals
+            // Update Grids
             if(document.getElementById('stock-val-thread')) document.getElementById('stock-val-thread').innerText = threadCount;
             if(document.getElementById('stock-val-zari')) document.getElementById('stock-val-zari').innerText = zariCount;
             if(document.getElementById('stock-val-nylon')) document.getElementById('stock-val-nylon').innerText = nylonCount;
             if(document.getElementById('stock-val-cording')) document.getElementById('stock-val-cording').innerText = cordingCount;
             if(document.getElementById('stock-val-bobbin')) document.getElementById('stock-val-bobbin').innerText = bobbinCount;
-            if(document.getElementById('stock-val-dostock')) document.getElementById('stock-val-dostock').innerText = dostockCount;
+            if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
         }
 
+        // ================= RENDERING & DASHBOARD LOGIC =================
         window.renderLedgerEntries = function(name) {
             let entryList = document.getElementById('ledger-entries-list'); entryList.innerHTML = '';
-            let totalGave = 0; let totalGot = 0;
-            let customerEntries = allLedgerData.filter(e => e.name === name);
+            let totalGave = 0; let totalGot = 0; let customerEntries = allLedgerData.filter(e => e.name === name);
 
             if(customerEntries.length === 0) { entryList.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No entries yet.</div>`; } 
             else {
@@ -1183,8 +1065,7 @@
                     </div>`;
                 });
             }
-            let balEl = document.getElementById('l-deep-bal-amt'); let txtEl = document.getElementById('l-deep-bal-text');
-            let finalBal = totalGave - totalGot;
+            let balEl = document.getElementById('l-deep-bal-amt'); let txtEl = document.getElementById('l-deep-bal-text'); let finalBal = totalGave - totalGot;
             if(finalBal > 0) { balEl.innerText = "₹ " + finalBal.toLocaleString(); balEl.style.color = "var(--success)"; txtEl.innerText = "You will get"; } 
             else if (finalBal < 0) { balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); balEl.style.color = "var(--danger)"; txtEl.innerText = "You will give"; } 
             else { balEl.innerText = "₹ 0"; balEl.style.color = "var(--text-dark)"; txtEl.innerText = "Settled"; }
@@ -1209,13 +1090,11 @@
         }
 
         window.calculateGrandTotals = function() {
-            let totalGive = 0; let totalGet = 0; let balances = {};
-            let todayTotalSale = 0; let todayTotalBox = 0;
+            let totalGive = 0; let totalGet = 0; let balances = {}; let todayTotalSale = 0; let todayTotalBox = 0;
             let selectedDateString = document.getElementById('dash-date-picker').value; 
 
             allLedgerData.forEach(entry => {
-                let amt = parseFloat(entry.amount) || 0; 
-                let entryDateString = "";
+                let amt = parseFloat(entry.amount) || 0; let entryDateString = "";
                 try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){}
 
                 if(!balances[entry.name]) balances[entry.name] = 0;
@@ -1223,8 +1102,7 @@
                 if(entry.type === 'Got') balances[entry.name] -= amt;
 
                 if (entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice Sale")) {
-                    todayTotalSale += amt;
-                    let boxMatch = entry.details.match(/(\d+)\s*Box/i);
+                    todayTotalSale += amt; let boxMatch = entry.details.match(/(\d+)\s*Box/i);
                     if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]);
                 }
             });
@@ -1238,10 +1116,7 @@
             document.getElementById('total-get-all').innerText = "₹ " + totalGet.toLocaleString();
             document.getElementById('dash-total-sale').innerText = `₹ ${todayTotalSale.toLocaleString('en-IN')} ➔`; 
             document.getElementById('dash-total-box').innerText = `${todayTotalBox} BOX ➔`;
-            
-            if(document.getElementById('dash-card-sale-value')) {
-                document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
-            }
+            if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
         }
         
         document.getElementById('dash-date-picker').addEventListener('change', calculateGrandTotals);
@@ -1252,27 +1127,21 @@
             document.getElementById('l-deep-avatar-text').innerText = name.substring(0,2).toUpperCase();
             document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#";
             document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank');
-            renderLedgerEntries(name); 
-            openPage('ledger-deep-page');
+            renderLedgerEntries(name); openPage('ledger-deep-page');
         }
 
         // ================= CART & BILLING LOGIC =================
         let currentCart = []; let grandInvoiceTotal = 0; let invoiceBoxCount = 0;
         
         window.addCartItem = function() {
-            const cat = document.getElementById('inv-cat').value; 
-            const shade = document.getElementById('inv-shade').value || "Gen";
-            const qty = parseFloat(document.getElementById('inv-qty').value) || 0; 
-            const rate = parseFloat(document.getElementById('inv-rate').value) || 0;
+            const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value || "Gen";
+            const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0;
             if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!");
-            
-            currentCart.push({ cat: cat, shade: shade, title: `${cat} - Shd:${shade}`, qty, rate, itemTotal: qty * rate });
-            renderCartUi();
+            currentCart.push({ cat: cat, shade: shade, title: `${cat} - Shd:${shade}`, qty, rate, itemTotal: qty * rate }); renderCartUi();
         }
 
         function renderCartUi() {
-            let tbody = document.getElementById('cart-rows'); tbody.innerHTML = ''; 
-            grandInvoiceTotal = 0; invoiceBoxCount = 0;
+            let tbody = document.getElementById('cart-rows'); tbody.innerHTML = ''; grandInvoiceTotal = 0; invoiceBoxCount = 0;
             currentCart.forEach(item => { 
                 grandInvoiceTotal += item.itemTotal; invoiceBoxCount += item.qty; 
                 tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.qty}</td><td>₹${item.rate}</td><td><strong>₹${item.itemTotal.toLocaleString()}</strong></td></tr>`; 
@@ -1283,20 +1152,13 @@
 
         window.triggerSaveAndShare = function() {
             if (currentCart.length === 0) return alert("Cart is empty!");
-            
             currentCart.forEach(item => {
                 let key = item.cat + "_" + item.shade; let itemRef = ref(db, 'Inventory/' + key);
                 get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) - item.qty); });
             });
-            
             let partyName = document.getElementById('inv-party').value || "Cash Sale";
-            push(ref(db, 'Ledger'), { 
-                date: new Date().toISOString(), name: partyName, type: "Got", amount: grandInvoiceTotal, details: `Invoice Sale - ${invoiceBoxCount} Box` 
-            });
-            
-            document.getElementById('save-bill-btn').style.display = 'none'; 
-            document.getElementById('pdf-share-btn').style.display = 'block'; 
-            alert(`✅ Bill Generated! Stock reduced on Firebase.`);
+            push(ref(db, 'Ledger'), { date: new Date().toISOString(), name: partyName, type: "Got", amount: grandInvoiceTotal, details: `Invoice Sale - ${invoiceBoxCount} Box` });
+            document.getElementById('save-bill-btn').style.display = 'none'; document.getElementById('pdf-share-btn').style.display = 'block'; alert(`✅ Bill Generated! Stock reduced.`);
         }
 
         window.sharePDFOnWhatsApp = function() {
@@ -1320,18 +1182,8 @@
 
         // ================= NAVIGATION HELPERS & SIDEBAR =================
         window.toggleMenu = function() { const menu = document.getElementById('dropdown-menu'); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; }
-        
-        window.openSidebar = function() {
-            document.getElementById('sidebar').classList.add('active');
-            document.getElementById('sidebar-overlay').style.display = 'block';
-            document.body.classList.add('sidebar-locked'); 
-        }
-        window.closeSidebar = function() {
-            document.getElementById('sidebar').classList.remove('active');
-            document.getElementById('sidebar-overlay').style.display = 'none';
-            document.body.classList.remove('sidebar-locked'); 
-        }
-
+        window.openSidebar = function() { document.getElementById('sidebar').classList.add('active'); document.getElementById('sidebar-overlay').style.display = 'block'; document.body.classList.add('sidebar-locked'); }
+        window.closeSidebar = function() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebar-overlay').style.display = 'none'; document.body.classList.remove('sidebar-locked'); }
         window.openPage = function(id) { document.getElementById(id).classList.add('active'); }
         window.closePage = function(id) { document.getElementById(id).classList.remove('active'); }
         window.goHome = function() { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); }

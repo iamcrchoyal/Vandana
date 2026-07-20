@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#f0f4f9">
     <title>Vandana ERP - Google Style Pro</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -17,190 +17,192 @@
             --bg-color: #f0f4f9; --surface: #ffffff; --text-dark: #1f1f1f; --text-muted: #444746; --border: #e0e2e0;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Google Sans', 'Inter', sans-serif; margin: 0; padding: 0; }
         body { background-color: var(--bg-color); color: var(--text-dark); overflow-x: hidden; font-size: 14px; user-select: none;}
         body.sidebar-locked { overflow: hidden; position: fixed; width: 100%; height: 100%; }
-        input, textarea, select { user-select: auto; }
+        input, textarea, select { user-select: auto; font-family: 'Inter', sans-serif;}
 
         /* PERMANENT GLOBAL HEADER (Google Style) */
-        .app-bar { position: fixed; top: 0; width: 100%; height: 60px; background: var(--bg-color); color: var(--text-dark); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 3000; border-bottom: none;}
-        .app-bar h1 { font-size: 20px; font-weight: 500; letter-spacing: -0.5px; margin-left: 10px; color: #1f1f1f;}
+        .app-bar { position: fixed; top: 0; width: 100%; height: 60px; background: var(--bg-color); color: var(--text-dark); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 4000; border-bottom: none; transition: background 0.3s, box-shadow 0.3s;}
+        .app-bar.scrolled { background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-bottom: 1px solid var(--border); }
+        .app-bar-left { display: flex; align-items: center; gap: 16px; }
+        .app-bar-icon { font-size: 24px; cursor: pointer; color: var(--text-muted); padding: 4px; border-radius: 50%;}
+        .app-bar h1 { font-size: 20px; font-weight: 500; letter-spacing: -0.5px; color: #1f1f1f; margin: 0;}
         
-        .google-profile-ring { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary); font-size: 14px; cursor: pointer; position: relative; background: white; border: 2px solid white; box-shadow: 0 0 0 2px #e0e2e0;}
-
+        .google-profile-ring { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 500; color: var(--primary); font-size: 14px; cursor: pointer; position: relative; background: #e8f0fe; border: 2px solid white; box-shadow: 0 0 0 2px #e0e2e0; overflow: hidden;}
+        
         /* DASHBOARD COMPACT & CLEAN */
-        .main-content { padding: 65px 16px 100px 16px; max-width: 800px; margin: 0 auto; }
-        .greeting-section { text-align: center; margin: 5px 0 15px 0; }
-        .greeting-section h2 { font-size: 24px; font-weight: 400; color: #1f1f1f; margin-bottom: 4px; letter-spacing: -0.5px;}
+        .main-content { padding: 60px 16px 100px 16px; max-width: 800px; margin: 0 auto; height: 100vh; overflow-y: auto;}
+        
+        .greeting-section { text-align: center; margin: 20px 0 15px 0; }
+        .greeting-section h2 { font-size: 26px; font-weight: 400; color: #1f1f1f; margin-bottom: 4px; letter-spacing: -0.5px;}
         .greeting-section p { font-size: 13px; color: var(--text-muted); padding: 0 10px; line-height: 1.4; }
 
-        .dash-date-wrapper { display: flex; justify-content: center; margin-bottom: 16px; }
-        .professional-date-picker { background: #ffffff; border: 1px solid var(--border); border-radius: 20px; padding: 6px 16px; font-size: 13px; font-weight: 600; color: var(--primary); font-family: inherit; outline: none; box-shadow: 0 1px 2px rgba(0,0,0,0.02); cursor: pointer; }
+        .dash-date-wrapper { display: flex; justify-content: center; margin-bottom: 24px; }
+        .professional-date-picker { background: #ffffff; border: 1px solid var(--border); border-radius: 20px; padding: 6px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); font-family: inherit; outline: none; box-shadow: 0 1px 2px rgba(0,0,0,0.02); cursor: pointer; }
 
         /* GOOGLE STYLE CARDS */
-        .google-card { background: white; border-radius: 20px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border: 1px solid var(--border); cursor: pointer; transition: background 0.2s;}
-        .google-card:hover { background: #f8fafd; }
-        .card-header { font-size: 14px; font-weight: 500; color: var(--text-dark); margin-bottom: 6px; }
-        .card-value { font-size: 32px; font-weight: 400; color: var(--primary); letter-spacing: -1px; margin-bottom: 4px;}
+        .google-card { background: white; border-radius: 24px; padding: 20px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border: 1px solid transparent; cursor: pointer; transition: background 0.2s;}
+        .google-card:active { background: #f8fafd; }
+        .card-header { font-size: 14px; font-weight: 500; color: var(--text-dark); margin-bottom: 8px; }
+        .card-value { font-size: 36px; font-weight: 400; color: var(--primary); letter-spacing: -1px; margin-bottom: 4px;}
         .progress-bar-bg { background: #e1e3e1; height: 6px; border-radius: 3px; margin: 12px 0 8px 0; overflow: hidden; }
         .progress-bar-fill { background: var(--primary); height: 100%; border-radius: 3px; width: 65%; }
         .card-subtext { font-size: 12px; color: var(--text-muted); }
 
-        .dash-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-        .dash-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; align-items: flex-start; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;}
-        .dash-card-title { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; }
-        .dash-card-value { font-size: 20px; font-weight: 600; color: var(--text-dark); line-height: 1; margin-bottom: 2px; }
-        .dash-card-sub { font-size: 10px; color: var(--text-muted); }
-        .dash-card-icon { position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 14px; }
-        .icon-blue { background: #e8f0fe; color: var(--primary); } .icon-orange { background: #fff7ed; color: #f97316; } .icon-purple { background: #faf5ff; color: #a855f7; } .icon-green { background: #e6f4ea; color: var(--success); }
+        .dash-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+        .dash-card { background: white; border: 1px solid transparent; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.03); cursor: pointer;}
+        .dash-card-title { font-size: 11px; font-weight: 500; color: var(--text-dark); margin-bottom: 8px; }
+        .dash-card-icon-main { font-size: 28px; margin-bottom: 8px; color: var(--text-muted);}
+        .dash-card-sub { font-size: 12px; color: var(--primary); font-weight: 500; margin-top: auto;}
 
         /* GOOGLE STYLE BOTTOM NAV */
-        .bottom-nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #f0f4f9; display: flex; justify-content: space-around; padding: 10px 16px; padding-bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 2500; border-top: 1px solid rgba(0,0,0,0.05);}
+        .bottom-nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #f0f4f9; display: flex; justify-content: space-around; padding: 10px 16px; padding-bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 2500; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);}
+        .bottom-nav-bar.hidden { transform: translateY(100%); }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--text-muted); width: 64px;}
         .nav-item.active .nav-icon-wrap { background: #c2e7ff; color: #001d35; }
         .nav-item.active span { color: var(--text-dark); font-weight: 600; }
         .nav-icon-wrap { width: 60px; height: 30px; border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 18px; transition: background 0.3s; }
         .nav-item span { font-size: 11px; font-weight: 500; }
 
-        /* SUBPAGES SLIDE-IN (Top stays reserved for app-bar) */
+        /* SUBPAGES SLIDE-IN (Below global header) */
         .page { position: fixed; top: 60px; left: 0; width: 100%; height: calc(100% - 60px); background: var(--bg-color); z-index: 2000; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; padding-bottom: 30px; }
         .page.active { transform: translateX(0); }
         .flex-page { display: flex; flex-direction: column; overflow: hidden; padding-bottom: 0;}
         .flex-page .page-header { flex-shrink: 0; }
-        .flex-page .fixed-top-section { flex-shrink: 0; background: var(--bg-color); z-index: 10; padding: 10px 16px 0 16px; }
+        .flex-page .fixed-top-section { flex-shrink: 0; background: var(--bg-color); z-index: 10; padding: 0 16px 0 16px; }
         .flex-page .scroll-content { flex: 1; overflow-y: auto; padding: 0 16px 100px 16px; }
         
-        .page-header { position: sticky; top: 0; background: var(--bg-color); color: var(--text-dark); height: 50px; display: flex; align-items: center; padding: 0 16px; z-index: 50; border-bottom: 1px solid var(--border); }
-        .back-btn { background: transparent; border: none; color: var(--text-dark); font-size: 24px; margin-right: 12px; cursor: pointer; padding: 5px; font-weight: 300;}
-        .page-title { font-size: 16px; font-weight: 500; margin: 0; color: var(--text-dark);}
+        .page-header { position: sticky; top: 0; background: var(--bg-color); color: var(--text-dark); height: 50px; display: flex; align-items: center; padding: 0 16px; z-index: 50; }
+        .back-btn { background: transparent; border: none; color: var(--text-dark); font-size: 24px; margin-right: 12px; cursor: pointer; padding: 5px;}
+        .page-title { font-size: 18px; font-weight: 400; margin: 0; color: var(--text-dark);}
         .page-content { padding: 16px; max-width: 800px; margin: 0 auto; }
 
         /* FORMS & BUTTONS */
-        .form-panel { background: white; padding: 16px; border-radius: 16px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
+        .form-panel { background: white; padding: 16px; border-radius: 20px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
         .form-group { margin-bottom: 16px; }
         .form-label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px;}
-        .form-control { width: 100%; background: var(--bg-color); border: 1px solid var(--border); padding: 12px 14px; border-radius: 8px; font-size: 14px; outline: none; font-weight: 500; color: var(--text-dark);}
-        .form-control:focus { border-color: var(--primary); background: white; }
+        .form-control { width: 100%; background: white; border: 1px solid var(--border); padding: 12px 14px; border-radius: 8px; font-size: 14px; outline: none; font-weight: 400; color: var(--text-dark); font-family: 'Inter', sans-serif;}
+        .form-control:focus { border-color: var(--primary); }
         .input-btn-group { display: flex; gap: 10px; width: 100%;}
         .action-btn { background: #e8f0fe; color: var(--primary); border: none; border-radius: 8px; padding: 0 16px; font-weight: 600; cursor: pointer; display:flex; align-items:center; justify-content:center;}
-        .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 4px rgba(10, 86, 208, 0.2);}
-        .btn-outline { border: 1px solid var(--border); color: var(--text-dark); background: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; font-size: 14px; cursor: pointer;}
+        .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 24px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s;}
+        .btn-submit:active { background: var(--primary-dark); }
+        .btn-outline { border: 1px solid var(--border); color: var(--text-dark); background: white; padding: 12px 20px; border-radius: 24px; font-weight: 500; font-size: 14px; cursor: pointer;}
 
         /* GOOGLE STYLE SIDEBAR */
-        .sidebar { background: #ffffff; color: var(--text-dark); position: fixed; top: 0; left: -300px; width: 280px; height: 100%; z-index: 3001; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.05);}
+        .sidebar { background: #f0f4f9; color: var(--text-dark); position: fixed; top: 0; left: -300px; width: 280px; height: 100%; z-index: 5000; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; display: flex; flex-direction: column;}
         .sidebar.active { left: 0; }
-        .sidebar-header { padding: 24px 20px 16px 20px; display: flex; flex-direction: column; align-items: flex-start; border-bottom: 1px solid var(--border); background: #ffffff; position: relative;}
-        .sidebar-close { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; color: var(--text-muted); font-weight: 300;}
-        .sidebar-menu-title { font-size: 11px; color: var(--text-muted); font-weight: 600; padding: 16px 20px 8px 20px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .sidebar-menu { list-style: none; padding: 0; margin: 0; flex: 1;}
-        .sidebar-menu li { color: var(--text-dark); font-weight: 500; padding: 12px 20px; margin: 2px 8px; border-radius: 20px; transition: background 0.2s; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px;}
-        .sidebar-menu li:hover { background: var(--bg-color); }
+        .sidebar-header { padding: 30px 20px 20px 20px; display: flex; align-items: center; border-bottom: 1px solid var(--border); background: #f0f4f9; position: relative;}
+        .sidebar-name { font-size: 20px; margin: 0; font-weight: 400; color: var(--text-dark); letter-spacing: -0.5px;}
+        .sidebar-menu { list-style: none; padding: 10px 0; margin: 0; flex: 1;}
+        .sidebar-menu li { color: var(--text-dark); font-weight: 500; padding: 14px 24px; margin: 4px 12px; border-radius: 24px; transition: background 0.2s; display: flex; align-items: center; gap: 16px; cursor: pointer; font-size: 14px;}
+        .sidebar-menu li:hover { background: #e1e3e1; }
         .sidebar-menu li.active { background: #c2e7ff; color: #001d35; font-weight: 600;}
-        .sidebar-menu li i { color: var(--text-muted); font-size: 18px; width: 24px; text-align: center; font-style: normal;}
+        .sidebar-menu li i { color: var(--text-muted); font-size: 20px; width: 24px; text-align: center; font-style: normal;}
         .sidebar-menu li.active i { color: #001d35; }
 
+        /* GOOGLE STYLE PROFILE MODAL */
+        .g-profile-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 5000; justify-content: center; align-items: flex-start; padding-top: 65px; opacity: 0; transition: opacity 0.3s;}
+        .g-profile-overlay.active { display: flex; opacity: 1; }
+        .g-profile-card { background: #e8ebf0; width: 90%; max-width: 360px; border-radius: 24px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center; position: relative; animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);}
+        @keyframes slideDown { 0% { transform: translateY(-20px); opacity: 0;} 100% { transform: translateY(0); opacity: 1;}}
+        .g-close-btn { position: absolute; top: 16px; right: 16px; font-size: 20px; cursor: pointer; color: var(--text-muted); width:32px; height:32px; display:flex; justify-content:center; align-items:center; border-radius:50%;}
+        .g-close-btn:active { background: rgba(0,0,0,0.05); }
+        .g-email { font-size: 13px; color: var(--text-dark); margin-bottom: 20px; font-weight: 500;}
+        .g-avatar-wrap { width: 80px; height: 80px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 32px; color: var(--primary); font-weight: 500; position: relative; margin-bottom: 12px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.05); overflow: hidden;}
+        .g-avatar-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        .g-cam-icon { position: absolute; bottom: 0; right: 0; background: white; color: var(--text-dark); width: 26px; height: 26px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);}
+        .g-greeting { font-size: 22px; font-weight: 400; color: var(--text-dark); margin-bottom: 24px;}
+        .g-manage-btn { background: white; color: var(--primary); border: 1px solid var(--border); padding: 10px 24px; border-radius: 20px; font-weight: 500; font-size: 14px; cursor: pointer; transition: background 0.2s;}
+        .g-manage-btn:active { background: #f8fafd; }
+
         /* TABLES & STICKY HEADERS */
-        .invoice-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; background: white; border-radius: 12px; border: 1px solid var(--border);}
-        .invoice-table th { position: sticky; top: 0; background: #f8fafd; padding: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 600; z-index: 5;}
-        .invoice-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-weight: 500; }
+        .invoice-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; background: white; border-radius: 16px; border: 1px solid var(--border); overflow: hidden;}
+        .invoice-table th { position: sticky; top: 0; background: #f8fafd; padding: 14px 16px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 500; z-index: 5;}
+        .invoice-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-weight: 400; color: var(--text-dark);}
 
         /* KHATABOOK UI & LEDGER */
-        .kb-header { background: var(--bg-color); color: var(--text-dark); padding: 10px 16px 10px 16px;}
-        .kb-header-title { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        .search-bar-container { background: white; margin: 0 16px 16px 16px; border-radius: 20px; padding: 4px 16px; display: flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid var(--border); position: relative; z-index: 3;}
-        .search-bar-container input { border: none; width: 100%; padding: 10px 5px; outline: none; font-size: 14px; }
-        
-        .ledger-summary-section { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; opacity: 1; max-height: 500px; }
-        .ledger-summary-section.hidden { max-height: 0; opacity: 0; margin-bottom: 0 !important; }
-        
-        .kb-summary-card { background: white; border-radius: 16px; margin: 0 16px 16px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); border: 1px solid var(--border);}
+        .kb-summary-card { background: white; border-radius: 20px; margin: 0 16px 16px 16px; border: 1px solid var(--border);}
         .kb-summary-split { display: flex; padding: 16px 0; }
         .kb-summary-box { flex: 1; text-align: center; border-right: 1px solid var(--border); }
         .kb-summary-box:last-child { border-right: none; }
-        .kb-summary-label { font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase;}
-        .kb-summary-val { font-size: 18px; font-weight: 600; margin-top: 4px; }
-        .ajio-tab-container { background: #e0e2e0; padding-top: 4px; border-radius: 16px 16px 0 0; margin: 0 16px; display: flex; overflow: hidden; }
-        .kb-tab { flex: 1; text-align: center; padding: 12px 0; color: var(--text-muted); font-weight: 600; font-size: 12px; cursor: pointer; border-radius: 16px 16px 0 0; transition: all 0.3s; }
-        .kb-tab.active { background: white; color: var(--primary); box-shadow: 0 -2px 10px rgba(0,0,0,0.02); }
+        .kb-summary-label { font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;}
+        .kb-summary-val { font-size: 20px; font-weight: 400; margin-top: 4px; }
+        
+        .ajio-tab-container { background: #e0e2e0; padding-top: 4px; border-radius: 20px 20px 0 0; margin: 0; display: flex; overflow: hidden; }
+        .kb-tab { flex: 1; text-align: center; padding: 12px 0; color: var(--text-muted); font-weight: 500; font-size: 13px; cursor: pointer; border-radius: 20px 20px 0 0; transition: all 0.3s; }
+        .kb-tab.active { background: var(--bg-color); color: var(--primary); }
         
         .kb-list { padding-bottom: 90px; }
-        .kb-list-item { background: white; margin: 0 16px 10px 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: stretch; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.02); border: 1px solid var(--border);}
-        .kb-list-left { display: flex; align-items: center; gap: 12px; padding: 12px 16px; flex:1;}
-        .kb-avatar { width: 40px; height: 40px; border-radius: 50%; background: #e8f0fe; display: flex; align-items: center; justify-content: center; font-weight: 600; color: var(--primary); font-size: 15px; flex-shrink: 0;}
-        .kb-name { font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 2px;}
+        .kb-list-item { background: white; margin: 0 16px 10px 16px; border-radius: 16px; display: flex; justify-content: space-between; align-items: stretch; cursor: pointer; border: 1px solid var(--border);}
+        .kb-list-left { display: flex; align-items: center; gap: 16px; padding: 16px; flex:1;}
+        .kb-avatar { width: 44px; height: 44px; border-radius: 50%; background: #e8f0fe; display: flex; align-items: center; justify-content: center; font-weight: 500; color: var(--primary); font-size: 18px; flex-shrink: 0;}
+        .kb-name { font-size: 15px; font-weight: 500; color: var(--text-dark); margin-bottom: 2px;}
         .kb-time { font-size: 12px; color: var(--text-muted);}
-        .kb-list-right { display: flex; flex-direction: column; justify-content: center; padding: 16px; min-width: 80px; text-align: right; border-left: 1px solid #f1f5f9; background: #f8fafd; border-top-right-radius: 12px; border-bottom-right-radius: 12px;}
+        .kb-list-right { display: flex; flex-direction: column; justify-content: center; padding: 16px; min-width: 60px; text-align: right; background: #f8fafd; border-top-right-radius: 16px; border-bottom-right-radius: 16px;}
         
-        .kb-fab { position: fixed !important; bottom: 90px; right: 20px; height: 56px; background: var(--primary); color: white; border-radius: 16px; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: 600; box-shadow: 0 4px 10px rgba(10, 86, 208, 0.3); border: none; z-index: 1001; cursor: pointer; padding: 0 20px; white-space: nowrap;}
+        /* FIXED ADD BUTTON */
+        .kb-fab { position: fixed !important; bottom: 30px; right: 20px; height: 56px; background: var(--primary); color: white; border-radius: 16px; display: flex; justify-content: center; align-items: center; font-size: 15px; font-weight: 500; box-shadow: 0 4px 10px rgba(10, 86, 208, 0.3); border: none; z-index: 1001; cursor: pointer; padding: 0 24px; white-space: nowrap;}
 
         /* LEDGER DEEP PAGE (Light Mode) */
-        .ledger-header-area { background: var(--bg-color); color: var(--text-dark); padding: 10px 16px 10px 16px;}
-        .ledger-bal-card { background: white; border-radius: 16px; padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.03); margin: 0 16px; position: relative; z-index: 2; border: 1px solid var(--border);}
-        .ledger-action-tabs { display: flex; margin: 16px 16px 5px 16px; gap: 10px;}
-        .l-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 12px; color: var(--text-dark); font-weight: 600; background: white; border-radius: 20px; cursor: pointer; border: 1px solid var(--border);}
-        .entry-card { background: white; border-radius: 12px; display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 10px; cursor: pointer; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.02);}
-        .ec-left { padding: 14px 16px; flex: 2; border-right: 1px solid #f1f5f9; }
-        .ec-gave, .ec-got { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; }
+        .ledger-header-area { background: var(--bg-color); color: var(--text-dark); padding: 0 0 10px 0;}
+        .ledger-bal-card { background: white; border-radius: 20px; padding: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); margin: 0 16px;}
+        .ledger-action-tabs { display: flex; margin: 16px 16px 10px 16px; gap: 10px;}
+        .l-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 13px; color: var(--text-dark); font-weight: 500; background: white; border-radius: 20px; cursor: pointer; border: 1px solid var(--border);}
+        .entry-card { background: white; border-radius: 16px; display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 12px; cursor: pointer; border: 1px solid var(--border);}
+        .ec-left { padding: 16px; flex: 2; border-right: 1px solid var(--border); }
+        .ec-gave, .ec-got { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500; }
         .ec-gave { background: #fdf2f2; color: var(--danger); }
-        .ec-got { background: #e6f4ea; color: var(--success); border-top-right-radius: 12px; border-bottom-right-radius: 12px;}
-        .bottom-action-bar { position: fixed; bottom: 0; width: 100%; left: 0; background: white; padding: 12px 16px; display: flex; gap: 12px; border-top: 1px solid var(--border); z-index: 9999; box-shadow: 0 -2px 10px rgba(0,0,0,0.02); padding-bottom: calc(12px + env(safe-area-inset-bottom));}
-        .btn-l-gave { flex: 1; background: #fdf2f2; color: var(--danger); border: 1px solid #f8cbcb; padding: 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; pointer-events: auto;}
-        .btn-l-got { flex: 1; background: #e6f4ea; color: var(--success); border: 1px solid #bce4c8; padding: 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; pointer-events: auto;}
-
-        /* LOADER */
-        .loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;}
-        .spinner { border: 4px solid #f3f3f3; border-left-color: var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* ENTRY DETAILS UI (Professional Look) */
-        .entry-detail-card { background: white; margin: 16px; border-radius: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); overflow: hidden; border: 1px solid var(--border);}
-        .ed-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 16px; border-bottom: 1px solid var(--border); background: #f8fafd;}
-        .ed-amt { font-size: 26px; font-weight: 700; }
-        .ed-row { padding: 20px 16px; border-bottom: 1px solid var(--border); }
-        .ed-edit-btn { text-align: center; padding: 16px; color: var(--primary); font-weight: 600; cursor: pointer; font-size:14px; background:#e8f0fe;}
-
-        /* CALCULATOR */
-        .calc-header { background: white; color: var(--danger); height: 50px; display: flex; align-items: center; padding: 0 16px; z-index: 10; border-bottom: 1px solid var(--border); }
-        .amount-input-box { background: white; border: 1px solid var(--border); border-radius: 16px; margin: 16px; padding: 16px; display: flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
-        .amount-input-box input { border: none; outline: none; font-size: 28px; font-weight: 600; color: var(--danger); width: 100%; background: transparent;}
-        
-        .calc-details-input { background: #ffffff; border: 1px solid var(--border); border-radius: 12px; margin: 0 16px 16px 16px; padding: 14px 16px; width: calc(100% - 32px); font-size: 14px; font-weight: 400; color: var(--text-dark); outline: none; display:none; transition: all 0.3s; font-family: inherit;}
-        .calc-details-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px #c2e7ff; }
-        
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; background: var(--bg-color);}
-        .calc-btn { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 14px 0; font-size: 18px; font-weight: 500; cursor: pointer; color: var(--text-dark); display: flex; justify-content: center; align-items: center;}
-        .calc-btn.light-blue { background: #e8f0fe; color: var(--primary); border: none;}
-        .calc-btn.dark-blue { background: var(--primary); color: white; border: none;}
+        .ec-got { background: #e6f4ea; color: var(--success); border-top-right-radius: 16px; border-bottom-right-radius: 16px;}
+        .bottom-action-bar { position: fixed; bottom: 0; width: 100%; left: 0; background: var(--bg-color); padding: 12px 16px; display: flex; gap: 12px; border-top: 1px solid var(--border); z-index: 9999; padding-bottom: calc(12px + env(safe-area-inset-bottom));}
+        .btn-l-gave { flex: 1; background: #fdf2f2; color: var(--danger); border: none; padding: 16px; border-radius: 24px; font-size: 14px; font-weight: 500; cursor: pointer; pointer-events: auto;}
+        .btn-l-got { flex: 1; background: #e6f4ea; color: var(--success); border: none; padding: 16px; border-radius: 24px; font-size: 14px; font-weight: 500; cursor: pointer; pointer-events: auto;}
 
         /* TOP CUSTOMERS (Google Card Style) */
-        .ua-item { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.02);}
-        .ua-item:hover { background: #f8fafd; }
+        .ua-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .ua-item { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;}
+        .ua-item:active { background: #f8fafd; }
         .ua-item-left { flex: 1; }
-        .ua-item-name { font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 2px; display:flex; align-items:center; gap:6px;}
+        .ua-item-name { font-size: 15px; font-weight: 500; color: var(--text-dark); margin-bottom: 4px; display:flex; align-items:center; gap:6px;}
         .ua-item-desc { font-size: 12px; color: var(--text-muted); }
         .ua-item-right { display: flex; align-items: center; gap: 8px; }
-        .ua-item-count { font-size: 15px; font-weight: 600; color: var(--primary); }
-        .ua-item-arrow { color: var(--border); font-weight: bold; font-size: 18px; }
+        .ua-item-count { font-size: 16px; font-weight: 500; color: var(--primary); }
         
         /* CELEBRATION MODAL */
         .celebration-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; padding: 20px; text-align: center; }
-        .celeb-box { background: white; padding: 30px 24px; border-radius: 24px; max-width: 400px; position: relative; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; box-shadow: 0 10px 25px rgba(0,0,0,0.1);}
+        .celeb-box { background: white; padding: 40px 24px; border-radius: 24px; max-width: 400px; position: relative; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; box-shadow: 0 10px 25px rgba(0,0,0,0.1);}
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
         /* STOCK OVERVIEW GRID (Pro UI) */
         .stock-overview-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-top: 10px; }
-        .stock-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
-        .stock-grid-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;}
-        .sg-title { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; }
-        .sg-value { font-size: 22px; font-weight: 500; color: var(--primary); margin-bottom: 0; line-height:1;}
-        .sg-icon { position: absolute; right: 12px; top: 12px; width: 28px; height: 28px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 14px; }
+        .stock-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+        .stock-grid-card { background: white; border: 1px solid var(--border); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; position: relative;}
+        .sg-title { font-size: 11px; font-weight: 500; color: var(--text-dark); margin-bottom: 4px; }
+        .sg-value { font-size: 24px; font-weight: 400; color: var(--primary); margin-bottom: 0; line-height:1;}
+        .sg-icon { position: absolute; right: 16px; top: 16px; width: 32px; height: 32px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 16px; }
 
         /* FIXED FORM HEADER FOR STOCK PAGES */
         .anim-form { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; max-height: 500px; opacity: 1; }
         .anim-form.hidden { max-height: 0; opacity: 0; margin-bottom: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; border: none !important; }
-        .in-out-btn-group { display: flex; gap: 10px; }
-        .btn-in { flex: 1; background: #e6f4ea; color: var(--success); border: none; padding: 12px; border-radius: 20px; font-weight: 600; cursor: pointer; font-size:13px; }
-        .btn-out { flex: 1; background: #fdf2f2; color: var(--danger); border: none; padding: 12px; border-radius: 20px; font-weight: 600; cursor: pointer; font-size:13px;}
+        
+        /* CALCULATOR */
+        .calc-header { background: var(--bg-color); height: 50px; display: flex; align-items: center; padding: 0 16px; z-index: 10; border-bottom: 1px solid var(--border); }
+        .amount-input-box { background: white; border: 1px solid var(--border); border-radius: 16px; margin: 16px; padding: 16px; display: flex; align-items: center;}
+        .amount-input-box input { border: none; outline: none; font-size: 32px; font-weight: 400; color: var(--danger); width: 100%; background: transparent; font-family: inherit;}
+        .calc-details-input { background: #ffffff; border: 1px solid var(--border); border-radius: 16px; margin: 0 16px 16px 16px; padding: 16px; width: calc(100% - 32px); font-size: 15px; font-weight: 400; color: var(--text-dark); outline: none; display:none; font-family: inherit;}
+        .calc-details-input:focus { border-color: var(--primary); }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; background: var(--bg-color);}
+        .calc-btn { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 16px 0; font-size: 22px; font-weight: 400; cursor: pointer; color: var(--text-dark); display: flex; justify-content: center; align-items: center;}
+        .calc-btn.light-blue { background: #e8f0fe; color: var(--primary); border: none;}
+        .calc-btn.dark-blue { background: var(--primary); color: white; border: none;}
+        
+        /* ENTRY DETAILS UI */
+        .entry-detail-card { background: white; margin: 16px; border-radius: 20px; border: 1px solid var(--border);}
+        .ed-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 16px; border-bottom: 1px solid var(--border); background: #f8fafd; border-radius: 20px 20px 0 0;}
+        .ed-amt { font-size: 28px; font-weight: 400; }
+        .ed-row { padding: 20px 16px; border-bottom: 1px solid var(--border); }
+        .ed-edit-btn { text-align: center; padding: 16px; color: var(--primary); font-weight: 500; cursor: pointer; font-size:14px; background:#e8f0fe; border-radius: 0 0 20px 20px;}
     </style>
 </head>
 <body>
@@ -210,11 +212,11 @@
         <div class="spinner"></div>
     </div>
 
-    <!-- 🎆 CELEBRATION MODAL WITH FIREWORKS -->
+    <!-- 🎆 CELEBRATION MODAL -->
     <div id="celebration-modal" class="celebration-modal">
         <div class="celeb-box">
-            <div style="font-size: 50px; margin-bottom: 10px; animation: bounce 1s infinite alternate;">🎊</div>
-            <div style="font-size: 15px; color: var(--text-dark); font-weight: 500; margin-bottom: 20px; line-height:1.5;">Dear <span id="celeb-name" style="color:var(--danger); font-weight:700;">Name</span>,<br><br>आपने 2% Additional Off के लिए अपना परचेज कोटा पूर्ण कर लिया है! 🏆<br><br>कृप्या लाभ लेने के लिए Godown पर आकर संपर्क करें।</div>
+            <div style="font-size: 60px; margin-bottom: 15px; animation: bounce 1s infinite alternate;">🎊</div>
+            <div style="font-size: 16px; color: var(--text-dark); font-weight: 400; margin-bottom: 24px; line-height:1.5;">Dear <span id="celeb-name" style="color:var(--primary); font-weight:600;">Name</span>,<br><br>आपने 2% Additional Off के लिए अपना परचेज कोटा पूर्ण कर लिया है! 🏆<br><br>कृप्या लाभ लेने के लिए Godown पर आकर संपर्क करें।</div>
             <button class="btn-submit" onclick="document.getElementById('celebration-modal').style.display='none'">Okay, Thanks!</button>
         </div>
     </div>
@@ -223,7 +225,7 @@
     <!-- POS DATALIST FOR AUTOCOMPLETE -->
     <datalist id="pos-customers-dl"></datalist>
 
-    <!-- HIDDEN INVOICE TEMPLATE FOR PDF DOWNLOAD (Fixed A4 Format) -->
+    <!-- HIDDEN INVOICE TEMPLATE FOR PDF DOWNLOAD -->
     <div id="pdf-container" style="position:fixed; left:-9999px; top:0;">
         <div id="pdf-invoice-template" style="background:white; padding:30px; font-family:Arial, sans-serif; color:black; width:700px; max-width:100%; box-sizing:border-box;">
             <div style="display:flex; justify-content:space-between; border-bottom:2px solid #0a56d0; padding-bottom:15px; margin-bottom:15px;">
@@ -271,19 +273,29 @@
         </div>
     </div>
 
+    <!-- 📱 GOOGLE STYLE PROFILE MODAL -->
+    <div id="google-profile-modal" class="g-profile-overlay" onclick="closeProfileModal(event)">
+        <div class="g-profile-card" onclick="event.stopPropagation()">
+            <div class="g-close-btn" onclick="closeProfileModal(event)">✕</div>
+            <div class="g-email" id="g-modal-email">admin@vandana.com</div>
+            <div class="g-avatar-wrap">
+                <img src="" id="g-modal-avatar-img" style="display:none;">
+                <div id="g-modal-avatar-text">V</div>
+                <div class="g-cam-icon">📷</div>
+            </div>
+            <div class="g-greeting">Hi, <span id="g-modal-name">Admin</span>!</div>
+            <button class="g-manage-btn" onclick="openManageProfile()">Manage your Business Profile</button>
+            <div style="margin-top: 24px; font-size: 11px; color: var(--text-muted); text-align: center;">Privacy Policy • Terms of Service</div>
+        </div>
+    </div>
+
     <!-- 📱 GOOGLE STYLE SIDEBAR MENU -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-close" onclick="closeSidebar()">✕</div>
-        <div class="sidebar-header" onclick="navTo('admin-profile-page', null); closeSidebar();" style="cursor:pointer; padding-top:40px;">
-            <div class="profile-pic" id="sidebar-user-pic" style="width:60px; height:60px; margin-bottom:12px; background:#e8f0fe; color:var(--primary); font-size:24px; display:flex; align-items:center; justify-content:center; border-radius:50%; overflow:hidden; border:1px solid var(--border);">V</div>
-            <h2 id="sidebar-name" style="font-size: 16px; margin: 0; font-weight: 600; letter-spacing: -0.2px; color:var(--text-dark);">Vandana Enterprises</h2>
-            <p id="sidebar-mobile" style="font-size: 12px; color: var(--text-muted); margin-top:2px;">+91 ----------</p>
-            <p id="sidebar-gst" style="font-size: 11px; color: var(--text-muted); margin-top:2px;">GST: Not Added</p>
+        <div class="sidebar-header">
+            <h2 class="sidebar-name">Vandana Enterprises</h2>
         </div>
-        
-        <div class="sidebar-menu-title">Operations</div>
-        <ul class="sidebar-menu">
+        <ul class="sidebar-menu" style="margin-top:8px;">
             <li class="active" onclick="navTo('home', null); closeSidebar();"><i>🏠</i> Dashboard</li>
             <li onclick="navTo('items-page', null); closeSidebar();"><i>📦</i> Master Inventory</li>
             <li onclick="navTo('godown-page', null); closeSidebar();"><i>🚚</i> Godown Transfer</li>
@@ -291,42 +303,38 @@
             <li onclick="navTo('parties-page', null); closeSidebar();"><i>👥</i> Ledger Book</li>
         </ul>
         <div style="border-top:1px solid var(--border); margin: 10px 0;"></div>
-        <div class="sidebar-menu-title">Administration</div>
         <ul class="sidebar-menu">
-            <li onclick="navTo('admin-profile-page', null); closeSidebar();"><i>⚙️</i> Settings & Profile</li>
+            <li onclick="openProfileModal(event); closeSidebar();"><i>⚙️</i> Business Profile</li>
         </ul>
     </div>
 
-    <!-- 📱 PERMANENT GOOGLE STYLE TOP BAR -->
+    <!-- 📱 PERMANENT GLOBAL TOP BAR -->
     <header class="app-bar" id="main-app-bar">
-        <div style="display:flex; align-items:center; gap:12px;">
-            <div style="font-size:24px; cursor:pointer; color: var(--text-muted); padding:5px;" onclick="openSidebar()">☰</div>
-            <h1 style="font-size: 19px; font-weight: 500; color: var(--text-dark); letter-spacing: -0.5px; margin-left: 4px;">Vandana Enterprises</h1>
+        <div class="app-bar-left">
+            <div class="app-bar-icon" onclick="openSidebar()">☰</div>
+            <h1>Vandana Enterprises</h1>
         </div>
-        <div class="google-profile-ring" onclick="navTo('admin-profile-page', null)">
+        <div class="google-profile-ring" onclick="openProfileModal(event)">
             <img src="" id="top-avatar-img" style="display:none; width:100%; height:100%; border-radius:50%; object-fit:cover; position:relative; z-index:2;">
             <span id="top-avatar-text" style="position:relative; z-index:2;">V</span>
         </div>
     </header>
 
-    <!-- 🏠 MAIN DASHBOARD (Google One Style Layout) -->
+    <!-- 🏠 MAIN DASHBOARD -->
     <main class="main-content" id="home">
         
-        <!-- DYNAMIC GREETING -->
         <div class="greeting-section">
             <h2 id="dynamic-greeting">Good afternoon, Admin</h2>
             <p>Manage your inventory, billing, and ledger details seamlessly</p>
         </div>
 
-        <!-- DATE PICKER BOX -->
         <div class="dash-date-wrapper">
-            <div style="background: white; padding: 4px 12px; border-radius: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 8px; border: 1px solid var(--border);">
+            <div style="background: white; padding: 4px 16px; border-radius: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 8px; border: 1px solid var(--border);">
                 <span style="font-size: 14px;">📅</span> 
                 <input type="date" id="dash-date-picker" style="border:none; outline:none; font-family:inherit; font-weight:500; font-size:13px; color:var(--text-dark); background:transparent;">
             </div>
         </div>
         
-        <!-- TOTAL SALES CARD -->
         <div class="google-card" onclick="openInvoicesPage()">
             <div class="card-header">Total Sales (Today)</div>
             <div class="card-value" id="dash-card-sale-value">₹0</div>
@@ -334,32 +342,35 @@
             <div class="card-subtext">Tap to view today's generated bills</div>
         </div>
 
-        <!-- 2x GRID CARDS -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
-            <div class="google-card" onclick="navTo('pos-page', null)" style="margin-bottom:0; display:flex; flex-direction:column; align-items:center; padding:16px 12px;">
-                <div class="card-header" style="align-self:flex-start; margin-bottom:0;">Active POS</div>
-                <div style="font-size:36px; margin:8px 0;">📱</div>
-                <div style="font-size:14px; font-weight:500; color:var(--text-dark);">Quick Bill</div>
-                <div style="font-size:13px; color:var(--primary); font-weight:600; margin-top:4px;">Open</div>
+        <div class="dash-card-grid">
+            <div class="dash-card" onclick="navTo('pos-page', null)">
+                <div class="dash-card-title">ACTIVE POS</div>
+                <div class="dash-card-icon-main">📱</div>
+                <div class="dash-card-sub">Quick Bill</div>
             </div>
-            <div class="google-card" onclick="navTo('godown-page', null)" style="margin-bottom:0; display:flex; flex-direction:column; align-items:center; padding:16px 12px;">
-                <div class="card-header" style="align-self:flex-start; margin-bottom:0;">Godown Transfer</div>
-                <div style="font-size:36px; margin:8px 0;">🚚</div>
-                <div style="font-size:14px; font-weight:500; color:var(--text-dark);">Stock Sync</div>
-                <div style="font-size:13px; color:var(--primary); font-weight:600; margin-top:4px;">View</div>
+            <div class="dash-card" onclick="navTo('godown-page', null)">
+                <div class="dash-card-title">Godown</div>
+                <div class="dash-card-icon-main">🚚</div>
+                <div class="dash-card-sub">Stock Sync</div>
             </div>
         </div>
 
-        <!-- TOP CUSTOMERS (Monthly) -->
-        <div style="background: white; border-radius: 20px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border: 1px solid var(--border);">
-            <div style="font-size: 14px; font-weight: 500; color: var(--text-dark); margin-bottom: 12px;">Top Customers 🏆 (This Month)</div>
+        <!-- TOP CUSTOMERS -->
+        <div style="background: white; border-radius: 20px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border: 1px solid var(--border); margin-bottom: 24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+                <div style="font-size: 14px; font-weight: 500; color: var(--text-dark);">Top Customers 🏆</div>
+            </div>
+            <!-- MONTH TOGGLE FOR TOP CUSTOMERS -->
+            <div class="ajio-tab-container" style="margin:0 0 16px 0; border-radius:12px; background:var(--bg-color);">
+                <div class="kb-tab active" id="tab-top-current" onclick="switchTopCustTab('current')" style="border-radius:12px; font-size:12px; padding:10px 0;">This Month</div>
+                <div class="kb-tab" id="tab-top-last" onclick="switchTopCustTab('last')" style="border-radius:12px; font-size:12px; padding:10px 0;">Last Month</div>
+            </div>
             <div id="top-customers-list"><div style="text-align:center; padding:10px; color:gray; font-size:12px;">Calculating top customers...</div></div>
         </div>
-
     </main>
 
     <!-- 📱 GOOGLE STYLE BOTTOM NAV -->
-    <div class="bottom-nav-bar">
+    <div class="bottom-nav-bar" id="main-bottom-nav">
         <div class="nav-item active" id="nav-btn-home" onclick="navTo('home', this)">
             <div class="nav-icon-wrap">🏠</div><span>Home</span>
         </div>
@@ -373,7 +384,7 @@
 
     <!-- 📄 INVOICES LIST PAGE -->
     <div class="page flex-page" id="invoices-page">
-        <div class="page-header"><button class="back-btn" onclick="closePage('invoices-page')">←</button><h2 class="page-title">Today's Bills & Invoices</h2></div>
+        <div class="page-header"><button class="back-btn" onclick="closePage('invoices-page')">←</button><h2 class="page-title">Bills & Invoices</h2></div>
         <div class="scroll-content" id="invoices-list-container" style="padding-top:16px;"></div>
     </div>
 
@@ -389,12 +400,12 @@
                 <input type="text" id="gd-item" class="form-control" placeholder="Item Name / Shade No." style="margin-bottom:12px;">
                 <input type="number" id="gd-qty" class="form-control" placeholder="Total Boxes" style="margin-bottom:16px;">
                 <div style="display:flex; gap:10px;">
-                    <button class="btn-submit" style="background:#146c2e; flex:1; border-radius:20px;" onclick="processGodown('IN')">🟢 Receive IN</button>
-                    <button class="btn-submit" style="background:#b3261e; flex:1; border-radius:20px;" onclick="processGodown('OUT')">🔴 Return OUT</button>
+                    <button class="btn-submit" style="background:var(--success); flex:1;" onclick="processGodown('IN')">🟢 Receive IN</button>
+                    <button class="btn-submit" style="background:var(--danger); flex:1;" onclick="processGodown('OUT')">🔴 Return OUT</button>
                 </div>
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">
-                <h3 class="section-title" style="margin:0;">Transfer History</h3>
+                <div style="font-size: 14px; font-weight: 500;">Transfer History</div>
                 <input type="date" class="professional-date-picker" id="godown-date-picker" style="padding:4px 12px; font-size:12px;" onchange="renderGodownHistory()">
             </div>
         </div>
@@ -442,17 +453,17 @@
                     <tbody id="cart-rows"><tr><td colspan="4" style="text-align:center; padding:16px; color:var(--text-muted);">Cart is empty</td></tr></tbody>
                 </table>
                 <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#f8fafd; border:1px solid #c2e7ff;">
-                    <span style="font-weight:600; font-size:15px; color:var(--primary);">Grand Total:</span>
-                    <span style="font-size:22px; font-weight:700; color:var(--primary);" id="cart-grand-total">₹ 0</span>
+                    <span style="font-weight:500; font-size:15px; color:var(--primary);">Grand Total:</span>
+                    <span style="font-size:22px; font-weight:600; color:var(--primary);" id="cart-grand-total">₹ 0</span>
                 </div>
                 <button id="save-bill-btn" class="btn-submit" onclick="triggerSaveAndShare()">💾 Generate Bill</button>
             </div>
 
             <div id="post-bill-area" style="display:none; text-align:center; margin-top:20px;">
                 <div style="font-size:50px; margin-bottom:10px;">✅</div>
-                <h3 style="margin-bottom:20px; color:var(--success); font-weight:500;">Bill Generated Successfully!</h3>
+                <h3 style="margin-bottom:20px; color:var(--success); font-weight:400;">Bill Generated Successfully!</h3>
                 <p style="color:var(--text-muted); font-size:13px; margin-bottom:20px;">Open this bill from Dashboard or Ledger to Download PDF / Edit.</p>
-                <button class="btn-outline" style="width:100%; border-color:var(--border); color:var(--text-dark);" onclick="resetBillingPage()">➕ Create New Bill</button>
+                <button class="btn-outline" style="width:100%;" onclick="resetBillingPage()">➕ Create New Bill</button>
             </div>
         </div>
     </div>
@@ -462,7 +473,6 @@
         <div class="fixed-top-section" style="padding:0;">
             <div class="page-header"><button class="back-btn" onclick="closePage('parties-page')">←</button><h2 class="page-title">Ledger Book</h2></div>
             <div class="search-bar-container">
-                <span style="color:var(--text-muted); font-size:16px;">🔍</span>
                 <input type="text" id="party-search" placeholder="Search Name..." 
                        onfocus="document.getElementById('ledger-summary-section').classList.add('hidden')" 
                        onblur="setTimeout(()=>document.getElementById('ledger-summary-section').classList.remove('hidden'), 200)" 
@@ -484,37 +494,32 @@
         </div>
         <div class="scroll-content" id="kb-customer-list" style="padding-top:15px; background:var(--bg-color);"></div>
         <!-- FIXED FAB -->
-        <button class="kb-fab" id="main-fab" onclick="openPage('add-party-page')"><span class="fab-icon">+</span><span class="fab-text" id="fab-text">Add Customer</span></button>
+        <button class="kb-fab" id="main-fab" onclick="openPage('add-party-page')"><span>+ Add Customer</span></button>
     </div>
 
     <!-- 🔥 KHATABOOK DEEP LEDGER PAGE -->
     <div class="page flex-page" id="ledger-deep-page">
         <div class="fixed-top-section" style="padding:0;">
-            <div class="ledger-header-area">
-                <!-- PROFESSIONAL CALL ICON ROW -->
+            <div class="page-header" style="background:var(--bg-color); border-bottom:none;">
                 <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
                     <div style="display:flex; align-items:center; gap:8px;">
                         <button class="back-btn" onclick="closePage('ledger-deep-page')" style="padding:0; margin-right:5px;">←</button>
-                        <div class="kb-avatar" id="l-deep-avatar-text" style="width:36px; height:36px; font-size:14px; background:#e8f0fe; color:var(--primary);" onclick="openCustomerProfile()"></div>
-                        <div class="l-name" id="l-deep-name" style="color:var(--text-dark); font-size:16px; cursor:pointer; font-weight:600;" onclick="openCustomerProfile()">Name</div>
+                        <div class="kb-avatar" id="l-deep-avatar-text" style="width:36px; height:36px; font-size:14px;" onclick="openCustomerProfile()"></div>
+                        <div class="l-name" id="l-deep-name" style="color:var(--text-dark); font-size:16px; cursor:pointer; font-weight:500;" onclick="openCustomerProfile()">Name</div>
                     </div>
-                    <!-- ROUNDED CALL ICON -->
-                    <a href="#" id="l-call-btn" style="color:var(--primary); text-decoration:none; font-size:16px; border:1px solid var(--border); border-radius:50%; width:36px; height:36px; display:flex; justify-content:center; align-items:center; background:white; box-shadow:0 1px 2px rgba(0,0,0,0.02);">📞</a>
+                    <a href="#" id="l-call-btn" style="color:var(--primary); text-decoration:none; font-size:16px; border:1px solid var(--border); border-radius:50%; width:36px; height:36px; display:flex; justify-content:center; align-items:center; background:white;">📞</a>
                 </div>
             </div>
+            
             <div class="ledger-bal-card">
                 <span style="font-size:13px; color:var(--text-muted); font-weight:500;" id="l-deep-bal-text">You will give</span>
-                <span style="font-size:22px; font-weight:600;" id="l-deep-bal-amt">₹ 0</span>
+                <span style="font-size:22px; font-weight:400;" id="l-deep-bal-amt">₹ 0</span>
             </div>
-            <div class="ledger-action-tabs">
-                <div class="l-tab" id="l-wa-btn" style="color:#146c2e; border-color:#e0e2e0;">💬 Reminder</div>
-                <div class="l-tab" id="l-sms-btn" onclick="alert('Downloading Party Statement...')">📄 Statement</div>
-            </div>
-            <div style="text-align:center; font-size:11px; font-weight:500; color:var(--text-muted); margin-bottom:12px;" id="l-deep-today-date"></div>
+            <div style="text-align:center; font-size:11px; font-weight:500; color:var(--text-muted); margin:16px 0 8px 0;" id="l-deep-today-date"></div>
             <div style="display:flex; justify-content:space-between; padding:0 20px; font-size:10px; font-weight:600; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;"><span style="flex:2;">ENTRIES</span><span style="flex:1; text-align:center;">YOU GAVE</span><span style="flex:1; text-align:right;">YOU GOT</span></div>
         </div>
         <div class="scroll-content" id="ledger-entries-list" style="padding-top:0;"></div>
-        <!-- FIXED ACTION BAR ENABLED -->
+        
         <div class="bottom-action-bar" style="z-index: 9999;">
             <button class="btn-l-gave" onclick="openCalculator('Gave')" style="pointer-events: auto;">YOU GAVE ₹</button>
             <button class="btn-l-got" onclick="openCalculator('Got')" style="pointer-events: auto;">YOU GOT ₹</button>
@@ -524,33 +529,28 @@
     <!-- ⚙️ PROFESSIONAL ADMIN PROFILE PAGE -->
     <div class="page flex-page" id="admin-profile-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('admin-profile-page')">←</button><h2 class="page-title">Business Profile</h2></div>
-        <div class="scroll-content" style="padding:0; background:#f8fafd;">
-            <div class="admin-cover">
-                <div class="admin-avatar-wrap">
-                    <div class="admin-pic" id="ap-avatar">V</div>
-                    <div class="admin-cam" onclick="document.getElementById('admin-upload').click()">📷</div>
+        <div class="scroll-content" style="padding:0;">
+            <div class="form-panel" style="border:none; border-radius:0; padding-top:30px;">
+                <div style="display:flex; justify-content:center; margin-bottom:16px;">
+                    <div class="g-avatar-wrap" style="width:100px; height:100px; font-size:40px;" onclick="document.getElementById('admin-upload-page').click()">
+                        <img src="" id="ap-avatar-img" style="display:none;">
+                        <div id="ap-avatar-text">V</div>
+                        <div class="g-cam-icon" style="width:30px; height:30px; font-size:14px;">📷</div>
+                    </div>
+                    <input type="file" id="admin-upload-page" accept="image/*" style="display:none;" onchange="handleAdminPic(event)">
                 </div>
-            </div>
-            <div style="text-align:center; margin-top:50px; margin-bottom:20px;">
-                <h2 id="ap-display-name" style="font-size:20px; color:var(--text-dark); font-weight:600; letter-spacing:-0.5px;">Vandana Enterprises</h2>
-                <p style="color:var(--text-muted); font-size:13px;">Official Business Details</p>
-            </div>
-            <input type="file" id="admin-upload" accept="image/*" style="display:none;" onchange="handleAdminPic(event)">
-            
-            <div style="padding:0 16px;">
-                <div class="form-panel" style="border:1px solid var(--border); box-shadow:0 1px 4px rgba(0,0,0,0.02); border-radius:20px;">
-                    <div class="form-group"><label class="form-label">Business Name</label><input type="text" class="form-control" id="ap-name" value="Vandana Enterprises" onkeyup="document.getElementById('ap-display-name').innerText=this.value || 'Business Name'"></div>
-                    <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="ap-phone" placeholder="Enter Number"></div>
-                    <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-control" id="ap-email" placeholder="Enter Email"></div>
-                    <div class="form-group"><label class="form-label">GST Number</label><input type="text" class="form-control" id="ap-gst" placeholder="e.g. 08AAAAA0000A1Z5" style="text-transform:uppercase;"></div>
-                    <div class="form-group"><label class="form-label">Full Address</label><textarea class="form-control" id="ap-address" rows="3" placeholder="Shop Address"></textarea></div>
-                    <button class="btn-submit" onclick="saveAdminProfile()" style="margin-top:10px;">💾 Save Profile Changes</button>
-                </div>
+                
+                <div class="form-group"><label class="form-label">Business Name</label><input type="text" class="form-control" id="ap-name" value="Vandana Enterprises"></div>
+                <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-control" id="ap-email" placeholder="Business Email"></div>
+                <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="ap-phone" placeholder="Enter Number"></div>
+                <div class="form-group"><label class="form-label">GST Number</label><input type="text" class="form-control" id="ap-gst" placeholder="e.g. 08AAAAA0000A1Z5" style="text-transform:uppercase;"></div>
+                <div class="form-group"><label class="form-label">Full Address</label><textarea class="form-control" id="ap-address" rows="3" placeholder="Shop Address"></textarea></div>
+                <button class="btn-submit" onclick="saveAdminProfile()" style="margin-top:10px;">💾 Save Changes</button>
             </div>
         </div>
     </div>
 
-    <!-- 📄 CUSTOMER PROFILE PAGE (EDITABLE + BOTTOM DELETE) -->
+    <!-- 📄 CUSTOMER PROFILE PAGE (EDITABLE) -->
     <div class="page flex-page" id="customer-profile-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('customer-profile-page')">←</button><h2 class="page-title">Profile Details</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
@@ -562,7 +562,7 @@
                 <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="cp-edit-phone"></div>
                 <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-control" id="cp-edit-email" placeholder="e.g. name@gmail.com, .in, .com"></div>
                 <div class="form-group"><label class="form-label">Address</label><textarea class="form-control" id="cp-edit-address" rows="3" placeholder="Full Address"></textarea></div>
-                <button class="btn-submit" onclick="saveCustomerProfile()">💾 Save Profile Changes</button>
+                <button class="btn-submit" onclick="saveCustomerProfile()">💾 Save Profile</button>
             </div>
         </div>
         <div class="bottom-action-bar" style="justify-content:center; background:var(--bg-color); border-top:none; box-shadow:none;">
@@ -575,7 +575,7 @@
         <div class="page-header"><button class="back-btn" onclick="closePage('entry-details-page')">←</button><h2 class="page-title">Entry Details</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
             <div class="entry-detail-card">
-                <div class="ed-header"><div class="ed-header-left"><div style="font-size:24px;" id="ed-icon">💸</div><div><div style="font-weight:600; font-size:15px; color:var(--text-dark);" id="ed-party-name">Name</div><div style="font-size:12px; color:var(--text-muted);" id="ed-date">Date</div></div></div><div class="ed-amount-box"><div class="ed-amt" id="ed-amount">₹ 0</div><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;" id="ed-type">You Gave</div></div></div>
+                <div class="ed-header"><div class="ed-header-left"><div style="font-size:24px;" id="ed-icon">💸</div><div><div style="font-weight:500; font-size:15px; color:var(--text-dark);" id="ed-party-name">Name</div><div style="font-size:12px; color:var(--text-muted);" id="ed-date">Date</div></div></div><div class="ed-amount-box"><div class="ed-amt" id="ed-amount">₹ 0</div><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;" id="ed-type">You Gave</div></div></div>
                 <div class="ed-row ed-flex-row">
                     <div style="flex:1;">
                         <div class="ed-label">Details / Bill No.</div>
@@ -590,20 +590,18 @@
         </div>
         <!-- 3 ACTION BUTTONS -->
         <div class="bottom-action-bar" style="padding: 12px 16px; gap: 8px;">
-            <button class="btn-outline" style="width: auto; padding: 14px 16px; border-color: var(--danger); color: var(--danger);" onclick="deleteCurrentEntry()">🗑️</button>
-            <button class="btn-submit" style="flex: 1; padding: 14px; border-radius:20px;" onclick="shareCurrentEntry()">📲 Resend</button>
-            <button class="btn-submit" style="flex: 1; background: var(--success); padding: 14px; border-radius:20px;" onclick="downloadPDFFromEntry()">📄 PDF</button>
+            <button class="btn-outline" style="width: auto; padding: 14px 16px; border-color: var(--border); color: var(--danger);" onclick="deleteCurrentEntry()">🗑️</button>
+            <button class="btn-submit" style="flex: 1; padding: 14px; background:white; color:var(--primary); border:1px solid var(--border);" onclick="shareCurrentEntry()">📲 Resend</button>
+            <button class="btn-submit" style="flex: 1; padding: 14px;" onclick="downloadPDFFromEntry()">📄 PDF</button>
         </div>
     </div>
 
-    <!-- 🧮 CALC SCREEN (Smart Edit Enabled) -->
+    <!-- 🧮 CALC SCREEN -->
     <div class="page" id="calculator-page" style="z-index: 2500;">
-        <div class="calc-header" id="calc-header"><button class="back-btn" onclick="closePage('calculator-page')" id="calc-back-btn" style="color:var(--danger);">←</button><h2 class="calc-title" id="calc-title-text">You gave ₹ 0</h2></div>
+        <div class="calc-header" id="calc-header"><button class="back-btn" onclick="closePage('calculator-page')" id="calc-back-btn" style="color:var(--danger);">←</button><h2 class="calc-title" id="calc-title-text" style="font-weight:500;">You gave ₹ 0</h2></div>
         <div class="page-content" style="padding:0;">
             <div class="amount-input-box"><span class="amount-symbol" id="calc-symbol">₹</span><input type="text" id="calc-amount" readonly placeholder="0" style="color:var(--danger);"></div>
-            <!-- PROFESSIONAL DETAILS BOX -->
             <input type="text" class="calc-details-input" id="calc-details" placeholder="Enter details (Items, bill no., quantity, etc.)">
-            
             <div class="calc-action-row" style="margin-top:16px; display:flex; justify-content:center;"><input type="date" class="professional-date-picker" id="calc-date"></div>
         </div>
         <div class="calculator-footer" style="position:fixed; bottom:0; left:0; width:100%; background:var(--bg-color); z-index:9999; padding-bottom:env(safe-area-inset-bottom);">
@@ -639,7 +637,7 @@
         <div class="page-header"><button class="back-btn" onclick="closePage('thread-stock-page')">←</button><h2 class="page-title">Thread Stock</h2></div>
         <div class="fixed-top-section">
             <div class="search-bar-container" style="margin: 0 0 16px 0;">
-                <span>🔍</span><input type="text" id="search-thread" placeholder="Search Shade Number..." onfocus="document.getElementById('thread-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('thread-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-thread', 'thread-stock-list')">
+                <input type="text" id="search-thread" placeholder="Search Shade Number..." onfocus="document.getElementById('thread-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('thread-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-thread', 'thread-stock-list')">
             </div>
             <div class="form-panel anim-form" id="thread-anim-form" style="margin-bottom:10px;">
                 <div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="thread-shade-input" placeholder="Shade No."><input type="number" class="form-control" id="thread-box-input" placeholder="Boxes"></div>
@@ -656,7 +654,7 @@
         <div class="page-header"><button class="back-btn" onclick="closePage('zari-stock-page')">←</button><h2 class="page-title">Zari Stock</h2></div>
         <div class="fixed-top-section">
             <div class="search-bar-container" style="margin: 0 0 16px 0;">
-                <span>🔍</span><input type="text" id="search-zari" placeholder="Search Item..." onfocus="document.getElementById('zari-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('zari-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-zari', 'zari-stock-list')">
+                <input type="text" id="search-zari" placeholder="Search Item..." onfocus="document.getElementById('zari-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('zari-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-zari', 'zari-stock-list')">
             </div>
             <div class="form-panel anim-form" id="zari-anim-form" style="margin-bottom:10px;">
                 <select class="form-control" id="zari-item-select" style="margin-bottom: 12px;">
@@ -676,7 +674,7 @@
         <div class="page-header"><button class="back-btn" onclick="closePage('cording-stock-page')">←</button><h2 class="page-title">Cording Stock</h2></div>
         <div class="fixed-top-section">
             <div class="search-bar-container" style="margin: 0 0 16px 0;">
-                <span>🔍</span><input type="text" id="search-cording" placeholder="Search Item..." onfocus="document.getElementById('cording-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('cording-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-cording', 'cording-stock-list')">
+                <input type="text" id="search-cording" placeholder="Search Item..." onfocus="document.getElementById('cording-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('cording-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-cording', 'cording-stock-list')">
             </div>
             <div class="form-panel anim-form" id="cording-anim-form" style="margin-bottom:10px;">
                 <select class="form-control" id="cording-item-select" style="margin-bottom: 12px;">
@@ -696,7 +694,7 @@
         <div class="page-header"><button class="back-btn" onclick="closePage('nylon-stock-page')">←</button><h2 class="page-title">Nylon Stock</h2></div>
         <div class="fixed-top-section">
             <div class="search-bar-container" style="margin: 0 0 16px 0;">
-                <span>🔍</span><input type="text" id="search-nylon" placeholder="Search Item..." onfocus="document.getElementById('nylon-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('nylon-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-nylon', 'nylon-stock-list')">
+                <input type="text" id="search-nylon" placeholder="Search Item..." onfocus="document.getElementById('nylon-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('nylon-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-nylon', 'nylon-stock-list')">
             </div>
             <div class="form-panel anim-form" id="nylon-anim-form" style="margin-bottom:10px;">
                 <div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="nylon-item-input" placeholder="Item Name / Shade"><input type="number" class="form-control" id="nylon-box-input" placeholder="Boxes"></div>
@@ -713,7 +711,7 @@
         <div class="page-header"><button class="back-btn" onclick="closePage('bobbin-stock-page')">←</button><h2 class="page-title">Bobbin Stock</h2></div>
         <div class="fixed-top-section">
             <div class="search-bar-container" style="margin: 0 0 16px 0;">
-                <span>🔍</span><input type="text" id="search-bobbin" placeholder="Search Item..." onfocus="document.getElementById('bobbin-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('bobbin-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-bobbin', 'bobbin-stock-list')">
+                <input type="text" id="search-bobbin" placeholder="Search Item..." onfocus="document.getElementById('bobbin-anim-form').classList.add('hidden')" onblur="setTimeout(()=>document.getElementById('bobbin-anim-form').classList.remove('hidden'), 200)" onkeyup="filterStockList('search-bobbin', 'bobbin-stock-list')">
             </div>
             <div class="form-panel anim-form" id="bobbin-anim-form" style="margin-bottom:10px;">
                 <div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="bobbin-item-input" placeholder="Item Name"><input type="number" class="form-control" id="bobbin-box-input" placeholder="Boxes"></div>
@@ -729,25 +727,12 @@
     <div class="page flex-page" id="lowstock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('lowstock-page')">←</button><h2 class="page-title">Low Stock Alerts</h2></div>
         <div class="fixed-top-section">
-            <div style="background:#fdf2f2; color:var(--danger); padding:12px; border-radius:12px; font-weight:600; font-size:13px; border: 1px solid #f8cbcb; display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+            <div style="background:#fdf2f2; color:var(--danger); padding:12px; border-radius:12px; font-weight:500; font-size:13px; border: 1px solid #f8cbcb; display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                 <span style="font-size:20px;">⚠️</span> <span>Below items have 5 or less boxes left. Time to re-order!</span>
             </div>
         </div>
         <div class="scroll-content" style="padding-top:0;">
             <table class="invoice-table"><thead><tr><th>Item Details</th><th>Remaining</th></tr></thead><tbody id="lowstock-list"></tbody></table>
-        </div>
-    </div>
-
-    <!-- 👤 ADD NEW PARTY PAGE -->
-    <div class="page flex-page" id="add-party-page">
-        <div class="page-header"><button class="back-btn" onclick="closePage('add-party-page')">←</button><h2 class="page-title" id="add-party-title">Add Customer</h2></div>
-        <div class="scroll-content" style="padding-top:16px;">
-            <div class="form-panel">
-                <div class="form-group"><label class="form-label">Full Name</label><div class="input-btn-group"><input type="text" class="form-control" id="new-party-name" placeholder="Enter Full Name"><button class="action-btn" onclick="openPhonebook('new-party-name', 'new-party-phone')">👥</button></div></div>
-                <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="new-party-phone" placeholder="Enter Number"></div>
-                <div class="form-group"><label class="form-label">Address (Optional)</label><input type="text" class="form-control" id="new-party-address" placeholder="City or Full Address"></div>
-                <button class="btn-submit" onclick="addCustomerToCloud()" style="border-radius:20px;">💾 Save Details</button>
-            </div>
         </div>
     </div>
 
@@ -772,9 +757,10 @@
         let allLedgerData = []; let globalCustomers = []; let smartInventory = {}; let allGodownTransfers = [];
         let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null; 
         window.currentTabType = 'Customer';
+        window.topCustFilter = 'current'; // 'current' or 'last' month
         window.ledgerTotals = { custGive:0, custGet:0, supGive:0, supGet:0 };
 
-        // PREVENT DEVICE BACK BUTTON
+        // PREVENT DEVICE BACK BUTTON (Safety Logic)
         history.pushState(null, null, location.href);
         window.onpopstate = function () { history.go(1); };
 
@@ -788,7 +774,6 @@
             document.getElementById('l-deep-today-date').innerText = "Today: " + new Date().toLocaleDateString('en-IN', options);
 
             loadAdminProfile();
-            updateGreeting(); // Dynamic Greeting Setup
 
             onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); updatePosShades(); });
             onValue(ref(db, 'Customers'), (snapshot) => { let data = snapshot.val() || {}; globalCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); renderCustomerList(globalCustomers); setupPOSAutocomplete(); });
@@ -808,17 +793,46 @@
 
             // Transparent Header Effect on Scroll
             document.querySelector('#home').addEventListener('scroll', function() {
-                if(this.scrollTop > 20) {
-                    document.getElementById('main-app-bar').style.background = '#ffffff';
-                    document.getElementById('main-app-bar').style.boxShadow = '0 2px 10px rgba(0,0,0,0.05)';
-                    document.getElementById('main-app-bar').style.borderBottom = '1px solid #e0e2e0';
+                if(this.scrollTop > 10) {
+                    document.getElementById('main-app-bar').classList.add('scrolled');
                 } else {
-                    document.getElementById('main-app-bar').style.background = 'var(--bg-color)';
-                    document.getElementById('main-app-bar').style.boxShadow = 'none';
-                    document.getElementById('main-app-bar').style.borderBottom = 'none';
+                    document.getElementById('main-app-bar').classList.remove('scrolled');
                 }
             });
         });
+
+        // MODAL LOGIC (GOOGLE STYLE)
+        window.openProfileModal = function(e) {
+            e.stopPropagation();
+            let pName = localStorage.getItem('v_adminName') || "Admin";
+            let pEmail = localStorage.getItem('v_adminEmail') || "Not Added";
+            let pPic = localStorage.getItem('v_adminPic');
+            let firstName = pName.split(' ')[0].toUpperCase();
+
+            document.getElementById('g-modal-email').innerText = pEmail;
+            document.getElementById('g-modal-name').innerText = firstName;
+            
+            if(pPic) {
+                document.getElementById('g-modal-avatar-img').src = pPic;
+                document.getElementById('g-modal-avatar-img').style.display = 'block';
+                document.getElementById('g-modal-avatar-text').style.display = 'none';
+            } else {
+                document.getElementById('g-modal-avatar-text').innerText = pName.charAt(0).toUpperCase();
+                document.getElementById('g-modal-avatar-img').style.display = 'none';
+                document.getElementById('g-modal-avatar-text').style.display = 'block';
+            }
+
+            document.getElementById('google-profile-modal').classList.add('active');
+        }
+
+        window.closeProfileModal = function(e) {
+            document.getElementById('google-profile-modal').classList.remove('active');
+        }
+
+        window.openManageProfile = function() {
+            closeProfileModal();
+            navTo('admin-profile-page', null);
+        }
 
         window.updateGreeting = function() {
             const hour = new Date().getHours();
@@ -831,8 +845,10 @@
         }
 
         window.navTo = function(pageId, element) {
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            if(element) element.classList.add('active');
+            if(element) {
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                element.classList.add('active');
+            }
             if(pageId === 'home') { goHome(); } else { openPage(pageId); }
         }
 
@@ -844,24 +860,31 @@
             let pAddr = localStorage.getItem('v_adminAddr') || "";
             let pPic = localStorage.getItem('v_adminPic');
 
-            document.getElementById('ap-name').value = pName; document.getElementById('ap-phone').value = pPhone;
-            document.getElementById('ap-email').value = pEmail; document.getElementById('ap-gst').value = pGst; document.getElementById('ap-address').value = pAddr;
-            document.getElementById('ap-display-name').innerText = pName;
-            document.getElementById('sidebar-name').innerText = pName;
-            document.getElementById('sidebar-mobile').innerText = pPhone ? "+91 " + pPhone : "+91 ----------";
-            document.getElementById('sidebar-gst').innerText = pGst ? "GST: " + pGst : "GST: Not Added";
-
+            if(document.getElementById('ap-name')) document.getElementById('ap-name').value = pName; 
+            if(document.getElementById('ap-phone')) document.getElementById('ap-phone').value = pPhone;
+            if(document.getElementById('ap-email')) document.getElementById('ap-email').value = pEmail; 
+            if(document.getElementById('ap-gst')) document.getElementById('ap-gst').value = pGst; 
+            if(document.getElementById('ap-address')) document.getElementById('ap-address').value = pAddr;
+            
+            if(document.getElementById('ap-display-name')) document.getElementById('ap-display-name').innerText = pName;
+            
             if(pPic) {
                 let imgHtml = `<img src="${pPic}" style="width:100%; height:100%; object-fit:cover;">`;
-                document.getElementById('ap-avatar').innerHTML = imgHtml; 
-                document.getElementById('sidebar-user-pic').innerHTML = imgHtml;
+                if(document.getElementById('ap-avatar')) {
+                    document.getElementById('ap-avatar-img').src = pPic;
+                    document.getElementById('ap-avatar-img').style.display = 'block';
+                    document.getElementById('ap-avatar-text').style.display = 'none';
+                }
                 document.getElementById('top-avatar-img').src = pPic;
                 document.getElementById('top-avatar-img').style.display = 'block';
                 document.getElementById('top-avatar-text').style.display = 'none';
             } else {
                 let initial = pName.charAt(0).toUpperCase();
-                document.getElementById('ap-avatar').innerText = initial; 
-                document.getElementById('sidebar-user-pic').innerText = initial;
+                if(document.getElementById('ap-avatar')) {
+                    document.getElementById('ap-avatar-img').style.display = 'none';
+                    document.getElementById('ap-avatar-text').style.display = 'block';
+                    document.getElementById('ap-avatar-text').innerText = initial;
+                }
                 document.getElementById('top-avatar-img').style.display = 'none';
                 document.getElementById('top-avatar-text').innerText = initial;
                 document.getElementById('top-avatar-text').style.display = 'block';
@@ -883,6 +906,7 @@
             if(file) { let reader = new FileReader(); reader.onload = function(e) { localStorage.setItem('v_adminPic', e.target.result); loadAdminProfile(); }; reader.readAsDataURL(file); }
         }
 
+        // ================= 22 GODAM TRANSFER LOGIC =================
         window.processGodown = function(type) {
             let cat = document.getElementById('gd-cat').value; let item = document.getElementById('gd-item').value; let qty = parseInt(document.getElementById('gd-qty').value);
             if(!item || isNaN(qty) || qty <= 0) return alert("Please enter Item Name and Valid Quantity!");
@@ -900,20 +924,29 @@
             let filterDate = document.getElementById('godown-date-picker').value;
             let filteredTransfers = allGodownTransfers.filter(t => { let tDate = ""; try { tDate = new Date(t.date).toISOString().split('T')[0]; } catch(e){} return tDate === filterDate; });
             let html = "";
-            if(filteredTransfers.length === 0) { html = '<tr><td colspan="2" style="text-align:center; padding:16px;">No transfers on this date.</td></tr>'; } 
+            if(filteredTransfers.length === 0) { html = '<tr><td colspan="2" style="text-align:center; padding:16px; color:var(--text-muted);">No transfers on this date.</td></tr>'; } 
             else {
                 filteredTransfers.forEach(t => {
                     let d = new Date(t.date); let timeStr = isNaN(d) ? t.date : d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
                     let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)'; let icon = t.type === 'IN' ? '🟢 IN' : '🔴 OUT';
-                    html += `<tr><td><div style="font-weight:600; color:var(--text-dark);">${t.item} <span style="font-size:10px; color:var(--text-muted);">(${t.cat})</span></div><div style="font-size:11px; color:var(--text-muted);">${timeStr}</div></td><td style="color:${color}; font-weight:700;">${icon} <br>${t.qty} BOX</td></tr>`;
+                    html += `<tr><td><div style="font-weight:500; color:var(--text-dark);">${t.item} <span style="font-size:10px; color:var(--text-muted);">(${t.cat})</span></div><div style="font-size:11px; color:var(--text-muted);">${timeStr}</div></td><td style="color:${color}; font-weight:600;">${icon} <br>${t.qty} BOX</td></tr>`;
                 });
             }
             document.getElementById('godown-history-list').innerHTML = html;
         }
 
+        // ================= TOP CUSTOMERS LOGIC (MONTHLY + FIREWORK) =================
+        window.switchTopCustTab = function(type) {
+            window.topCustFilter = type;
+            document.getElementById('tab-top-current').classList.toggle('active', type === 'current');
+            document.getElementById('tab-top-last').classList.toggle('active', type === 'last');
+            calculateGrandTotals();
+        }
+
         window.showCelebration = function(name) { 
             document.getElementById('celeb-name').innerText = name; 
             document.getElementById('celebration-modal').style.display = 'flex'; 
+            
             var duration = 3000; var end = Date.now() + duration;
             (function frame() {
                 confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 1 }, colors: ['#0a56d0', '#146c2e', '#f29900', '#b3261e'] });
@@ -922,6 +955,7 @@
             }());
         }
 
+        // ================= CUSTOMER PROFILE (EDITABLE) =================
         function setupPOSAutocomplete() {
             let dlHtml = ""; globalCustomers.forEach(c => dlHtml += `<option value="${c.name}">`);
             document.getElementById('pos-customers-dl').innerHTML = dlHtml;
@@ -944,10 +978,12 @@
             let nAddr = document.getElementById('cp-edit-address').value;
             
             if(!nName) return alert("Name is required!");
+            
             if(nEmail !== "") {
                 let validEmail = nEmail.endsWith('@gmail.com') || nEmail.endsWith('.com') || nEmail.endsWith('.in');
                 if(!validEmail) { return alert("Invalid Email! Must end with @gmail.com, .com, or .in"); }
             }
+
             update(ref(db, 'Customers/' + currentPartyKey), { name: nName, phone: nPhone, email: nEmail, address: nAddr });
             
             currentPartyName = nName; currentPartyPhone = nPhone;
@@ -985,7 +1021,7 @@
             }
         }
 
-        // ================= PDF DOWNLOAD LOGIC =================
+        // ================= PDF DOWNLOAD LOGIC (FIXED A4 SIZE) =================
         window.downloadPDFFromEntry = function() {
             if(!currentEntryData) return;
             
@@ -1018,7 +1054,16 @@
         window.calculateGrandTotals = function() {
             let balances = {}; let todayTotalSale = 0; let todayTotalBox = 0;
             let customerPurchases = {}; let selectedDateString = document.getElementById('dash-date-picker').value; 
-            let currentMonth = new Date().toISOString().slice(0, 7); 
+            
+            // Logic for Current or Last Month
+            let targetMonth = "";
+            let now = new Date();
+            if(window.topCustFilter === 'current') {
+                targetMonth = now.toISOString().slice(0, 7);
+            } else {
+                now.setMonth(now.getMonth() - 1);
+                targetMonth = now.toISOString().slice(0, 7);
+            }
 
             allLedgerData.forEach(entry => {
                 let amt = parseFloat(entry.amount) || 0; let entryDateString = ""; let entryMonthString = "";
@@ -1029,7 +1074,7 @@
                 if(entry.type === 'Got') balances[entry.name] -= amt;
 
                 if (entry.details && entry.details.includes("Invoice Sale")) {
-                    if(entryMonthString === currentMonth) { if(!customerPurchases[entry.name]) customerPurchases[entry.name] = 0; customerPurchases[entry.name] += amt; }
+                    if(entryMonthString === targetMonth) { if(!customerPurchases[entry.name]) customerPurchases[entry.name] = 0; customerPurchases[entry.name] += amt; }
                     if(entryDateString === selectedDateString){ todayTotalSale += amt; let boxMatch = entry.details.match(/(\d+)\s*Box/i); if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); }
                 }
             });
@@ -1047,8 +1092,8 @@
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
 
             let topCustHtml = ""; let sortedCustomers = Object.entries(customerPurchases).sort((a, b) => b[1] - a[1]).slice(0, 5);
-            if(sortedCustomers.length === 0) { topCustHtml = '<div style="text-align:center; padding:10px; color:gray; font-size:12px;">No sales this month yet.</div>'; } 
-            else { sortedCustomers.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-left"><div class="ua-item-name">${cust[0]} <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span></div><div class="ua-item-desc">Monthly Top Buyer</div></div><div class="ua-item-right"><span class="ua-item-count">₹${cust[1].toLocaleString('en-IN')}</span><span class="ua-item-arrow">›</span></div></div>`; }); }
+            if(sortedCustomers.length === 0) { topCustHtml = '<div style="text-align:center; padding:10px; color:var(--text-muted); font-size:12px;">No sales data available for this period.</div>'; } 
+            else { sortedCustomers.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-left"><div class="ua-item-name">${cust[0]} <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span></div><div class="ua-item-desc">Top Buyer</div></div><div class="ua-item-right"><span class="ua-item-count">₹${cust[1].toLocaleString('en-IN')}</span><span class="ua-item-arrow">›</span></div></div>`; }); }
             document.getElementById('top-customers-list').innerHTML = topCustHtml;
         }
         
@@ -1082,7 +1127,6 @@
             window.isEditingEntry = true; calcType = currentEntryData.type; calcValue = currentEntryData.amount.toString();
             document.getElementById('calc-amount').value = calcValue; document.getElementById('calc-details').value = currentEntryData.details || "";
             document.getElementById('calc-details').style.display = 'block';
-            document.getElementById('calc-save-btn').innerText = "UPDATE ENTRY";
             let d = new Date(currentEntryData.date); if(!isNaN(d)) document.getElementById('calc-date').value = d.toISOString().split('T')[0];
             closePage('entry-details-page'); openCalculator(calcType, true); 
         }
@@ -1093,7 +1137,7 @@
         window.renderLedgerEntries = function(name) {
             let entryList = document.getElementById('ledger-entries-list'); entryList.innerHTML = '';
             let totalGave = 0; let totalGot = 0; let customerEntries = allLedgerData.filter(e => e.name === name);
-            if(customerEntries.length === 0) { entryList.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No entries yet.</div>`; } 
+            if(customerEntries.length === 0) { entryList.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted);">No entries yet.</div>`; } 
             else { customerEntries.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let gaveHtml = entry.type === 'Gave' ? `₹ ${amt}` : ''; let gotHtml = entry.type === 'Got' ? `₹ ${amt}` : ''; if(entry.type === 'Gave') totalGave += amt; if(entry.type === 'Got') totalGot += amt; let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short'}); entryList.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')"><div class="ec-left"><div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${dateStr}</div><div style="font-size:13px; color:var(--text-dark); font-weight:500;">${entry.details || 'App Entry'}</div></div><div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div></div>`; }); }
             let balEl = document.getElementById('l-deep-bal-amt'); let txtEl = document.getElementById('l-deep-bal-text'); let finalBal = totalGave - totalGot;
             if(finalBal > 0) { balEl.innerText = "₹ " + finalBal.toLocaleString(); balEl.style.color = "var(--success)"; txtEl.innerText = "You will get"; } else if (finalBal < 0) { balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); balEl.style.color = "var(--danger)"; txtEl.innerText = "You will give"; } else { balEl.innerText = "₹ 0"; balEl.style.color = "var(--text-dark)"; txtEl.innerText = "Settled"; }
@@ -1102,7 +1146,7 @@
         window.renderCustomerList = function(list) {
             let filteredList = list.filter(c => (c.type || 'Customer') === currentTabType); let html = "";
             filteredList.forEach(cust => { let initial = cust.name ? cust.name.substring(0,2).toUpperCase() : "CU"; let addr = cust.address ? `<br>📍 ${cust.address}` : ""; html += `<div class="kb-list-item" onclick="openLedgerDetail('${cust.name}', '${cust.phone}')"><div class="kb-list-left"><div class="kb-avatar">${initial}</div><div><div class="kb-name">${cust.name}</div><div class="kb-time">📱 ${cust.phone || 'N/A'}${addr}</div></div></div><div class="kb-list-right"><span style="color:var(--text-muted); font-size:18px;">›</span></div></div>`; });
-            document.getElementById('kb-customer-list').innerHTML = html || `<div style="padding:40px; text-align:center; color:gray;">No ${currentTabType}s found</div>`;
+            document.getElementById('kb-customer-list').innerHTML = html || `<div style="padding:40px; text-align:center; color:var(--text-muted);">No ${currentTabType}s found</div>`;
         }
 
         window.openInvoicesPage = function() {
@@ -1113,18 +1157,18 @@
                 return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice Sale");
             });
 
-            if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } 
+            if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-muted); font-size:14px; font-weight:500;">No Bills found for this date.</div>'; } 
             else {
                 todayInvoices.forEach(entry => {
                     listContainer.innerHTML += `
                     <div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; cursor:pointer;">
                         <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
-                            <div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div>
-                            <div style="color:var(--success); font-weight:800; font-size: 16px;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div>
+                            <div style="font-weight:600; font-size: 15px; color:var(--text-dark);">${entry.name}</div>
+                            <div style="color:var(--success); font-weight:600; font-size: 16px;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div>
                         </div>
                         <div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;">
                             <span>${entry.details}</span>
-                            <span style="color:var(--primary); font-weight:600;">View & Edit ➔</span>
+                            <span style="color:var(--primary); font-weight:500;">View & Edit ➔</span>
                         </div>
                     </div>`;
                 });
@@ -1156,10 +1200,10 @@
             for (let key in smartInventory) {
                 let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let qty = smartInventory[key]; 
                 let color = qty <= 5 ? 'var(--danger)' : 'var(--text-dark)';
-                let rowHtml = `<tr class="stock-row" data-name="${shade.toUpperCase()}"><td><strong>${shade}</strong></td><td style="color:${color}; font-weight:700;">${qty} BOX</td></tr>`;
+                let rowHtml = `<tr class="stock-row" data-name="${shade.toUpperCase()}"><td><strong>${shade}</strong></td><td style="color:${color}; font-weight:600;">${qty} BOX</td></tr>`;
 
                 if(cat === "Thread") { threadHtml += rowHtml; threadCount += qty; } else if(cat === "Zari") { zariHtml += rowHtml; zariCount += qty; } else if(cat === "Nylon") { nylonHtml += rowHtml; nylonCount += qty; } else if(cat === "Cording") { cordingHtml += rowHtml; cordingCount += qty; } else if(cat === "Bobbin") { bobbinHtml += rowHtml; bobbinCount += qty; }
-                if(qty <= 5 && qty > 0) { lowstockCount++; lowstockHtml += `<tr><td><strong>${shade}</strong><br><span style="font-size:10px; color:gray;">${cat}</span></td><td style="color:var(--danger); font-weight:700;">${qty} BOX</td></tr>`; }
+                if(qty <= 5 && qty > 0) { lowstockCount++; lowstockHtml += `<tr><td><strong>${shade}</strong><br><span style="font-size:10px; color:gray;">${cat}</span></td><td style="color:var(--danger); font-weight:600;">${qty} BOX</td></tr>`; }
             }
             
             if(document.getElementById('thread-stock-list')) document.getElementById('thread-stock-list').innerHTML = threadHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>';
@@ -1227,9 +1271,54 @@
 
         window.sharePDFOnWhatsApp = function() { const custPhone = document.getElementById('inv-phone').value || ""; window.open(`https://wa.me/91${custPhone}?text=📄 *INVOICE BILL* %0A🏛️ *VANDANA ENTERPRISES*%0A%0A*Total Amount:* ₹${grandInvoiceTotal}`, '_blank'); }
 
-        window.openPage = function(id) { document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-        window.closePage = function(id) { document.getElementById(id).classList.remove('active'); }
-        window.goHome = function() { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); document.getElementById('nav-btn-home').classList.add('active');}
+        // ================= CALCULATOR UI =================
+        let calcType = "Gave"; let calcValue = "";
+        window.openCalculator = function(type, skipReset = false) {
+            if(!skipReset) {
+                calcType = type; calcValue = ""; 
+                document.getElementById('calc-amount').value = ""; 
+                document.getElementById('calc-details').value = "";
+                document.getElementById('calc-details').style.display = 'none';
+                window.isEditingEntry = false;
+            }
+            let color = type === 'Gave' ? 'var(--danger)' : 'var(--success)';
+            document.getElementById('calc-header').style.color = color; document.getElementById('calc-back-btn').style.color = color; document.getElementById('calc-symbol').style.color = color; document.getElementById('calc-amount').style.color = color; 
+            updateCalcTitle(); openPage('calculator-page');
+        }
+        window.calcPress = function(val) { 
+            if(val === 'C') calcValue = ""; 
+            else if(val === 'BACK') calcValue = calcValue.slice(0, -1); 
+            else if(val === '=') { try { calcValue = eval(calcValue).toString(); } catch(e){} } 
+            else calcValue += val; 
+            
+            document.getElementById('calc-amount').value = calcValue; 
+            
+            if(parseFloat(calcValue) > 0) document.getElementById('calc-details').style.display = 'block';
+            else document.getElementById('calc-details').style.display = 'none';
+
+            updateCalcTitle(); 
+        }
+        function updateCalcTitle() { document.getElementById('calc-title-text').innerText = `You ${calcType.toLowerCase()} ₹ ${calcValue || "0"} to ${currentPartyName}`; }
+
+        // ================= NAVIGATION HELPERS (Hides Nav on Subpages) =================
+        window.openPage = function(id) { 
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); 
+            document.getElementById('main-bottom-nav').classList.add('hidden'); // Hide Bottom Nav
+            document.getElementById(id).classList.add('active'); 
+        }
+        window.closePage = function(id) { 
+            document.getElementById(id).classList.remove('active'); 
+            if(document.querySelectorAll('.page.active').length === 0) {
+                document.getElementById('main-bottom-nav').classList.remove('hidden'); // Show Bottom Nav if back home
+                document.getElementById('nav-btn-home').classList.add('active');
+            }
+        }
+        window.goHome = function() { 
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); 
+            document.getElementById('nav-btn-home').classList.add('active');
+            document.getElementById('main-bottom-nav').classList.remove('hidden'); // Show Bottom Nav
+        }
         window.openSidebar = function() { document.getElementById('sidebar').classList.add('active'); document.getElementById('sidebar-overlay').style.display = 'block'; document.body.classList.add('sidebar-locked'); }
         window.closeSidebar = function() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebar-overlay').style.display = 'none'; document.body.classList.remove('sidebar-locked'); }
         window.searchParties = function() { let filter = document.getElementById('party-search').value.toUpperCase(); document.querySelectorAll('#kb-customer-list .kb-list-item').forEach(item => { item.style.display = item.querySelector('.kb-name').innerText.toUpperCase().indexOf(filter) > -1 ? "" : "none"; }); }

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#f4f7fc">
-    <title>Vandana ERP - Pro Edition</title>
+    <meta name="theme-color" content="#f0f4f9">
+    <title>Vandana ERP - Google Style Pro</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -13,8 +13,8 @@
     <style>
         /* ================= PREMIUM GOOGLE ONE UI ================= */
         :root {
-            --primary: #0b57d0; --primary-dark: #0842a0; --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
-            --bg-color: #f4f7fc; --surface: #ffffff; --text-dark: #1e293b; --text-muted: #475569; --border: #e2e8f0;
+            --primary: #0a56d0; --primary-dark: #0842a0; --success: #146c2e; --danger: #b3261e; --warning: #f29900;
+            --bg-color: #f0f4f9; --surface: #ffffff; --text-dark: #1f1f1f; --text-muted: #444746; --border: #e0e2e0;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
@@ -22,176 +22,185 @@
         body.sidebar-locked { overflow: hidden; position: fixed; width: 100%; height: 100%; }
         input, textarea, select { user-select: auto; }
 
-        /* HEADER (Google Style) */
-        .app-bar { position: fixed; top: 0; width: 100%; height: 60px; background: var(--bg-color); color: #1e293b; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000; transition: background 0.3s;}
-        .app-bar h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.5px; }
+        /* PERMANENT GLOBAL HEADER (Google Style) */
+        .app-bar { position: fixed; top: 0; width: 100%; height: 60px; background: var(--bg-color); color: var(--text-dark); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 3000; border-bottom: none;}
+        .app-bar h1 { font-size: 20px; font-weight: 500; letter-spacing: -0.5px; margin-left: 10px; color: #1f1f1f;}
         
-        /* COLORFUL GOOGLE PROFILE RING */
-        .google-profile-ring { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary); font-size: 14px; cursor: pointer; position: relative; background: white;}
-        .google-profile-ring::before { content: ''; position: absolute; top: -3px; left: -3px; right: -3px; bottom: -3px; border-radius: 50%; background: conic-gradient(#ea4335, #4285f4, #34a853, #fbbc05); z-index: -1;}
+        .google-profile-ring { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary); font-size: 14px; cursor: pointer; position: relative; background: white; border: 2px solid white; box-shadow: 0 0 0 2px #e0e2e0;}
 
-        /* DASHBOARD GREETING & GOOGLE CARDS */
-        .main-content { padding: 75px 16px 100px 16px; max-width: 800px; margin: 0 auto; }
-        .greeting-section { text-align: center; margin: 20px 0 30px 0; }
-        .greeting-section h2 { font-size: 26px; font-weight: 500; color: #1e293b; margin-bottom: 8px; letter-spacing: -0.5px;}
-        .greeting-section p { font-size: 14px; color: #475569; padding: 0 20px; line-height: 1.4; }
+        /* DASHBOARD COMPACT & CLEAN */
+        .main-content { padding: 65px 16px 100px 16px; max-width: 800px; margin: 0 auto; }
+        .greeting-section { text-align: center; margin: 5px 0 15px 0; }
+        .greeting-section h2 { font-size: 24px; font-weight: 400; color: #1f1f1f; margin-bottom: 4px; letter-spacing: -0.5px;}
+        .greeting-section p { font-size: 13px; color: var(--text-muted); padding: 0 10px; line-height: 1.4; }
 
-        .google-card { background: white; border-radius: 24px; padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); cursor: pointer; }
-        .card-header { font-size: 15px; font-weight: 500; color: #1e293b; margin-bottom: 8px; }
-        .card-value { font-size: 40px; font-weight: 400; color: #0b57d0; letter-spacing: -1px; }
-        .progress-bar-bg { background: #e0e0e0; height: 8px; border-radius: 4px; margin: 16px 0 8px 0; overflow: hidden; }
-        .progress-bar-fill { background: #0b57d0; height: 100%; border-radius: 4px; width: 65%; }
-        .card-subtext { font-size: 13px; color: #64748b; }
+        .dash-date-wrapper { display: flex; justify-content: center; margin-bottom: 16px; }
+        .professional-date-picker { background: #ffffff; border: 1px solid var(--border); border-radius: 20px; padding: 6px 16px; font-size: 13px; font-weight: 600; color: var(--primary); font-family: inherit; outline: none; box-shadow: 0 1px 2px rgba(0,0,0,0.02); cursor: pointer; }
 
-        /* BOTTOM NAV (Google One Style) */
-        .bottom-nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #f0f4f9; display: flex; justify-content: space-around; padding: 12px 16px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 1500; border-top: 1px solid rgba(0,0,0,0.05);}
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: #475569; width: 64px;}
+        /* GOOGLE STYLE CARDS */
+        .google-card { background: white; border-radius: 20px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border: 1px solid var(--border); cursor: pointer; transition: background 0.2s;}
+        .google-card:hover { background: #f8fafd; }
+        .card-header { font-size: 14px; font-weight: 500; color: var(--text-dark); margin-bottom: 6px; }
+        .card-value { font-size: 32px; font-weight: 400; color: var(--primary); letter-spacing: -1px; margin-bottom: 4px;}
+        .progress-bar-bg { background: #e1e3e1; height: 6px; border-radius: 3px; margin: 12px 0 8px 0; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary); height: 100%; border-radius: 3px; width: 65%; }
+        .card-subtext { font-size: 12px; color: var(--text-muted); }
+
+        .dash-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+        .dash-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; align-items: flex-start; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;}
+        .dash-card-title { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .dash-card-value { font-size: 20px; font-weight: 600; color: var(--text-dark); line-height: 1; margin-bottom: 2px; }
+        .dash-card-sub { font-size: 10px; color: var(--text-muted); }
+        .dash-card-icon { position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 14px; }
+        .icon-blue { background: #e8f0fe; color: var(--primary); } .icon-orange { background: #fff7ed; color: #f97316; } .icon-purple { background: #faf5ff; color: #a855f7; } .icon-green { background: #e6f4ea; color: var(--success); }
+
+        /* GOOGLE STYLE BOTTOM NAV */
+        .bottom-nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #f0f4f9; display: flex; justify-content: space-around; padding: 10px 16px; padding-bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 2500; border-top: 1px solid rgba(0,0,0,0.05);}
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--text-muted); width: 64px;}
         .nav-item.active .nav-icon-wrap { background: #c2e7ff; color: #001d35; }
-        .nav-item.active span { color: #1e293b; font-weight: 600; }
-        .nav-icon-wrap { width: 64px; height: 32px; border-radius: 16px; display: flex; justify-content: center; align-items: center; font-size: 20px; transition: background 0.3s; }
-        .nav-item span { font-size: 12px; font-weight: 500; }
+        .nav-item.active span { color: var(--text-dark); font-weight: 600; }
+        .nav-icon-wrap { width: 60px; height: 30px; border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 18px; transition: background 0.3s; }
+        .nav-item span { font-size: 11px; font-weight: 500; }
 
-        /* FLEX PAGE LAYOUT */
-        .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 30px; }
+        /* SUBPAGES SLIDE-IN (Top stays reserved for app-bar) */
+        .page { position: fixed; top: 60px; left: 0; width: 100%; height: calc(100% - 60px); background: var(--bg-color); z-index: 2000; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; padding-bottom: 30px; }
         .page.active { transform: translateX(0); }
         .flex-page { display: flex; flex-direction: column; overflow: hidden; padding-bottom: 0;}
         .flex-page .page-header { flex-shrink: 0; }
-        .flex-page .fixed-top-section { flex-shrink: 0; background: var(--bg-color); z-index: 10; padding: 16px 16px 0 16px; }
+        .flex-page .fixed-top-section { flex-shrink: 0; background: var(--bg-color); z-index: 10; padding: 10px 16px 0 16px; }
         .flex-page .scroll-content { flex: 1; overflow-y: auto; padding: 0 16px 100px 16px; }
         
-        .page-header { position: sticky; top: 0; background: var(--primary); color: white; height: 56px; display: flex; align-items: center; padding: 0 16px; z-index: 50; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .back-btn { background: transparent; border: none; color: white; font-size: 24px; margin-right: 16px; cursor: pointer; padding: 5px;}
-        .page-title { font-size: 16px; font-weight: 600; margin: 0; }
+        .page-header { position: sticky; top: 0; background: var(--bg-color); color: var(--text-dark); height: 50px; display: flex; align-items: center; padding: 0 16px; z-index: 50; border-bottom: 1px solid var(--border); }
+        .back-btn { background: transparent; border: none; color: var(--text-dark); font-size: 24px; margin-right: 12px; cursor: pointer; padding: 5px; font-weight: 300;}
+        .page-title { font-size: 16px; font-weight: 500; margin: 0; color: var(--text-dark);}
         .page-content { padding: 16px; max-width: 800px; margin: 0 auto; }
 
         /* FORMS & BUTTONS */
-        .form-panel { background: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
+        .form-panel { background: white; padding: 16px; border-radius: 16px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
         .form-group { margin-bottom: 16px; }
-        .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;}
-        .form-control { width: 100%; background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px 14px; border-radius: 8px; font-size: 14px; outline: none; font-weight: 500; color: var(--text-dark);}
+        .form-label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px;}
+        .form-control { width: 100%; background: var(--bg-color); border: 1px solid var(--border); padding: 12px 14px; border-radius: 8px; font-size: 14px; outline: none; font-weight: 500; color: var(--text-dark);}
         .form-control:focus { border-color: var(--primary); background: white; }
         .input-btn-group { display: flex; gap: 10px; width: 100%;}
-        .action-btn { background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; border-radius: 8px; padding: 0 16px; font-weight: 600; cursor: pointer; display:flex; align-items:center; justify-content:center;}
-        .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 6px rgba(21, 101, 192, 0.2);}
-        .btn-outline { border: 1px solid #ef4444; color: #ef4444; background: transparent; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer;}
+        .action-btn { background: #e8f0fe; color: var(--primary); border: none; border-radius: 8px; padding: 0 16px; font-weight: 600; cursor: pointer; display:flex; align-items:center; justify-content:center;}
+        .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 4px rgba(10, 86, 208, 0.2);}
+        .btn-outline { border: 1px solid var(--border); color: var(--text-dark); background: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; font-size: 14px; cursor: pointer;}
 
-        /* ADMIN PROFILE NEW UI */
-        .admin-cover { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); height: 100px; border-radius: 12px 12px 0 0; position: relative; margin-bottom: 50px; }
-        .admin-avatar-wrap { position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); }
-        .admin-pic { width: 80px; height: 80px; border-radius: 50%; border: 4px solid white; background: white; font-size: 30px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: 800; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow: hidden;}
-        .admin-cam { position: absolute; bottom: 0; right: -5px; background: #f59e0b; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; justify-content: center; align-items: center; border: 2px solid white; cursor: pointer; font-size: 12px; }
+        /* GOOGLE STYLE SIDEBAR */
+        .sidebar { background: #ffffff; color: var(--text-dark); position: fixed; top: 0; left: -300px; width: 280px; height: 100%; z-index: 3001; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.05);}
+        .sidebar.active { left: 0; }
+        .sidebar-header { padding: 24px 20px 16px 20px; display: flex; flex-direction: column; align-items: flex-start; border-bottom: 1px solid var(--border); background: #ffffff; position: relative;}
+        .sidebar-close { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; color: var(--text-muted); font-weight: 300;}
+        .sidebar-menu-title { font-size: 11px; color: var(--text-muted); font-weight: 600; padding: 16px 20px 8px 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .sidebar-menu { list-style: none; padding: 0; margin: 0; flex: 1;}
+        .sidebar-menu li { color: var(--text-dark); font-weight: 500; padding: 12px 20px; margin: 2px 8px; border-radius: 20px; transition: background 0.2s; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px;}
+        .sidebar-menu li:hover { background: var(--bg-color); }
+        .sidebar-menu li.active { background: #c2e7ff; color: #001d35; font-weight: 600;}
+        .sidebar-menu li i { color: var(--text-muted); font-size: 18px; width: 24px; text-align: center; font-style: normal;}
+        .sidebar-menu li.active i { color: #001d35; }
 
         /* TABLES & STICKY HEADERS */
-        .invoice-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; background: white; border-radius: 8px; border: 1px solid var(--border);}
-        .invoice-table th { position: sticky; top: 0; background: #f8fafc; padding: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 700; z-index: 5; box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1);}
+        .invoice-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; background: white; border-radius: 12px; border: 1px solid var(--border);}
+        .invoice-table th { position: sticky; top: 0; background: #f8fafd; padding: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 600; z-index: 5;}
         .invoice-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-weight: 500; }
 
         /* KHATABOOK UI & LEDGER */
-        .kb-header { background: #1e3a8a; color: white; padding: 10px 16px 20px 16px;}
-        .search-bar-container { background: white; margin: 10px 16px 16px 16px; border-radius: 8px; padding: 4px 12px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: relative; z-index: 3;}
+        .kb-header { background: var(--bg-color); color: var(--text-dark); padding: 10px 16px 10px 16px;}
+        .kb-header-title { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .search-bar-container { background: white; margin: 0 16px 16px 16px; border-radius: 20px; padding: 4px 16px; display: flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid var(--border); position: relative; z-index: 3;}
         .search-bar-container input { border: none; width: 100%; padding: 10px 5px; outline: none; font-size: 14px; }
         
         .ledger-summary-section { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; opacity: 1; max-height: 500px; }
         .ledger-summary-section.hidden { max-height: 0; opacity: 0; margin-bottom: 0 !important; }
         
-        .kb-summary-card { background: white; border-radius: 12px; margin: 0 16px 16px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: relative; z-index: 2; border: 1px solid var(--border);}
-        .kb-summary-split { display: flex; padding: 20px 0; }
-        .kb-summary-box { flex: 1; text-align: center; border-right: 1px dashed #e2e8f0; }
+        .kb-summary-card { background: white; border-radius: 16px; margin: 0 16px 16px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); border: 1px solid var(--border);}
+        .kb-summary-split { display: flex; padding: 16px 0; }
+        .kb-summary-box { flex: 1; text-align: center; border-right: 1px solid var(--border); }
         .kb-summary-box:last-child { border-right: none; }
-        .kb-summary-label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;}
-        .kb-summary-val { font-size: 20px; font-weight: 700; margin-top: 6px; }
-        .ajio-tab-container { background: #cbd5e1; padding-top: 8px; border-radius: 14px 14px 0 0; margin: 0 16px; display: flex; overflow: hidden; }
-        .kb-tab { flex: 1; text-align: center; padding: 14px 0; color: #475569; font-weight: 800; font-size: 13px; cursor: pointer; border-radius: 14px 14px 0 0; transition: all 0.3s; letter-spacing: 0.5px;}
-        .kb-tab.active { background: #f1f5f9; color: #0f172a; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
-        .kb-list { padding-bottom: 90px; }
-        .kb-list-item { background: white; margin: 0 16px 12px 16px; border-radius: 10px; display: flex; justify-content: space-between; align-items: stretch; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border);}
-        .kb-list-left { display: flex; align-items: center; gap: 12px; padding: 16px; flex:1;}
-        .kb-avatar { width: 44px; height: 44px; border-radius: 50%; background: #eff6ff; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary); font-size: 16px; flex-shrink: 0;}
-        .kb-name { font-size: 15px; font-weight: 600; color: var(--text-dark); }
-        .kb-time { font-size: 12px; color: var(--text-muted); margin-top: 4px;}
-        .kb-list-right { display: flex; flex-direction: column; justify-content: center; padding: 16px; min-width: 100px; text-align: right; border-left: 1px dashed #e2e8f0; background: #f8fafc; border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
+        .kb-summary-label { font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase;}
+        .kb-summary-val { font-size: 18px; font-weight: 600; margin-top: 4px; }
+        .ajio-tab-container { background: #e0e2e0; padding-top: 4px; border-radius: 16px 16px 0 0; margin: 0 16px; display: flex; overflow: hidden; }
+        .kb-tab { flex: 1; text-align: center; padding: 12px 0; color: var(--text-muted); font-weight: 600; font-size: 12px; cursor: pointer; border-radius: 16px 16px 0 0; transition: all 0.3s; }
+        .kb-tab.active { background: white; color: var(--primary); box-shadow: 0 -2px 10px rgba(0,0,0,0.02); }
         
-        .kb-fab { position: fixed !important; bottom: 90px; right: 20px; height: 56px; background: #1e3a8a; color: white; border-radius: 28px; display: flex; justify-content: center; align-items: center; font-size: 15px; font-weight: 700; box-shadow: 0 4px 15px rgba(30, 58, 138, 0.4); border: none; z-index: 1001; cursor: pointer; padding: 0 20px; white-space: nowrap;}
+        .kb-list { padding-bottom: 90px; }
+        .kb-list-item { background: white; margin: 0 16px 10px 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: stretch; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.02); border: 1px solid var(--border);}
+        .kb-list-left { display: flex; align-items: center; gap: 12px; padding: 12px 16px; flex:1;}
+        .kb-avatar { width: 40px; height: 40px; border-radius: 50%; background: #e8f0fe; display: flex; align-items: center; justify-content: center; font-weight: 600; color: var(--primary); font-size: 15px; flex-shrink: 0;}
+        .kb-name { font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 2px;}
+        .kb-time { font-size: 12px; color: var(--text-muted);}
+        .kb-list-right { display: flex; flex-direction: column; justify-content: center; padding: 16px; min-width: 80px; text-align: right; border-left: 1px solid #f1f5f9; background: #f8fafd; border-top-right-radius: 12px; border-bottom-right-radius: 12px;}
+        
+        .kb-fab { position: fixed !important; bottom: 90px; right: 20px; height: 56px; background: var(--primary); color: white; border-radius: 16px; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: 600; box-shadow: 0 4px 10px rgba(10, 86, 208, 0.3); border: none; z-index: 1001; cursor: pointer; padding: 0 20px; white-space: nowrap;}
 
-        /* LEDGER DEEP PAGE */
-        .ledger-header-area { background: #1e3a8a; color: white; padding: 16px 16px 30px 16px;}
-        .ledger-bal-card { background: white; border-radius: 10px; padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: -25px; margin-left: 16px; margin-right: 16px; position: relative; z-index: 2; border: 1px solid var(--border);}
-        .ledger-action-tabs { display: flex; margin: 20px 16px 5px 16px; gap: 10px;}
-        .l-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 12px; color: var(--text-dark); font-weight: 600; background: white; border-radius: 8px; cursor: pointer; border: 1px solid var(--border);}
-        .entry-card { background: white; border-radius: 10px; display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 12px; cursor: pointer; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.02);}
-        .ec-left { padding: 16px; flex: 2; border-right: 1px dashed #e2e8f0; }
-        .ec-gave, .ec-got { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; }
-        .ec-gave { background: #fef2f2; color: var(--danger); }
-        .ec-got { background: #ecfdf5; color: var(--success); border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
-        .bottom-action-bar { position: fixed; bottom: 0; width: 100%; left: 0; background: white; padding: 12px 16px; display: flex; gap: 12px; border-top: 1px solid var(--border); z-index: 9999; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); padding-bottom: calc(12px + env(safe-area-inset-bottom));}
-        .btn-l-gave { flex: 1; background: #ef4444; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; pointer-events: auto;}
-        .btn-l-got { flex: 1; background: #10b981; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; pointer-events: auto;}
+        /* LEDGER DEEP PAGE (Light Mode) */
+        .ledger-header-area { background: var(--bg-color); color: var(--text-dark); padding: 10px 16px 10px 16px;}
+        .ledger-bal-card { background: white; border-radius: 16px; padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.03); margin: 0 16px; position: relative; z-index: 2; border: 1px solid var(--border);}
+        .ledger-action-tabs { display: flex; margin: 16px 16px 5px 16px; gap: 10px;}
+        .l-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 12px; color: var(--text-dark); font-weight: 600; background: white; border-radius: 20px; cursor: pointer; border: 1px solid var(--border);}
+        .entry-card { background: white; border-radius: 12px; display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 10px; cursor: pointer; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.02);}
+        .ec-left { padding: 14px 16px; flex: 2; border-right: 1px solid #f1f5f9; }
+        .ec-gave, .ec-got { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; }
+        .ec-gave { background: #fdf2f2; color: var(--danger); }
+        .ec-got { background: #e6f4ea; color: var(--success); border-top-right-radius: 12px; border-bottom-right-radius: 12px;}
+        .bottom-action-bar { position: fixed; bottom: 0; width: 100%; left: 0; background: white; padding: 12px 16px; display: flex; gap: 12px; border-top: 1px solid var(--border); z-index: 9999; box-shadow: 0 -2px 10px rgba(0,0,0,0.02); padding-bottom: calc(12px + env(safe-area-inset-bottom));}
+        .btn-l-gave { flex: 1; background: #fdf2f2; color: var(--danger); border: 1px solid #f8cbcb; padding: 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; pointer-events: auto;}
+        .btn-l-got { flex: 1; background: #e6f4ea; color: var(--success); border: 1px solid #bce4c8; padding: 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; pointer-events: auto;}
 
         /* LOADER */
         .loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;}
         .spinner { border: 4px solid #f3f3f3; border-left-color: var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* ENTRY DETAILS UI */
-        .entry-detail-card { background: white; margin: 16px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid var(--border);}
-        .ed-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 16px; border-bottom: 1px solid #f1f5f9; background: #f8fafc;}
-        .ed-amt { font-size: 28px; font-weight: 800; }
-        .ed-row { padding: 20px 16px; border-bottom: 1px solid #f1f5f9; }
-        .ed-edit-btn { text-align: center; padding: 16px; color: var(--primary); font-weight: 700; cursor: pointer; font-size:15px; background:#eff6ff;}
+        /* ENTRY DETAILS UI (Professional Look) */
+        .entry-detail-card { background: white; margin: 16px; border-radius: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); overflow: hidden; border: 1px solid var(--border);}
+        .ed-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 16px; border-bottom: 1px solid var(--border); background: #f8fafd;}
+        .ed-amt { font-size: 26px; font-weight: 700; }
+        .ed-row { padding: 20px 16px; border-bottom: 1px solid var(--border); }
+        .ed-edit-btn { text-align: center; padding: 16px; color: var(--primary); font-weight: 600; cursor: pointer; font-size:14px; background:#e8f0fe;}
 
         /* CALCULATOR */
-        .calc-header { background: white; color: var(--danger); height: 56px; display: flex; align-items: center; padding: 0 16px; z-index: 10; border-bottom: 1px solid var(--border); }
-        .amount-input-box { background: white; border: 1px solid var(--border); border-radius: 8px; margin: 16px; padding: 16px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
-        .amount-input-box input { border: none; outline: none; font-size: 28px; font-weight: 700; color: var(--danger); width: 100%;}
+        .calc-header { background: white; color: var(--danger); height: 50px; display: flex; align-items: center; padding: 0 16px; z-index: 10; border-bottom: 1px solid var(--border); }
+        .amount-input-box { background: white; border: 1px solid var(--border); border-radius: 16px; margin: 16px; padding: 16px; display: flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
+        .amount-input-box input { border: none; outline: none; font-size: 28px; font-weight: 600; color: var(--danger); width: 100%; background: transparent;}
         
-        .calc-details-input { background: #ffffff; border: 2px solid #cbd5e1; border-radius: 8px; margin: 0 16px 16px 16px; padding: 16px; width: calc(100% - 32px); font-size: 15px; font-weight: 500; color: var(--text-dark); outline: none; display:none; transition: all 0.3s; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); font-family: inherit;}
-        .calc-details-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(11,87,208,0.1); }
+        .calc-details-input { background: #ffffff; border: 1px solid var(--border); border-radius: 12px; margin: 0 16px 16px 16px; padding: 14px 16px; width: calc(100% - 32px); font-size: 14px; font-weight: 400; color: var(--text-dark); outline: none; display:none; transition: all 0.3s; font-family: inherit;}
+        .calc-details-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px #c2e7ff; }
         
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; background: #f1f5f9;}
-        .calc-btn { background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 16px 0; font-size: 20px; font-weight: 600; cursor: pointer; color: #1e293b; display: flex; justify-content: center; align-items: center;}
-        .calc-btn.light-blue { background: #c2e7ff; color: #001d35;}
-        .calc-btn.dark-blue { background: #0b57d0; color: white; border: none;}
-
-        /* SIDEBAR */
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; display: none; }
-        .sidebar { position: fixed; top: 0; left: -300px; width: 280px; height: 100%; background: #0f172a; color: #f8fafc; z-index: 3001; transition: left 0.3s ease; overflow-y: auto; display: flex; flex-direction: column; }
-        .sidebar.active { left: 0; }
-        .sidebar-header { padding: 20px; display: flex; flex-direction: column; align-items: center; border-bottom: 1px solid #1e293b; background: #1e293b; position: relative;}
-        .sidebar-close { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #94a3b8; }
-        .sidebar-menu-title { font-size: 10px; color: #64748b; font-weight: 700; padding: 20px 20px 10px 20px; letter-spacing: 1px; }
-        .sidebar-menu { list-style: none; padding: 0; margin: 0; flex: 1;}
-        .sidebar-menu li { padding: 12px 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; color: #cbd5e1; font-size: 14px; font-weight: 500; transition: background 0.2s; }
-        .sidebar-menu li:hover { background: #1e293b; color: white; }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; background: var(--bg-color);}
+        .calc-btn { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 14px 0; font-size: 18px; font-weight: 500; cursor: pointer; color: var(--text-dark); display: flex; justify-content: center; align-items: center;}
+        .calc-btn.light-blue { background: #e8f0fe; color: var(--primary); border: none;}
+        .calc-btn.dark-blue { background: var(--primary); color: white; border: none;}
 
         /* TOP CUSTOMERS (Google Card Style) */
-        .ua-item { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s;}
-        .ua-item:hover { background: #f8fafc; }
+        .ua-item { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.02);}
+        .ua-item:hover { background: #f8fafd; }
         .ua-item-left { flex: 1; }
-        .ua-item-name { font-size: 15px; font-weight: 600; color: #1e293b; margin-bottom: 4px; display:flex; align-items:center; gap:6px;}
-        .ua-item-desc { font-size: 13px; color: #64748b; }
+        .ua-item-name { font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 2px; display:flex; align-items:center; gap:6px;}
+        .ua-item-desc { font-size: 12px; color: var(--text-muted); }
         .ua-item-right { display: flex; align-items: center; gap: 8px; }
-        .ua-item-count { font-size: 16px; font-weight: 700; color: var(--primary); }
-        .ua-item-arrow { color: #cbd5e1; font-weight: bold; font-size: 18px; }
+        .ua-item-count { font-size: 15px; font-weight: 600; color: var(--primary); }
+        .ua-item-arrow { color: var(--border); font-weight: bold; font-size: 18px; }
         
         /* CELEBRATION MODAL */
-        .celebration-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; padding: 20px; text-align: center; }
-        .celeb-box { background: white; padding: 30px 20px; border-radius: 24px; max-width: 400px; position: relative; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .celebration-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; padding: 20px; text-align: center; }
+        .celeb-box { background: white; padding: 30px 24px; border-radius: 24px; max-width: 400px; position: relative; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; box-shadow: 0 10px 25px rgba(0,0,0,0.1);}
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* STOCK OVERVIEW GRID */
-        .stock-overview-title { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-top: 10px; }
-        .stock-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+        /* STOCK OVERVIEW GRID (Pro UI) */
+        .stock-overview-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-top: 10px; }
+        .stock-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
         .stock-grid-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;}
-        .sg-title { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
-        .sg-value { font-size: 24px; font-weight: 400; color: #0b57d0; margin-bottom: 2px; }
-        .sg-icon { position: absolute; right: 16px; top: 16px; width: 32px; height: 32px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 18px; }
+        .sg-title { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .sg-value { font-size: 22px; font-weight: 500; color: var(--primary); margin-bottom: 0; line-height:1;}
+        .sg-icon { position: absolute; right: 12px; top: 12px; width: 28px; height: 28px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 14px; }
 
         /* FIXED FORM HEADER FOR STOCK PAGES */
         .anim-form { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; max-height: 500px; opacity: 1; }
         .anim-form.hidden { max-height: 0; opacity: 0; margin-bottom: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; border: none !important; }
         .in-out-btn-group { display: flex; gap: 10px; }
-        .btn-in { flex: 1; background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size:13px; }
-        .btn-out { flex: 1; background: var(--danger); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size:13px;}
+        .btn-in { flex: 1; background: #e6f4ea; color: var(--success); border: none; padding: 12px; border-radius: 20px; font-weight: 600; cursor: pointer; font-size:13px; }
+        .btn-out { flex: 1; background: #fdf2f2; color: var(--danger); border: none; padding: 12px; border-radius: 20px; font-weight: 600; cursor: pointer; font-size:13px;}
     </style>
 </head>
 <body>
@@ -204,8 +213,8 @@
     <!-- 🎆 CELEBRATION MODAL WITH FIREWORKS -->
     <div id="celebration-modal" class="celebration-modal">
         <div class="celeb-box">
-            <div style="font-size: 60px; margin-bottom: 15px; animation: bounce 1s infinite alternate;">🎊🎉</div>
-            <div style="font-size: 16px; color: #1e293b; font-weight: 600; margin-bottom: 20px;">Dear <span id="celeb-name" style="color:var(--danger); font-weight:800;">Name</span>,<br><br>आपने 2% Additional Off के लिए अपना परचेज कोटा पूर्ण कर लिया है! 🏆<br><br>कृप्या लाभ लेने के लिए Godown पर आकर संपर्क करें।</div>
+            <div style="font-size: 50px; margin-bottom: 10px; animation: bounce 1s infinite alternate;">🎊</div>
+            <div style="font-size: 15px; color: var(--text-dark); font-weight: 500; margin-bottom: 20px; line-height:1.5;">Dear <span id="celeb-name" style="color:var(--danger); font-weight:700;">Name</span>,<br><br>आपने 2% Additional Off के लिए अपना परचेज कोटा पूर्ण कर लिया है! 🏆<br><br>कृप्या लाभ लेने के लिए Godown पर आकर संपर्क करें।</div>
             <button class="btn-submit" onclick="document.getElementById('celebration-modal').style.display='none'">Okay, Thanks!</button>
         </div>
     </div>
@@ -217,64 +226,63 @@
     <!-- HIDDEN INVOICE TEMPLATE FOR PDF DOWNLOAD (Fixed A4 Format) -->
     <div id="pdf-container" style="position:fixed; left:-9999px; top:0;">
         <div id="pdf-invoice-template" style="background:white; padding:30px; font-family:Arial, sans-serif; color:black; width:700px; max-width:100%; box-sizing:border-box;">
-            <div style="display:flex; justify-content:space-between; border-bottom:2px solid #0b57d0; padding-bottom:15px; margin-bottom:15px;">
+            <div style="display:flex; justify-content:space-between; border-bottom:2px solid #0a56d0; padding-bottom:15px; margin-bottom:15px;">
                 <div>
-                    <h1 style="color:#0b57d0; margin:0; font-size:28px;" id="pdf-biz-name">Vandana Enterprises</h1>
+                    <h1 style="color:#0a56d0; margin:0; font-size:28px;" id="pdf-biz-name">Vandana Enterprises</h1>
                     <p style="margin:5px 0; font-size:14px;" id="pdf-biz-phone">Phone: +91 ----------</p>
                     <p style="margin:5px 0; font-size:14px;" id="pdf-biz-address">Address: Not Added</p>
                     <p style="margin:5px 0; font-size:14px; font-weight:bold;" id="pdf-biz-gst">GSTIN: --------</p>
                 </div>
                 <div style="text-align:right;">
-                    <h2 style="margin:0; font-size:32px; color:#475569;">INVOICE</h2>
+                    <h2 style="margin:0; font-size:32px; color:#444746;">INVOICE</h2>
                     <p style="margin:5px 0; font-size:14px;">Date: <span id="pdf-date"></span></p>
                     <p style="margin:5px 0; font-size:14px;">Bill No: <span id="pdf-bill-no"></span></p>
                 </div>
             </div>
             <div style="margin-bottom:30px;">
-                <h3 style="margin:0 0 10px 0; font-size:16px; color:#64748b;">BILLED TO:</h3>
+                <h3 style="margin:0 0 10px 0; font-size:16px; color:#444746;">BILLED TO:</h3>
                 <p style="margin:0; font-size:18px; font-weight:bold;" id="pdf-cust-name">Customer Name</p>
             </div>
             <table style="width:100%; border-collapse:collapse; margin-bottom:30px;">
                 <thead>
-                    <tr style="background:#0b57d0; color:white;">
-                        <th style="padding:12px; text-align:left; border:1px solid #cbd5e1;">Description / Details</th>
-                        <th style="padding:12px; text-align:right; border:1px solid #cbd5e1;">Amount</th>
+                    <tr style="background:#0a56d0; color:white;">
+                        <th style="padding:12px; text-align:left; border:1px solid #e0e2e0;">Description / Details</th>
+                        <th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td style="padding:16px 12px; border:1px solid #cbd5e1; font-size:16px;" id="pdf-details">Product Details</td>
-                        <td style="padding:16px 12px; text-align:right; border:1px solid #cbd5e1; font-size:16px; font-weight:bold;" id="pdf-amount">₹ 0</td>
+                        <td style="padding:16px 12px; border:1px solid #e0e2e0; font-size:16px;" id="pdf-details">Product Details</td>
+                        <td style="padding:16px 12px; text-align:right; border:1px solid #e0e2e0; font-size:16px; font-weight:bold;" id="pdf-amount">₹ 0</td>
                     </tr>
                 </tbody>
             </table>
             <div style="display:flex; justify-content:flex-end;">
                 <div style="width:300px;">
-                    <div style="display:flex; justify-content:space-between; padding:12px; background:#f8fafc; font-weight:bold; font-size:20px; border:1px solid #cbd5e1;">
+                    <div style="display:flex; justify-content:space-between; padding:12px; background:#f0f4f9; font-weight:bold; font-size:20px; border:1px solid #e0e2e0;">
                         <span>Grand Total:</span>
                         <span id="pdf-total">₹ 0</span>
                     </div>
                 </div>
             </div>
-            <div style="margin-top:80px; border-top:1px dashed #cbd5e1; padding-top:20px; text-align:center; color:#64748b; font-size:14px;">
+            <div style="margin-top:80px; border-top:1px dashed #e0e2e0; padding-top:20px; text-align:center; color:#444746; font-size:14px;">
                 Thank you for your business!
             </div>
         </div>
     </div>
 
-    <!-- 📱 SIDEBAR MENU -->
+    <!-- 📱 GOOGLE STYLE SIDEBAR MENU -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-close" onclick="closeSidebar()">✕</div>
-        <!-- PROFESSIONAL ADMIN PROFILE IN SIDEBAR -->
-        <div class="sidebar-header" onclick="navTo('admin-profile-page', null); closeSidebar();" style="cursor:pointer;">
-            <div class="profile-pic" id="sidebar-user-pic" style="width:70px; height:70px; margin-bottom:10px; background:#c2e7ff; color:#001d35; font-size:24px; display:flex; align-items:center; justify-content:center; border-radius:50%; overflow:hidden;">V</div>
-            <h2 id="sidebar-name" style="font-size: 16px; margin: 0; font-weight: 700; letter-spacing: 0.5px;">Vandana Enterprises</h2>
-            <p id="sidebar-mobile" style="font-size: 12px; color: #cbd5e1; margin-top:4px;">+91 ----------</p>
-            <p id="sidebar-gst" style="font-size: 10px; color: #94a3b8; margin-top:2px;">GST: Not Added</p>
+        <div class="sidebar-header" onclick="navTo('admin-profile-page', null); closeSidebar();" style="cursor:pointer; padding-top:40px;">
+            <div class="profile-pic" id="sidebar-user-pic" style="width:60px; height:60px; margin-bottom:12px; background:#e8f0fe; color:var(--primary); font-size:24px; display:flex; align-items:center; justify-content:center; border-radius:50%; overflow:hidden; border:1px solid var(--border);">V</div>
+            <h2 id="sidebar-name" style="font-size: 16px; margin: 0; font-weight: 600; letter-spacing: -0.2px; color:var(--text-dark);">Vandana Enterprises</h2>
+            <p id="sidebar-mobile" style="font-size: 12px; color: var(--text-muted); margin-top:2px;">+91 ----------</p>
+            <p id="sidebar-gst" style="font-size: 11px; color: var(--text-muted); margin-top:2px;">GST: Not Added</p>
         </div>
         
-        <div class="sidebar-menu-title">OPERATIONS</div>
+        <div class="sidebar-menu-title">Operations</div>
         <ul class="sidebar-menu">
             <li class="active" onclick="navTo('home', null); closeSidebar();"><i>🏠</i> Dashboard</li>
             <li onclick="navTo('items-page', null); closeSidebar();"><i>📦</i> Master Inventory</li>
@@ -282,17 +290,18 @@
             <li onclick="navTo('pos-page', null); closeSidebar();"><i>🧾</i> Billing & Invoice</li>
             <li onclick="navTo('parties-page', null); closeSidebar();"><i>👥</i> Ledger Book</li>
         </ul>
-        <div class="sidebar-menu-title">ADMINISTRATION</div>
+        <div style="border-top:1px solid var(--border); margin: 10px 0;"></div>
+        <div class="sidebar-menu-title">Administration</div>
         <ul class="sidebar-menu">
             <li onclick="navTo('admin-profile-page', null); closeSidebar();"><i>⚙️</i> Settings & Profile</li>
         </ul>
     </div>
 
-    <!-- 📱 GOOGLE ONE STYLE TOP BAR -->
+    <!-- 📱 PERMANENT GOOGLE STYLE TOP BAR -->
     <header class="app-bar" id="main-app-bar">
-        <div style="display:flex; align-items:center; gap:16px;">
-            <div style="font-size:26px; cursor:pointer; color: #475569;" onclick="openSidebar()">≡</div>
-            <h1 style="font-size: 20px; font-weight: 500; color: #1e293b; letter-spacing: -0.5px;">Vandana Enterprises</h1>
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div style="font-size:24px; cursor:pointer; color: var(--text-muted); padding:5px;" onclick="openSidebar()">☰</div>
+            <h1 style="font-size: 19px; font-weight: 500; color: var(--text-dark); letter-spacing: -0.5px; margin-left: 4px;">Vandana Enterprises</h1>
         </div>
         <div class="google-profile-ring" onclick="navTo('admin-profile-page', null)">
             <img src="" id="top-avatar-img" style="display:none; width:100%; height:100%; border-radius:50%; object-fit:cover; position:relative; z-index:2;">
@@ -310,14 +319,14 @@
         </div>
 
         <!-- DATE PICKER BOX -->
-        <div style="display: flex; justify-content: center; margin-bottom: 24px;">
-            <div style="background: white; padding: 6px 16px; border-radius: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 16px;">📅</span> 
-                <input type="date" id="dash-date-picker" style="border:none; outline:none; font-family:inherit; font-weight:600; font-size:14px; color:#1e293b; background:transparent;">
+        <div class="dash-date-wrapper">
+            <div style="background: white; padding: 4px 12px; border-radius: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 8px; border: 1px solid var(--border);">
+                <span style="font-size: 14px;">📅</span> 
+                <input type="date" id="dash-date-picker" style="border:none; outline:none; font-family:inherit; font-weight:500; font-size:13px; color:var(--text-dark); background:transparent;">
             </div>
         </div>
         
-        <!-- TOTAL SALES CARD (Like Storage Card) -->
+        <!-- TOTAL SALES CARD -->
         <div class="google-card" onclick="openInvoicesPage()">
             <div class="card-header">Total Sales (Today)</div>
             <div class="card-value" id="dash-card-sale-value">₹0</div>
@@ -326,24 +335,24 @@
         </div>
 
         <!-- 2x GRID CARDS -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
-            <div class="google-card" onclick="navTo('pos-page', null)" style="margin-bottom:0; display:flex; flex-direction:column; align-items:center;">
-                <div class="card-header" style="align-self:flex-start;">Active POS</div>
-                <div style="font-size:40px; margin:10px 0;">📱</div>
-                <div style="font-size:16px; font-weight:500; color:#1e293b;">Quick Bill</div>
-                <div style="font-size:14px; color:#0b57d0; font-weight:600; margin-top:8px;">Open</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+            <div class="google-card" onclick="navTo('pos-page', null)" style="margin-bottom:0; display:flex; flex-direction:column; align-items:center; padding:16px 12px;">
+                <div class="card-header" style="align-self:flex-start; margin-bottom:0;">Active POS</div>
+                <div style="font-size:36px; margin:8px 0;">📱</div>
+                <div style="font-size:14px; font-weight:500; color:var(--text-dark);">Quick Bill</div>
+                <div style="font-size:13px; color:var(--primary); font-weight:600; margin-top:4px;">Open</div>
             </div>
-            <div class="google-card" onclick="navTo('godown-page', null)" style="margin-bottom:0; display:flex; flex-direction:column; align-items:center;">
-                <div class="card-header" style="align-self:flex-start;">Godown Transfer</div>
-                <div style="font-size:40px; margin:10px 0;">🚚</div>
-                <div style="font-size:16px; font-weight:500; color:#1e293b;">Stock Sync</div>
-                <div style="font-size:14px; color:#0b57d0; font-weight:600; margin-top:8px;">View</div>
+            <div class="google-card" onclick="navTo('godown-page', null)" style="margin-bottom:0; display:flex; flex-direction:column; align-items:center; padding:16px 12px;">
+                <div class="card-header" style="align-self:flex-start; margin-bottom:0;">Godown Transfer</div>
+                <div style="font-size:36px; margin:8px 0;">🚚</div>
+                <div style="font-size:14px; font-weight:500; color:var(--text-dark);">Stock Sync</div>
+                <div style="font-size:13px; color:var(--primary); font-weight:600; margin-top:4px;">View</div>
             </div>
         </div>
 
         <!-- TOP CUSTOMERS (Monthly) -->
-        <div style="background: white; border-radius: 24px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
-            <div style="font-size: 15px; font-weight: 500; color: #1e293b; margin-bottom: 16px;">Top Customers 🏆 (This Month)</div>
+        <div style="background: white; border-radius: 20px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border: 1px solid var(--border);">
+            <div style="font-size: 14px; font-weight: 500; color: var(--text-dark); margin-bottom: 12px;">Top Customers 🏆 (This Month)</div>
             <div id="top-customers-list"><div style="text-align:center; padding:10px; color:gray; font-size:12px;">Calculating top customers...</div></div>
         </div>
 
@@ -380,13 +389,13 @@
                 <input type="text" id="gd-item" class="form-control" placeholder="Item Name / Shade No." style="margin-bottom:12px;">
                 <input type="number" id="gd-qty" class="form-control" placeholder="Total Boxes" style="margin-bottom:16px;">
                 <div style="display:flex; gap:10px;">
-                    <button class="btn-submit" style="background:var(--success); flex:1;" onclick="processGodown('IN')">🟢 Receive IN</button>
-                    <button class="btn-submit" style="background:var(--danger); flex:1;" onclick="processGodown('OUT')">🔴 Return OUT</button>
+                    <button class="btn-submit" style="background:#146c2e; flex:1; border-radius:20px;" onclick="processGodown('IN')">🟢 Receive IN</button>
+                    <button class="btn-submit" style="background:#b3261e; flex:1; border-radius:20px;" onclick="processGodown('OUT')">🔴 Return OUT</button>
                 </div>
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">
                 <h3 class="section-title" style="margin:0;">Transfer History</h3>
-                <input type="date" class="professional-date-picker" id="godown-date-picker" style="padding:4px 8px; font-size:12px;" onchange="renderGodownHistory()">
+                <input type="date" class="professional-date-picker" id="godown-date-picker" style="padding:4px 12px; font-size:12px;" onchange="renderGodownHistory()">
             </div>
         </div>
         <div class="scroll-content" style="padding-top:0;">
@@ -426,24 +435,24 @@
                         <input type="number" class="form-control" id="inv-qty" placeholder="Qty (Box)">
                         <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)">
                     </div>
-                    <button class="btn-submit" style="background:#1e293b;" onclick="addCartItem()">⬇ Add to Cart</button>
+                    <button class="btn-submit" style="background:var(--text-dark);" onclick="addCartItem()">⬇ Add to Cart</button>
                 </div>
                 <table class="invoice-table" style="margin-bottom: 16px;">
                     <thead><tr><th>Details</th><th>Qty</th><th>Rate</th><th>Total</th></tr></thead>
                     <tbody id="cart-rows"><tr><td colspan="4" style="text-align:center; padding:16px; color:var(--text-muted);">Cart is empty</td></tr></tbody>
                 </table>
-                <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#eff6ff; border-color:#bfdbfe;">
-                    <span style="font-weight:700; font-size:15px; color:var(--primary);">Grand Total:</span>
-                    <span style="font-size:22px; font-weight:800; color:var(--primary);" id="cart-grand-total">₹ 0</span>
+                <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#f8fafd; border:1px solid #c2e7ff;">
+                    <span style="font-weight:600; font-size:15px; color:var(--primary);">Grand Total:</span>
+                    <span style="font-size:22px; font-weight:700; color:var(--primary);" id="cart-grand-total">₹ 0</span>
                 </div>
                 <button id="save-bill-btn" class="btn-submit" onclick="triggerSaveAndShare()">💾 Generate Bill</button>
             </div>
 
             <div id="post-bill-area" style="display:none; text-align:center; margin-top:20px;">
                 <div style="font-size:50px; margin-bottom:10px;">✅</div>
-                <h3 style="margin-bottom:20px; color:var(--success);">Bill Generated Successfully!</h3>
+                <h3 style="margin-bottom:20px; color:var(--success); font-weight:500;">Bill Generated Successfully!</h3>
                 <p style="color:var(--text-muted); font-size:13px; margin-bottom:20px;">Open this bill from Dashboard or Ledger to Download PDF / Edit.</p>
-                <button class="btn-outline" style="width:100%; border-color:var(--primary); color:var(--primary);" onclick="resetBillingPage()">➕ Create New Bill</button>
+                <button class="btn-outline" style="width:100%; border-color:var(--border); color:var(--text-dark);" onclick="resetBillingPage()">➕ Create New Bill</button>
             </div>
         </div>
     </div>
@@ -451,11 +460,7 @@
     <!-- 👥 PARTIES (LEDGER BOOK) -->
     <div class="page flex-page" id="parties-page">
         <div class="fixed-top-section" style="padding:0;">
-            <div class="kb-header">
-                <div class="kb-header-title">
-                    <button class="back-btn" onclick="closePage('parties-page')">←</button>Ledger Book
-                </div>
-            </div>
+            <div class="page-header"><button class="back-btn" onclick="closePage('parties-page')">←</button><h2 class="page-title">Ledger Book</h2></div>
             <div class="search-bar-container">
                 <span style="color:var(--text-muted); font-size:16px;">🔍</span>
                 <input type="text" id="party-search" placeholder="Search Name..." 
@@ -486,27 +491,27 @@
     <div class="page flex-page" id="ledger-deep-page">
         <div class="fixed-top-section" style="padding:0;">
             <div class="ledger-header-area">
-                <!-- FIXED PROFESSIONAL CALL ICON ROW -->
-                <div class="ledger-top-row" style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:16px;">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <button class="back-btn" onclick="closePage('ledger-deep-page')" style="padding:0;">←</button>
-                        <div class="kb-avatar" id="l-deep-avatar-text" style="width:36px; height:36px; font-size:14px; background:white; color:var(--primary);" onclick="openCustomerProfile()"></div>
-                        <div class="l-name" id="l-deep-name" style="color:white; font-size:16px; cursor:pointer;" onclick="openCustomerProfile()">Name</div>
+                <!-- PROFESSIONAL CALL ICON ROW -->
+                <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <button class="back-btn" onclick="closePage('ledger-deep-page')" style="padding:0; margin-right:5px;">←</button>
+                        <div class="kb-avatar" id="l-deep-avatar-text" style="width:36px; height:36px; font-size:14px; background:#e8f0fe; color:var(--primary);" onclick="openCustomerProfile()"></div>
+                        <div class="l-name" id="l-deep-name" style="color:var(--text-dark); font-size:16px; cursor:pointer; font-weight:600;" onclick="openCustomerProfile()">Name</div>
                     </div>
-                    <!-- WHITE ROUNDED CALL ICON -->
-                    <a href="#" id="l-call-btn" style="color:white; text-decoration:none; font-size:18px; border:1px solid rgba(255,255,255,0.5); border-radius:50%; width:36px; height:36px; display:flex; justify-content:center; align-items:center; background:rgba(255,255,255,0.1);">📞</a>
+                    <!-- ROUNDED CALL ICON -->
+                    <a href="#" id="l-call-btn" style="color:var(--primary); text-decoration:none; font-size:16px; border:1px solid var(--border); border-radius:50%; width:36px; height:36px; display:flex; justify-content:center; align-items:center; background:white; box-shadow:0 1px 2px rgba(0,0,0,0.02);">📞</a>
                 </div>
             </div>
             <div class="ledger-bal-card">
-                <span style="font-size:14px; color:var(--text-muted); font-weight:600;" id="l-deep-bal-text">You will give</span>
-                <span style="font-size:22px; font-weight:700;" id="l-deep-bal-amt">₹ 0</span>
+                <span style="font-size:13px; color:var(--text-muted); font-weight:500;" id="l-deep-bal-text">You will give</span>
+                <span style="font-size:22px; font-weight:600;" id="l-deep-bal-amt">₹ 0</span>
             </div>
             <div class="ledger-action-tabs">
-                <div class="l-tab" id="l-wa-btn" style="color:#10b981; border-color:#10b981;">💬 Reminder</div>
+                <div class="l-tab" id="l-wa-btn" style="color:#146c2e; border-color:#e0e2e0;">💬 Reminder</div>
                 <div class="l-tab" id="l-sms-btn" onclick="alert('Downloading Party Statement...')">📄 Statement</div>
             </div>
-            <div style="text-align:center; font-size:11px; font-weight:600; color:var(--text-muted); margin-bottom:12px;" id="l-deep-today-date"></div>
-            <div style="display:flex; justify-content:space-between; padding:0 20px; font-size:10px; font-weight:700; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase;"><span style="flex:2;">ENTRIES</span><span style="flex:1; text-align:center;">YOU GAVE</span><span style="flex:1; text-align:right;">YOU GOT</span></div>
+            <div style="text-align:center; font-size:11px; font-weight:500; color:var(--text-muted); margin-bottom:12px;" id="l-deep-today-date"></div>
+            <div style="display:flex; justify-content:space-between; padding:0 20px; font-size:10px; font-weight:600; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;"><span style="flex:2;">ENTRIES</span><span style="flex:1; text-align:center;">YOU GAVE</span><span style="flex:1; text-align:right;">YOU GOT</span></div>
         </div>
         <div class="scroll-content" id="ledger-entries-list" style="padding-top:0;"></div>
         <!-- FIXED ACTION BAR ENABLED -->
@@ -517,9 +522,9 @@
     </div>
 
     <!-- ⚙️ PROFESSIONAL ADMIN PROFILE PAGE -->
-    <div class="page" id="admin-profile-page">
+    <div class="page flex-page" id="admin-profile-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('admin-profile-page')">←</button><h2 class="page-title">Business Profile</h2></div>
-        <div class="page-content" style="padding:0; background:#f8fafc;">
+        <div class="scroll-content" style="padding:0; background:#f8fafd;">
             <div class="admin-cover">
                 <div class="admin-avatar-wrap">
                     <div class="admin-pic" id="ap-avatar">V</div>
@@ -527,19 +532,19 @@
                 </div>
             </div>
             <div style="text-align:center; margin-top:50px; margin-bottom:20px;">
-                <h2 id="ap-display-name" style="font-size:20px; color:#0f172a; font-weight:800;">Vandana Enterprises</h2>
+                <h2 id="ap-display-name" style="font-size:20px; color:var(--text-dark); font-weight:600; letter-spacing:-0.5px;">Vandana Enterprises</h2>
                 <p style="color:var(--text-muted); font-size:13px;">Official Business Details</p>
             </div>
             <input type="file" id="admin-upload" accept="image/*" style="display:none;" onchange="handleAdminPic(event)">
             
             <div style="padding:0 16px;">
-                <div class="form-panel" style="border:none; box-shadow:0 4px 15px rgba(0,0,0,0.03);">
+                <div class="form-panel" style="border:1px solid var(--border); box-shadow:0 1px 4px rgba(0,0,0,0.02); border-radius:20px;">
                     <div class="form-group"><label class="form-label">Business Name</label><input type="text" class="form-control" id="ap-name" value="Vandana Enterprises" onkeyup="document.getElementById('ap-display-name').innerText=this.value || 'Business Name'"></div>
                     <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="ap-phone" placeholder="Enter Number"></div>
                     <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-control" id="ap-email" placeholder="Enter Email"></div>
                     <div class="form-group"><label class="form-label">GST Number</label><input type="text" class="form-control" id="ap-gst" placeholder="e.g. 08AAAAA0000A1Z5" style="text-transform:uppercase;"></div>
                     <div class="form-group"><label class="form-label">Full Address</label><textarea class="form-control" id="ap-address" rows="3" placeholder="Shop Address"></textarea></div>
-                    <button class="btn-submit" onclick="saveAdminProfile()" style="margin-top:10px; box-shadow:0 4px 10px rgba(11, 87, 208, 0.3);">💾 Save Profile Changes</button>
+                    <button class="btn-submit" onclick="saveAdminProfile()" style="margin-top:10px;">💾 Save Profile Changes</button>
                 </div>
             </div>
         </div>
@@ -549,8 +554,8 @@
     <div class="page flex-page" id="customer-profile-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('customer-profile-page')">←</button><h2 class="page-title">Profile Details</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
-            <div class="profile-header-img" style="border-radius:12px; margin-bottom:16px;">
-                <div class="profile-pic" id="cp-avatar" style="width:80px; height:80px; font-size:30px; margin-bottom:0;">C</div>
+            <div style="display:flex; justify-content:center; margin-bottom:16px;">
+                <div class="kb-avatar" id="cp-avatar" style="width:80px; height:80px; font-size:30px;">C</div>
             </div>
             <div class="form-panel">
                 <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-control" id="cp-edit-name"></div>
@@ -560,7 +565,7 @@
                 <button class="btn-submit" onclick="saveCustomerProfile()">💾 Save Profile Changes</button>
             </div>
         </div>
-        <div class="bottom-action-bar" style="justify-content:center; background:#f8fafc; border-top:none; box-shadow:none;">
+        <div class="bottom-action-bar" style="justify-content:center; background:var(--bg-color); border-top:none; box-shadow:none;">
             <button class="btn-outline" style="width:100%; border-color:var(--danger); color:var(--danger);" onclick="deleteCurrentCustomer()">🗑️ Delete Account</button>
         </div>
     </div>
@@ -570,7 +575,7 @@
         <div class="page-header"><button class="back-btn" onclick="closePage('entry-details-page')">←</button><h2 class="page-title">Entry Details</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
             <div class="entry-detail-card">
-                <div class="ed-header"><div class="ed-header-left"><div style="font-size:24px;" id="ed-icon">💸</div><div><div style="font-weight:600; font-size:15px; color:#0f172a;" id="ed-party-name">Name</div><div style="font-size:12px; color:var(--text-muted);" id="ed-date">Date</div></div></div><div class="ed-amount-box"><div class="ed-amt" id="ed-amount">₹ 0</div><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;" id="ed-type">You Gave</div></div></div>
+                <div class="ed-header"><div class="ed-header-left"><div style="font-size:24px;" id="ed-icon">💸</div><div><div style="font-weight:600; font-size:15px; color:var(--text-dark);" id="ed-party-name">Name</div><div style="font-size:12px; color:var(--text-muted);" id="ed-date">Date</div></div></div><div class="ed-amount-box"><div class="ed-amt" id="ed-amount">₹ 0</div><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;" id="ed-type">You Gave</div></div></div>
                 <div class="ed-row ed-flex-row">
                     <div style="flex:1;">
                         <div class="ed-label">Details / Bill No.</div>
@@ -586,8 +591,8 @@
         <!-- 3 ACTION BUTTONS -->
         <div class="bottom-action-bar" style="padding: 12px 16px; gap: 8px;">
             <button class="btn-outline" style="width: auto; padding: 14px 16px; border-color: var(--danger); color: var(--danger);" onclick="deleteCurrentEntry()">🗑️</button>
-            <button class="btn-submit" style="flex: 1; background: var(--primary); padding: 14px;" onclick="shareCurrentEntry()">📲 Resend</button>
-            <button class="btn-submit" style="flex: 1; background: #10b981; padding: 14px;" onclick="downloadPDFFromEntry()">📄 PDF</button>
+            <button class="btn-submit" style="flex: 1; padding: 14px; border-radius:20px;" onclick="shareCurrentEntry()">📲 Resend</button>
+            <button class="btn-submit" style="flex: 1; background: var(--success); padding: 14px; border-radius:20px;" onclick="downloadPDFFromEntry()">📄 PDF</button>
         </div>
     </div>
 
@@ -599,10 +604,10 @@
             <!-- PROFESSIONAL DETAILS BOX -->
             <input type="text" class="calc-details-input" id="calc-details" placeholder="Enter details (Items, bill no., quantity, etc.)">
             
-            <div class="calc-action-row" style="margin-top:16px;"><input type="date" class="calc-date-btn" id="calc-date"></div>
+            <div class="calc-action-row" style="margin-top:16px; display:flex; justify-content:center;"><input type="date" class="professional-date-picker" id="calc-date"></div>
         </div>
-        <div class="calculator-footer">
-            <button class="calc-save-btn" id="calc-save-btn" onclick="saveCalculatorEntry()">SAVE ENTRY</button>
+        <div class="calculator-footer" style="position:fixed; bottom:0; left:0; width:100%; background:var(--bg-color); z-index:9999; padding-bottom:env(safe-area-inset-bottom);">
+            <button class="btn-submit" id="calc-save-btn" onclick="saveCalculatorEntry()" style="border-radius:0; padding:16px; font-size:15px; letter-spacing:0.5px;">SAVE ENTRY</button>
             <div class="calc-grid">
                 <button class="calc-btn light-blue" onclick="calcPress('C')">C</button><button class="calc-btn light-blue">M+</button><button class="calc-btn light-blue">M-</button><button class="calc-btn light-blue" onclick="calcPress('BACK')">⌫</button>
                 <button class="calc-btn" onclick="calcPress('7')">7</button><button class="calc-btn" onclick="calcPress('8')">8</button><button class="calc-btn" onclick="calcPress('9')">9</button><button class="calc-btn light-blue" onclick="calcPress('/')">÷</button>
@@ -614,29 +619,17 @@
     </div>
 
     <!-- ================= MASTER INVENTORY PAGE ================= -->
-    <div class="page" id="items-page">
+    <div class="page flex-page" id="items-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('items-page')">←</button><h2 class="page-title">Master Inventory</h2></div>
-        <div class="page-content">
+        <div class="scroll-content" style="padding-top:16px;">
             <div class="stock-overview-title">STOCK OVERVIEW</div>
             <div class="stock-grid">
-                <div class="stock-grid-card" onclick="openPage('thread-stock-page')">
-                    <div class="sg-title">THREAD (थ्रेड)</div><div class="sg-value" id="stock-val-thread">0</div><div class="sg-icon" style="background:#f1f5f9; color:#64748b;">🧵</div>
-                </div>
-                <div class="stock-grid-card" onclick="openPage('zari-stock-page')">
-                    <div class="sg-title">ZARI (जरी)</div><div class="sg-value" id="stock-val-zari">0</div><div class="sg-icon" style="background:#eff6ff; color:#3b82f6;">✨</div>
-                </div>
-                <div class="stock-grid-card" onclick="openPage('nylon-stock-page')">
-                    <div class="sg-title">NYLON (नायलोन)</div><div class="sg-value" id="stock-val-nylon">0</div><div class="sg-icon" style="background:#fdf4ff; color:#d946ef;">🧶</div>
-                </div>
-                <div class="stock-grid-card" onclick="openPage('cording-stock-page')">
-                    <div class="sg-title">CORDING (कोडिंग)</div><div class="sg-value" id="stock-val-cording">0</div><div class="sg-icon" style="background:#f5f3ff; color:#8b5cf6;">🪢</div>
-                </div>
-                <div class="stock-grid-card" onclick="openPage('bobbin-stock-page')">
-                    <div class="sg-title">BOBBIN (बोबिन)</div><div class="sg-value" id="stock-val-bobbin">0</div><div class="sg-icon" style="background:#fff7ed; color:#f97316;">🛞</div>
-                </div>
-                <div class="stock-grid-card" onclick="openPage('lowstock-page')">
-                    <div class="sg-title">LOW STOCK</div><div class="sg-value" id="stock-val-lowstock">0</div><div class="sg-icon" style="background:#fef2f2; color:#ef4444;">⚠️</div>
-                </div>
+                <div class="stock-grid-card" onclick="openPage('thread-stock-page')"><div class="sg-title">THREAD (थ्रेड)</div><div class="sg-value" id="stock-val-thread">0</div><div class="sg-icon" style="background:#e8f0fe; color:var(--primary);">🧵</div></div>
+                <div class="stock-grid-card" onclick="openPage('zari-stock-page')"><div class="sg-title">ZARI (जरी)</div><div class="sg-value" id="stock-val-zari">0</div><div class="sg-icon" style="background:#fff7ed; color:#f97316;">✨</div></div>
+                <div class="stock-grid-card" onclick="openPage('nylon-stock-page')"><div class="sg-title">NYLON (नायलोन)</div><div class="sg-value" id="stock-val-nylon">0</div><div class="sg-icon" style="background:#faf5ff; color:#a855f7;">🧶</div></div>
+                <div class="stock-grid-card" onclick="openPage('cording-stock-page')"><div class="sg-title">CORDING (कोडिंग)</div><div class="sg-value" id="stock-val-cording">0</div><div class="sg-icon" style="background:#e8f0fe; color:var(--primary);">🪢</div></div>
+                <div class="stock-grid-card" onclick="openPage('bobbin-stock-page')"><div class="sg-title">BOBBIN (बोबिन)</div><div class="sg-value" id="stock-val-bobbin">0</div><div class="sg-icon" style="background:#e6f4ea; color:var(--success);">🛞</div></div>
+                <div class="stock-grid-card" onclick="openPage('lowstock-page')"><div class="sg-title">LOW STOCK</div><div class="sg-value" id="stock-val-lowstock">0</div><div class="sg-icon" style="background:#fdf2f2; color:var(--danger);">⚠️</div></div>
             </div>
         </div>
     </div>
@@ -736,12 +729,25 @@
     <div class="page flex-page" id="lowstock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('lowstock-page')">←</button><h2 class="page-title">Low Stock Alerts</h2></div>
         <div class="fixed-top-section">
-            <div style="background:#fef2f2; color:#b91c1c; padding:12px; border-radius:8px; font-weight:600; font-size:13px; border: 1px solid #fca5a5; display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+            <div style="background:#fdf2f2; color:var(--danger); padding:12px; border-radius:12px; font-weight:600; font-size:13px; border: 1px solid #f8cbcb; display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                 <span style="font-size:20px;">⚠️</span> <span>Below items have 5 or less boxes left. Time to re-order!</span>
             </div>
         </div>
         <div class="scroll-content" style="padding-top:0;">
             <table class="invoice-table"><thead><tr><th>Item Details</th><th>Remaining</th></tr></thead><tbody id="lowstock-list"></tbody></table>
+        </div>
+    </div>
+
+    <!-- 👤 ADD NEW PARTY PAGE -->
+    <div class="page flex-page" id="add-party-page">
+        <div class="page-header"><button class="back-btn" onclick="closePage('add-party-page')">←</button><h2 class="page-title" id="add-party-title">Add Customer</h2></div>
+        <div class="scroll-content" style="padding-top:16px;">
+            <div class="form-panel">
+                <div class="form-group"><label class="form-label">Full Name</label><div class="input-btn-group"><input type="text" class="form-control" id="new-party-name" placeholder="Enter Full Name"><button class="action-btn" onclick="openPhonebook('new-party-name', 'new-party-phone')">👥</button></div></div>
+                <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="new-party-phone" placeholder="Enter Number"></div>
+                <div class="form-group"><label class="form-label">Address (Optional)</label><input type="text" class="form-control" id="new-party-address" placeholder="City or Full Address"></div>
+                <button class="btn-submit" onclick="addCustomerToCloud()" style="border-radius:20px;">💾 Save Details</button>
+            </div>
         </div>
     </div>
 
@@ -768,7 +774,7 @@
         window.currentTabType = 'Customer';
         window.ledgerTotals = { custGive:0, custGet:0, supGive:0, supGet:0 };
 
-        // PREVENT DEVICE BACK BUTTON (Safety Logic)
+        // PREVENT DEVICE BACK BUTTON
         history.pushState(null, null, location.href);
         window.onpopstate = function () { history.go(1); };
 
@@ -800,38 +806,34 @@
                 if(cust && cust.phone) { document.getElementById('inv-phone').value = cust.phone; }
             });
 
-            // Make background color transparent on scroll for app bar
+            // Transparent Header Effect on Scroll
             document.querySelector('#home').addEventListener('scroll', function() {
                 if(this.scrollTop > 20) {
-                    document.getElementById('main-app-bar').style.background = 'white';
+                    document.getElementById('main-app-bar').style.background = '#ffffff';
                     document.getElementById('main-app-bar').style.boxShadow = '0 2px 10px rgba(0,0,0,0.05)';
+                    document.getElementById('main-app-bar').style.borderBottom = '1px solid #e0e2e0';
                 } else {
                     document.getElementById('main-app-bar').style.background = 'var(--bg-color)';
                     document.getElementById('main-app-bar').style.boxShadow = 'none';
+                    document.getElementById('main-app-bar').style.borderBottom = 'none';
                 }
             });
         });
 
-        // DYNAMIC GREETING LOGIC
         window.updateGreeting = function() {
             const hour = new Date().getHours();
             let greeting = "Good morning";
             if (hour >= 12 && hour < 17) greeting = "Good afternoon";
             else if (hour >= 17) greeting = "Good evening";
-            
             let pName = localStorage.getItem('v_adminName') || "Admin";
             let firstName = pName.split(' ')[0].toUpperCase();
-            
             document.getElementById('dynamic-greeting').innerText = greeting + ", " + firstName;
         }
 
-        // NAVIGATION LOGIC
         window.navTo = function(pageId, element) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             if(element) element.classList.add('active');
-            
-            if(pageId === 'home') { goHome(); } 
-            else { openPage(pageId); }
+            if(pageId === 'home') { goHome(); } else { openPage(pageId); }
         }
 
         function loadAdminProfile() {
@@ -844,7 +846,6 @@
 
             document.getElementById('ap-name').value = pName; document.getElementById('ap-phone').value = pPhone;
             document.getElementById('ap-email').value = pEmail; document.getElementById('ap-gst').value = pGst; document.getElementById('ap-address').value = pAddr;
-            
             document.getElementById('ap-display-name').innerText = pName;
             document.getElementById('sidebar-name').innerText = pName;
             document.getElementById('sidebar-mobile').innerText = pPhone ? "+91 " + pPhone : "+91 ----------";
@@ -904,7 +905,7 @@
                 filteredTransfers.forEach(t => {
                     let d = new Date(t.date); let timeStr = isNaN(d) ? t.date : d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
                     let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)'; let icon = t.type === 'IN' ? '🟢 IN' : '🔴 OUT';
-                    html += `<tr><td><div style="font-weight:600;">${t.item} <span style="font-size:10px; color:gray;">(${t.cat})</span></div><div style="font-size:11px; color:var(--text-muted);">${timeStr}</div></td><td style="color:${color}; font-weight:700;">${icon} <br>${t.qty} BOX</td></tr>`;
+                    html += `<tr><td><div style="font-weight:600; color:var(--text-dark);">${t.item} <span style="font-size:10px; color:var(--text-muted);">(${t.cat})</span></div><div style="font-size:11px; color:var(--text-muted);">${timeStr}</div></td><td style="color:${color}; font-weight:700;">${icon} <br>${t.qty} BOX</td></tr>`;
                 });
             }
             document.getElementById('godown-history-list').innerHTML = html;
@@ -915,8 +916,8 @@
             document.getElementById('celebration-modal').style.display = 'flex'; 
             var duration = 3000; var end = Date.now() + duration;
             (function frame() {
-                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 1 }, colors: ['#ef4444', '#10b981', '#f59e0b', '#3b82f6'] });
-                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1, y: 1 }, colors: ['#ef4444', '#10b981', '#f59e0b', '#3b82f6'] });
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 1 }, colors: ['#0a56d0', '#146c2e', '#f29900', '#b3261e'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1, y: 1 }, colors: ['#0a56d0', '#146c2e', '#f29900', '#b3261e'] });
                 if (Date.now() < end) { requestAnimationFrame(frame); }
             }());
         }
@@ -943,12 +944,10 @@
             let nAddr = document.getElementById('cp-edit-address').value;
             
             if(!nName) return alert("Name is required!");
-            
             if(nEmail !== "") {
                 let validEmail = nEmail.endsWith('@gmail.com') || nEmail.endsWith('.com') || nEmail.endsWith('.in');
                 if(!validEmail) { return alert("Invalid Email! Must end with @gmail.com, .com, or .in"); }
             }
-
             update(ref(db, 'Customers/' + currentPartyKey), { name: nName, phone: nPhone, email: nEmail, address: nAddr });
             
             currentPartyName = nName; currentPartyPhone = nPhone;
@@ -986,7 +985,7 @@
             }
         }
 
-        // ================= PDF DOWNLOAD LOGIC (FIXED A4 SIZE) =================
+        // ================= PDF DOWNLOAD LOGIC =================
         window.downloadPDFFromEntry = function() {
             if(!currentEntryData) return;
             
@@ -1049,7 +1048,7 @@
 
             let topCustHtml = ""; let sortedCustomers = Object.entries(customerPurchases).sort((a, b) => b[1] - a[1]).slice(0, 5);
             if(sortedCustomers.length === 0) { topCustHtml = '<div style="text-align:center; padding:10px; color:gray; font-size:12px;">No sales this month yet.</div>'; } 
-            else { sortedCustomers.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-left"><div class="ua-item-name">${cust[0]} <span style="font-size:10px; color:var(--danger); background:#fee2e2; padding:2px 6px; border-radius:4px;">2% OFF</span></div><div class="ua-item-desc">Monthly Top Buyer</div></div><div class="ua-item-right"><span class="ua-item-count">₹${cust[1].toLocaleString('en-IN')}</span><span class="ua-item-arrow">›</span></div></div>`; }); }
+            else { sortedCustomers.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-left"><div class="ua-item-name">${cust[0]} <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span></div><div class="ua-item-desc">Monthly Top Buyer</div></div><div class="ua-item-right"><span class="ua-item-count">₹${cust[1].toLocaleString('en-IN')}</span><span class="ua-item-arrow">›</span></div></div>`; }); }
             document.getElementById('top-customers-list').innerHTML = topCustHtml;
         }
         
@@ -1230,7 +1229,7 @@
 
         window.openPage = function(id) { document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); document.getElementById(id).classList.add('active'); }
         window.closePage = function(id) { document.getElementById(id).classList.remove('active'); }
-        window.goHome = function() { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); }
+        window.goHome = function() { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); document.getElementById('nav-btn-home').classList.add('active');}
         window.openSidebar = function() { document.getElementById('sidebar').classList.add('active'); document.getElementById('sidebar-overlay').style.display = 'block'; document.body.classList.add('sidebar-locked'); }
         window.closeSidebar = function() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebar-overlay').style.display = 'none'; document.body.classList.remove('sidebar-locked'); }
         window.searchParties = function() { let filter = document.getElementById('party-search').value.toUpperCase(); document.querySelectorAll('#kb-customer-list .kb-list-item').forEach(item => { item.style.display = item.querySelector('.kb-name').innerText.toUpperCase().indexOf(filter) > -1 ? "" : "none"; }); }

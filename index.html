@@ -7,7 +7,10 @@
     <title>Vandana ERP - Pro Edition</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- CONFETTI LIBRARY FOR FIREWORKS -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- HTML2PDF LIBRARY FOR INVOICE DOWNLOAD -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         /* ================= SUPERFAST SOLID UI ================= */
@@ -28,7 +31,6 @@
         /* DASHBOARD */
         .main-content { padding: 75px 16px 30px 16px; max-width: 800px; margin: 0 auto; }
         .section-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;}
-        .professional-date-picker { background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 700; color: var(--primary); font-family: inherit; outline: none; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; }
 
         /* FLEX PAGE LAYOUT */
         .page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 30px; }
@@ -54,6 +56,12 @@
         .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 6px rgba(21, 101, 192, 0.2);}
         .btn-outline { border: 1px solid #ef4444; color: #ef4444; background: transparent; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer;}
 
+        /* ADMIN PROFILE NEW UI */
+        .admin-cover { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); height: 100px; border-radius: 12px 12px 0 0; position: relative; margin-bottom: 50px; }
+        .admin-avatar-wrap { position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); }
+        .admin-pic { width: 80px; height: 80px; border-radius: 50%; border: 4px solid white; background: white; font-size: 30px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: 800; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow: hidden;}
+        .admin-cam { position: absolute; bottom: 0; right: -5px; background: #f59e0b; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; justify-content: center; align-items: center; border: 2px solid white; cursor: pointer; font-size: 12px; }
+
         /* TABLES & STICKY HEADERS */
         .invoice-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; background: white; border-radius: 8px; border: 1px solid var(--border);}
         .invoice-table th { position: sticky; top: 0; background: #f8fafc; padding: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 700; z-index: 5; box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1);}
@@ -65,7 +73,6 @@
         .search-bar-container { background: white; margin: 10px 16px 16px 16px; border-radius: 8px; padding: 4px 12px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: relative; z-index: 3;}
         .search-bar-container input { border: none; width: 100%; padding: 10px 5px; outline: none; font-size: 14px; }
         
-        /* LEDGER ANIMATION SECTION */
         .ledger-summary-section { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; opacity: 1; max-height: 500px; }
         .ledger-summary-section.hidden { max-height: 0; opacity: 0; margin-bottom: 0 !important; }
         
@@ -88,7 +95,7 @@
         
         .kb-fab { position: fixed !important; bottom: 30px; right: 20px; height: 56px; background: #1e3a8a; color: white; border-radius: 28px; display: flex; justify-content: center; align-items: center; font-size: 15px; font-weight: 700; box-shadow: 0 4px 15px rgba(30, 58, 138, 0.4); border: none; z-index: 1001; cursor: pointer; padding: 0 20px; white-space: nowrap;}
 
-        /* LEDGER DEEP PAGE (Fixed layout) */
+        /* LEDGER DEEP PAGE */
         .ledger-header-area { background: #1e3a8a; color: white; padding: 16px 16px 30px 16px;}
         .ledger-bal-card { background: white; border-radius: 10px; padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: -25px; margin-left: 16px; margin-right: 16px; position: relative; z-index: 2; border: 1px solid var(--border);}
         .ledger-action-tabs { display: flex; margin: 20px 16px 5px 16px; gap: 10px;}
@@ -163,7 +170,7 @@
         .celeb-box { background: white; padding: 30px 20px; border-radius: 16px; max-width: 400px; position: relative; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* STOCK OVERVIEW GRID (Restored Original Style) */
+        /* STOCK OVERVIEW GRID */
         .stock-overview-title { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-top: 10px; }
         .stock-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
         .stock-grid-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.02); cursor: pointer;}
@@ -199,6 +206,54 @@
     
     <!-- POS DATALIST FOR AUTOCOMPLETE -->
     <datalist id="pos-customers-dl"></datalist>
+
+    <!-- HIDDEN INVOICE TEMPLATE FOR PDF DOWNLOAD -->
+    <div id="pdf-container" style="position:fixed; left:-9999px; top:0;">
+        <div id="pdf-invoice-template" style="background:white; padding:40px; font-family:Arial, sans-serif; color:black; width:800px;">
+            <div style="display:flex; justify-content:space-between; border-bottom:2px solid #1e3a8a; padding-bottom:20px; margin-bottom:20px;">
+                <div>
+                    <h1 style="color:#1e3a8a; margin:0; font-size:28px;" id="pdf-biz-name">Vandana Enterprises</h1>
+                    <p style="margin:5px 0; font-size:14px;" id="pdf-biz-phone">Phone: +91 ----------</p>
+                    <p style="margin:5px 0; font-size:14px;" id="pdf-biz-address">Address: Not Added</p>
+                    <p style="margin:5px 0; font-size:14px; font-weight:bold;" id="pdf-biz-gst">GSTIN: --------</p>
+                </div>
+                <div style="text-align:right;">
+                    <h2 style="margin:0; font-size:32px; color:#475569;">INVOICE</h2>
+                    <p style="margin:5px 0; font-size:14px;">Date: <span id="pdf-date"></span></p>
+                    <p style="margin:5px 0; font-size:14px;">Bill No: <span id="pdf-bill-no"></span></p>
+                </div>
+            </div>
+            <div style="margin-bottom:30px;">
+                <h3 style="margin:0 0 10px 0; font-size:16px; color:#64748b;">BILLED TO:</h3>
+                <p style="margin:0; font-size:18px; font-weight:bold;" id="pdf-cust-name">Customer Name</p>
+            </div>
+            <table style="width:100%; border-collapse:collapse; margin-bottom:30px;">
+                <thead>
+                    <tr style="background:#1e3a8a; color:white;">
+                        <th style="padding:12px; text-align:left; border:1px solid #cbd5e1;">Description / Details</th>
+                        <th style="padding:12px; text-align:right; border:1px solid #cbd5e1;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding:16px 12px; border:1px solid #cbd5e1; font-size:16px;" id="pdf-details">Product Details</td>
+                        <td style="padding:16px 12px; text-align:right; border:1px solid #cbd5e1; font-size:16px; font-weight:bold;" id="pdf-amount">₹ 0</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="display:flex; justify-content:flex-end;">
+                <div style="width:300px;">
+                    <div style="display:flex; justify-content:space-between; padding:12px; background:#f8fafc; font-weight:bold; font-size:20px; border:1px solid #cbd5e1;">
+                        <span>Grand Total:</span>
+                        <span id="pdf-total">₹ 0</span>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top:80px; border-top:1px dashed #cbd5e1; padding-top:20px; text-align:center; color:#64748b; font-size:14px;">
+                Thank you for your business!
+            </div>
+        </div>
+    </div>
 
     <!-- 📱 SIDEBAR MENU -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
@@ -236,9 +291,12 @@
 
     <!-- 🏠 MAIN DASHBOARD -->
     <main class="main-content">
-        <div class="dash-header" style="margin-top:10px;">
-            <div class="op-header">Dashboard</div>
-            <input type="date" class="professional-date-picker" id="dash-date-picker">
+        <div class="dash-header" style="margin-top:10px; align-items:center;">
+            <div class="op-header" style="margin:0;">Dashboard</div>
+            <div style="background:#eff6ff; padding:6px 12px; border-radius:20px; border:1px solid #bfdbfe; display:flex; align-items:center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <span style="margin-right:8px; font-size:14px;">📅</span>
+                <input type="date" id="dash-date-picker" style="background:transparent; border:none; padding:0; outline:none; color:var(--primary-dark); font-size:14px; font-weight:700; width: 110px; font-family: 'Inter', sans-serif;">
+            </div>
         </div>
         
         <div class="dash-card-grid" style="margin-top:15px;">
@@ -261,7 +319,7 @@
         <div class="scroll-content" id="invoices-list-container" style="padding-top:16px;"></div>
     </div>
 
-    <!-- 🚚 GODOWN TRANSFER PAGE (FROZEN TOP, SCROLL HISTORY) -->
+    <!-- 🚚 GODOWN TRANSFER PAGE -->
     <div class="page flex-page" id="godown-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('godown-page')">←</button><h2 class="page-title">Godown Transfer</h2></div>
         <div class="fixed-top-section">
@@ -290,7 +348,7 @@
         </div>
     </div>
 
-    <!-- 🧾 SALE INVOICE PAGE (Smart Auto-complete & Auto Customer) -->
+    <!-- 🧾 SALE INVOICE PAGE -->
     <div class="page" id="pos-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('pos-page')">←</button><h2 class="page-title">Create Sale Invoice</h2></div>
         <div class="page-content">
@@ -332,12 +390,10 @@
                 <button id="save-bill-btn" class="btn-submit" onclick="triggerSaveAndShare()">💾 Generate Bill</button>
             </div>
 
-            <!-- Post Bill Action Area -->
             <div id="post-bill-area" style="display:none; text-align:center; margin-top:20px;">
                 <div style="font-size:50px; margin-bottom:10px;">✅</div>
                 <h3 style="margin-bottom:20px; color:var(--success);">Bill Generated Successfully!</h3>
-                <button class="btn-submit" style="background:var(--primary); margin-bottom:12px;" onclick="alert('Original PDF Format Download Coming Soon...')">📄 Download Original PDF</button>
-                <button class="btn-submit" style="background:#10b981; margin-bottom:20px;" onclick="sharePDFOnWhatsApp()">📲 Share Bill via WhatsApp</button>
+                <p style="color:var(--text-muted); font-size:13px; margin-bottom:20px;">Open this bill from Dashboard or Ledger to Download PDF / Edit.</p>
                 <button class="btn-outline" style="width:100%; border-color:var(--primary); color:var(--primary);" onclick="resetBillingPage()">➕ Create New Bill</button>
             </div>
         </div>
@@ -377,7 +433,7 @@
         <button class="kb-fab" id="main-fab" onclick="openPage('add-party-page')"><span class="fab-icon">+</span><span class="fab-text" id="fab-text">Add Customer</span></button>
     </div>
 
-    <!-- 🔥 KHATABOOK DEEP LEDGER PAGE (FIXED TOP AND BOTTOM, SCROLL MIDDLE) -->
+    <!-- 🔥 KHATABOOK DEEP LEDGER PAGE -->
     <div class="page flex-page" id="ledger-deep-page">
         <div class="fixed-top-section" style="padding:0;">
             <div class="ledger-header-area">
@@ -410,6 +466,35 @@
         </div>
     </div>
 
+    <!-- ⚙️ NEW: PROFESSIONAL ADMIN PROFILE PAGE -->
+    <div class="page" id="admin-profile-page">
+        <div class="page-header"><button class="back-btn" onclick="closePage('admin-profile-page')">←</button><h2 class="page-title">Business Profile</h2></div>
+        <div class="page-content" style="padding:0; background:#f8fafc;">
+            <div class="admin-cover">
+                <div class="admin-avatar-wrap">
+                    <div class="admin-pic" id="ap-avatar">V</div>
+                    <div class="admin-cam" onclick="document.getElementById('admin-upload').click()">📷</div>
+                </div>
+            </div>
+            <div style="text-align:center; margin-top:50px; margin-bottom:20px;">
+                <h2 id="ap-display-name" style="font-size:20px; color:#0f172a; font-weight:800;">Vandana Enterprises</h2>
+                <p style="color:var(--text-muted); font-size:13px;">Official Business Details</p>
+            </div>
+            <input type="file" id="admin-upload" accept="image/*" style="display:none;" onchange="handleAdminPic(event)">
+            
+            <div style="padding:0 16px;">
+                <div class="form-panel" style="border:none; box-shadow:0 4px 15px rgba(0,0,0,0.03);">
+                    <div class="form-group"><label class="form-label">Business Name</label><input type="text" class="form-control" id="ap-name" value="Vandana Enterprises" onkeyup="document.getElementById('ap-display-name').innerText=this.value || 'Business Name'"></div>
+                    <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="ap-phone" placeholder="Enter Number"></div>
+                    <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-control" id="ap-email" placeholder="Enter Email"></div>
+                    <div class="form-group"><label class="form-label">GST Number</label><input type="text" class="form-control" id="ap-gst" placeholder="e.g. 08AAAAA0000A1Z5" style="text-transform:uppercase;"></div>
+                    <div class="form-group"><label class="form-label">Full Address</label><textarea class="form-control" id="ap-address" rows="3" placeholder="Shop Address"></textarea></div>
+                    <button class="btn-submit" onclick="saveAdminProfile()" style="margin-top:10px; box-shadow:0 4px 10px rgba(30, 58, 138, 0.3);">💾 Save Profile Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 📄 CUSTOMER PROFILE PAGE (EDITABLE + BOTTOM DELETE) -->
     <div class="page flex-page" id="customer-profile-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('customer-profile-page')">←</button><h2 class="page-title">Profile Details</h2></div>
@@ -425,35 +510,12 @@
                 <button class="btn-submit" onclick="saveCustomerProfile()">💾 Save Profile Changes</button>
             </div>
         </div>
-        <div class="bottom-action-bar" style="justify-content:center; background:#f8fafc; border-top:none;">
+        <div class="bottom-action-bar" style="justify-content:center; background:#f8fafc; border-top:none; box-shadow:none;">
             <button class="btn-outline" style="width:100%; border-color:var(--danger); color:var(--danger);" onclick="deleteCurrentCustomer()">🗑️ Delete Account</button>
         </div>
     </div>
 
-    <!-- ⚙️ ADMIN PROFILE PAGE (Professional Setting) -->
-    <div class="page" id="admin-profile-page">
-        <div class="page-header"><button class="back-btn" onclick="closePage('admin-profile-page')">←</button><h2 class="page-title">Business Profile</h2></div>
-        <div class="page-content">
-            <div class="profile-header-img" style="border-radius:12px; margin-bottom:16px;">
-                <div class="profile-pic-container">
-                    <div class="profile-pic" id="ap-avatar" style="font-size:40px; display:flex; align-items:center; justify-content:center;">V</div>
-                    <div class="camera-icon" onclick="document.getElementById('admin-upload').click()">📷</div>
-                </div>
-                <input type="file" id="admin-upload" accept="image/*" style="display:none;" onchange="handleAdminPic(event)">
-                <p style="font-size:11px; color:var(--text-muted); margin-top:5px;">Tap 📷 to change/crop photo</p>
-            </div>
-            <div class="form-panel">
-                <div class="form-group"><label class="form-label">Business Name</label><input type="text" class="form-control" id="ap-name" value="Vandana Enterprises"></div>
-                <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="ap-phone" placeholder="Enter Number"></div>
-                <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-control" id="ap-email" placeholder="Enter Email"></div>
-                <div class="form-group"><label class="form-label">GST Number</label><input type="text" class="form-control" id="ap-gst" placeholder="e.g. 08AAAAA0000A1Z5" style="text-transform:uppercase;"></div>
-                <div class="form-group"><label class="form-label">Full Address</label><textarea class="form-control" id="ap-address" rows="3" placeholder="Shop Address"></textarea></div>
-                <button class="btn-submit" onclick="saveAdminProfile()">💾 Save Changes</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 💸 ENTRY DETAILS PAGE -->
+    <!-- 💸 ENTRY DETAILS PAGE (With PDF Download, Resend, Edit) -->
     <div class="page flex-page" id="entry-details-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('entry-details-page')">←</button><h2 class="page-title">Entry Details</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
@@ -463,17 +525,20 @@
                 <div class="ed-edit-btn" onclick="editCurrentEntryAmount()">✏️ Edit Amount & Details</div>
             </div>
         </div>
-        <div class="bottom-action-bar">
-            <button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger); padding:16px; font-size:16px;" onclick="deleteCurrentEntry()">🗑️ Delete</button>
-            <button class="btn-submit" style="flex:1; background:var(--primary); padding:16px; font-size:16px;" onclick="shareCurrentEntry()">📲 Share</button>
+        <!-- 3 ACTION BUTTONS -->
+        <div class="bottom-action-bar" style="padding: 12px 16px; gap: 8px;">
+            <button class="btn-outline" style="width: auto; padding: 14px 16px; border-color: var(--danger); color: var(--danger);" onclick="deleteCurrentEntry()">🗑️</button>
+            <button class="btn-submit" style="flex: 1; background: var(--primary); padding: 14px;" onclick="shareCurrentEntry()">📲 Resend</button>
+            <button class="btn-submit" style="flex: 1; background: #10b981; padding: 14px;" onclick="downloadPDFFromEntry()">📄 PDF</button>
         </div>
     </div>
 
-    <!-- 🧮 CALC SCREEN -->
+    <!-- 🧮 CALC SCREEN (Smart Auto-hide Details Box) -->
     <div class="page" id="calculator-page" style="z-index: 2500;">
         <div class="calc-header" id="calc-header"><button class="back-btn" onclick="closePage('calculator-page')" id="calc-back-btn" style="color:var(--danger);">←</button><h2 class="calc-title" id="calc-title-text">You gave ₹ 0</h2></div>
         <div class="page-content" style="padding:0;">
             <div class="amount-input-box"><span class="amount-symbol" id="calc-symbol">₹</span><input type="text" id="calc-amount" readonly placeholder="0" style="color:var(--danger);"></div>
+            <!-- Hidden initially -->
             <input type="text" class="calc-details-input" id="calc-details" placeholder="Enter details (Items, bill no., quantity, etc.)">
             <div class="calc-action-row" style="margin-top:16px;"><input type="date" class="calc-date-btn" id="calc-date"></div>
         </div>
@@ -489,23 +554,35 @@
         </div>
     </div>
 
-    <!-- ================= MASTER INVENTORY PAGE (Pro UI) ================= -->
+    <!-- ================= MASTER INVENTORY PAGE ================= -->
     <div class="page" id="items-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('items-page')">←</button><h2 class="page-title">Master Inventory</h2></div>
         <div class="page-content">
             <div class="stock-overview-title">STOCK OVERVIEW</div>
             <div class="stock-grid">
-                <div class="stock-grid-card" onclick="openPage('thread-stock-page')"><div class="sg-title">THREAD (थ्रेड)</div><div class="sg-value" id="stock-val-thread">0</div><div class="sg-icon" style="background:#f1f5f9; color:#64748b;">🧵</div></div>
-                <div class="stock-grid-card" onclick="openPage('zari-stock-page')"><div class="sg-title">ZARI (जरी)</div><div class="sg-value" id="stock-val-zari">0</div><div class="sg-icon" style="background:#eff6ff; color:#3b82f6;">✨</div></div>
-                <div class="stock-grid-card" onclick="openPage('nylon-stock-page')"><div class="sg-title">NYLON (नायलोन)</div><div class="sg-value" id="stock-val-nylon">0</div><div class="sg-icon" style="background:#fdf4ff; color:#d946ef;">🧶</div></div>
-                <div class="stock-grid-card" onclick="openPage('cording-stock-page')"><div class="sg-title">CORDING (कोडिंग)</div><div class="sg-value" id="stock-val-cording">0</div><div class="sg-icon" style="background:#f5f3ff; color:#8b5cf6;">🪢</div></div>
-                <div class="stock-grid-card" onclick="openPage('bobbin-stock-page')"><div class="sg-title">BOBBIN (बोबिन)</div><div class="sg-value" id="stock-val-bobbin">0</div><div class="sg-icon" style="background:#fff7ed; color:#f97316;">🛞</div></div>
-                <div class="stock-grid-card" onclick="openPage('lowstock-page')"><div class="sg-title">LOW STOCK</div><div class="sg-value" id="stock-val-lowstock">0</div><div class="sg-icon" style="background:#fef2f2; color:#ef4444;">⚠️</div></div>
+                <div class="stock-grid-card" onclick="openPage('thread-stock-page')">
+                    <div class="sg-title">THREAD (थ्रेड)</div><div class="sg-value" id="stock-val-thread">0</div><div class="sg-icon" style="background:#f1f5f9; color:#64748b;">🧵</div>
+                </div>
+                <div class="stock-grid-card" onclick="openPage('zari-stock-page')">
+                    <div class="sg-title">ZARI (जरी)</div><div class="sg-value" id="stock-val-zari">0</div><div class="sg-icon" style="background:#eff6ff; color:#3b82f6;">✨</div>
+                </div>
+                <div class="stock-grid-card" onclick="openPage('nylon-stock-page')">
+                    <div class="sg-title">NYLON (नायलोन)</div><div class="sg-value" id="stock-val-nylon">0</div><div class="sg-icon" style="background:#fdf4ff; color:#d946ef;">🧶</div>
+                </div>
+                <div class="stock-grid-card" onclick="openPage('cording-stock-page')">
+                    <div class="sg-title">CORDING (कोडिंग)</div><div class="sg-value" id="stock-val-cording">0</div><div class="sg-icon" style="background:#f5f3ff; color:#8b5cf6;">🪢</div>
+                </div>
+                <div class="stock-grid-card" onclick="openPage('bobbin-stock-page')">
+                    <div class="sg-title">BOBBIN (बोबिन)</div><div class="sg-value" id="stock-val-bobbin">0</div><div class="sg-icon" style="background:#fff7ed; color:#f97316;">🛞</div>
+                </div>
+                <div class="stock-grid-card" onclick="openPage('lowstock-page')">
+                    <div class="sg-title">LOW STOCK</div><div class="sg-value" id="stock-val-lowstock">0</div><div class="sg-icon" style="background:#fef2f2; color:#ef4444;">⚠️</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 🧵 THREAD STOCK PAGE (FROZEN TOP, SCROLL TABLE) -->
+    <!-- 🧵 THREAD STOCK PAGE -->
     <div class="page flex-page" id="thread-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('thread-stock-page')">←</button><h2 class="page-title">Thread Stock</h2></div>
         <div class="fixed-top-section">
@@ -522,7 +599,7 @@
         </div>
     </div>
 
-    <!-- ✨ ZARI STOCK PAGE (FROZEN TOP) -->
+    <!-- ✨ ZARI STOCK PAGE -->
     <div class="page flex-page" id="zari-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('zari-stock-page')">←</button><h2 class="page-title">Zari Stock</h2></div>
         <div class="fixed-top-section">
@@ -542,7 +619,7 @@
         </div>
     </div>
 
-    <!-- 🪢 CORDING STOCK PAGE (FROZEN TOP) -->
+    <!-- 🪢 CORDING STOCK PAGE -->
     <div class="page flex-page" id="cording-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('cording-stock-page')">←</button><h2 class="page-title">Cording Stock</h2></div>
         <div class="fixed-top-section">
@@ -562,7 +639,7 @@
         </div>
     </div>
 
-    <!-- 🧶 NYLON STOCK PAGE (FROZEN TOP) -->
+    <!-- 🧶 NYLON STOCK PAGE -->
     <div class="page flex-page" id="nylon-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('nylon-stock-page')">←</button><h2 class="page-title">Nylon Stock</h2></div>
         <div class="fixed-top-section">
@@ -579,7 +656,7 @@
         </div>
     </div>
 
-    <!-- 🛞 BOBBIN STOCK PAGE (FROZEN TOP) -->
+    <!-- 🛞 BOBBIN STOCK PAGE -->
     <div class="page flex-page" id="bobbin-stock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('bobbin-stock-page')">←</button><h2 class="page-title">Bobbin Stock</h2></div>
         <div class="fixed-top-section">
@@ -596,7 +673,7 @@
         </div>
     </div>
 
-    <!-- ⚠️ LOW STOCK PAGE (FROZEN TOP) -->
+    <!-- ⚠️ LOW STOCK PAGE -->
     <div class="page flex-page" id="lowstock-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('lowstock-page')">←</button><h2 class="page-title">Low Stock Alerts</h2></div>
         <div class="fixed-top-section">
@@ -622,7 +699,7 @@
         </div>
     </div>
 
-    <!-- ================= FIREBASE & APP JAVASCRIPT ================= -->
+    <!-- ================= FIREBASE JAVASCRIPT ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, get, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -645,11 +722,9 @@
         window.currentTabType = 'Customer';
         window.ledgerTotals = { custGive:0, custGet:0, supGive:0, supGet:0 };
 
-        // PREVENT DEVICE BACK BUTTON
+        // PREVENT DEVICE BACK BUTTON (Safety Logic)
         history.pushState(null, null, location.href);
-        window.onpopstate = function () {
-            history.go(1);
-        };
+        window.onpopstate = function () { history.go(1); };
 
         window.addEventListener('DOMContentLoaded', () => {
             let todayStr = new Date().toISOString().split('T')[0];
@@ -690,6 +765,7 @@
             document.getElementById('ap-name').value = pName; document.getElementById('ap-phone').value = pPhone;
             document.getElementById('ap-email').value = pEmail; document.getElementById('ap-gst').value = pGst; document.getElementById('ap-address').value = pAddr;
             
+            document.getElementById('ap-display-name').innerText = pName;
             document.getElementById('sidebar-name').innerText = pName;
             document.getElementById('sidebar-mobile').innerText = pPhone ? "+91 " + pPhone : "+91 ----------";
             document.getElementById('sidebar-gst').innerText = pGst ? "GST: " + pGst : "GST: Not Added";
@@ -778,12 +854,9 @@
             
             if(!nName) return alert("Name is required!");
             
-            // STRICT EMAIL VALIDATION
             if(nEmail !== "") {
                 let validEmail = nEmail.endsWith('@gmail.com') || nEmail.endsWith('.com') || nEmail.endsWith('.in');
-                if(!validEmail) {
-                    return alert("Invalid Email! Must end with @gmail.com, .com, or .in");
-                }
+                if(!validEmail) { return alert("Invalid Email! Must end with @gmail.com, .com, or .in"); }
             }
 
             update(ref(db, 'Customers/' + currentPartyKey), { name: nName, phone: nPhone, email: nEmail, address: nAddr });
@@ -821,6 +894,36 @@
                 document.getElementById('total-give-all').innerText = "₹ " + window.ledgerTotals.supGive.toLocaleString(); 
                 document.getElementById('total-get-all').innerText = "₹ " + window.ledgerTotals.supGet.toLocaleString();
             }
+        }
+
+        // ================= PDF DOWNLOAD LOGIC =================
+        window.downloadPDFFromEntry = function() {
+            if(!currentEntryData) return;
+            
+            document.getElementById('pdf-biz-name').innerText = localStorage.getItem('v_adminName') || "Vandana Enterprises";
+            document.getElementById('pdf-biz-phone').innerText = "Phone: +91 " + (localStorage.getItem('v_adminPhone') || "----------");
+            document.getElementById('pdf-biz-address').innerText = "Address: " + (localStorage.getItem('v_adminAddr') || "Not Added");
+            document.getElementById('pdf-biz-gst').innerText = "GSTIN: " + (localStorage.getItem('v_adminGst') || "Not Added");
+            
+            let d = new Date(currentEntryData.date);
+            document.getElementById('pdf-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleDateString('en-GB');
+            document.getElementById('pdf-bill-no').innerText = currentEntryData.key.substring(1, 8).toUpperCase();
+            document.getElementById('pdf-cust-name').innerText = currentEntryData.name;
+            document.getElementById('pdf-details').innerText = currentEntryData.details || "Ledger Entry";
+            document.getElementById('pdf-amount').innerText = "₹ " + parseFloat(currentEntryData.amount).toLocaleString('en-IN');
+            document.getElementById('pdf-total').innerText = "₹ " + parseFloat(currentEntryData.amount).toLocaleString('en-IN');
+            
+            let elem = document.getElementById('pdf-invoice-template');
+            let opt = {
+                margin:       0.5,
+                filename:     `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            alert("Generating Original PDF... Please wait.");
+            html2pdf().set(opt).from(elem).save();
         }
 
         window.calculateGrandTotals = function() {
@@ -868,12 +971,10 @@
             let amount = eval(calcValue) || 0; if(amount <= 0) return alert("Enter valid amount!");
             let dateVal = document.getElementById('calc-date').value; if(!dateVal) dateVal = new Date().toISOString().split('T')[0];
             
-            // IF EDITING EXISTING ENTRY
             if(window.isEditingEntry && currentEntryData) {
                 update(ref(db, 'Ledger/' + currentEntryData.key), { amount: amount, details: document.getElementById('calc-details').value || "App Entry", type: calcType, date: new Date(dateVal).toISOString() });
                 window.isEditingEntry = false; currentEntryData = null;
             } else {
-                // NEW ENTRY
                 push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: calcType, amount: amount, details: document.getElementById('calc-details').value || "App Entry" }); 
             }
             closePage('calculator-page');
@@ -887,22 +988,15 @@
             document.getElementById('ed-icon').innerText = icon; document.getElementById('ed-amount').innerText = `₹ ${parseFloat(currentEntryData.amount).toLocaleString()}`; document.getElementById('ed-amount').style.color = color; document.getElementById('ed-type').innerText = `You ${currentEntryData.type}`; document.getElementById('ed-type').style.color = color; document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry"; openPage('entry-details-page');
         }
 
-        // PROFESSIONAL EDIT ENTRY FLOW
         window.editCurrentEntryAmount = function() { 
             if(!currentEntryData) return; 
-            window.isEditingEntry = true;
-            calcType = currentEntryData.type;
-            calcValue = currentEntryData.amount.toString();
-            document.getElementById('calc-amount').value = calcValue;
-            document.getElementById('calc-details').value = currentEntryData.details || "";
+            window.isEditingEntry = true; calcType = currentEntryData.type; calcValue = currentEntryData.amount.toString();
+            document.getElementById('calc-amount').value = calcValue; document.getElementById('calc-details').value = currentEntryData.details || "";
             document.getElementById('calc-details').style.display = 'block';
-            let d = new Date(currentEntryData.date);
-            if(!isNaN(d)) document.getElementById('calc-date').value = d.toISOString().split('T')[0];
-            
-            closePage('entry-details-page'); // close detail page to show calculator
-            openCalculator(calcType, true); // true = skip reset
+            let d = new Date(currentEntryData.date); if(!isNaN(d)) document.getElementById('calc-date').value = d.toISOString().split('T')[0];
+            closePage('entry-details-page'); openCalculator(calcType, true); 
         }
-
+        
         window.deleteCurrentEntry = function() { if(confirm("Are you sure you want to delete this entry?")) { remove(ref(db, 'Ledger/' + currentEntryData.key)); closePage('entry-details-page'); } }
         window.shareCurrentEntry = function() { if(!currentEntryData) return; let typeStr = currentEntryData.type === 'Gave' ? 'You Gave' : 'You Got'; let msg = `📄 *Ledger Entry* %0A🏛️ *Vandana Enterprises*%0A%0A*Name:* ${currentEntryData.name}%0A*Type:* ${typeStr}%0A*Amount:* ₹${currentEntryData.amount}%0A*Details:* ${currentEntryData.details}`; window.open(`https://wa.me/91${currentPartyPhone}?text=${msg}`, '_blank'); }
 
@@ -1016,35 +1110,32 @@
 
         window.sharePDFOnWhatsApp = function() { const custPhone = document.getElementById('inv-phone').value || ""; window.open(`https://wa.me/91${custPhone}?text=📄 *INVOICE BILL* %0A🏛️ *VANDANA ENTERPRISES*%0A%0A*Total Amount:* ₹${grandInvoiceTotal}`, '_blank'); }
 
-        // ================= CALCULATOR UI =================
-        let calcType = "Gave"; let calcValue = "";
-        window.openCalculator = function(type, skipReset = false) {
-            if(!skipReset) {
-                calcType = type; calcValue = ""; 
-                document.getElementById('calc-amount').value = ""; 
-                document.getElementById('calc-details').value = "";
-                document.getElementById('calc-details').style.display = 'none';
-                window.isEditingEntry = false;
-            }
-            let color = type === 'Gave' ? 'var(--danger)' : 'var(--success)';
-            document.getElementById('calc-header').style.color = color; document.getElementById('calc-back-btn').style.color = color; document.getElementById('calc-symbol').style.color = color; document.getElementById('calc-amount').style.color = color; document.getElementById('calc-save-btn').style.backgroundColor = color;
-            updateCalcTitle(); openPage('calculator-page');
-        }
-        window.calcPress = function(val) { 
-            if(val === 'C') calcValue = ""; 
-            else if(val === 'BACK') calcValue = calcValue.slice(0, -1); 
-            else if(val === '=') { try { calcValue = eval(calcValue).toString(); } catch(e){} } 
-            else calcValue += val; 
-            
-            document.getElementById('calc-amount').value = calcValue; 
-            
-            // SHOW/HIDE DETAILS INPUT
-            if(parseFloat(calcValue) > 0) document.getElementById('calc-details').style.display = 'block';
-            else document.getElementById('calc-details').style.display = 'none';
+        window.openInvoicesPage = function() {
+            let listContainer = document.getElementById('invoices-list-container'); listContainer.innerHTML = '';
+            let selectedDateString = document.getElementById('dash-date-picker').value;
+            let todayInvoices = allLedgerData.filter(entry => {
+                let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){}
+                return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice Sale");
+            });
 
-            updateCalcTitle(); 
+            if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } 
+            else {
+                todayInvoices.forEach(entry => {
+                    listContainer.innerHTML += `
+                    <div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; cursor:pointer;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
+                            <div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div>
+                            <div style="color:var(--success); font-weight:800; font-size: 16px;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div>
+                        </div>
+                        <div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;">
+                            <span>${entry.details}</span>
+                            <span style="color:var(--primary); font-weight:600;">View & Edit ➔</span>
+                        </div>
+                    </div>`;
+                });
+            }
+            openPage('invoices-page');
         }
-        function updateCalcTitle() { document.getElementById('calc-title-text').innerText = `You ${calcType.toLowerCase()} ₹ ${calcValue || "0"} to ${currentPartyName}`; }
 
         // ================= NAVIGATION HELPERS =================
         window.toggleMenu = function() { const menu = document.getElementById('dropdown-menu'); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; }

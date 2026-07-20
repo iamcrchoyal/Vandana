@@ -105,16 +105,16 @@
         .ec-gave, .ec-got { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; }
         .ec-gave { background: #fef2f2; color: var(--danger); }
         .ec-got { background: #ecfdf5; color: var(--success); border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
-        .bottom-action-bar { position: fixed; bottom: 0; width: 100%; background: white; padding: 12px 16px; display: flex; gap: 12px; border-top: 1px solid var(--border); z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);}
-        .btn-l-gave { flex: 1; background: #ef4444; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer;}
-        .btn-l-got { flex: 1; background: #10b981; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer;}
+        .bottom-action-bar { position: fixed; bottom: 0; width: 100%; left: 0; background: white; padding: 12px 16px; display: flex; gap: 12px; border-top: 1px solid var(--border); z-index: 9999; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); padding-bottom: calc(12px + env(safe-area-inset-bottom));}
+        .btn-l-gave { flex: 1; background: #ef4444; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; pointer-events: auto;}
+        .btn-l-got { flex: 1; background: #10b981; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; pointer-events: auto;}
 
         /* LOADER */
         .loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;}
         .spinner { border: 4px solid #f3f3f3; border-left-color: var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* ENTRY DETAILS UI (Professional Look) */
+        /* ENTRY DETAILS UI */
         .entry-detail-card { background: white; margin: 16px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid var(--border);}
         .ed-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 16px; border-bottom: 1px solid #f1f5f9; background: #f8fafc;}
         .ed-amt { font-size: 28px; font-weight: 800; }
@@ -125,7 +125,26 @@
         .calc-header { background: white; color: var(--danger); height: 56px; display: flex; align-items: center; padding: 0 16px; z-index: 10; border-bottom: 1px solid var(--border); }
         .amount-input-box { background: white; border: 1px solid var(--border); border-radius: 8px; margin: 16px; padding: 16px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
         .amount-input-box input { border: none; outline: none; font-size: 28px; font-weight: 700; color: var(--danger); width: 100%;}
-        .calc-details-input { background: white; border: 1px solid var(--border); border-radius: 8px; margin: 0 16px 16px 16px; padding: 14px; width: calc(100% - 32px); font-size: 14px; outline: none; display:none; transition: all 0.3s;}
+        
+        /* PROFESSIONAL CALCULATOR DETAILS BOX */
+        .calc-details-input { 
+            background: #ffffff; 
+            border: 2px solid #cbd5e1; 
+            border-radius: 8px; 
+            margin: 0 16px 16px 16px; 
+            padding: 16px; 
+            width: calc(100% - 32px); 
+            font-size: 15px; 
+            font-weight: 500;
+            color: var(--text-dark);
+            outline: none; 
+            display:none; 
+            transition: all 0.3s;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+            font-family: inherit;
+        }
+        .calc-details-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30,58,138,0.1); }
+        
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; background: #f1f5f9;}
         .calc-btn { background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 16px 0; font-size: 20px; font-weight: 600; cursor: pointer; color: #1e293b; display: flex; justify-content: center; align-items: center;}
         .calc-btn.light-blue { background: #dbeafe; color: #1e3a8a;}
@@ -207,10 +226,10 @@
     <!-- POS DATALIST FOR AUTOCOMPLETE -->
     <datalist id="pos-customers-dl"></datalist>
 
-    <!-- HIDDEN INVOICE TEMPLATE FOR PDF DOWNLOAD -->
+    <!-- HIDDEN INVOICE TEMPLATE FOR PDF DOWNLOAD (Fixed A4 Format) -->
     <div id="pdf-container" style="position:fixed; left:-9999px; top:0;">
-        <div id="pdf-invoice-template" style="background:white; padding:40px; font-family:Arial, sans-serif; color:black; width:800px;">
-            <div style="display:flex; justify-content:space-between; border-bottom:2px solid #1e3a8a; padding-bottom:20px; margin-bottom:20px;">
+        <div id="pdf-invoice-template" style="background:white; padding:30px; font-family:Arial, sans-serif; color:black; width:700px; max-width:100%; box-sizing:border-box;">
+            <div style="display:flex; justify-content:space-between; border-bottom:2px solid #1e3a8a; padding-bottom:15px; margin-bottom:15px;">
                 <div>
                     <h1 style="color:#1e3a8a; margin:0; font-size:28px;" id="pdf-biz-name">Vandana Enterprises</h1>
                     <p style="margin:5px 0; font-size:14px;" id="pdf-biz-phone">Phone: +91 ----------</p>
@@ -291,12 +310,10 @@
 
     <!-- 🏠 MAIN DASHBOARD -->
     <main class="main-content">
+        <!-- FIXED DATE BOX DESIGN -->
         <div class="dash-header" style="margin-top:10px; align-items:center;">
             <div class="op-header" style="margin:0;">Dashboard</div>
-            <div style="background:#eff6ff; padding:6px 12px; border-radius:20px; border:1px solid #bfdbfe; display:flex; align-items:center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                <span style="margin-right:8px; font-size:14px;">📅</span>
-                <input type="date" id="dash-date-picker" style="background:transparent; border:none; padding:0; outline:none; color:var(--primary-dark); font-size:14px; font-weight:700; width: 110px; font-family: 'Inter', sans-serif;">
-            </div>
+            <input type="date" class="professional-date-picker" id="dash-date-picker" style="padding: 8px 12px; font-size: 13px; width: auto; border: 1px solid #cbd5e1; border-radius: 8px; background: white; color: var(--primary); font-weight: 700;">
         </div>
         
         <div class="dash-card-grid" style="margin-top:15px;">
@@ -437,15 +454,15 @@
     <div class="page flex-page" id="ledger-deep-page">
         <div class="fixed-top-section" style="padding:0;">
             <div class="ledger-header-area">
-                <div class="ledger-top-row">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <button class="back-btn" onclick="closePage('ledger-deep-page')" style="padding:0; margin-right:5px;">←</button>
+                <!-- FIXED PROFESSIONAL CALL ICON ROW -->
+                <div class="ledger-top-row" style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:16px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <button class="back-btn" onclick="closePage('ledger-deep-page')" style="padding:0;">←</button>
                         <div class="kb-avatar" id="l-deep-avatar-text" style="width:36px; height:36px; font-size:14px; background:white; color:var(--primary);" onclick="openCustomerProfile()"></div>
-                        <div onclick="openCustomerProfile()" style="cursor:pointer; display:flex; align-items:center; gap:8px;">
-                            <div class="l-name" id="l-deep-name" style="color:white; font-size:16px;">Name</div>
-                            <a href="#" id="l-call-btn" style="color:white; text-decoration:none; font-size:18px;">📞</a>
-                        </div>
+                        <div class="l-name" id="l-deep-name" style="color:white; font-size:16px; cursor:pointer;" onclick="openCustomerProfile()">Name</div>
                     </div>
+                    <!-- WHITE ROUNDED CALL ICON -->
+                    <a href="#" id="l-call-btn" style="color:white; text-decoration:none; font-size:18px; border:1px solid rgba(255,255,255,0.5); border-radius:50%; width:36px; height:36px; display:flex; justify-content:center; align-items:center; background:rgba(255,255,255,0.1);">📞</a>
                 </div>
             </div>
             <div class="ledger-bal-card">
@@ -460,9 +477,10 @@
             <div style="display:flex; justify-content:space-between; padding:0 20px; font-size:10px; font-weight:700; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase;"><span style="flex:2;">ENTRIES</span><span style="flex:1; text-align:center;">YOU GAVE</span><span style="flex:1; text-align:right;">YOU GOT</span></div>
         </div>
         <div class="scroll-content" id="ledger-entries-list" style="padding-top:0;"></div>
-        <div class="bottom-action-bar">
-            <button class="btn-l-gave" onclick="openCalculator('Gave')">YOU GAVE ₹</button>
-            <button class="btn-l-got" onclick="openCalculator('Got')">YOU GOT ₹</button>
+        <!-- FIXED ACTION BAR ENABLED -->
+        <div class="bottom-action-bar" style="z-index: 9999;">
+            <button class="btn-l-gave" onclick="openCalculator('Gave')" style="pointer-events: auto;">YOU GAVE ₹</button>
+            <button class="btn-l-got" onclick="openCalculator('Got')" style="pointer-events: auto;">YOU GOT ₹</button>
         </div>
     </div>
 
@@ -495,7 +513,7 @@
         </div>
     </div>
 
-    <!-- 📄 CUSTOMER PROFILE PAGE (EDITABLE + BOTTOM DELETE) -->
+    <!-- 📄 CUSTOMER PROFILE PAGE -->
     <div class="page flex-page" id="customer-profile-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('customer-profile-page')">←</button><h2 class="page-title">Profile Details</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
@@ -515,14 +533,22 @@
         </div>
     </div>
 
-    <!-- 💸 ENTRY DETAILS PAGE (With PDF Download, Resend, Edit) -->
+    <!-- 💸 ENTRY DETAILS PAGE (With PDF Download, Resend, Pro Edit) -->
     <div class="page flex-page" id="entry-details-page">
         <div class="page-header"><button class="back-btn" onclick="closePage('entry-details-page')">←</button><h2 class="page-title">Entry Details</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
             <div class="entry-detail-card">
                 <div class="ed-header"><div class="ed-header-left"><div style="font-size:24px;" id="ed-icon">💸</div><div><div style="font-weight:600; font-size:15px; color:#0f172a;" id="ed-party-name">Name</div><div style="font-size:12px; color:var(--text-muted);" id="ed-date">Date</div></div></div><div class="ed-amount-box"><div class="ed-amt" id="ed-amount">₹ 0</div><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;" id="ed-type">You Gave</div></div></div>
-                <div class="ed-row ed-flex-row"><div><div class="ed-label">Details / Bill No.</div><div class="ed-value" id="ed-details-text">App Entry</div></div></div>
-                <div class="ed-edit-btn" onclick="editCurrentEntryAmount()">✏️ Edit Amount & Details</div>
+                <div class="ed-row ed-flex-row">
+                    <div style="flex:1;">
+                        <div class="ed-label">Details / Bill No.</div>
+                        <div class="ed-value" id="ed-details-text" style="word-wrap: break-word;">App Entry</div>
+                    </div>
+                </div>
+                <!-- PROFESSIONAL EDIT BUTTON -->
+                <div class="ed-edit-btn" onclick="editCurrentEntryAmount()" style="display:flex; justify-content:center; align-items:center; gap:8px;">
+                    <span>✏️</span> <span>Edit Amount & Details</span>
+                </div>
             </div>
         </div>
         <!-- 3 ACTION BUTTONS -->
@@ -533,13 +559,14 @@
         </div>
     </div>
 
-    <!-- 🧮 CALC SCREEN (Smart Auto-hide Details Box) -->
+    <!-- 🧮 CALC SCREEN (Smart Edit Enabled) -->
     <div class="page" id="calculator-page" style="z-index: 2500;">
         <div class="calc-header" id="calc-header"><button class="back-btn" onclick="closePage('calculator-page')" id="calc-back-btn" style="color:var(--danger);">←</button><h2 class="calc-title" id="calc-title-text">You gave ₹ 0</h2></div>
         <div class="page-content" style="padding:0;">
             <div class="amount-input-box"><span class="amount-symbol" id="calc-symbol">₹</span><input type="text" id="calc-amount" readonly placeholder="0" style="color:var(--danger);"></div>
-            <!-- Hidden initially -->
+            <!-- PROFESSIONAL DETAILS BOX -->
             <input type="text" class="calc-details-input" id="calc-details" placeholder="Enter details (Items, bill no., quantity, etc.)">
+            
             <div class="calc-action-row" style="margin-top:16px;"><input type="date" class="calc-date-btn" id="calc-date"></div>
         </div>
         <div class="calculator-footer">
@@ -896,7 +923,7 @@
             }
         }
 
-        // ================= PDF DOWNLOAD LOGIC =================
+        // ================= PDF DOWNLOAD LOGIC (FIXED SIZE) =================
         window.downloadPDFFromEntry = function() {
             if(!currentEntryData) return;
             
@@ -915,14 +942,14 @@
             
             let elem = document.getElementById('pdf-invoice-template');
             let opt = {
-                margin:       0.5,
+                margin:       [0.4, 0.4, 0.4, 0.4], 
                 filename:     `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
+                image:        { type: 'jpeg', quality: 1 },
+                html2canvas:  { scale: 2, useCORS: true, windowWidth: 700 },
                 jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
 
-            alert("Generating Original PDF... Please wait.");
+            alert("Generating Original PDF... Please wait a moment.");
             html2pdf().set(opt).from(elem).save();
         }
 
@@ -993,6 +1020,7 @@
             window.isEditingEntry = true; calcType = currentEntryData.type; calcValue = currentEntryData.amount.toString();
             document.getElementById('calc-amount').value = calcValue; document.getElementById('calc-details').value = currentEntryData.details || "";
             document.getElementById('calc-details').style.display = 'block';
+            document.getElementById('calc-save-btn').innerText = "UPDATE ENTRY";
             let d = new Date(currentEntryData.date); if(!isNaN(d)) document.getElementById('calc-date').value = d.toISOString().split('T')[0];
             closePage('entry-details-page'); openCalculator(calcType, true); 
         }
@@ -1013,6 +1041,33 @@
             let filteredList = list.filter(c => (c.type || 'Customer') === currentTabType); let html = "";
             filteredList.forEach(cust => { let initial = cust.name ? cust.name.substring(0,2).toUpperCase() : "CU"; let addr = cust.address ? `<br>📍 ${cust.address}` : ""; html += `<div class="kb-list-item" onclick="openLedgerDetail('${cust.name}', '${cust.phone}')"><div class="kb-list-left"><div class="kb-avatar">${initial}</div><div><div class="kb-name">${cust.name}</div><div class="kb-time">📱 ${cust.phone || 'N/A'}${addr}</div></div></div><div class="kb-list-right"><span style="color:var(--text-muted); font-size:18px;">›</span></div></div>`; });
             document.getElementById('kb-customer-list').innerHTML = html || `<div style="padding:40px; text-align:center; color:gray;">No ${currentTabType}s found</div>`;
+        }
+
+        window.openInvoicesPage = function() {
+            let listContainer = document.getElementById('invoices-list-container'); listContainer.innerHTML = '';
+            let selectedDateString = document.getElementById('dash-date-picker').value;
+            let todayInvoices = allLedgerData.filter(entry => {
+                let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){}
+                return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice Sale");
+            });
+
+            if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } 
+            else {
+                todayInvoices.forEach(entry => {
+                    listContainer.innerHTML += `
+                    <div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; cursor:pointer;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
+                            <div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div>
+                            <div style="color:var(--success); font-weight:800; font-size: 16px;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div>
+                        </div>
+                        <div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;">
+                            <span>${entry.details}</span>
+                            <span style="color:var(--primary); font-weight:600;">View & Edit ➔</span>
+                        </div>
+                    </div>`;
+                });
+            }
+            openPage('invoices-page');
         }
 
         // ================= INVENTORY LOGIC =================
@@ -1110,32 +1165,35 @@
 
         window.sharePDFOnWhatsApp = function() { const custPhone = document.getElementById('inv-phone').value || ""; window.open(`https://wa.me/91${custPhone}?text=📄 *INVOICE BILL* %0A🏛️ *VANDANA ENTERPRISES*%0A%0A*Total Amount:* ₹${grandInvoiceTotal}`, '_blank'); }
 
-        window.openInvoicesPage = function() {
-            let listContainer = document.getElementById('invoices-list-container'); listContainer.innerHTML = '';
-            let selectedDateString = document.getElementById('dash-date-picker').value;
-            let todayInvoices = allLedgerData.filter(entry => {
-                let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){}
-                return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice Sale");
-            });
-
-            if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } 
-            else {
-                todayInvoices.forEach(entry => {
-                    listContainer.innerHTML += `
-                    <div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; cursor:pointer;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
-                            <div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div>
-                            <div style="color:var(--success); font-weight:800; font-size: 16px;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div>
-                        </div>
-                        <div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;">
-                            <span>${entry.details}</span>
-                            <span style="color:var(--primary); font-weight:600;">View & Edit ➔</span>
-                        </div>
-                    </div>`;
-                });
+        // ================= CALCULATOR UI =================
+        let calcType = "Gave"; let calcValue = "";
+        window.openCalculator = function(type, skipReset = false) {
+            if(!skipReset) {
+                calcType = type; calcValue = ""; 
+                document.getElementById('calc-amount').value = ""; 
+                document.getElementById('calc-details').value = "";
+                document.getElementById('calc-details').style.display = 'none';
+                document.getElementById('calc-save-btn').innerText = "SAVE ENTRY";
+                window.isEditingEntry = false;
             }
-            openPage('invoices-page');
+            let color = type === 'Gave' ? 'var(--danger)' : 'var(--success)';
+            document.getElementById('calc-header').style.color = color; document.getElementById('calc-back-btn').style.color = color; document.getElementById('calc-symbol').style.color = color; document.getElementById('calc-amount').style.color = color; document.getElementById('calc-save-btn').style.backgroundColor = color;
+            updateCalcTitle(); openPage('calculator-page');
         }
+        window.calcPress = function(val) { 
+            if(val === 'C') calcValue = ""; 
+            else if(val === 'BACK') calcValue = calcValue.slice(0, -1); 
+            else if(val === '=') { try { calcValue = eval(calcValue).toString(); } catch(e){} } 
+            else calcValue += val; 
+            
+            document.getElementById('calc-amount').value = calcValue; 
+            
+            if(parseFloat(calcValue) > 0) document.getElementById('calc-details').style.display = 'block';
+            else document.getElementById('calc-details').style.display = 'none';
+
+            updateCalcTitle(); 
+        }
+        function updateCalcTitle() { document.getElementById('calc-title-text').innerText = `You ${calcType.toLowerCase()} ₹ ${calcValue || "0"} to ${currentPartyName}`; }
 
         // ================= NAVIGATION HELPERS =================
         window.toggleMenu = function() { const menu = document.getElementById('dropdown-menu'); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; }

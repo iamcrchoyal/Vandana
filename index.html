@@ -65,8 +65,8 @@
         /* GOOGLE STYLE CARDS */
         .google-card { background: rgba(255, 255, 255, 0.9); border-radius: 24px; padding: 20px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid rgba(255,255,255,0.8); cursor: pointer; transition: background 0.2s;}
         .google-card:hover { background: #ffffff; }
-        .card-header { font-size: 14px; font-weight: 500; color: var(--text-dark); margin-bottom: 6px; font-family: 'Inter', sans-serif;}
-        .card-value { font-size: 32px; font-weight: 400; color: var(--primary); letter-spacing: -1px; margin-bottom: 4px; font-family: 'Product Sans', sans-serif;}
+        .card-header { font-size: 16px; font-weight: 600; color: var(--text-dark); margin-bottom: 6px; font-family: 'Inter', sans-serif;}
+        .card-value { font-size: 38px; font-weight: 600; color: var(--primary); letter-spacing: -1px; margin-bottom: 4px; font-family: 'Product Sans', sans-serif;}
         .progress-bar-bg { background: rgba(225, 227, 225, 0.5); height: 6px; border-radius: 3px; margin: 12px 0 8px 0; overflow: hidden; }
         .progress-bar-fill { background: var(--primary); height: 100%; border-radius: 3px; width: 65%; }
         .card-subtext { font-size: 12px; color: var(--text-muted); font-family: 'Inter', sans-serif;}
@@ -110,7 +110,7 @@
         .search-bar-container span { font-size: 18px; color: #444746; margin-right: 12px; }
         .search-bar-container input { border: none; width: 100%; background: transparent; outline: none; font-size: 15px; color: #1f1f1f; font-family: 'Product Sans', sans-serif;}
 
-        /* GOOGLE STYLE SIDEBAR (Overlay Fix) */
+        /* GOOGLE STYLE SIDEBAR */
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5999; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); cursor: pointer; transition: opacity 0.3s;}
         .sidebar { background: #ffffff; color: var(--text-dark); position: fixed; top: 0; left: -300px; width: 280px; height: 100%; z-index: 6000; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.05);}
         .sidebar.active { left: 0; }
@@ -133,6 +133,7 @@
         .pm-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover;}
         .pm-cam { position: absolute; bottom: 0; right: 0; background: white; border: 1px solid var(--border); border-radius: 50%; width: 26px; height: 26px; display: flex; justify-content: center; align-items: center; font-size: 12px; cursor: pointer;}
         .pm-name { font-family: 'Product Sans', sans-serif; font-size: 22px; font-weight: 400; color: #1f1f1f; margin-bottom: 24px;}
+        .pm-manage-btn { background: white; border: 1px solid var(--border); color: var(--primary); font-weight: 600; font-size: 14px; padding: 10px 24px; border-radius: 20px; cursor: pointer; width: 100%; margin-bottom: 20px; transition: background 0.2s; font-family: 'Product Sans', sans-serif;}
         
         /* CROPPER MODAL */
         .crop-modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index: 9999; flex-direction: column; justify-content:center; align-items:center;}
@@ -280,7 +281,7 @@
         </div>
     </div>
 
-    <!-- 📱 GOOGLE STYLE SIDEBAR MENU (Overlay Fix Block Clicks) -->
+    <!-- 📱 GOOGLE STYLE SIDEBAR MENU -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -292,6 +293,10 @@
             <li onclick="navTo('godown-page', null); closeSidebar();"><i>🚚</i> Godown Transfer</li>
             <li onclick="navTo('pos-page', null); closeSidebar();"><i>🧾</i> Billing & Invoice</li>
             <li onclick="navTo('parties-page', null); closeSidebar();"><i>👥</i> Ledger Book</li>
+        </ul>
+        <div style="border-top:1px solid var(--border); margin: 10px 0;"></div>
+        <ul class="sidebar-menu">
+            <li onclick="navTo('admin-profile-page', null); closeSidebar();"><i>⚙️</i> Settings</li>
         </ul>
     </div>
 
@@ -323,7 +328,7 @@
         </div>
     </header>
 
-    <!-- 🏠 MAIN DASHBOARD (With Gemini Live Background) -->
+    <!-- 🏠 MAIN DASHBOARD -->
     <div class="main-wrapper" id="home">
         <div class="main-content">
             
@@ -332,7 +337,7 @@
                 <p>Manage your inventory, billing, and ledger details seamlessly</p>
             </div>
 
-            <!-- GOOGLE STYLE DATE PILL (Icon Removed) -->
+            <!-- GOOGLE STYLE DATE PILL -->
             <div class="dash-date-wrapper">
                 <div class="google-date-pill">
                     <input type="date" id="dash-date-picker">
@@ -347,18 +352,19 @@
             </div>
 
             <div class="dash-card-grid">
-                <!-- Sale Invoice Card -->
+                <!-- Sale Invoice Card (Enlarged Text) -->
                 <div class="dash-card" onclick="navTo('pos-page', null)" style="margin-bottom:0; align-items:center; padding:16px 12px;">
-                    <div class="card-header" style="align-self:flex-start; margin-bottom:0;">Sale Invoice</div>
-                    <div style="font-size:36px; margin:8px 0;">📱</div>
-                    <div style="font-size:14px; font-weight:500; color:var(--text-dark); font-family: 'Product Sans', sans-serif;">Quick Bill</div>
-                    <div style="font-size:13px; color:var(--primary); font-weight:600; margin-top:4px;">Open</div>
+                    <div class="card-header" style="align-self:flex-start; margin-bottom:0; font-size:16px;">Sale Invoice</div>
+                    <div style="font-size:40px; margin:8px 0;">📱</div>
+                    <div style="font-size:16px; font-weight:600; color:var(--text-dark); font-family: 'Product Sans', sans-serif;">Quick Bill</div>
+                    <div style="font-size:14px; color:var(--primary); font-weight:700; margin-top:4px;">Open</div>
                 </div>
+                <!-- Godown Transfer Card (Enlarged Text) -->
                 <div class="dash-card" onclick="navTo('godown-page', null)" style="margin-bottom:0; align-items:center; padding:16px 12px;">
-                    <div class="card-header" style="align-self:flex-start; margin-bottom:0;">Godown Transfer</div>
-                    <div style="font-size:36px; margin:8px 0;">🚚</div>
-                    <div style="font-size:14px; font-weight:500; color:var(--text-dark); font-family: 'Product Sans', sans-serif;">Stock Sync</div>
-                    <div style="font-size:13px; color:var(--primary); font-weight:600; margin-top:4px;">View</div>
+                    <div class="card-header" style="align-self:flex-start; margin-bottom:0; font-size:16px;">Godown Transfer</div>
+                    <div style="font-size:40px; margin:8px 0;">🚚</div>
+                    <div style="font-size:16px; font-weight:600; color:var(--text-dark); font-family: 'Product Sans', sans-serif;">Stock Sync</div>
+                    <div style="font-size:14px; color:var(--primary); font-weight:700; margin-top:4px;">View</div>
                 </div>
             </div>
 
@@ -376,7 +382,7 @@
         </div>
     </div>
 
-    <!-- 📱 SMART BOTTOM NAV (Hidden automatically on forms & scroll) -->
+    <!-- 📱 SMART BOTTOM NAV -->
     <div class="bottom-nav-bar" id="bottom-nav-bar">
         <div class="nav-item active" id="nav-btn-home" onclick="navTo('home', this)">
             <div class="nav-icon-wrap">🏠</div><span>Home</span>
@@ -535,7 +541,22 @@
         </div>
     </div>
 
-    <!-- 📄 CUSTOMER PROFILE PAGE (EDITABLE) -->
+    <!-- ⚙️ PROFESSIONAL ADMIN PROFILE FORM PAGE -->
+    <div class="page flex-page" id="admin-profile-page">
+        <div class="sub-header"><button class="back-btn" onclick="closePage('admin-profile-page')">←</button><h2 class="page-title">Business Profile</h2></div>
+        <div class="scroll-content" style="padding-top:16px;">
+            <div class="form-panel">
+                <div class="form-group"><label class="form-label">Admin / First Name</label><input type="text" class="form-control" id="ap-name"></div>
+                <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="ap-phone"></div>
+                <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-control" id="ap-email"></div>
+                <div class="form-group"><label class="form-label">GST Number</label><input type="text" class="form-control" id="ap-gst" style="text-transform:uppercase;"></div>
+                <div class="form-group"><label class="form-label">Full Address</label><textarea class="form-control" id="ap-address" rows="3"></textarea></div>
+                <button class="btn-submit" onclick="saveAdminProfile()" style="border-radius:20px;">💾 Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📄 CUSTOMER PROFILE PAGE -->
     <div class="page flex-page" id="customer-profile-page">
         <div class="sub-header"><button class="back-btn" onclick="closePage('customer-profile-page')">←</button><h2 class="page-title">Customer Profile</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
@@ -754,7 +775,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // GLOBAL VARIABLES (Fixed ES Module strict mode declarations)
         let allLedgerData = []; let globalCustomers = []; let smartInventory = {}; let allGodownTransfers = [];
         let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null; 
         
@@ -765,13 +785,12 @@
         window.currentTabType = 'Customer';
         window.currentTopCustTab = 'current'; 
         window.ledgerTotals = { custGive:0, custGet:0, supGive:0, supGet:0 };
-        let cropper; // CropperJS instance
+        let cropper;
 
-        // PREVENT DEVICE BACK BUTTON
         try {
             history.pushState(null, null, location.href);
             window.onpopstate = function () { history.go(1); };
-        } catch(e) { console.warn("Back button lock bypassed due to browser security policy."); }
+        } catch(e) {}
 
         window.addEventListener('DOMContentLoaded', () => {
             let todayStr = new Date().toISOString().split('T')[0];
@@ -779,17 +798,6 @@
             document.getElementById('calc-date').value = todayStr;
             document.getElementById('godown-date-picker').value = todayStr;
             
-            // onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); updatePosShades(); });
-            // onValue(ref(db, 'Customers'), (snapshot) => { let data = snapshot.val() || {}; globalCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); renderCustomerList(globalCustomers); setupPOSAutocomplete(); });
-            // onValue(ref(db, 'GodownTransfers'), (snapshot) => { let data = snapshot.val() || {}; allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); renderGodownHistory(); });
-            
-            // onValue(ref(db, 'Ledger'), (snapshot) => {
-            //     let data = snapshot.val() || {}; allLedgerData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse();
-            //     calculateGrandTotals();
-            //     if (document.getElementById('ledger-deep-page').classList.contains('active')) renderLedgerEntries(currentPartyName);
-            // });
-
-            // WRAPPED IN TRY-CATCH FOR SAFETY
             try {
                 onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); updatePosShades(); });
                 onValue(ref(db, 'Customers'), (snapshot) => { let data = snapshot.val() || {}; globalCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); renderCustomerList(globalCustomers); setupPOSAutocomplete(); });
@@ -800,9 +808,7 @@
                     calculateGrandTotals();
                     if (document.getElementById('ledger-deep-page').classList.contains('active')) renderLedgerEntries(currentPartyName);
                 });
-            } catch (error) {
-                console.error("Firebase Sync Error:", error);
-            }
+            } catch (error) {}
 
             document.getElementById('inv-party').addEventListener('input', function(e) {
                 let val = e.target.value;
@@ -810,26 +816,21 @@
                 if(cust && cust.phone) { document.getElementById('inv-phone').value = cust.phone; }
             });
 
-            // HIDE NAVBAR ON SCROLL
             let lastScrollTop = 0;
             document.querySelector('.main-wrapper').addEventListener('scroll', function() {
                 let st = this.scrollTop;
                 if(st > 10) { document.getElementById('main-app-bar').classList.add('scrolled'); } 
                 else { document.getElementById('main-app-bar').classList.remove('scrolled'); }
                 
-                if(st > lastScrollTop && st > 50) {
-                    document.getElementById('bottom-nav-bar').classList.add('hidden-by-scroll');
-                } else {
-                    document.getElementById('bottom-nav-bar').classList.remove('hidden-by-scroll');
-                }
+                if(st > lastScrollTop && st > 50) { document.getElementById('bottom-nav-bar').classList.add('hidden-by-scroll'); } 
+                else { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-scroll'); }
                 lastScrollTop = st <= 0 ? 0 : st;
             });
+            
+            loadAdminProfile();
         });
 
-        // UPDATE DASHBOARD CALENDAR ON CHANGE
-        document.getElementById('dash-date-picker').addEventListener('change', function(e) {
-            calculateGrandTotals();
-        });
+        document.getElementById('dash-date-picker').addEventListener('change', function(e) { calculateGrandTotals(); });
 
         window.updateGreeting = function() {
             const hour = new Date().getHours();
@@ -842,13 +843,9 @@
             document.getElementById('dynamic-greeting').innerText = greeting + ", " + firstName;
         }
 
-        // ONLY SHOW BOTTOM NAV ON HOME PAGE
         function updateBottomNavVisibility(pageId) {
-            if(pageId === 'home') { 
-                document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); 
-            } else { 
-                document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); 
-            }
+            if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } 
+            else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
         window.navTo = function(pageId, element) {
@@ -861,9 +858,7 @@
 
         const mainPages = ['items-page', 'parties-page', 'pos-page', 'godown-page', 'invoices-page'];
         window.openPage = function(id) { 
-            if(mainPages.includes(id)) {
-                mainPages.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.remove('active'); });
-            }
+            if(mainPages.includes(id)) { mainPages.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.remove('active'); }); }
             updateBottomNavVisibility(id); 
             document.getElementById(id).classList.add('active'); 
         }
@@ -882,6 +877,65 @@
         window.openProfileModal = function() { document.getElementById('profile-modal-overlay').style.display='block'; document.getElementById('profile-modal').style.display='flex'; }
         window.closeProfileModal = function() { document.getElementById('profile-modal-overlay').style.display='none'; document.getElementById('profile-modal').style.display='none'; }
         
+        window.openAdminProfile = function() { closeSidebar(); closeProfileModal(); openPage('admin-profile-page'); }
+
+        function loadAdminProfile() {
+            let pName = localStorage.getItem('v_adminName') || "Admin";
+            let pPhone = localStorage.getItem('v_adminPhone') || "";
+            let pEmail = localStorage.getItem('v_adminEmail') || "admin@vandana.com";
+            let pGst = localStorage.getItem('v_adminGst') || "";
+            let pAddr = localStorage.getItem('v_adminAddr') || "";
+            let pPic = localStorage.getItem('v_adminPic');
+
+            if(document.getElementById('ap-name')) document.getElementById('ap-name').value = pName; 
+            if(document.getElementById('ap-phone')) document.getElementById('ap-phone').value = pPhone;
+            if(document.getElementById('ap-email')) document.getElementById('ap-email').value = pEmail; 
+            if(document.getElementById('ap-gst')) document.getElementById('ap-gst').value = pGst; 
+            if(document.getElementById('ap-address')) document.getElementById('ap-address').value = pAddr;
+            if(document.getElementById('pm-email-display')) document.getElementById('pm-email-display').innerText = pEmail;
+            
+            if(pPic) {
+                if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').src = pPic; document.getElementById('pm-avatar-img').style.display = 'block'; document.getElementById('pm-avatar-text').style.display = 'none'; }
+                if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').src = pPic; document.getElementById('top-avatar-img').style.display = 'block'; document.getElementById('top-avatar-text').style.display = 'none'; }
+            } else {
+                let initial = pName.charAt(0).toUpperCase();
+                if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').style.display = 'none'; document.getElementById('pm-avatar-text').innerText = initial; document.getElementById('pm-avatar-text').style.display = 'block'; }
+                if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').style.display = 'none'; document.getElementById('top-avatar-text').innerText = initial; document.getElementById('top-avatar-text').style.display = 'flex'; }
+            }
+            updateGreeting();
+        }
+
+        window.saveAdminProfile = function() {
+            localStorage.setItem('v_adminName', document.getElementById('ap-name').value);
+            localStorage.setItem('v_adminPhone', document.getElementById('ap-phone').value);
+            localStorage.setItem('v_adminEmail', document.getElementById('ap-email').value);
+            localStorage.setItem('v_adminGst', document.getElementById('ap-gst').value.toUpperCase());
+            localStorage.setItem('v_adminAddr', document.getElementById('ap-address').value);
+            loadAdminProfile(); alert("Profile Saved Successfully!");
+        }
+
+        window.handleAdminPic = function(event) {
+            let file = event.target.files[0];
+            if(file) { 
+                let reader = new FileReader(); 
+                reader.onload = function(e) { 
+                    document.getElementById('crop-modal').style.display = 'flex';
+                    let img = document.getElementById('crop-image');
+                    img.src = e.target.result;
+                    if(cropper) cropper.destroy();
+                    setTimeout(() => { cropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, background: false }); }, 200);
+                }; 
+                reader.readAsDataURL(file); 
+            }
+        }
+        window.cancelCrop = function() { document.getElementById('crop-modal').style.display = 'none'; }
+        window.applyCrop = function() {
+            if(!cropper) return;
+            let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
+            let dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            localStorage.setItem('v_adminPic', dataUrl);
+            loadAdminProfile(); document.getElementById('crop-modal').style.display = 'none';
+        }
 
         window.processGodown = function(type) {
             let cat = document.getElementById('gd-cat').value; let item = document.getElementById('gd-item').value; let qty = parseInt(document.getElementById('gd-qty').value);
@@ -988,7 +1042,6 @@
             }
         }
 
-        // FULLY DETAILED ITEMIZED PDF LOGIC
         window.downloadPDFFromEntry = function() {
             if(!currentEntryData) return;
             
@@ -1002,7 +1055,6 @@
             document.getElementById('pdf-bill-no').innerText = currentEntryData.key.substring(1, 8).toUpperCase();
             document.getElementById('pdf-cust-name').innerText = currentEntryData.name;
             
-            // Check if cart details exist in DB for this entry
             if(currentEntryData.cart && currentEntryData.cart.length > 0) {
                 let html = "";
                 currentEntryData.cart.forEach(item => {
@@ -1025,7 +1077,6 @@
                         <th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Total Amount</th>
                     </tr>`;
             } else {
-                // Fallback for manual ledger entries OR old bills that were not saved with cart data
                 document.getElementById('pdf-table-header').innerHTML = `<tr style="background:#0a56d0; color:white;"><th style="padding:12px; text-align:left; border:1px solid #e0e2e0;">Description / Details</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Amount</th></tr>`;
                 document.getElementById('pdf-cart-body').innerHTML = `<tr><td style="padding:16px 12px; border:1px solid #e0e2e0; font-size:16px;">${currentEntryData.details || 'Ledger Entry'}</td><td style="padding:16px 12px; text-align:right; border:1px solid #e0e2e0; font-size:16px; font-weight:bold;">₹${parseFloat(currentEntryData.amount).toLocaleString('en-IN')}</td></tr>`;
             }
@@ -1033,13 +1084,7 @@
             document.getElementById('pdf-total').innerText = "₹ " + parseFloat(currentEntryData.amount).toLocaleString('en-IN');
             
             let elem = document.getElementById('pdf-invoice-template');
-            let opt = {
-                margin:       [0.4, 0.4, 0.4, 0.4], 
-                filename:     `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`,
-                image:        { type: 'jpeg', quality: 1 },
-                html2canvas:  { scale: 2, useCORS: true, windowWidth: 700 },
-                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-            };
+            let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } };
 
             alert("Generating Original PDF... Please wait a moment.");
             html2pdf().set(opt).from(elem).save();
@@ -1054,15 +1099,10 @@
 
         window.calculateGrandTotals = function() {
             let balances = {}; let todayTotalSale = 0; let todayTotalBox = 0;
-            
             let currMonthSales = {}; let lastMonthSales = {};
             let selectedDateString = document.getElementById('dash-date-picker').value; 
-            
-            let todayDate = new Date();
-            let currentMonth = todayDate.toISOString().slice(0, 7); 
-            
-            let lmDate = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
-            let lastMonth = lmDate.toISOString().slice(0, 7);
+            let todayDate = new Date(); let currentMonth = todayDate.toISOString().slice(0, 7); 
+            let lmDate = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1); let lastMonth = lmDate.toISOString().slice(0, 7);
 
             allLedgerData.forEach(entry => {
                 let amt = parseFloat(entry.amount) || 0; let entryDateString = ""; let entryMonthString = "";
@@ -1088,12 +1128,10 @@
             }
             
             window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet }; updateLedgerTotalsUI();
-
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
 
             let activeSalesData = window.currentTopCustTab === 'current' ? currMonthSales : lastMonthSales;
-            let topCustHtml = ""; 
-            let sortedCustomers = Object.entries(activeSalesData).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            let topCustHtml = ""; let sortedCustomers = Object.entries(activeSalesData).sort((a, b) => b[1] - a[1]).slice(0, 5);
             
             if(sortedCustomers.length === 0) { topCustHtml = '<div style="text-align:center; padding:10px; color:gray; font-size:12px;">No sales data available.</div>'; } 
             else { sortedCustomers.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-left"><div class="ua-item-name">${cust[0]} <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span></div><div class="ua-item-desc">Top Buyer</div></div><div class="ua-item-right"><span class="ua-item-count">₹${cust[1].toLocaleString('en-IN')}</span><span class="ua-item-arrow">›</span></div></div>`; }); }
@@ -1136,12 +1174,7 @@
 
         window.openCalculator = function(type, skipReset = false) {
             if(!skipReset) {
-                window.calcType = type; window.calcValue = ""; 
-                document.getElementById('calc-amount').value = ""; 
-                document.getElementById('calc-details').value = "";
-                document.getElementById('calc-hidden-area').classList.remove('show');
-                document.getElementById('calc-save-btn').innerText = "SAVE ENTRY";
-                window.isEditingEntry = false;
+                window.calcType = type; window.calcValue = ""; document.getElementById('calc-amount').value = ""; document.getElementById('calc-details').value = ""; document.getElementById('calc-hidden-area').classList.remove('show'); document.getElementById('calc-save-btn').innerText = "SAVE ENTRY"; window.isEditingEntry = false;
             }
             let color = type === 'Gave' ? 'var(--danger)' : 'var(--success)';
             document.getElementById('calc-header').style.color = color; document.getElementById('calc-back-btn').style.color = color; document.getElementById('calc-symbol').style.color = color; document.getElementById('calc-amount').style.color = color; document.getElementById('calc-save-btn').style.backgroundColor = color;
@@ -1155,8 +1188,7 @@
             else window.calcValue += val; 
             
             document.getElementById('calc-amount').value = window.calcValue; 
-            if(parseFloat(window.calcValue) > 0) { document.getElementById('calc-hidden-area').classList.add('show'); } 
-            else { document.getElementById('calc-hidden-area').classList.remove('show'); }
+            if(parseFloat(window.calcValue) > 0) { document.getElementById('calc-hidden-area').classList.add('show'); } else { document.getElementById('calc-hidden-area').classList.remove('show'); }
             updateCalcTitle(); 
         }
         
@@ -1166,8 +1198,7 @@
         window.shareCurrentEntry = function() { if(!currentEntryData) return; let typeStr = currentEntryData.type === 'Gave' ? 'You Gave' : 'You Got'; let msg = `📄 *Ledger Entry* %0A🏛️ *Vandana Enterprises*%0A%0A*Name:* ${currentEntryData.name}%0A*Type:* ${typeStr}%0A*Amount:* ₹${currentEntryData.amount}%0A*Details:* ${currentEntryData.details}`; window.open(`https://wa.me/91${currentPartyPhone}?text=${msg}`, '_blank'); }
 
         window.renderLedgerEntries = function(name) {
-            let entryList = document.getElementById('ledger-entries-list'); entryList.innerHTML = '';
-            let totalGave = 0; let totalGot = 0; let customerEntries = allLedgerData.filter(e => e.name === name);
+            let entryList = document.getElementById('ledger-entries-list'); entryList.innerHTML = ''; let totalGave = 0; let totalGot = 0; let customerEntries = allLedgerData.filter(e => e.name === name);
             if(customerEntries.length === 0) { entryList.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No entries yet.</div>`; } 
             else { customerEntries.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let gaveHtml = entry.type === 'Gave' ? `₹ ${amt}` : ''; let gotHtml = entry.type === 'Got' ? `₹ ${amt}` : ''; if(entry.type === 'Gave') totalGave += amt; if(entry.type === 'Got') totalGot += amt; let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short'}); entryList.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')"><div class="ec-left"><div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${dateStr}</div><div style="font-size:13px; color:var(--text-dark); font-weight:500;">${entry.details || 'App Entry'}</div></div><div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div></div>`; }); }
             let balEl = document.getElementById('l-deep-bal-amt'); let txtEl = document.getElementById('l-deep-bal-text'); let finalBal = totalGave - totalGot;
@@ -1183,10 +1214,7 @@
         window.openInvoicesPage = function() {
             let listContainer = document.getElementById('invoices-list-container'); listContainer.innerHTML = '';
             let selectedDateString = document.getElementById('dash-date-picker').value;
-            let todayInvoices = allLedgerData.filter(entry => {
-                let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){}
-                return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice Sale");
-            });
+            let todayInvoices = allLedgerData.filter(entry => { let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){} return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice Sale"); });
 
             if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } 
             else {
@@ -1198,8 +1226,7 @@
                             <div style="color:var(--success); font-weight:800; font-size: 16px; font-family:'Product Sans', sans-serif;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div>
                         </div>
                         <div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;">
-                            <span>${entry.details}</span>
-                            <span style="color:var(--primary); font-weight:600;">View & Edit ➔</span>
+                            <span>${entry.details}</span><span style="color:var(--primary); font-weight:600;">View & Edit ➔</span>
                         </div>
                     </div>`;
                 });
@@ -1207,22 +1234,15 @@
             openPage('invoices-page');
         }
 
-        // ================= INVENTORY LOGIC =================
         window.addSpecificStock = function(category, shadeId, qtyId, isOut = false) {
             let shade = document.getElementById(shadeId).value; let qty = parseInt(document.getElementById(qtyId).value);
             if(!shade || isNaN(qty)) return alert("Please enter Detail and Box Quantity!");
             let key = category + "_" + shade; let itemRef = ref(db, 'Inventory/' + key);
-            get(itemRef).then((snap) => { 
-                let currentQty = snap.val() || 0; let newQty = isOut ? currentQty - qty : currentQty + qty; if(newQty < 0) newQty = 0; set(itemRef, newQty); 
-            });
-            if(document.getElementById(shadeId).tagName !== 'SELECT') { document.getElementById(shadeId).value = ''; }
-            document.getElementById(qtyId).value = ''; alert(isOut ? "Stock Reduced (OUT) Successfully!" : "Stock Added (IN) Successfully!");
+            get(itemRef).then((snap) => { let currentQty = snap.val() || 0; let newQty = isOut ? currentQty - qty : currentQty + qty; if(newQty < 0) newQty = 0; set(itemRef, newQty); });
+            if(document.getElementById(shadeId).tagName !== 'SELECT') { document.getElementById(shadeId).value = ''; } document.getElementById(qtyId).value = ''; alert(isOut ? "Stock Reduced (OUT) Successfully!" : "Stock Added (IN) Successfully!");
         }
 
-        window.filterStockList = function(inputId, listId) {
-            let filter = document.getElementById(inputId).value.toUpperCase(); let rows = document.querySelectorAll('#' + listId + ' .stock-row');
-            rows.forEach(row => { let name = row.getAttribute('data-name'); row.style.display = name.includes(filter) ? '' : 'none'; });
-        }
+        window.filterStockList = function(inputId, listId) { let filter = document.getElementById(inputId).value.toUpperCase(); let rows = document.querySelectorAll('#' + listId + ' .stock-row'); rows.forEach(row => { let name = row.getAttribute('data-name'); row.style.display = name.includes(filter) ? '' : 'none'; }); }
 
         window.renderInventoryList = function() {
             let threadHtml = ""; let zariHtml = ""; let nylonHtml = ""; let cordingHtml = ""; let bobbinHtml = ""; let lowstockHtml = "";
@@ -1230,9 +1250,7 @@
 
             for (let key in smartInventory) {
                 let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let qty = smartInventory[key]; 
-                let color = qty <= 5 ? 'var(--danger)' : 'var(--text-dark)';
-                let rowHtml = `<tr class="stock-row" data-name="${shade.toUpperCase()}"><td><strong>${shade}</strong></td><td style="color:${color}; font-weight:700;">${qty} BOX</td></tr>`;
-
+                let color = qty <= 5 ? 'var(--danger)' : 'var(--text-dark)'; let rowHtml = `<tr class="stock-row" data-name="${shade.toUpperCase()}"><td><strong>${shade}</strong></td><td style="color:${color}; font-weight:700;">${qty} BOX</td></tr>`;
                 if(cat === "Thread") { threadHtml += rowHtml; threadCount += qty; } else if(cat === "Zari") { zariHtml += rowHtml; zariCount += qty; } else if(cat === "Nylon") { nylonHtml += rowHtml; nylonCount += qty; } else if(cat === "Cording") { cordingHtml += rowHtml; cordingCount += qty; } else if(cat === "Bobbin") { bobbinHtml += rowHtml; bobbinCount += qty; }
                 if(qty <= 5 && qty > 0) { lowstockCount++; lowstockHtml += `<tr><td><strong>${shade}</strong><br><span style="font-size:10px; color:gray;">${cat}</span></td><td style="color:var(--danger); font-weight:700;">${qty} BOX</td></tr>`; }
             }
@@ -1252,25 +1270,17 @@
             if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
         }
 
-        // ================= SMART BILLING =================
         let currentCart = []; let grandInvoiceTotal = 0; let invoiceBoxCount = 0;
-
         window.updatePosShades = function() {
-            let cat = document.getElementById('inv-cat').value; let shadeSelect = document.getElementById('inv-shade');
-            shadeSelect.innerHTML = '<option value="">Select Shade/Item</option>';
-            if(!cat) return;
-            for (let key in smartInventory) { let parts = key.split("_"); if(parts[0] === cat && smartInventory[key] > 0) { shadeSelect.innerHTML += `<option value="${parts[1]}">${parts[1]} (${smartInventory[key]} Box Left)</option>`; } }
+            let cat = document.getElementById('inv-cat').value; let shadeSelect = document.getElementById('inv-shade'); shadeSelect.innerHTML = '<option value="">Select Shade/Item</option>';
+            if(!cat) return; for (let key in smartInventory) { let parts = key.split("_"); if(parts[0] === cat && smartInventory[key] > 0) { shadeSelect.innerHTML += `<option value="${parts[1]}">${parts[1]} (${smartInventory[key]} Box Left)</option>`; } }
         }
 
         window.addCartItem = function() {
             const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value; 
             const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0;
-            if (!cat || !shade) return alert("Select Category and Item first!");
-            if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!");
-
-            let key = cat + "_" + shade; let currentStock = smartInventory[key] || 0;
-            if(qty > currentStock) { alert(`OUT OF STOCK! You only have ${currentStock} Box of ${shade} left.`); return; }
-
+            if (!cat || !shade) return alert("Select Category and Item first!"); if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!");
+            let key = cat + "_" + shade; let currentStock = smartInventory[key] || 0; if(qty > currentStock) { alert(`OUT OF STOCK! You only have ${currentStock} Box of ${shade} left.`); return; }
             currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty, rate, itemTotal: qty * rate }); renderCartUi();
         }
 
@@ -1286,24 +1296,17 @@
 
             if(partyName !== "Cash Sale") {
                 let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase());
-                if(!exists) { push(ref(db, 'Customers'), { name: partyName, phone: partyPhone, address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); }
+                if(!exists) { push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); }
             }
 
             currentCart.forEach(item => { let key = item.cat + "_" + item.shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) - item.qty); }); });
-            
-            // Saving Cart Info to Firebase for Detailed PDF Later
             push(ref(db, 'Ledger'), { date: new Date().toISOString(), name: partyName, type: "Got", amount: grandInvoiceTotal, details: `Invoice Sale - ${invoiceBoxCount} Box`, cart: currentCart });
             
             document.getElementById('billing-form-area').style.display = 'none'; document.getElementById('post-bill-area').style.display = 'block'; 
         }
 
-        window.resetBillingPage = function() {
-            currentCart = []; renderCartUi(); document.getElementById('inv-party').value = ''; document.getElementById('inv-phone').value = '';
-            document.getElementById('billing-form-area').style.display = 'block'; document.getElementById('post-bill-area').style.display = 'none'; 
-        }
-
+        window.resetBillingPage = function() { currentCart = []; renderCartUi(); document.getElementById('inv-party').value = ''; document.getElementById('inv-phone').value = ''; document.getElementById('billing-form-area').style.display = 'block'; document.getElementById('post-bill-area').style.display = 'none'; }
         window.sharePDFOnWhatsApp = function() { const custPhone = document.getElementById('inv-phone').value || ""; window.open(`https://wa.me/91${custPhone}?text=📄 *INVOICE BILL* %0A🏛️ *VANDANA ENTERPRISES*%0A%0A*Total Amount:* ₹${grandInvoiceTotal}`, '_blank'); }
-
         window.searchParties = function() { let filter = document.getElementById('party-search').value.toUpperCase(); document.querySelectorAll('#kb-customer-list .kb-list-item').forEach(item => { item.style.display = item.querySelector('.kb-name').innerText.toUpperCase().indexOf(filter) > -1 ? "" : "none"; }); }
         window.openPhonebook = async function(nameId, phoneId) { if ('contacts' in navigator) { try { const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false }); if (contacts.length > 0) { if (contacts[0].name) document.getElementById(nameId).value = contacts[0].name[0]; if (contacts[0].tel) document.getElementById(phoneId).value = String(contacts[0].tel[0]).replace(/\D/g, '').slice(-10); } } catch(e) {} } }
     </script>

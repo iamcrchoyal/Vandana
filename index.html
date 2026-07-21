@@ -4,13 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#f0f4f9">
-    
-    <!-- PWA / STANDALONE TAGS FOR HIDING URL BAR -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="display" content="standalone">
-    
     <title>Vandana ERP - Google Style Pro</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Product+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -125,7 +118,7 @@
         .sidebar-menu li.active { background: #c2e7ff; color: #001d35; font-weight: 600;}
         .sidebar-menu li i { color: var(--text-muted); font-size: 20px; width: 24px; text-align: center; font-style: normal;}
 
-        /* PROFILE MODAL */
+        /* PROFILE MODAL (Screenshot 2) */
         .profile-modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; z-index: 5500; background: transparent; }
         .profile-modal { display: none; position: fixed; top: 60px; right: 16px; background: #ffffff; width: 320px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 5501; flex-direction: column; align-items: center; padding: 24px 20px; animation: slideDown 0.2s ease-out;}
         @keyframes slideDown { from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);} }
@@ -190,7 +183,7 @@
         .spinner { border: 4px solid #f3f3f3; border-left-color: var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* ENTRY DETAILS UI */
+        /* ENTRY DETAILS UI (Professional Look) */
         .entry-detail-card { background: white; margin-bottom: 16px; border-radius: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); overflow: hidden; border: 1px solid var(--border);}
         .ed-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 16px; border-bottom: 1px solid var(--border); background: #f8fafd;}
         .ed-amt { font-size: 26px; font-weight: 700; font-family: 'Product Sans', sans-serif;}
@@ -213,7 +206,7 @@
         .calc-btn.light-blue { background: #e8f0fe; color: var(--primary); border: none;}
         .calc-btn.dark-blue { background: var(--primary); color: white; border: none;}
 
-        /* TOP CUSTOMERS (Google Card Style) */
+        /* TOP CUSTOMERS */
         .ua-item { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.02);}
         .ua-item:hover { background: #f8fafd; }
         .ua-item-name { font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 2px; display:flex; align-items:center; gap:6px; font-family: 'Product Sans', sans-serif;}
@@ -226,7 +219,7 @@
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
         /* STOCK OVERVIEW GRID */
-        .stock-overview-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-top: 10px; }
+        .stock-overview-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;}
         .stock-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
         .stock-grid-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;}
         .sg-title { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; font-family: 'Inter', sans-serif;}
@@ -602,7 +595,7 @@
         </div>
     </div>
 
-    <!-- 💸 ENTRY DETAILS PAGE (With PDF, Resend, Edit Restored) -->
+    <!-- 💸 ENTRY DETAILS PAGE (With Edit Feature Re-enabled) -->
     <div class="page flex-page" id="entry-details-page">
         <div class="sub-header"><button class="back-btn" onclick="closePage('entry-details-page')">←</button><h2 class="page-title">Entry Details</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
@@ -620,7 +613,6 @@
                 </div>
             </div>
         </div>
-        <!-- 3 ACTION BUTTONS -->
         <div class="bottom-action-bar" style="padding: 12px 16px; gap: 8px;">
             <button class="btn-outline" style="width: auto; padding: 14px 16px; border-color: var(--danger); color: var(--danger);" onclick="deleteCurrentEntry()">🗑️</button>
             <button class="btn-submit" style="flex: 1; padding: 14px; border-radius:20px;" onclick="shareCurrentEntry()">📲 Resend</button>
@@ -773,6 +765,19 @@
         </div>
     </div>
 
+    <!-- 👤 ADD NEW PARTY PAGE -->
+    <div class="page flex-page" id="add-party-page">
+        <div class="sub-header"><button class="back-btn" onclick="closePage('add-party-page')">←</button><h2 class="page-title" id="add-party-title">Add Customer</h2></div>
+        <div class="scroll-content" style="padding-top:16px;">
+            <div class="form-panel">
+                <div class="form-group"><label class="form-label">Full Name</label><div class="input-btn-group"><input type="text" class="form-control" id="new-party-name" placeholder="Enter Full Name"><button class="action-btn" onclick="openPhonebook('new-party-name', 'new-party-phone')">👥</button></div></div>
+                <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="new-party-phone" placeholder="Enter Number"></div>
+                <div class="form-group"><label class="form-label">Address (Optional)</label><input type="text" class="form-control" id="new-party-address" placeholder="City or Full Address"></div>
+                <button class="btn-submit" onclick="addCustomerToCloud()" style="border-radius:20px;">💾 Save Details</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ================= FIREBASE & APP JAVASCRIPT ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -798,13 +803,11 @@
         window.ledgerTotals = { custGive:0, custGet:0, supGive:0, supGet:0 };
         let cropper; // CropperJS instance
 
-        // PREVENT DEVICE BACK BUTTON (Safety Logic wrapped in try-catch to prevent file:// protocol crash)
+        // PREVENT DEVICE BACK BUTTON
         try {
             history.pushState(null, null, location.href);
             window.onpopstate = function () { history.go(1); };
-        } catch(e) {
-            console.warn("Back button lock bypassed due to browser security policy.");
-        }
+        } catch(e) { console.warn("Back button lock bypassed due to browser security policy."); }
 
         window.addEventListener('DOMContentLoaded', () => {
             let todayStr = new Date().toISOString().split('T')[0];
@@ -831,7 +834,6 @@
                 if(cust && cust.phone) { document.getElementById('inv-phone').value = cust.phone; }
             });
 
-            // Transparent Header Effect on Scroll
             document.querySelector('.main-wrapper').addEventListener('scroll', function() {
                 if(this.scrollTop > 10) { document.getElementById('main-app-bar').classList.add('scrolled'); } 
                 else { document.getElementById('main-app-bar').classList.remove('scrolled'); }
@@ -850,30 +852,43 @@
             let greeting = "Good morning";
             if (hour >= 12 && hour < 17) greeting = "Good afternoon";
             else if (hour >= 17) greeting = "Good evening";
-            
             let pName = localStorage.getItem('v_adminName') || "Admin";
-            let firstName = pName.split(' ')[0].toUpperCase();
-            
+            let firstName = pName.split(' ')[0];
+            if(!firstName) firstName = "Admin";
             document.getElementById('dynamic-greeting').innerText = greeting + ", " + firstName;
+            document.getElementById('pm-name-display').innerText = "Hi, " + firstName + "!";
         }
 
-        // BOTTOM NAV VISIBILITY LOGIC
         function updateBottomNavVisibility(pageId) {
             const mainPages = ['home', 'items-page', 'parties-page'];
-            if(mainPages.includes(pageId)) {
-                document.getElementById('bottom-nav-bar').classList.remove('hidden');
-            } else {
-                document.getElementById('bottom-nav-bar').classList.add('hidden');
-            }
+            if(mainPages.includes(pageId)) { document.getElementById('bottom-nav-bar').classList.remove('hidden'); } 
+            else { document.getElementById('bottom-nav-bar').classList.add('hidden'); }
         }
 
         window.navTo = function(pageId, element) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             if(element) element.classList.add('active');
-            
-            if(pageId === 'home') { goHome(); } 
+            updateBottomNavVisibility(pageId);
+            if(pageId === 'home') { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); } 
             else { openPage(pageId); }
         }
+
+        window.openPage = function(id) { updateBottomNavVisibility(id); document.getElementById(id).classList.add('active'); }
+        
+        window.closePage = function(id) { 
+            document.getElementById(id).classList.remove('active'); 
+            let activePageFound = false;
+            ['parties-page', 'items-page'].forEach(p => { if(document.getElementById(p).classList.contains('active')) { updateBottomNavVisibility(p); activePageFound = true; } });
+            if(!activePageFound) updateBottomNavVisibility('home');
+        }
+
+        window.goHome = function() { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); document.getElementById('nav-btn-home').classList.add('active'); updateBottomNavVisibility('home'); }
+        window.openSidebar = function() { document.getElementById('sidebar').classList.add('active'); document.getElementById('sidebar-overlay').style.display = 'block'; document.body.classList.add('sidebar-locked'); }
+        window.closeSidebar = function() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebar-overlay').style.display = 'none'; document.body.classList.remove('sidebar-locked'); }
+        
+        window.openProfileModal = function() { document.getElementById('profile-modal-overlay').style.display='block'; document.getElementById('profile-modal').style.display='flex'; }
+        window.closeProfileModal = function() { document.getElementById('profile-modal-overlay').style.display='none'; document.getElementById('profile-modal').style.display='none'; }
+        window.openAdminProfile = function() { closeProfileModal(); navTo('admin-profile-page', null); }
 
         function loadAdminProfile() {
             let pName = localStorage.getItem('v_adminName') || "Admin";
@@ -885,25 +900,15 @@
 
             document.getElementById('ap-name').value = pName; document.getElementById('ap-phone').value = pPhone;
             document.getElementById('ap-email').value = pEmail; document.getElementById('ap-gst').value = pGst; document.getElementById('ap-address').value = pAddr;
-            
             document.getElementById('pm-email-display').innerText = pEmail;
             
             if(pPic) {
-                let imgHtml = `<img src="${pPic}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
-                document.getElementById('pm-avatar-img').src = pPic;
-                document.getElementById('pm-avatar-img').style.display = 'block';
-                document.getElementById('pm-avatar-text').style.display = 'none';
-                document.getElementById('top-avatar-img').src = pPic;
-                document.getElementById('top-avatar-img').style.display = 'block';
-                document.getElementById('top-avatar-text').style.display = 'none';
+                document.getElementById('pm-avatar-img').src = pPic; document.getElementById('pm-avatar-img').style.display = 'block'; document.getElementById('pm-avatar-text').style.display = 'none';
+                document.getElementById('top-avatar-img').src = pPic; document.getElementById('top-avatar-img').style.display = 'block'; document.getElementById('top-avatar-text').style.display = 'none';
             } else {
                 let initial = pName.charAt(0).toUpperCase();
-                document.getElementById('pm-avatar-img').style.display = 'none';
-                document.getElementById('pm-avatar-text').innerText = initial;
-                document.getElementById('pm-avatar-text').style.display = 'block';
-                document.getElementById('top-avatar-img').style.display = 'none';
-                document.getElementById('top-avatar-text').innerText = initial;
-                document.getElementById('top-avatar-text').style.display = 'block';
+                document.getElementById('pm-avatar-img').style.display = 'none'; document.getElementById('pm-avatar-text').innerText = initial; document.getElementById('pm-avatar-text').style.display = 'block';
+                document.getElementById('top-avatar-img').style.display = 'none'; document.getElementById('top-avatar-text').innerText = initial; document.getElementById('top-avatar-text').style.display = 'flex';
             }
             updateGreeting();
         }
@@ -914,27 +919,25 @@
             localStorage.setItem('v_adminEmail', document.getElementById('ap-email').value);
             localStorage.setItem('v_adminGst', document.getElementById('ap-gst').value.toUpperCase());
             localStorage.setItem('v_adminAddr', document.getElementById('ap-address').value);
-            loadAdminProfile();
-            alert("Profile Saved Successfully!");
+            loadAdminProfile(); alert("Profile Saved Successfully!");
         }
 
+        // CROPPER.JS LOGIC
         window.handleAdminPic = function(event) {
             let file = event.target.files[0];
-            if(file) {
-                let reader = new FileReader();
+            if(file) { 
+                let reader = new FileReader(); 
                 reader.onload = function(e) { 
                     document.getElementById('crop-modal').style.display = 'flex';
                     let img = document.getElementById('crop-image');
                     img.src = e.target.result;
                     if(cropper) cropper.destroy();
                     cropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, background: false });
-                }
-                reader.readAsDataURL(file);
+                }; 
+                reader.readAsDataURL(file); 
             }
         }
-        
         window.cancelCrop = function() { document.getElementById('crop-modal').style.display = 'none'; }
-        
         window.applyCrop = function() {
             if(!cropper) return;
             let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
@@ -944,62 +947,37 @@
             document.getElementById('crop-modal').style.display = 'none';
         }
 
-        // ================= 22 GODAM TRANSFER LOGIC =================
         window.processGodown = function(type) {
-            let cat = document.getElementById('gd-cat').value; 
-            let item = document.getElementById('gd-item').value; 
-            let qty = parseInt(document.getElementById('gd-qty').value);
-            
+            let cat = document.getElementById('gd-cat').value; let item = document.getElementById('gd-item').value; let qty = parseInt(document.getElementById('gd-qty').value);
             if(!item || isNaN(qty) || qty <= 0) return alert("Please enter Item Name and Valid Quantity!");
-
-            let key = cat + "_" + item; 
-            let itemRef = ref(db, 'Inventory/' + key);
-            
+            let key = cat + "_" + item; let itemRef = ref(db, 'Inventory/' + key);
             get(itemRef).then((snap) => { 
-                let currentQty = snap.val() || 0;
-                let newQty = type === 'OUT' ? currentQty - qty : currentQty + qty;
-                if(newQty < 0) newQty = 0; 
-                set(itemRef, newQty); 
+                let currentQty = snap.val() || 0; let newQty = type === 'OUT' ? currentQty - qty : currentQty + qty;
+                if(newQty < 0) newQty = 0; set(itemRef, newQty); 
             });
-
-            push(ref(db, 'GodownTransfers'), { 
-                date: new Date().toISOString(), cat: cat, item: item, qty: qty, type: type 
-            });
-
+            push(ref(db, 'GodownTransfers'), { date: new Date().toISOString(), cat: cat, item: item, qty: qty, type: type });
             document.getElementById('gd-item').value = ''; document.getElementById('gd-qty').value = '';
             alert(type === 'IN' ? `Stock Received from Godown!` : `Stock Returned to Godown!`);
         }
 
         window.renderGodownHistory = function() {
             let filterDate = document.getElementById('godown-date-picker').value;
-            let filteredTransfers = allGodownTransfers.filter(t => {
-                let tDate = ""; try { tDate = new Date(t.date).toISOString().split('T')[0]; } catch(e){}
-                return tDate === filterDate;
-            });
-
+            let filteredTransfers = allGodownTransfers.filter(t => { let tDate = ""; try { tDate = new Date(t.date).toISOString().split('T')[0]; } catch(e){} return tDate === filterDate; });
             let html = "";
-            if(filteredTransfers.length === 0) {
-                html = '<tr><td colspan="2" style="text-align:center; padding:16px;">No transfers on this date.</td></tr>';
-            } else {
+            if(filteredTransfers.length === 0) { html = '<tr><td colspan="2" style="text-align:center; padding:16px;">No transfers on this date.</td></tr>'; } 
+            else {
                 filteredTransfers.forEach(t => {
                     let d = new Date(t.date); let timeStr = isNaN(d) ? t.date : d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-                    let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)';
-                    let icon = t.type === 'IN' ? '🟢 IN' : '🔴 OUT';
-                    html += `<tr>
-                        <td><div style="font-weight:600; color:var(--text-dark);">${t.item} <span style="font-size:10px; color:var(--text-muted);">(${t.cat})</span></div><div style="font-size:11px; color:var(--text-muted);">${timeStr}</div></td>
-                        <td style="color:${color}; font-weight:700;">${icon} <br>${t.qty} BOX</td>
-                    </tr>`;
+                    let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)'; let icon = t.type === 'IN' ? '🟢 IN' : '🔴 OUT';
+                    html += `<tr><td><div style="font-weight:600; color:var(--text-dark);">${t.item} <span style="font-size:10px; color:var(--text-muted);">(${t.cat})</span></div><div style="font-size:11px; color:var(--text-muted);">${timeStr}</div></td><td style="color:${color}; font-weight:700;">${icon} <br>${t.qty} BOX</td></tr>`;
                 });
             }
             document.getElementById('godown-history-list').innerHTML = html;
         }
 
-        // ================= TOP CUSTOMERS LOGIC =================
-        window.showCelebration = function(name) {
-            document.getElementById('celeb-name').innerText = name;
-            document.getElementById('celebration-modal').style.display = 'flex';
-            
-            // FIREWORK ANIMATION
+        window.showCelebration = function(name) { 
+            document.getElementById('celeb-name').innerText = name; 
+            document.getElementById('celebration-modal').style.display = 'flex'; 
             var duration = 3000; var end = Date.now() + duration;
             (function frame() {
                 confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 1 }, colors: ['#0a56d0', '#146c2e', '#f29900', '#b3261e'] });
@@ -1008,7 +986,6 @@
             }());
         }
 
-        // ================= CUSTOMER PROFILE (EDITABLE) =================
         function setupPOSAutocomplete() {
             let dlHtml = ""; globalCustomers.forEach(c => dlHtml += `<option value="${c.name}">`);
             document.getElementById('pos-customers-dl').innerHTML = dlHtml;
@@ -1031,15 +1008,10 @@
             let nAddr = document.getElementById('cp-edit-address').value;
             
             if(!nName) return alert("Name is required!");
-            
-            // EMAIL VALIDATION
             if(nEmail !== "") {
                 let validEmail = nEmail.endsWith('@gmail.com') || nEmail.endsWith('.com') || nEmail.endsWith('.in');
-                if(!validEmail) {
-                    return alert("Invalid Email! Must end with @gmail.com, .com, or .in");
-                }
+                if(!validEmail) { return alert("Invalid Email! Must end with @gmail.com, .com, or .in"); }
             }
-
             update(ref(db, 'Customers/' + currentPartyKey), { name: nName, phone: nPhone, email: nEmail, address: nAddr });
             
             currentPartyName = nName; currentPartyPhone = nPhone;
@@ -1057,15 +1029,13 @@
         }
         window.deleteCurrentCustomer = function() { if(confirm(`WARNING: Are you sure you want to permanently delete ${currentPartyName}?`)) { remove(ref(db, 'Customers/' + currentPartyKey)); closePage('customer-profile-page'); closePage('ledger-deep-page'); alert("Deleted Successfully!"); } }
 
-        // ================= LEDGER LOGIC =================
         window.switchPartyTab = function(type) { 
             currentTabType = type; 
             document.getElementById('tab-customers').classList.toggle('active', type === 'Customer'); 
             document.getElementById('tab-suppliers').classList.toggle('active', type === 'Supplier'); 
             let btnText = type === 'Customer' ? 'Add Customer' : 'Add Supplier'; 
             document.getElementById('fab-text').innerText = btnText; document.getElementById('add-party-title').innerText = btnText; 
-            renderCustomerList(globalCustomers); 
-            updateLedgerTotalsUI();
+            renderCustomerList(globalCustomers); updateLedgerTotalsUI();
         }
 
         window.updateLedgerTotalsUI = function() {
@@ -1078,7 +1048,6 @@
             }
         }
 
-        // ================= PDF DOWNLOAD LOGIC =================
         window.downloadPDFFromEntry = function() {
             if(!currentEntryData) return;
             
@@ -1112,18 +1081,17 @@
             window.currentTopCustTab = type;
             document.getElementById('tc-curr-tab').classList.toggle('active', type === 'current');
             document.getElementById('tc-last-tab').classList.toggle('active', type === 'last');
-            calculateGrandTotals(); // re-render list
+            calculateGrandTotals();
         }
 
         window.calculateGrandTotals = function() {
             let balances = {}; let todayTotalSale = 0; let todayTotalBox = 0;
             
             let currMonthSales = {}; let lastMonthSales = {};
-            
             let selectedDateString = document.getElementById('dash-date-picker').value; 
             
             let todayDate = new Date();
-            let currentMonth = todayDate.toISOString().slice(0, 7); // "YYYY-MM"
+            let currentMonth = todayDate.toISOString().slice(0, 7); 
             
             let lmDate = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
             let lastMonth = lmDate.toISOString().slice(0, 7);
@@ -1137,43 +1105,30 @@
                 if(entry.type === 'Got') balances[entry.name] -= amt;
 
                 if (entry.details && entry.details.includes("Invoice Sale")) {
-                    if(entryMonthString === currentMonth) {
-                        if(!currMonthSales[entry.name]) currMonthSales[entry.name] = 0; currMonthSales[entry.name] += amt;
-                    }
-                    if(entryMonthString === lastMonth) {
-                        if(!lastMonthSales[entry.name]) lastMonthSales[entry.name] = 0; lastMonthSales[entry.name] += amt;
-                    }
-                    
+                    if(entryMonthString === currentMonth) { currMonthSales[entry.name] = (currMonthSales[entry.name] || 0) + amt; }
+                    if(entryMonthString === lastMonth) { lastMonthSales[entry.name] = (lastMonthSales[entry.name] || 0) + amt; }
                     if(entryDateString === selectedDateString){ todayTotalSale += amt; let boxMatch = entry.details.match(/(\d+)\s*Box/i); if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); }
                 }
             });
 
-            // Splitting Totals based on Tab (Customer vs Supplier)
             let partyTypes = {}; globalCustomers.forEach(c => partyTypes[c.name] = c.type || 'Customer');
             let cGive = 0, cGet = 0, sGive = 0, sGet = 0;
 
             for(let cust in balances) { 
-                let pType = partyTypes[cust] || 'Customer';
-                let bal = balances[cust];
-                if(pType === 'Customer') {
-                    if(bal > 0) cGet += bal; if(bal < 0) cGive += Math.abs(bal);
-                } else {
-                    if(bal > 0) sGet += bal; if(bal < 0) sGive += Math.abs(bal);
-                }
+                let pType = partyTypes[cust] || 'Customer'; let bal = balances[cust];
+                if(pType === 'Customer') { if(bal > 0) cGet += bal; if(bal < 0) cGive += Math.abs(bal); } else { if(bal > 0) sGet += bal; if(bal < 0) sGive += Math.abs(bal); }
             }
             
-            window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet };
-            updateLedgerTotalsUI();
+            window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet }; updateLedgerTotalsUI();
 
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
 
-            // Top Customers (Monthly Render)
             let activeSalesData = window.currentTopCustTab === 'current' ? currMonthSales : lastMonthSales;
             let topCustHtml = ""; 
             let sortedCustomers = Object.entries(activeSalesData).sort((a, b) => b[1] - a[1]).slice(0, 5);
             
             if(sortedCustomers.length === 0) { topCustHtml = '<div style="text-align:center; padding:10px; color:gray; font-size:12px;">No sales data available.</div>'; } 
-            else { sortedCustomers.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-left"><div class="ua-item-name">${cust[0]} <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span></div><div class="ua-item-desc">${window.currentTopCustTab === 'current' ? 'Current Month' : 'Last Month'} Top Buyer</div></div><div class="ua-item-right"><span class="ua-item-count">₹${cust[1].toLocaleString('en-IN')}</span><span class="ua-item-arrow">›</span></div></div>`; }); }
+            else { sortedCustomers.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-left"><div class="ua-item-name">${cust[0]} <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span></div><div class="ua-item-desc">Top Buyer</div></div><div class="ua-item-right"><span class="ua-item-count">₹${cust[1].toLocaleString('en-IN')}</span><span class="ua-item-arrow">›</span></div></div>`; }); }
             document.getElementById('top-customers-list').innerHTML = topCustHtml;
         }
         
@@ -1183,12 +1138,10 @@
             let amount = eval(calcValue) || 0; if(amount <= 0) return alert("Enter valid amount!");
             let dateVal = document.getElementById('calc-date').value; if(!dateVal) dateVal = new Date().toISOString().split('T')[0];
             
-            // IF EDITING EXISTING ENTRY
             if(window.isEditingEntry && currentEntryData) {
                 update(ref(db, 'Ledger/' + currentEntryData.key), { amount: amount, details: document.getElementById('calc-details').value || "App Entry", type: calcType, date: new Date(dateVal).toISOString() });
                 window.isEditingEntry = false; currentEntryData = null;
             } else {
-                // NEW ENTRY
                 push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: calcType, amount: amount, details: document.getElementById('calc-details').value || "App Entry" }); 
             }
             closePage('calculator-page');
@@ -1202,23 +1155,16 @@
             document.getElementById('ed-icon').innerText = icon; document.getElementById('ed-amount').innerText = `₹ ${parseFloat(currentEntryData.amount).toLocaleString()}`; document.getElementById('ed-amount').style.color = color; document.getElementById('ed-type').innerText = `You ${currentEntryData.type}`; document.getElementById('ed-type').style.color = color; document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry"; openPage('entry-details-page');
         }
 
-        // PROFESSIONAL EDIT ENTRY FLOW
+        // SMART EDIT & AUTO-HIDE DETAILS
         window.editCurrentEntryAmount = function() { 
             if(!currentEntryData) return; 
-            window.isEditingEntry = true;
-            calcType = currentEntryData.type;
-            calcValue = currentEntryData.amount.toString();
-            document.getElementById('calc-amount').value = calcValue;
-            
+            window.isEditingEntry = true; calcType = currentEntryData.type; calcValue = currentEntryData.amount.toString();
+            document.getElementById('calc-amount').value = calcValue; 
             document.getElementById('calc-details').value = currentEntryData.details || "";
             document.getElementById('calc-hidden-area').classList.add('show');
             document.getElementById('calc-save-btn').innerText = "UPDATE ENTRY";
-
-            let d = new Date(currentEntryData.date);
-            if(!isNaN(d)) document.getElementById('calc-date').value = d.toISOString().split('T')[0];
-            
-            closePage('entry-details-page'); // close detail page to show calculator
-            openCalculator(calcType, true); // true = skip reset
+            let d = new Date(currentEntryData.date); if(!isNaN(d)) document.getElementById('calc-date').value = d.toISOString().split('T')[0];
+            closePage('entry-details-page'); openCalculator(calcType, true); 
         }
 
         window.openCalculator = function(type, skipReset = false) {
@@ -1243,7 +1189,7 @@
             
             document.getElementById('calc-amount').value = calcValue; 
             
-            // SMART AUTO HIDE / SHOW DETAILS
+            // SMART AUTO HIDE / SHOW
             if(parseFloat(calcValue) > 0) {
                 document.getElementById('calc-hidden-area').classList.add('show');
             } else {

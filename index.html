@@ -22,8 +22,8 @@
             --bg-color: #f0f4f9; --surface: #ffffff; --text-dark: #1f1f1f; --text-muted: #444746; --border: #e0e2e0;
         }
 
-        /* SCROLL FIX (Pull-to-refresh Enabled, No broken bottom background) */
-        html, body { background-color: var(--bg-color); height: 100%; }
+        /* SCROLL FIX (Dashboard Refresh Allowed, Subpages Locked) */
+        html, body { background-color: var(--bg-color); height: 100%; overscroll-behavior-y: auto; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         body { color: var(--text-dark); font-family: 'Inter', sans-serif; overflow-x: hidden; font-size: 14px; user-select: none;}
         body.sidebar-locked { overflow: hidden; position: fixed; width: 100%; height: 100%; }
@@ -90,15 +90,15 @@
         .nav-icon-wrap { width: 60px; height: 30px; border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 22px; transition: background 0.3s; }
         .nav-item span { font-size: 11px; font-weight: 500; font-family: 'Inter', sans-serif;}
 
-        /* SUBPAGES */
-        .page { position: fixed; top: 60px; left: 0; width: 100%; height: calc(100% - 60px); background: var(--bg-color); z-index: 3500; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display:flex; flex-direction:column; }
+        /* SUBPAGES (Strict Overscroll Protection) */
+        .page { position: fixed; top: 60px; bottom: 0; left: 0; width: 100%; background: var(--bg-color); z-index: 3500; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display:flex; flex-direction:column; overscroll-behavior-y: none; }
         .page.active { transform: translateX(0); }
         .sub-header { position: sticky; top: 0; background: var(--bg-color); height: 50px; display: flex; align-items: center; padding: 0 16px; z-index: 50; border-bottom: 1px solid var(--border); flex-shrink: 0;}
         .back-btn { background: transparent; border: none; color: var(--text-dark); font-size: 24px; margin-right: 12px; cursor: pointer; padding: 5px; font-weight: 300;}
         .page-title { font-size: 18px; font-weight: 500; margin: 0; color: var(--text-dark); font-family: 'Product Sans', sans-serif;}
         
         .fixed-top-section { flex-shrink: 0; background: var(--bg-color); z-index: 10; padding: 16px 16px 0 16px; }
-        .scroll-content { flex: 1; overflow-y: auto; padding: 0 16px 100px 16px; position: relative; }
+        .scroll-content { flex: 1; overflow-y: auto; padding: 0 16px 100px 16px; position: relative; overscroll-behavior-y: none; }
 
         /* FORMS & BUTTONS */
         .form-panel { background: white; padding: 16px; border-radius: 16px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
@@ -238,9 +238,22 @@
         /* REPORT MODAL */
         .report-modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 6000; justify-content: center; align-items: center;}
         .report-modal-box { background: white; padding: 24px; border-radius: 20px; width: 90%; max-width: 350px; text-align: left; position: relative;}
+
+        /* PREVIEW CONTAINER MOBILE FIT */
+        #preview-render-area {
+            background: white; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+            width: 100%; 
+            overflow-x: hidden; 
+            zoom: 0.52; /* Magic zoom to perfectly fit 700px in mobile screen */
+        }
     </style>
 </head>
 <body>
+
+    <!-- 🌟 LOADER -->
+    <div id="loader" class="loader-overlay" style="display: none;"><div class="spinner"></div></div>
 
     <!-- ✂️ CROPPER MODAL -->
     <div id="crop-modal" class="crop-modal-overlay">
@@ -280,10 +293,40 @@
         </div>
     </div>
 
-    <!-- HIDDEN PDF TEMPLATES FOR REPORTS -->
+    <!-- HIDDEN PDF TEMPLATES FOR REPORTS & INVOICE -->
     <div id="pdf-report-container" style="position:fixed; left:-9999px; top:0;">
+        
+        <!-- INVOICE TEMPLATE -->
+        <div id="pdf-invoice-template" style="background:white; padding:30px; font-family:Arial, sans-serif; color:black; width:100%; max-width:700px; box-sizing:border-box;">
+            <div style="display:flex; justify-content:space-between; border-bottom:2px solid #0a56d0; padding-bottom:15px; margin-bottom:15px;">
+                <div>
+                    <h1 style="color:#0a56d0; margin:0; font-size:28px;" id="pdf-biz-name">Vandana Enterprises</h1>
+                    <p style="margin:5px 0; font-size:14px;" id="pdf-biz-phone">Phone: +91 ----------</p>
+                    <p style="margin:5px 0; font-size:14px;" id="pdf-biz-address">Address: Not Added</p>
+                    <p style="margin:5px 0; font-size:14px; font-weight:bold;" id="pdf-biz-gst">GSTIN: --------</p>
+                </div>
+                <div style="text-align:right;">
+                    <h2 style="margin:0; font-size:32px; color:#444746;">INVOICE</h2>
+                    <p style="margin:5px 0; font-size:14px;">Date: <span id="pdf-date"></span></p>
+                    <p style="margin:5px 0; font-size:14px;">Bill No: <span id="pdf-bill-no"></span></p>
+                </div>
+            </div>
+            <div style="margin-bottom:30px;">
+                <h3 style="margin:0 0 10px 0; font-size:16px; color:#444746;">BILLED TO:</h3>
+                <p style="margin:0; font-size:18px; font-weight:bold;" id="pdf-cust-name">Customer Name</p>
+            </div>
+            <table style="width:100%; border-collapse:collapse; margin-bottom:30px;">
+                <thead id="pdf-table-header"></thead>
+                <tbody id="pdf-cart-body"></tbody>
+            </table>
+            <div style="display:flex; justify-content:flex-end;">
+                <div style="width:300px;"><div style="display:flex; justify-content:space-between; padding:12px; background:#f0f4f9; font-weight:bold; font-size:20px; border:1px solid #e0e2e0;"><span>Grand Total:</span><span id="pdf-total">₹ 0</span></div></div>
+            </div>
+            <div style="margin-top:80px; border-top:1px dashed #e0e2e0; padding-top:20px; text-align:center; color:#444746; font-size:14px;">Thank you for your business!</div>
+        </div>
+
         <!-- LEDGER STATEMENT TEMPLATE -->
-        <div id="pdf-statement-template" style="background:white; padding:30px; font-family:Arial, sans-serif; color:black; width:700px; max-width:100%; box-sizing:border-box;">
+        <div id="pdf-statement-template" style="background:white; padding:30px; font-family:Arial, sans-serif; color:black; width:100%; max-width:700px; box-sizing:border-box;">
             <div style="text-align:center; border-bottom:2px solid #0a56d0; padding-bottom:15px; margin-bottom:20px;">
                 <h1 style="color:#0a56d0; margin:0; font-size:26px;">Vandana Enterprises</h1>
                 <h2 style="margin:5px 0 0 0; font-size:20px; color:#444746;">ACCOUNT STATEMENT</h2>
@@ -311,7 +354,7 @@
         </div>
 
         <!-- STOCK REPORT TEMPLATE -->
-        <div id="pdf-stock-template" style="background:white; padding:30px; font-family:Arial, sans-serif; color:black; width:700px; max-width:100%; box-sizing:border-box;">
+        <div id="pdf-stock-template" style="background:white; padding:30px; font-family:Arial, sans-serif; color:black; width:100%; max-width:700px; box-sizing:border-box;">
             <div style="text-align:center; border-bottom:2px solid #146c2e; padding-bottom:15px; margin-bottom:20px;">
                 <h1 style="color:#146c2e; margin:0; font-size:26px;">Vandana Enterprises</h1>
                 <h2 style="margin:5px 0 0 0; font-size:20px; color:#444746;">DAILY STOCK REPORT</h2>
@@ -331,47 +374,7 @@
         </div>
     </div>
 
-    <!-- 🎆 CELEBRATION MODAL -->
-    <div id="celebration-modal" class="celebration-modal">
-        <div class="celeb-box">
-            <div style="font-size: 50px; margin-bottom: 10px; animation: bounce 1s infinite alternate;">🎊</div>
-            <div style="font-size: 15px; color: var(--text-dark); font-weight: 500; margin-bottom: 20px; line-height:1.5; font-family:'Product Sans', sans-serif;">Dear <span id="celeb-name" style="color:var(--danger); font-weight:700;">Name</span>,<br><br>आपने 2% Additional Off के लिए अपना परचेज कोटा पूर्ण कर लिया है! 🏆<br><br>कृप्या लाभ लेने के लिए Godown पर आकर संपर्क करें।</div>
-            <button class="btn-submit" onclick="document.getElementById('celebration-modal').style.display='none'">Okay, Thanks!</button>
-        </div>
-    </div>
-    
     <datalist id="pos-customers-dl"></datalist>
-
-    <!-- HIDDEN INVOICE TEMPLATE FOR PDF DOWNLOAD -->
-    <div id="pdf-container" style="position:fixed; left:-9999px; top:0;">
-        <div id="pdf-invoice-template" style="background:white; padding:30px; font-family:Arial, sans-serif; color:black; width:700px; max-width:100%; box-sizing:border-box;">
-            <div style="display:flex; justify-content:space-between; border-bottom:2px solid #0a56d0; padding-bottom:15px; margin-bottom:15px;">
-                <div>
-                    <h1 style="color:#0a56d0; margin:0; font-size:28px;" id="pdf-biz-name">Vandana Enterprises</h1>
-                    <p style="margin:5px 0; font-size:14px;" id="pdf-biz-phone">Phone: +91 ----------</p>
-                    <p style="margin:5px 0; font-size:14px;" id="pdf-biz-address">Address: Not Added</p>
-                    <p style="margin:5px 0; font-size:14px; font-weight:bold;" id="pdf-biz-gst">GSTIN: --------</p>
-                </div>
-                <div style="text-align:right;">
-                    <h2 style="margin:0; font-size:32px; color:#444746;">INVOICE</h2>
-                    <p style="margin:5px 0; font-size:14px;">Date: <span id="pdf-date"></span></p>
-                    <p style="margin:5px 0; font-size:14px;">Bill No: <span id="pdf-bill-no"></span></p>
-                </div>
-            </div>
-            <div style="margin-bottom:30px;">
-                <h3 style="margin:0 0 10px 0; font-size:16px; color:#444746;">BILLED TO:</h3>
-                <p style="margin:0; font-size:18px; font-weight:bold;" id="pdf-cust-name">Customer Name</p>
-            </div>
-            <table style="width:100%; border-collapse:collapse; margin-bottom:30px;">
-                <thead id="pdf-table-header"></thead>
-                <tbody id="pdf-cart-body"></tbody>
-            </table>
-            <div style="display:flex; justify-content:flex-end;">
-                <div style="width:300px;"><div style="display:flex; justify-content:space-between; padding:12px; background:#f0f4f9; font-weight:bold; font-size:20px; border:1px solid #e0e2e0;"><span>Grand Total:</span><span id="pdf-total">₹ 0</span></div></div>
-            </div>
-            <div style="margin-top:80px; border-top:1px dashed #e0e2e0; padding-top:20px; text-align:center; color:#444746; font-size:14px;">Thank you for your business!</div>
-        </div>
-    </div>
 
     <!-- 📱 GOOGLE STYLE SIDEBAR MENU -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
@@ -494,7 +497,7 @@
     <div class="page flex-page" id="report-preview-page" style="z-index:5100;">
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('report-preview-page')">arrow_back</button><h2 class="page-title">Report Preview</h2></div>
         <div class="scroll-content" style="padding-top:16px; background:#e0e2e0;">
-            <div id="preview-render-area" style="background:white; padding:16px; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.1); width:100%; overflow-x:auto; font-size:12px;"></div>
+            <div id="preview-render-area"></div>
         </div>
         <div class="bottom-action-bar" style="justify-content:center; z-index:9999;">
             <button class="btn-submit" onclick="executeReportDownload()" style="display:flex; align-items:center; justify-content:center; gap:8px;"><span class="material-symbols-rounded">download</span> Download PDF Report</button>
@@ -564,6 +567,10 @@
             <div id="billing-form-area">
                 <div class="form-panel">
                     <div class="form-group" style="margin-bottom:0;">
+                        <!-- NEW INVOICE DATE FIELD -->
+                        <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Invoice Date</label>
+                        <input type="date" class="form-control" id="inv-date" style="margin-bottom:16px; font-family:'Product Sans', sans-serif;">
+                        
                         <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Customer Details</label>
                         <div class="input-btn-group" style="margin-bottom:12px;">
                             <input type="text" id="inv-party" class="form-control" list="pos-customers-dl" placeholder="Enter Customer Name">
@@ -655,7 +662,6 @@
             </div>
             <div class="ledger-action-tabs">
                 <div class="l-tab" id="l-wa-btn" style="color:#146c2e; border-color:#e0e2e0; display:flex; justify-content:center; align-items:center; gap:4px;"><span class="material-symbols-rounded" style="font-size:16px;">chat</span> Reminder</div>
-                <!-- ACCOUNT STATEMENT BUTTON LINKED TO MODAL -->
                 <div class="l-tab" id="l-sms-btn" onclick="openReportModal('ledger')" style="display:flex; justify-content:center; align-items:center; gap:4px;"><span class="material-symbols-rounded" style="font-size:16px;">description</span> Statement</div>
             </div>
             <div style="text-align:center; font-size:11px; font-weight:500; color:var(--text-muted); margin-bottom:12px;" id="l-deep-today-date"></div>
@@ -721,15 +727,16 @@
                     </div>
                 </div>
                 <div class="ed-edit-btn" id="ed-edit-btn-container">
-                    <button class="btn-outline" onclick="editCurrentEntryAmount()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:18px;">edit</span> Edit Amount & Details</button>
+                    <!-- EDIT BUTTON INJECTED VIA JS -->
                 </div>
             </div>
         </div>
+        
+        <!-- FIXED: ONLY 3 BUTTONS (Text message removed, PDF logic linked correctly) -->
         <div class="bottom-action-bar" style="padding: 12px 16px; gap: 8px;">
             <button class="btn-outline material-symbols-rounded" style="width: auto; padding: 14px; border-color: var(--danger); color: var(--danger); border-radius:12px;" onclick="deleteCurrentEntry()">delete</button>
-            <button class="btn-submit" style="flex: 1; padding: 14px 4px; border-radius:12px; font-size:12px; background:#e8f0fe; color:var(--primary); display:flex; align-items:center; justify-content:center; gap:4px;" onclick="shareCurrentEntry()"><span class="material-symbols-rounded" style="font-size:16px;">chat</span> Text</button>
-            <button class="btn-submit" style="flex: 1; background: var(--success); padding: 14px 4px; border-radius:12px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="shareCurrentEntryPDF()"><span class="material-symbols-rounded" style="font-size:16px;">share</span> Share</button>
-            <button class="btn-submit" style="flex: 1; background: var(--primary-dark); padding: 14px 4px; border-radius:12px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="downloadPDFFromEntry()"><span class="material-symbols-rounded" style="font-size:16px;">download</span> PDF</button>
+            <button class="btn-submit" style="flex: 1; background: var(--success); padding: 14px 4px; border-radius:12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="shareCurrentEntryPDF()"><span class="material-symbols-rounded" style="font-size:18px;">share</span> Share PDF</button>
+            <button class="btn-submit" style="flex: 1; background: var(--primary-dark); padding: 14px 4px; border-radius:12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="downloadPDFFromEntry()"><span class="material-symbols-rounded" style="font-size:18px;">download</span> Download PDF</button>
         </div>
     </div>
 
@@ -932,6 +939,7 @@
         window.calcType = "Gave"; 
         window.isEditingEntry = false;
         window.currentReportElemId = ""; window.currentReportFilename = "";
+        window.editingBillNo = null;
         
         window.currentTabType = 'Customer';
         window.currentTopCustTab = 'current'; 
@@ -948,6 +956,7 @@
             document.getElementById('godown-date-picker').value = todayStr;
             document.getElementById('rep-from').value = todayStr;
             document.getElementById('rep-to').value = todayStr;
+            document.getElementById('inv-date').value = todayStr;
             
             try {
                 onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); updatePosShades(); });
@@ -1056,7 +1065,6 @@
             document.getElementById('ps-table-body').innerHTML = statementHtml;
             document.getElementById('ps-closing-bal').innerText = `₹ ${currentBal}`;
             
-            // SHOW PREVIEW INSTEAD OF DIRECT DOWNLOAD
             let previewHtml = document.getElementById('pdf-statement-template').innerHTML;
             document.getElementById('preview-render-area').innerHTML = previewHtml;
             window.currentReportElemId = 'pdf-statement-template';
@@ -1068,7 +1076,6 @@
             let fromTime = new Date(fromD).getTime(); let toTime = new Date(toD + "T23:59:59").getTime();
             let stockHtml = "";
             
-            // Godown Transfers
             let filteredTransfers = allGodownTransfers.filter(t => { let eTime = new Date(t.date).getTime(); return eTime >= fromTime && eTime <= toTime; });
             filteredTransfers.forEach(t => {
                 let dStr = new Date(t.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
@@ -1076,7 +1083,6 @@
                 stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">${action}</td><td style="padding:10px; border:1px solid #e0e2e0;">${t.item} (${t.cat})</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${t.qty}</td></tr>`;
             });
 
-            // Sales (Cart items)
             let salesEntries = allLedgerData.filter(e => { let eTime = new Date(e.date).getTime(); return eTime >= fromTime && eTime <= toTime && e.cart; });
             salesEntries.forEach(entry => {
                 let dStr = new Date(entry.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
@@ -1090,7 +1096,6 @@
             document.getElementById('psr-date-range').innerText = `From: ${new Date(fromD).toLocaleDateString('en-GB')} To: ${new Date(toD).toLocaleDateString('en-GB')}`;
             document.getElementById('psr-table-body').innerHTML = stockHtml;
             
-            // SHOW PREVIEW INSTEAD OF DIRECT DOWNLOAD
             let previewHtml = document.getElementById('pdf-stock-template').innerHTML;
             document.getElementById('preview-render-area').innerHTML = previewHtml;
             window.currentReportElemId = 'pdf-stock-template';
@@ -1251,45 +1256,25 @@
         window.openEntryDetails = function(key) {
             currentEntryData = allLedgerData.find(e => e.key === key); if(!currentEntryData) return; document.getElementById('ed-party-name').innerText = currentEntryData.name; let d = new Date(currentEntryData.date); document.getElementById('ed-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}); let color = currentEntryData.type === 'Gave' ? 'var(--danger)' : 'var(--success)'; document.getElementById('ed-amount').innerText = `₹ ${parseFloat(currentEntryData.amount).toLocaleString()}`; document.getElementById('ed-amount').style.color = color; document.getElementById('ed-type').innerText = `You ${currentEntryData.type}`; document.getElementById('ed-type').style.color = color; document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry"; 
             
-            // SMART EDIT INVOICE BUTTON LOGIC
             if(currentEntryData.cart && currentEntryData.cart.length > 0) {
                 document.getElementById('ed-edit-btn-container').innerHTML = `<button class="btn-outline" onclick="editCurrentInvoice()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:18px;">edit_document</span> Edit Invoice</button>`;
             } else {
                 document.getElementById('ed-edit-btn-container').innerHTML = `<button class="btn-outline" onclick="editCurrentEntryAmount()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:18px;">edit</span> Edit Amount & Details</button>`;
             }
-
             openPage('entry-details-page');
         }
 
-        // EDIT INVOICE LOGIC (Restore Stock & Load Pos)
         window.editCurrentInvoice = function() {
             if(!confirm("Are you sure you want to edit this invoice? It will be loaded into the billing screen and the old entry will be removed.")) return;
+            currentEntryData.cart.forEach(item => { let key = item.cat + "_" + item.shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) + item.qty); }); });
+            set(ref(db, 'RecycleBin/' + currentEntryData.key), currentEntryData); remove(ref(db, 'Ledger/' + currentEntryData.key));
+            currentCart = [...currentEntryData.cart]; document.getElementById('inv-party').value = currentEntryData.name; let cust = globalCustomers.find(c => c.name === currentEntryData.name); document.getElementById('inv-phone').value = cust ? cust.phone : "";
             
-            // 1. Restore Stock
-            currentEntryData.cart.forEach(item => { 
-                let key = item.cat + "_" + item.shade; 
-                let itemRef = ref(db, 'Inventory/' + key); 
-                get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) + item.qty); }); 
-            });
+            // Set Date
+            let d = new Date(currentEntryData.date); if(!isNaN(d)) document.getElementById('inv-date').value = d.toISOString().split('T')[0];
+            window.editingBillNo = currentEntryData.billNo;
             
-            // 2. Remove old ledger entry
-            set(ref(db, 'RecycleBin/' + currentEntryData.key), currentEntryData);
-            remove(ref(db, 'Ledger/' + currentEntryData.key));
-            
-            // 3. Load Cart
-            currentCart = [...currentEntryData.cart];
-            document.getElementById('inv-party').value = currentEntryData.name;
-            let cust = globalCustomers.find(c => c.name === currentEntryData.name);
-            document.getElementById('inv-phone').value = cust ? cust.phone : "";
-            
-            renderCartUi();
-            
-            // 4. Open POS
-            closePage('entry-details-page');
-            closePage('ledger-deep-page');
-            navTo('pos-page', null);
-            document.getElementById('billing-form-area').style.display = 'block'; 
-            document.getElementById('post-bill-area').style.display = 'none';
+            renderCartUi(); closePage('entry-details-page'); closePage('ledger-deep-page'); navTo('pos-page', null); document.getElementById('billing-form-area').style.display = 'block'; document.getElementById('post-bill-area').style.display = 'none';
         }
 
         window.editCurrentEntryAmount = function() { if(!currentEntryData) return; window.isEditingEntry = true; window.calcType = currentEntryData.type; window.calcValue = currentEntryData.amount.toString(); document.getElementById('calc-amount').value = window.calcValue; document.getElementById('calc-details').value = currentEntryData.details || ""; document.getElementById('calc-hidden-area').classList.add('show'); document.getElementById('calc-save-btn').innerText = "UPDATE ENTRY"; let d = new Date(currentEntryData.date); if(!isNaN(d)) document.getElementById('calc-date').value = d.toISOString().split('T')[0]; closePage('entry-details-page'); openCalculator(window.calcType, true); }
@@ -1302,7 +1287,6 @@
         window.renderRecycleBin = function() { let container = document.getElementById('recycle-list-container'); if(allRecycleData.length === 0) { container.innerHTML = `<div style="text-align:center; padding:40px; color:gray;">Recycle Bin is empty.</div>`; return; } let html = ""; allRecycleData.forEach(entry => { let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB'); html += `<div class="entry-card" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--text-dark); font-weight:800; font-size: 16px;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">${dateStr} | ${entry.details}</div><div style="display:flex; gap:10px;"><button class="btn-submit" style="flex:1; background:#e8f0fe; color:var(--primary); padding:8px; border-radius:12px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="restoreRecycle('${entry.key}')"><span class="material-symbols-rounded" style="font-size:16px;">settings_backup_restore</span> Restore</button><button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger); padding:8px; border-radius:12px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="permanentlyDeleteRecycle('${entry.key}')"><span class="material-symbols-rounded" style="font-size:16px;">delete_forever</span> Delete</button></div></div>`; }); container.innerHTML = html; }
         window.restoreRecycle = function(key) { let entry = allRecycleData.find(e => e.key === key); if(entry) { let dbEntry = {...entry}; delete dbEntry.key; set(ref(db, 'Ledger/' + key), dbEntry); remove(ref(db, 'RecycleBin/' + key)); } }
         window.permanentlyDeleteRecycle = function(key) { if(confirm("Permanently delete this invoice? It cannot be recovered.")) { remove(ref(db, 'RecycleBin/' + key)); } }
-        window.shareCurrentEntry = function() { if(!currentEntryData) return; let typeStr = currentEntryData.type === 'Gave' ? 'You Gave' : 'You Got'; let msg = `📄 *Ledger Entry* %0A🏛️ *Vandana Enterprises*%0A%0A*Name:* ${currentEntryData.name}%0A*Type:* ${typeStr}%0A*Amount:* ₹${currentEntryData.amount}%0A*Details:* ${currentEntryData.details}`; window.open(`https://wa.me/91${currentPartyPhone}?text=${msg}`, '_blank'); }
 
         window.renderLedgerEntries = function(name) { let entryList = document.getElementById('ledger-entries-list'); entryList.innerHTML = ''; let totalGave = 0; let totalGot = 0; let customerEntries = allLedgerData.filter(e => e.name === name); if(customerEntries.length === 0) { entryList.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No entries yet.</div>`; } else { customerEntries.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let gaveHtml = entry.type === 'Gave' ? `₹ ${amt}` : ''; let gotHtml = entry.type === 'Got' ? `₹ ${amt}` : ''; if(entry.type === 'Gave') totalGave += amt; if(entry.type === 'Got') totalGot += amt; let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short'}); entryList.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')"><div class="ec-left"><div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${dateStr}</div><div style="font-size:13px; color:var(--text-dark); font-weight:500;">${entry.details || 'App Entry'}</div></div><div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div></div>`; }); } let balEl = document.getElementById('l-deep-bal-amt'); let txtEl = document.getElementById('l-deep-bal-text'); let finalBal = totalGave - totalGot; if(finalBal > 0) { balEl.innerText = "₹ " + finalBal.toLocaleString(); balEl.style.color = "var(--success)"; txtEl.innerText = "You will get"; } else if (finalBal < 0) { balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); balEl.style.color = "var(--danger)"; txtEl.innerText = "You will give"; } else { balEl.innerText = "₹ 0"; balEl.style.color = "var(--text-dark)"; txtEl.innerText = "Settled"; } }
         window.renderCustomerList = function(list) { let filteredList = list.filter(c => (c.type || 'Customer') === currentTabType); let html = ""; filteredList.forEach(cust => { let initial = cust.name ? cust.name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = cust.pic || adminPic; let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; let netBal = window.globalBalances[cust.name] || 0; let balText = ""; let balColor = ""; if(netBal > 0) { balText = `₹${netBal.toLocaleString()} <span style="font-size:10px; color:var(--text-muted); font-weight:500;">(Get)</span>`; balColor = "var(--success)"; } else if(netBal < 0) { balText = `₹${Math.abs(netBal).toLocaleString()} <span style="font-size:10px; color:var(--text-muted); font-weight:500;">(Give)</span>`; balColor = "var(--danger)"; } else { balText = "₹0"; balColor = "var(--text-muted)"; } html += `<div class="kb-list-item" onclick="openLedgerDetail('${cust.name}', '${cust.phone}')"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${cust.name}</div><div class="kb-time">📱 ${cust.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:16px 16px 16px 8px;"><div style="font-size:14px; font-weight:700; color:${balColor}; font-family:'Product Sans', sans-serif;">${balText}</div></div></div>`; }); document.getElementById('kb-customer-list').innerHTML = html || `<div style="padding:40px; text-align:center; color:gray;">No ${currentTabType}s found</div>`; }
@@ -1317,10 +1301,52 @@
         window.updatePosShades = function() { let cat = document.getElementById('inv-cat').value; let shadeSelect = document.getElementById('inv-shade'); shadeSelect.innerHTML = '<option value="">Select Shade/Item</option>'; if(!cat) return; for (let key in smartInventory) { let parts = key.split("_"); if(parts[0] === cat && smartInventory[key] > 0) { shadeSelect.innerHTML += `<option value="${parts[1]}">${parts[1]} (${smartInventory[key]} Box Left)</option>`; } } }
         window.addCartItem = function() { const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value; const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0; if (!cat || !shade) return alert("Select Category and Item first!"); if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!"); let key = cat + "_" + shade; let currentStock = smartInventory[key] || 0; if(qty > currentStock) { alert(`OUT OF STOCK! You only have ${currentStock} Box of ${shade} left.`); return; } currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty, rate, itemTotal: qty * rate }); renderCartUi(); }
         function renderCartUi() { let tbody = document.getElementById('cart-rows'); tbody.innerHTML = ''; grandInvoiceTotal = 0; invoiceBoxCount = 0; currentCart.forEach(item => { grandInvoiceTotal += item.itemTotal; invoiceBoxCount += item.qty; tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.qty}</td><td>₹${item.rate}</td><td><strong>₹${item.itemTotal.toLocaleString()}</strong></td></tr>`; }); document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`; document.getElementById('inv-qty').value=''; document.getElementById('inv-rate').value=''; }
-        window.triggerSaveAndShare = function() { if (currentCart.length === 0) return alert("Cart is empty!"); let partyName = document.getElementById('inv-party').value.trim() || "Cash Sale"; let partyPhone = document.getElementById('inv-phone').value.trim(); if(partyName !== "Cash Sale") { let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); if(!exists) { push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); } } currentCart.forEach(item => { let key = item.cat + "_" + item.shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) - item.qty); }); }); push(ref(db, 'Ledger'), { date: new Date().toISOString(), name: partyName, type: "Got", amount: grandInvoiceTotal, details: `Invoice Sale - ${invoiceBoxCount} Box`, cart: currentCart }); document.getElementById('billing-form-area').style.display = 'none'; document.getElementById('post-bill-area').style.display = 'block';  }
-        window.resetBillingPage = function() { currentCart = []; renderCartUi(); document.getElementById('inv-party').value = ''; document.getElementById('inv-phone').value = ''; document.getElementById('billing-form-area').style.display = 'block'; document.getElementById('post-bill-area').style.display = 'none'; }
+        
+        window.triggerSaveAndShare = function() { 
+            if (currentCart.length === 0) return alert("Cart is empty!"); 
+            let partyName = document.getElementById('inv-party').value.trim() || "Cash Sale"; let partyPhone = document.getElementById('inv-phone').value.trim(); 
+            if(partyName !== "Cash Sale") { let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); if(!exists) { push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); } } 
+            currentCart.forEach(item => { let key = item.cat + "_" + item.shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) - item.qty); }); }); 
+            
+            // Generate Sequence Invoice Number
+            let maxInv = 0;
+            allLedgerData.forEach(e => {
+                if(e.billNo && e.billNo.startsWith('VE ')) {
+                    let num = parseInt(e.billNo.replace('VE ', ''));
+                    if(!isNaN(num) && num > maxInv) maxInv = num;
+                }
+            });
+            let newBillNo = window.editingBillNo || ("VE " + String(maxInv + 1).padStart(2, '0'));
+            
+            let invDate = document.getElementById('inv-date').value; if(!invDate) invDate = new Date().toISOString().split('T')[0];
+            
+            push(ref(db, 'Ledger'), { date: new Date(invDate).toISOString(), name: partyName, type: "Got", amount: grandInvoiceTotal, details: `Invoice Sale - ${invoiceBoxCount} Box`, cart: currentCart, billNo: newBillNo }); 
+            
+            window.editingBillNo = null; // Reset
+            document.getElementById('billing-form-area').style.display = 'none'; document.getElementById('post-bill-area').style.display = 'block';  
+        }
+        
+        window.resetBillingPage = function() { currentCart = []; renderCartUi(); window.editingBillNo = null; document.getElementById('inv-date').value = new Date().toISOString().split('T')[0]; document.getElementById('inv-party').value = ''; document.getElementById('inv-phone').value = ''; document.getElementById('billing-form-area').style.display = 'block'; document.getElementById('post-bill-area').style.display = 'none'; }
         window.searchParties = function() { let filter = document.getElementById('party-search').value.toUpperCase(); document.querySelectorAll('#kb-customer-list .kb-list-item').forEach(item => { item.style.display = item.querySelector('.kb-name').innerText.toUpperCase().indexOf(filter) > -1 ? "" : "none"; }); }
         window.openPhonebook = async function(nameId, phoneId) { if ('contacts' in navigator) { try { const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false }); if (contacts.length > 0) { if (contacts[0].name) document.getElementById(nameId).value = contacts[0].name[0]; if (contacts[0].tel) document.getElementById(phoneId).value = String(contacts[0].tel[0]).replace(/\D/g, '').slice(-10); } } catch(e) {} } }
+        
+        function preparePDFData() {
+            document.getElementById('pdf-biz-name').innerText = localStorage.getItem('v_adminName') || "Vandana Enterprises"; document.getElementById('pdf-biz-phone').innerText = "Phone: +91 " + (localStorage.getItem('v_adminPhone') || "----------"); document.getElementById('pdf-biz-address').innerText = "Address: " + (localStorage.getItem('v_adminAddr') || "Not Added"); document.getElementById('pdf-biz-gst').innerText = "GSTIN: " + (localStorage.getItem('v_adminGst') || "Not Added");
+            let d = new Date(currentEntryData.date); document.getElementById('pdf-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleDateString('en-GB'); 
+            document.getElementById('pdf-bill-no').innerText = currentEntryData.billNo || currentEntryData.key.substring(1, 8).toUpperCase(); 
+            document.getElementById('pdf-cust-name').innerText = currentEntryData.name;
+            
+            if(currentEntryData.cart && currentEntryData.cart.length > 0) {
+                let html = ""; currentEntryData.cart.forEach(item => { html += `<tr><td style="padding:12px; border:1px solid #e0e2e0;"><strong>${item.cat} (Category)</strong><br><span style="font-size:12px; color:#444746;">Color / Shade: ${item.shade}</span></td><td style="padding:12px; border:1px solid #e0e2e0; text-align:center;">${item.qty} Box</td><td style="padding:12px; border:1px solid #e0e2e0; text-align:right;">₹${item.rate}</td><td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:bold;">₹${item.itemTotal.toLocaleString('en-IN')}</td></tr>`; }); document.getElementById('pdf-cart-body').innerHTML = html;
+                document.getElementById('pdf-table-header').innerHTML = `<tr style="background:#0a56d0; color:white;"><th style="padding:12px; text-align:left; border:1px solid #e0e2e0;">Product Details (माल का विवरण)</th><th style="padding:12px; text-align:center; border:1px solid #e0e2e0;">Qty (क्वांटिटी)</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Rate (रेट)</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Total Amount</th></tr>`;
+            } else {
+                document.getElementById('pdf-table-header').innerHTML = `<tr style="background:#0a56d0; color:white;"><th style="padding:12px; text-align:left; border:1px solid #e0e2e0;">Description / Details</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Amount</th></tr>`; document.getElementById('pdf-cart-body').innerHTML = `<tr><td style="padding:16px 12px; border:1px solid #e0e2e0; font-size:16px;">${currentEntryData.details || 'Ledger Entry'}</td><td style="padding:16px 12px; text-align:right; border:1px solid #e0e2e0; font-size:16px; font-weight:bold;">₹${parseFloat(currentEntryData.amount).toLocaleString('en-IN')}</td></tr>`;
+            }
+            document.getElementById('pdf-total').innerText = "₹ " + parseFloat(currentEntryData.amount).toLocaleString('en-IN');
+        }
+
+        window.downloadPDFFromEntry = function() { if(!currentEntryData) return; preparePDFData(); let elem = document.getElementById('pdf-invoice-template'); let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; alert("Generating PDF... Please wait a moment."); html2pdf().set(opt).from(elem).save(); }
+        window.shareCurrentEntryPDF = async function() { if(!currentEntryData) return; preparePDFData(); let elem = document.getElementById('pdf-invoice-template'); let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; try { alert("Preparing PDF for direct sharing... this may take a few seconds."); let pdfBlob = await html2pdf().set(opt).from(elem).output('blob'); let file = new File([pdfBlob], opt.filename, { type: 'application/pdf' }); if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'Invoice from Vandana Enterprises', text: `Please find attached your invoice (Total: ₹${currentEntryData.amount}).` }); } else { alert("Your browser does not support direct PDF sharing. Downloading instead..."); html2pdf().set(opt).from(elem).save(); } } catch(e) { console.error(e); } }
     </script>
 </body>
 </html>

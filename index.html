@@ -45,12 +45,11 @@
         .greeting-section h2 { font-family: 'Product Sans', sans-serif; font-size: 24px; font-weight: 400; color: #1f1f1f; margin-bottom: 6px; letter-spacing: -0.5px;}
         .greeting-section p { font-size: 13px; color: var(--text-muted); padding: 0 10px; line-height: 1.4; font-family: 'Inter', sans-serif;}
 
-        /* DYNAMIC CALENDAR ICON */
+        /* PROFESSIONAL DATE BOX */
         .dash-date-wrapper { display: flex; justify-content: center; margin-bottom: 20px; }
-        .dynamic-cal-icon { width: 22px; height: 24px; border: 1.5px solid var(--primary); border-radius: 4px; display: flex; flex-direction: column; overflow: hidden; background: white; margin-right: 6px;}
-        .cal-top { height: 6px; background: var(--primary); width: 100%; }
-        .cal-day { flex: 1; display: flex; justify-content: center; align-items: center; font-size: 12px; font-weight: 700; color: var(--text-dark); font-family: 'Product Sans', sans-serif;}
-        .professional-date-picker { background: transparent; border: none; font-size: 14px; font-weight: 600; color: var(--text-dark); font-family: 'Product Sans', sans-serif; outline: none; cursor: pointer; }
+        .professional-date-box { background: white; padding: 10px 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; width: 180px; transition: border 0.3s;}
+        .professional-date-box:focus-within { border: 1px solid var(--primary); }
+        .professional-date-picker { background: transparent; border: none; font-size: 16px; font-weight: 600; color: var(--primary); font-family: 'Product Sans', sans-serif; outline: none; cursor: pointer; width: 100%; text-align: center; }
 
         /* GOOGLE STYLE CARDS */
         .google-card { background: white; border-radius: 24px; padding: 20px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border: 1px solid var(--border); cursor: pointer; transition: background 0.2s;}
@@ -63,15 +62,11 @@
 
         .dash-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .dash-card { background: white; border: 1px solid var(--border); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;}
-        .dash-card-title { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; font-family: 'Inter', sans-serif;}
-        .dash-card-value { font-size: 22px; font-weight: 600; color: var(--text-dark); line-height: 1; margin-bottom: 4px; font-family: 'Product Sans', sans-serif;}
-        .dash-card-sub { font-size: 10px; color: var(--text-muted); font-family: 'Inter', sans-serif;}
-        .dash-card-icon { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 16px; }
-        .icon-blue { background: #e8f0fe; color: var(--primary); } .icon-orange { background: #fff7ed; color: #f97316; } .icon-purple { background: #faf5ff; color: #a855f7; } .icon-green { background: #e6f4ea; color: var(--success); }
-
+        
         /* GOOGLE STYLE BOTTOM NAV */
-        .bottom-nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #f0f4f9; display: flex; justify-content: space-around; padding: 10px 16px; padding-bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 4000; border-top: 1px solid rgba(0,0,0,0.05); transition: transform 0.3s;}
-        .bottom-nav-bar.hidden { transform: translateY(100%); }
+        .bottom-nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #f0f4f9; display: flex; justify-content: space-around; padding: 10px 16px; padding-bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 4000; border-top: 1px solid rgba(0,0,0,0.05); transition: transform 0.3s ease-in-out;}
+        .bottom-nav-bar.hidden-by-scroll { transform: translateY(100%); }
+        .bottom-nav-bar.hidden-by-page { display: none !important; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--text-muted); width: 64px;}
         .nav-item.active .nav-icon-wrap { background: #c2e7ff; color: #001d35; }
         .nav-item.active span { color: var(--text-dark); font-weight: 600; }
@@ -104,7 +99,6 @@
         .search-bar-container:focus-within { background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e0e2e0;}
         .search-bar-container span { font-size: 18px; color: #444746; margin-right: 12px; }
         .search-bar-container input { border: none; width: 100%; background: transparent; outline: none; font-size: 15px; color: #1f1f1f; font-family: 'Product Sans', sans-serif;}
-        .search-bar-container input::placeholder { color: #444746; }
 
         /* GOOGLE STYLE SIDEBAR */
         .sidebar { background: #ffffff; color: var(--text-dark); position: fixed; top: 0; left: -300px; width: 280px; height: 100%; z-index: 6000; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.05);}
@@ -116,9 +110,8 @@
         .sidebar-menu li { color: var(--text-dark); font-weight: 500; padding: 14px 20px; margin: 2px 8px; border-radius: 20px; transition: background 0.2s; display: flex; align-items: center; gap: 16px; cursor: pointer; font-size: 15px; font-family: 'Inter', sans-serif;}
         .sidebar-menu li:hover { background: var(--bg-color); }
         .sidebar-menu li.active { background: #c2e7ff; color: #001d35; font-weight: 600;}
-        .sidebar-menu li i { color: var(--text-muted); font-size: 20px; width: 24px; text-align: center; font-style: normal;}
 
-        /* PROFILE MODAL (Screenshot 2) */
+        /* PROFILE MODAL */
         .profile-modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; z-index: 5500; background: transparent; }
         .profile-modal { display: none; position: fixed; top: 60px; right: 16px; background: #ffffff; width: 320px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 5501; flex-direction: column; align-items: center; padding: 24px 20px; animation: slideDown 0.2s ease-out;}
         @keyframes slideDown { from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);} }
@@ -130,13 +123,12 @@
         .pm-cam { position: absolute; bottom: 0; right: 0; background: white; border: 1px solid var(--border); border-radius: 50%; width: 26px; height: 26px; display: flex; justify-content: center; align-items: center; font-size: 12px; cursor: pointer;}
         .pm-name { font-family: 'Product Sans', sans-serif; font-size: 22px; font-weight: 400; color: #1f1f1f; margin-bottom: 24px;}
         .pm-manage-btn { background: white; border: 1px solid var(--border); color: var(--primary); font-weight: 600; font-size: 14px; padding: 10px 24px; border-radius: 20px; cursor: pointer; width: 100%; margin-bottom: 20px; transition: background 0.2s; font-family: 'Product Sans', sans-serif;}
-        .pm-manage-btn:hover { background: #f8fafd; }
-        .pm-footer { font-size: 11px; color: var(--text-muted); text-align: center; border-top: 1px solid var(--border); width: 100%; padding-top: 16px;}
-
-        /* CROPPER MODAL */
-        .crop-modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: #000; z-index: 9999; flex-direction: column; }
-        .crop-area { flex: 1; width: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #000;}
-        .crop-actions { padding: 20px; background: #111; display: flex; gap: 15px; }
+        
+        /* CROPPER MODAL (FIXED) */
+        .crop-modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index: 9999; flex-direction: column; justify-content:center; align-items:center;}
+        .crop-area { width: 100%; max-height: 70vh; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #000;}
+        .crop-area img { max-width: 100%; max-height: 100%; display: block; }
+        .crop-actions { padding: 20px; background: #111; display: flex; gap: 15px; width: 100%; justify-content: center;}
 
         /* TABS */
         .ajio-tab-container { background: #e0e2e0; padding-top: 4px; border-radius: 16px; margin-bottom: 16px; display: flex; overflow: hidden; }
@@ -183,18 +175,17 @@
         .spinner { border: 4px solid #f3f3f3; border-left-color: var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* ENTRY DETAILS UI (Professional Look) */
+        /* ENTRY DETAILS UI */
         .entry-detail-card { background: white; margin-bottom: 16px; border-radius: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); overflow: hidden; border: 1px solid var(--border);}
         .ed-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 16px; border-bottom: 1px solid var(--border); background: #f8fafd;}
         .ed-amt { font-size: 26px; font-weight: 700; font-family: 'Product Sans', sans-serif;}
         .ed-row { padding: 20px 16px; border-bottom: 1px solid var(--border); }
-        .ed-edit-btn { text-align: center; padding: 16px; color: var(--primary); font-weight: 600; cursor: pointer; font-size:14px; background:#e8f0fe;}
+        .ed-edit-btn { text-align: center; padding: 16px; }
 
         /* CALCULATOR */
         .amount-input-box { background: white; border: 1px solid var(--border); border-radius: 16px; margin-bottom: 16px; padding: 16px; display: flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
         .amount-input-box input { border: none; outline: none; font-size: 32px; font-weight: 600; color: var(--danger); width: 100%; background: transparent; font-family: 'Product Sans', sans-serif;}
         
-        /* Auto-Hide Professional Detail Box */
         #calc-hidden-area { transition: all 0.3s ease; opacity: 0; max-height: 0; overflow: hidden; }
         #calc-hidden-area.show { opacity: 1; max-height: 200px; margin-bottom: 16px; }
         
@@ -241,11 +232,11 @@
         <div class="spinner"></div>
     </div>
 
-    <!-- ✂️ CROPPER MODAL (NEW) -->
+    <!-- ✂️ CROPPER MODAL (FIXED) -->
     <div id="crop-modal" class="crop-modal-overlay">
         <div class="crop-area"><img id="crop-image" src=""></div>
         <div class="crop-actions">
-            <button class="btn-outline" style="flex:1; border-color:white; color:white;" onclick="cancelCrop()">Cancel</button>
+            <button class="btn-outline" style="flex:1; border-color:white; color:white; background:transparent;" onclick="cancelCrop()">Cancel</button>
             <button class="btn-submit" style="flex:1; background:var(--primary);" onclick="applyCrop()">Crop & Save</button>
         </div>
     </div>
@@ -262,7 +253,7 @@
     
     <datalist id="pos-customers-dl"></datalist>
 
-    <!-- HIDDEN INVOICE TEMPLATE FOR PDF DOWNLOAD -->
+    <!-- HIDDEN INVOICE TEMPLATE FOR PDF DOWNLOAD (FIXED ITEMIZED DETAILS) -->
     <div id="pdf-container" style="position:fixed; left:-9999px; top:0;">
         <div id="pdf-invoice-template" style="background:white; padding:30px; font-family:Arial, sans-serif; color:black; width:700px; max-width:100%; box-sizing:border-box;">
             <div style="display:flex; justify-content:space-between; border-bottom:2px solid #0a56d0; padding-bottom:15px; margin-bottom:15px;">
@@ -283,8 +274,17 @@
                 <p style="margin:0; font-size:18px; font-weight:bold;" id="pdf-cust-name">Customer Name</p>
             </div>
             <table style="width:100%; border-collapse:collapse; margin-bottom:30px;">
-                <thead><tr style="background:#0a56d0; color:white;"><th style="padding:12px; text-align:left; border:1px solid #e0e2e0;">Description / Details</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Amount</th></tr></thead>
-                <tbody><tr><td style="padding:16px 12px; border:1px solid #e0e2e0; font-size:16px;" id="pdf-details">Product Details</td><td style="padding:16px 12px; text-align:right; border:1px solid #e0e2e0; font-size:16px; font-weight:bold;" id="pdf-amount">₹ 0</td></tr></tbody>
+                <thead id="pdf-table-header">
+                    <tr style="background:#0a56d0; color:white;">
+                        <th style="padding:12px; text-align:left; border:1px solid #e0e2e0;">Item Details</th>
+                        <th style="padding:12px; text-align:center; border:1px solid #e0e2e0;">Qty</th>
+                        <th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Rate</th>
+                        <th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="pdf-cart-body">
+                    <!-- JS will fill this area conditionally -->
+                </tbody>
             </table>
             <div style="display:flex; justify-content:flex-end;">
                 <div style="width:300px;"><div style="display:flex; justify-content:space-between; padding:12px; background:#f0f4f9; font-weight:bold; font-size:20px; border:1px solid #e0e2e0;"><span>Grand Total:</span><span id="pdf-total">₹ 0</span></div></div>
@@ -293,7 +293,7 @@
         </div>
     </div>
 
-    <!-- 📱 GOOGLE STYLE SIDEBAR MENU (No Photo) -->
+    <!-- 📱 GOOGLE STYLE SIDEBAR MENU -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -352,14 +352,10 @@
                 <p>Manage your inventory, billing, and ledger details seamlessly</p>
             </div>
 
-            <!-- DYNAMIC DATE PICKER -->
+            <!-- DYNAMIC DATE PICKER (FIXED PROFESSIONAL BOX) -->
             <div class="dash-date-wrapper">
-                <div style="background: white; padding: 6px 16px; border-radius: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 12px; border: 1px solid var(--border);">
-                    <div class="dynamic-cal-icon">
-                        <div class="cal-top"></div>
-                        <div class="cal-day" id="dynamic-cal-day">20</div>
-                    </div>
-                    <input type="date" id="dash-date-picker" class="professional-date-picker" style="padding:0; box-shadow:none; border:none; color:var(--text-dark);">
+                <div class="professional-date-box">
+                    <input type="date" id="dash-date-picker" class="professional-date-picker">
                 </div>
             </div>
             
@@ -399,7 +395,7 @@
         </div>
     </div>
 
-    <!-- 📱 SMART BOTTOM NAV (Hidden automatically on forms) -->
+    <!-- 📱 SMART BOTTOM NAV (Hidden automatically on forms & scroll) -->
     <div class="bottom-nav-bar" id="bottom-nav-bar">
         <div class="nav-item active" id="nav-btn-home" onclick="navTo('home', this)">
             <div class="nav-icon-wrap">🏠</div><span>Home</span>
@@ -436,7 +432,7 @@
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">
                 <h3 class="section-title" style="margin:0;">Transfer History</h3>
-                <input type="date" class="professional-date-picker" id="godown-date-picker" style="padding:4px 12px; font-size:12px; border:1px solid var(--border);" onchange="renderGodownHistory()">
+                <input type="date" class="professional-date-picker" id="godown-date-picker" style="padding:4px 12px; font-size:14px; border:1px solid var(--border); border-radius:8px;" onchange="renderGodownHistory()">
             </div>
         </div>
         <div class="scroll-content" style="padding-top:0;">
@@ -447,7 +443,7 @@
         </div>
     </div>
 
-    <!-- 🧾 SALE INVOICE PAGE (Professional Fonts) -->
+    <!-- 🧾 SALE INVOICE PAGE (Professional Fonts & FIXED NAME BOX) -->
     <div class="page flex-page" id="pos-page">
         <div class="sub-header"><button class="back-btn" onclick="closePage('pos-page')">←</button><h2 class="page-title">Create Invoice</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
@@ -455,12 +451,10 @@
                 <div class="form-panel">
                     <div class="form-group" style="margin-bottom:0;">
                         <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Customer Details</label>
+                        <!-- FIXED PROFESSIONAL NAME BOX -->
                         <div class="input-btn-group" style="margin-bottom:12px;">
-                            <div class="search-bar-container" style="margin:0; flex:1; padding:0 12px;">
-                                <span class="search-icon" style="font-size:14px; margin-right:8px;">🔍</span>
-                                <input type="text" id="inv-party" list="pos-customers-dl" placeholder="Enter Name (Auto-fills)">
-                            </div>
-                            <button class="action-btn" onclick="openPhonebook('inv-party', 'inv-phone')" style="width:44px;">👤</button>
+                            <input type="text" id="inv-party" class="form-control" list="pos-customers-dl" placeholder="Enter Customer Name">
+                            <button class="action-btn" onclick="openPhonebook('inv-party', 'inv-phone')" style="width:48px; border-radius:8px; flex-shrink:0;">👤</button>
                         </div>
                         <input type="tel" class="form-control" id="inv-phone" placeholder="Mobile Number">
                     </div>
@@ -595,7 +589,7 @@
         </div>
     </div>
 
-    <!-- 💸 ENTRY DETAILS PAGE (With Edit Feature Re-enabled) -->
+    <!-- 💸 ENTRY DETAILS PAGE (EDIT BUTTON FIXED) -->
     <div class="page flex-page" id="entry-details-page">
         <div class="sub-header"><button class="back-btn" onclick="closePage('entry-details-page')">←</button><h2 class="page-title">Entry Details</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
@@ -603,13 +597,13 @@
                 <div class="ed-header"><div class="ed-header-left"><div style="font-size:24px;" id="ed-icon">💸</div><div><div style="font-weight:500; font-size:18px; font-family:'Product Sans', sans-serif; color:var(--text-dark);" id="ed-party-name">Name</div><div style="font-size:12px; color:var(--text-muted);" id="ed-date">Date</div></div></div><div class="ed-amount-box"><div class="ed-amt" id="ed-amount">₹ 0</div><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;" id="ed-type">You Gave</div></div></div>
                 <div class="ed-row ed-flex-row">
                     <div style="flex:1;">
-                        <div class="ed-label">Details / Bill No.</div>
-                        <div class="ed-value" id="ed-details-text" style="word-wrap: break-word;">App Entry</div>
+                        <div class="ed-label" style="font-size:12px; color:var(--text-muted);">Details / Bill No.</div>
+                        <div class="ed-value" id="ed-details-text" style="word-wrap: break-word; font-weight:600; margin-top:4px;">App Entry</div>
                     </div>
                 </div>
-                <!-- EDIT BUTTON RE-ENABLED & STYLED -->
-                <div class="ed-edit-btn" onclick="editCurrentEntryAmount()" style="display:flex; justify-content:center; align-items:center; gap:8px;">
-                    <span>✏️</span> <span style="font-family:'Product Sans', sans-serif;">Edit Amount & Details</span>
+                <!-- EDIT BUTTON FIXED AND STYLED AS ACTIVE BUTTON -->
+                <div class="ed-edit-btn">
+                    <button class="btn-outline" onclick="editCurrentEntryAmount()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif;">✏️ Edit Amount & Details</button>
                 </div>
             </div>
         </div>
@@ -622,14 +616,14 @@
 
     <!-- 🧮 CALC SCREEN (Smart Auto-Hide Details) -->
     <div class="page" id="calculator-page" style="z-index: 4500;">
-        <div class="calc-header" id="calc-header"><button class="back-btn" onclick="closePage('calculator-page')" id="calc-back-btn" style="color:var(--danger);">←</button><h2 class="calc-title" id="calc-title-text" style="font-family: 'Product Sans', sans-serif;">You gave ₹ 0</h2></div>
-        <div class="page-content" style="padding:0;">
+        <div class="calc-header" id="calc-header" style="padding:16px; display:flex; align-items:center; background:white; border-bottom:1px solid var(--border);"><button class="back-btn" onclick="closePage('calculator-page')" id="calc-back-btn" style="color:var(--danger); margin-right:12px;">←</button><h2 class="calc-title" id="calc-title-text" style="font-family: 'Product Sans', sans-serif; font-size:18px;">You gave ₹ 0</h2></div>
+        <div class="page-content" style="padding:16px;">
             <div class="amount-input-box"><span class="amount-symbol" id="calc-symbol" style="font-size:24px; font-weight:600; margin-right:8px;">₹</span><input type="text" id="calc-amount" readonly placeholder="0" style="color:var(--danger);"></div>
             
             <!-- SMART HIDDEN AREA -->
             <div id="calc-hidden-area">
-                <input type="text" class="calc-details-input" id="calc-details" style="display:block;" placeholder="Enter details (Items, bill no., etc.)">
-                <div class="calc-action-row" style="margin-top:16px; display:flex; justify-content:center;"><input type="date" class="professional-date-picker" id="calc-date" style="border:1px solid var(--border);"></div>
+                <input type="text" class="calc-details-input" id="calc-details" style="display:block; margin:0 0 12px 0; width:100%;" placeholder="Enter details (Items, bill no., etc.)">
+                <div class="calc-action-row" style="margin-top:16px; display:flex; justify-content:center;"><input type="date" class="professional-date-picker" id="calc-date" style="border:1px solid var(--border); padding:8px 12px; border-radius:8px;"></div>
             </div>
             
         </div>
@@ -814,7 +808,6 @@
             document.getElementById('dash-date-picker').value = todayStr;
             document.getElementById('calc-date').value = todayStr;
             document.getElementById('godown-date-picker').value = todayStr;
-            document.getElementById('dynamic-cal-day').innerText = new Date().getDate(); // Dynamic Calendar
             
             loadAdminProfile();
             
@@ -834,16 +827,25 @@
                 if(cust && cust.phone) { document.getElementById('inv-phone').value = cust.phone; }
             });
 
+            // HIDE NAVBAR ON SCROLL (Youtube Style)
+            let lastScrollTop = 0;
             document.querySelector('.main-wrapper').addEventListener('scroll', function() {
-                if(this.scrollTop > 10) { document.getElementById('main-app-bar').classList.add('scrolled'); } 
+                let st = this.scrollTop;
+                if(st > 10) { document.getElementById('main-app-bar').classList.add('scrolled'); } 
                 else { document.getElementById('main-app-bar').classList.remove('scrolled'); }
+                
+                // Bottom nav auto-hide on scroll
+                if(st > lastScrollTop && st > 50) {
+                    document.getElementById('bottom-nav-bar').classList.add('hidden-by-scroll');
+                } else {
+                    document.getElementById('bottom-nav-bar').classList.remove('hidden-by-scroll');
+                }
+                lastScrollTop = st <= 0 ? 0 : st;
             });
         });
 
         // UPDATE DASHBOARD CALENDAR ON CHANGE
         document.getElementById('dash-date-picker').addEventListener('change', function(e) {
-            let d = new Date(e.target.value);
-            if(!isNaN(d)) { document.getElementById('dynamic-cal-day').innerText = d.getDate(); }
             calculateGrandTotals();
         });
 
@@ -859,10 +861,13 @@
             document.getElementById('pm-name-display').innerText = "Hi, " + firstName + "!";
         }
 
+        // ONLY SHOW BOTTOM NAV ON HOME PAGE
         function updateBottomNavVisibility(pageId) {
-            const mainPages = ['home', 'items-page', 'parties-page'];
-            if(mainPages.includes(pageId)) { document.getElementById('bottom-nav-bar').classList.remove('hidden'); } 
-            else { document.getElementById('bottom-nav-bar').classList.add('hidden'); }
+            if(pageId === 'home') { 
+                document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); 
+            } else { 
+                document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); 
+            }
         }
 
         window.navTo = function(pageId, element) {
@@ -873,7 +878,15 @@
             else { openPage(pageId); }
         }
 
-        window.openPage = function(id) { updateBottomNavVisibility(id); document.getElementById(id).classList.add('active'); }
+        const mainPages = ['items-page', 'parties-page', 'pos-page', 'godown-page', 'invoices-page', 'admin-profile-page'];
+        window.openPage = function(id) { 
+            // CLOSE OTHER MAIN PAGES AVOIDING OVERLAP
+            if(mainPages.includes(id)) {
+                mainPages.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.remove('active'); });
+            }
+            updateBottomNavVisibility(id); 
+            document.getElementById(id).classList.add('active'); 
+        }
         
         window.closePage = function(id) { 
             document.getElementById(id).classList.remove('active'); 
@@ -922,7 +935,7 @@
             loadAdminProfile(); alert("Profile Saved Successfully!");
         }
 
-        // CROPPER.JS LOGIC
+        // CROPPER.JS LOGIC FIXED
         window.handleAdminPic = function(event) {
             let file = event.target.files[0];
             if(file) { 
@@ -932,7 +945,10 @@
                     let img = document.getElementById('crop-image');
                     img.src = e.target.result;
                     if(cropper) cropper.destroy();
-                    cropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, background: false });
+                    // Wait for modal to render before init cropper
+                    setTimeout(() => {
+                        cropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, background: false });
+                    }, 200);
                 }; 
                 reader.readAsDataURL(file); 
             }
@@ -975,15 +991,20 @@
             document.getElementById('godown-history-list').innerHTML = html;
         }
 
+        // PREMIUM FIREWORKS CELEBRATION
         window.showCelebration = function(name) { 
             document.getElementById('celeb-name').innerText = name; 
             document.getElementById('celebration-modal').style.display = 'flex'; 
-            var duration = 3000; var end = Date.now() + duration;
-            (function frame() {
-                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 1 }, colors: ['#0a56d0', '#146c2e', '#f29900', '#b3261e'] });
-                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1, y: 1 }, colors: ['#0a56d0', '#146c2e', '#f29900', '#b3261e'] });
-                if (Date.now() < end) { requestAnimationFrame(frame); }
-            }());
+            var duration = 4000; // 4 seconds
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000 };
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
         }
 
         function setupPOSAutocomplete() {
@@ -1048,6 +1069,7 @@
             }
         }
 
+        // ITEMIZED PDF DOWNLOAD FIXED
         window.downloadPDFFromEntry = function() {
             if(!currentEntryData) return;
             
@@ -1060,8 +1082,26 @@
             document.getElementById('pdf-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleDateString('en-GB');
             document.getElementById('pdf-bill-no').innerText = currentEntryData.key.substring(1, 8).toUpperCase();
             document.getElementById('pdf-cust-name').innerText = currentEntryData.name;
-            document.getElementById('pdf-details').innerText = currentEntryData.details || "Ledger Entry";
-            document.getElementById('pdf-amount').innerText = "₹ " + parseFloat(currentEntryData.amount).toLocaleString('en-IN');
+            
+            // Check if cart details exist in DB for this entry
+            if(currentEntryData.cart && currentEntryData.cart.length > 0) {
+                let html = "";
+                currentEntryData.cart.forEach(item => {
+                    html += `<tr>
+                        <td style="padding:12px; border:1px solid #e0e2e0;">${item.title}</td>
+                        <td style="padding:12px; border:1px solid #e0e2e0; text-align:center;">${item.qty}</td>
+                        <td style="padding:12px; border:1px solid #e0e2e0; text-align:right;">₹${item.rate}</td>
+                        <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:bold;">₹${item.itemTotal}</td>
+                    </tr>`;
+                });
+                document.getElementById('pdf-cart-body').innerHTML = html;
+                document.getElementById('pdf-table-header').innerHTML = `<tr style="background:#0a56d0; color:white;"><th style="padding:12px; text-align:left; border:1px solid #e0e2e0;">Item Details</th><th style="padding:12px; text-align:center; border:1px solid #e0e2e0;">Qty</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Rate</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Amount</th></tr>`;
+            } else {
+                // Fallback for manual ledger entries
+                document.getElementById('pdf-table-header').innerHTML = `<tr style="background:#0a56d0; color:white;"><th style="padding:12px; text-align:left; border:1px solid #e0e2e0;">Description / Details</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Amount</th></tr>`;
+                document.getElementById('pdf-cart-body').innerHTML = `<tr><td style="padding:16px 12px; border:1px solid #e0e2e0; font-size:16px;">${currentEntryData.details || 'Ledger Entry'}</td><td style="padding:16px 12px; text-align:right; border:1px solid #e0e2e0; font-size:16px; font-weight:bold;">₹${currentEntryData.amount}</td></tr>`;
+            }
+
             document.getElementById('pdf-total').innerText = "₹ " + parseFloat(currentEntryData.amount).toLocaleString('en-IN');
             
             let elem = document.getElementById('pdf-invoice-template');
@@ -1290,7 +1330,7 @@
             if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
         }
 
-        // ================= SMART BILLING =================
+        // ================= SMART BILLING (FIXED PDF CART SAVE) =================
         let currentCart = []; let grandInvoiceTotal = 0; let invoiceBoxCount = 0;
 
         window.updatePosShades = function() {
@@ -1328,7 +1368,9 @@
             }
 
             currentCart.forEach(item => { let key = item.cat + "_" + item.shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) - item.qty); }); });
-            push(ref(db, 'Ledger'), { date: new Date().toISOString(), name: partyName, type: "Got", amount: grandInvoiceTotal, details: `Invoice Sale - ${invoiceBoxCount} Box` });
+            
+            // Added currentCart to DB so PDF can use it later
+            push(ref(db, 'Ledger'), { date: new Date().toISOString(), name: partyName, type: "Got", amount: grandInvoiceTotal, details: `Invoice Sale - ${invoiceBoxCount} Box`, cart: currentCart });
             
             document.getElementById('billing-form-area').style.display = 'none'; document.getElementById('post-bill-area').style.display = 'block'; 
         }

@@ -45,11 +45,12 @@
         .greeting-section h2 { font-family: 'Product Sans', sans-serif; font-size: 24px; font-weight: 400; color: #1f1f1f; margin-bottom: 6px; letter-spacing: -0.5px;}
         .greeting-section p { font-size: 13px; color: var(--text-muted); padding: 0 10px; line-height: 1.4; font-family: 'Inter', sans-serif;}
 
-        /* PROFESSIONAL DATE BOX */
+        /* PROFESSIONAL GOOGLE DATE PILL */
         .dash-date-wrapper { display: flex; justify-content: center; margin-bottom: 20px; }
-        .professional-date-box { background: white; padding: 10px 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; width: 180px; transition: border 0.3s;}
-        .professional-date-box:focus-within { border: 1px solid var(--primary); }
-        .professional-date-picker { background: transparent; border: none; font-size: 16px; font-weight: 600; color: var(--primary); font-family: 'Product Sans', sans-serif; outline: none; cursor: pointer; width: 100%; text-align: center; }
+        .google-date-pill { background: #e8f0fe; border-radius: 24px; padding: 8px 20px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.3s;}
+        .google-date-pill:hover { background: #d2e3fc; }
+        .google-date-pill input { background: transparent; border: none; font-size: 15px; font-weight: 600; color: var(--primary-dark); font-family: 'Product Sans', sans-serif; outline: none; cursor: pointer; }
+        .google-date-pill .cal-icon { font-size: 18px; }
 
         /* GOOGLE STYLE CARDS */
         .google-card { background: white; border-radius: 24px; padding: 20px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border: 1px solid var(--border); cursor: pointer; transition: background 0.2s;}
@@ -94,7 +95,7 @@
         .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 4px rgba(10, 86, 208, 0.2);}
         .btn-outline { border: 1px solid var(--border); color: var(--text-dark); background: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; font-size: 14px; cursor: pointer;}
 
-        /* GOOGLE STYLE SEARCH BOX (Pill Shape) */
+        /* GOOGLE STYLE SEARCH BOX */
         .search-bar-container { background: #f0f4f9; margin: 0 16px 16px 16px; border-radius: 28px; padding: 8px 20px; display: flex; align-items: center; border: 1px solid transparent; transition: background 0.3s, box-shadow 0.3s, border 0.3s;}
         .search-bar-container:focus-within { background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #e0e2e0;}
         .search-bar-container span { font-size: 18px; color: #444746; margin-right: 12px; }
@@ -124,7 +125,7 @@
         .pm-name { font-family: 'Product Sans', sans-serif; font-size: 22px; font-weight: 400; color: #1f1f1f; margin-bottom: 24px;}
         .pm-manage-btn { background: white; border: 1px solid var(--border); color: var(--primary); font-weight: 600; font-size: 14px; padding: 10px 24px; border-radius: 20px; cursor: pointer; width: 100%; margin-bottom: 20px; transition: background 0.2s; font-family: 'Product Sans', sans-serif;}
         
-        /* CROPPER MODAL (FIXED) */
+        /* CROPPER MODAL */
         .crop-modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index: 9999; flex-direction: column; justify-content:center; align-items:center;}
         .crop-area { width: 100%; max-height: 70vh; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #000;}
         .crop-area img { max-width: 100%; max-height: 100%; display: block; }
@@ -156,8 +157,8 @@
         
         .kb-fab { position: fixed !important; bottom: 30px; right: 20px; height: 56px; background: var(--primary); color: white; border-radius: 16px; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: 600; box-shadow: 0 4px 10px rgba(10, 86, 208, 0.3); border: none; z-index: 1001; cursor: pointer; padding: 0 20px; white-space: nowrap;}
         
-        /* LEDGER DEEP PAGE (Light Mode) */
-        .ledger-header-area { background: var(--bg-color); color: var(--text-dark); padding: 10px 0;}
+        /* LEDGER DEEP PAGE */
+        .ledger-header-area { background: var(--bg-color); color: var(--text-dark); padding: 10px 16px;}
         .ledger-bal-card { background: white; border-radius: 16px; padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border: 1px solid var(--border);}
         .ledger-action-tabs { display: flex; margin: 16px 0; gap: 10px;}
         .l-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 12px; color: var(--text-dark); font-weight: 600; background: white; border-radius: 20px; cursor: pointer; border: 1px solid var(--border);}
@@ -167,8 +168,8 @@
         .ec-gave { background: #fdf2f2; color: var(--danger); }
         .ec-got { background: #e6f4ea; color: var(--success); border-top-right-radius: 12px; border-bottom-right-radius: 12px;}
         .bottom-action-bar { position: fixed; bottom: 0; width: 100%; left: 0; background: white; padding: 12px 16px; display: flex; gap: 12px; border-top: 1px solid var(--border); z-index: 9999; box-shadow: 0 -2px 10px rgba(0,0,0,0.02); padding-bottom: calc(12px + env(safe-area-inset-bottom));}
-        .btn-l-gave { flex: 1; background: #fdf2f2; color: var(--danger); border: none; padding: 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; pointer-events: auto;}
-        .btn-l-got { flex: 1; background: #e6f4ea; color: var(--success); border: none; padding: 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; pointer-events: auto;}
+        .btn-l-gave { flex: 1; background: #fdf2f2; color: var(--danger); border: none; padding: 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .btn-l-got { flex: 1; background: #e6f4ea; color: var(--success); border: none; padding: 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
 
         /* LOADER */
         .loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; justify-content: center; align-items: center;}
@@ -232,7 +233,7 @@
         <div class="spinner"></div>
     </div>
 
-    <!-- ✂️ CROPPER MODAL (FIXED) -->
+    <!-- ✂️ CROPPER MODAL -->
     <div id="crop-modal" class="crop-modal-overlay">
         <div class="crop-area"><img id="crop-image" src=""></div>
         <div class="crop-actions">
@@ -253,7 +254,7 @@
     
     <datalist id="pos-customers-dl"></datalist>
 
-    <!-- HIDDEN INVOICE TEMPLATE FOR PDF DOWNLOAD (FIXED ITEMIZED DETAILS) -->
+    <!-- HIDDEN INVOICE TEMPLATE FOR PDF DOWNLOAD (DETAILED VERSION) -->
     <div id="pdf-container" style="position:fixed; left:-9999px; top:0;">
         <div id="pdf-invoice-template" style="background:white; padding:30px; font-family:Arial, sans-serif; color:black; width:700px; max-width:100%; box-sizing:border-box;">
             <div style="display:flex; justify-content:space-between; border-bottom:2px solid #0a56d0; padding-bottom:15px; margin-bottom:15px;">
@@ -275,15 +276,10 @@
             </div>
             <table style="width:100%; border-collapse:collapse; margin-bottom:30px;">
                 <thead id="pdf-table-header">
-                    <tr style="background:#0a56d0; color:white;">
-                        <th style="padding:12px; text-align:left; border:1px solid #e0e2e0;">Item Details</th>
-                        <th style="padding:12px; text-align:center; border:1px solid #e0e2e0;">Qty</th>
-                        <th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Rate</th>
-                        <th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Amount</th>
-                    </tr>
+                    <!-- JS fills headers dynamically based on item/ledger type -->
                 </thead>
                 <tbody id="pdf-cart-body">
-                    <!-- JS will fill this area conditionally -->
+                    <!-- JS fills items here -->
                 </tbody>
             </table>
             <div style="display:flex; justify-content:flex-end;">
@@ -352,10 +348,11 @@
                 <p>Manage your inventory, billing, and ledger details seamlessly</p>
             </div>
 
-            <!-- DYNAMIC DATE PICKER (FIXED PROFESSIONAL BOX) -->
+            <!-- GOOGLE STYLE DATE PILL -->
             <div class="dash-date-wrapper">
-                <div class="professional-date-box">
-                    <input type="date" id="dash-date-picker" class="professional-date-picker">
+                <div class="google-date-pill">
+                    <span class="cal-icon">📅</span>
+                    <input type="date" id="dash-date-picker">
                 </div>
             </div>
             
@@ -432,7 +429,7 @@
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">
                 <h3 class="section-title" style="margin:0;">Transfer History</h3>
-                <input type="date" class="professional-date-picker" id="godown-date-picker" style="padding:4px 12px; font-size:14px; border:1px solid var(--border); border-radius:8px;" onchange="renderGodownHistory()">
+                <input type="date" style="padding:4px 12px; font-size:14px; border:1px solid var(--border); border-radius:8px; font-family:'Product Sans', sans-serif;" id="godown-date-picker" onchange="renderGodownHistory()">
             </div>
         </div>
         <div class="scroll-content" style="padding-top:0;">
@@ -443,7 +440,7 @@
         </div>
     </div>
 
-    <!-- 🧾 SALE INVOICE PAGE (Professional Fonts & FIXED NAME BOX) -->
+    <!-- 🧾 SALE INVOICE PAGE -->
     <div class="page flex-page" id="pos-page">
         <div class="sub-header"><button class="back-btn" onclick="closePage('pos-page')">←</button><h2 class="page-title">Create Invoice</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
@@ -451,7 +448,6 @@
                 <div class="form-panel">
                     <div class="form-group" style="margin-bottom:0;">
                         <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Customer Details</label>
-                        <!-- FIXED PROFESSIONAL NAME BOX -->
                         <div class="input-btn-group" style="margin-bottom:12px;">
                             <input type="text" id="inv-party" class="form-control" list="pos-customers-dl" placeholder="Enter Customer Name">
                             <button class="action-btn" onclick="openPhonebook('inv-party', 'inv-phone')" style="width:48px; border-radius:8px; flex-shrink:0;">👤</button>
@@ -523,17 +519,17 @@
         <button class="kb-fab" id="main-fab" onclick="openPage('add-party-page')"><span class="fab-icon">+</span><span class="fab-text" id="fab-text">Add Customer</span></button>
     </div>
 
-    <!-- 🔥 KHATABOOK DEEP LEDGER PAGE -->
+    <!-- 🔥 KHATABOOK DEEP LEDGER PAGE (FIXED ALIGNMENT) -->
     <div class="page flex-page" id="ledger-deep-page">
         <div class="fixed-top-section" style="padding:0;">
             <div class="ledger-header-area">
                 <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <button class="back-btn" onclick="closePage('ledger-deep-page')" style="padding:0; margin-right:5px;">←</button>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <button class="back-btn" onclick="closePage('ledger-deep-page')" style="padding:0; margin:0;">←</button>
                         <div class="kb-avatar" id="l-deep-avatar-text" style="width:36px; height:36px; font-size:14px; background:#e8f0fe; color:var(--primary);" onclick="openCustomerProfile()"></div>
                         <div class="l-name" id="l-deep-name" style="color:var(--text-dark); font-size:18px; cursor:pointer; font-weight:500; font-family:'Product Sans', sans-serif;" onclick="openCustomerProfile()">Name</div>
                     </div>
-                    <a href="#" id="l-call-btn" style="color:var(--primary); text-decoration:none; font-size:16px; border:1px solid var(--border); border-radius:50%; width:36px; height:36px; display:flex; justify-content:center; align-items:center; background:white; box-shadow:0 1px 2px rgba(0,0,0,0.02);">📞</a>
+                    <a href="#" id="l-call-btn" style="color:var(--primary); text-decoration:none; font-size:16px; border:1px solid var(--border); border-radius:50%; width:36px; height:36px; display:flex; justify-content:center; align-items:center; background:white; box-shadow:0 1px 2px rgba(0,0,0,0.02); flex-shrink:0;">📞</a>
                 </div>
             </div>
             <div class="ledger-bal-card">
@@ -548,9 +544,11 @@
             <div style="display:flex; justify-content:space-between; padding:0 20px; font-size:10px; font-weight:600; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;"><span style="flex:2;">ENTRIES</span><span style="flex:1; text-align:center;">YOU GAVE</span><span style="flex:1; text-align:right;">YOU GOT</span></div>
         </div>
         <div class="scroll-content" id="ledger-entries-list" style="padding-top:0;"></div>
+        
+        <!-- FIXED GAVE/GOT BUTTONS -->
         <div class="bottom-action-bar" style="z-index: 9999;">
-            <button class="btn-l-gave" onclick="openCalculator('Gave')" style="pointer-events: auto;">YOU GAVE ₹</button>
-            <button class="btn-l-got" onclick="openCalculator('Got')" style="pointer-events: auto;">YOU GOT ₹</button>
+            <button class="btn-l-gave" onclick="openCalculator('Gave')">YOU GAVE ₹</button>
+            <button class="btn-l-got" onclick="openCalculator('Got')">YOU GOT ₹</button>
         </div>
     </div>
 
@@ -601,7 +599,7 @@
                         <div class="ed-value" id="ed-details-text" style="word-wrap: break-word; font-weight:600; margin-top:4px;">App Entry</div>
                     </div>
                 </div>
-                <!-- EDIT BUTTON FIXED AND STYLED AS ACTIVE BUTTON -->
+                <!-- EDIT BUTTON FIXED -->
                 <div class="ed-edit-btn">
                     <button class="btn-outline" onclick="editCurrentEntryAmount()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif;">✏️ Edit Amount & Details</button>
                 </div>
@@ -623,7 +621,7 @@
             <!-- SMART HIDDEN AREA -->
             <div id="calc-hidden-area">
                 <input type="text" class="calc-details-input" id="calc-details" style="display:block; margin:0 0 12px 0; width:100%;" placeholder="Enter details (Items, bill no., etc.)">
-                <div class="calc-action-row" style="margin-top:16px; display:flex; justify-content:center;"><input type="date" class="professional-date-picker" id="calc-date" style="border:1px solid var(--border); padding:8px 12px; border-radius:8px;"></div>
+                <div class="calc-action-row" style="margin-top:16px; display:flex; justify-content:center;"><input type="date" style="border:1px solid var(--border); padding:8px 12px; border-radius:8px; font-family:'Product Sans', sans-serif;" id="calc-date"></div>
             </div>
             
         </div>
@@ -790,8 +788,14 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // GLOBAL VARIABLES (Fixed ES Module strict mode declarations)
         let allLedgerData = []; let globalCustomers = []; let smartInventory = {}; let allGodownTransfers = [];
         let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null; 
+        
+        window.calcValue = "";  // CRITICAL FIX: Made explicitly global
+        window.calcType = "Gave"; // CRITICAL FIX: Made explicitly global
+        window.isEditingEntry = false;
+        
         window.currentTabType = 'Customer';
         window.currentTopCustTab = 'current'; 
         window.ledgerTotals = { custGive:0, custGet:0, supGive:0, supGet:0 };
@@ -807,7 +811,6 @@
             let todayStr = new Date().toISOString().split('T')[0];
             document.getElementById('dash-date-picker').value = todayStr;
             document.getElementById('calc-date').value = todayStr;
-            document.getElementById('godown-date-picker').value = todayStr;
             
             loadAdminProfile();
             
@@ -827,14 +830,13 @@
                 if(cust && cust.phone) { document.getElementById('inv-phone').value = cust.phone; }
             });
 
-            // HIDE NAVBAR ON SCROLL (Youtube Style)
+            // HIDE NAVBAR ON SCROLL
             let lastScrollTop = 0;
             document.querySelector('.main-wrapper').addEventListener('scroll', function() {
                 let st = this.scrollTop;
                 if(st > 10) { document.getElementById('main-app-bar').classList.add('scrolled'); } 
                 else { document.getElementById('main-app-bar').classList.remove('scrolled'); }
                 
-                // Bottom nav auto-hide on scroll
                 if(st > lastScrollTop && st > 50) {
                     document.getElementById('bottom-nav-bar').classList.add('hidden-by-scroll');
                 } else {
@@ -880,7 +882,6 @@
 
         const mainPages = ['items-page', 'parties-page', 'pos-page', 'godown-page', 'invoices-page', 'admin-profile-page'];
         window.openPage = function(id) { 
-            // CLOSE OTHER MAIN PAGES AVOIDING OVERLAP
             if(mainPages.includes(id)) {
                 mainPages.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.remove('active'); });
             }
@@ -935,7 +936,6 @@
             loadAdminProfile(); alert("Profile Saved Successfully!");
         }
 
-        // CROPPER.JS LOGIC FIXED
         window.handleAdminPic = function(event) {
             let file = event.target.files[0];
             if(file) { 
@@ -945,10 +945,7 @@
                     let img = document.getElementById('crop-image');
                     img.src = e.target.result;
                     if(cropper) cropper.destroy();
-                    // Wait for modal to render before init cropper
-                    setTimeout(() => {
-                        cropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, background: false });
-                    }, 200);
+                    setTimeout(() => { cropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, background: false }); }, 200);
                 }; 
                 reader.readAsDataURL(file); 
             }
@@ -959,8 +956,7 @@
             let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
             let dataUrl = canvas.toDataURL('image/jpeg', 0.8);
             localStorage.setItem('v_adminPic', dataUrl);
-            loadAdminProfile();
-            document.getElementById('crop-modal').style.display = 'none';
+            loadAdminProfile(); document.getElementById('crop-modal').style.display = 'none';
         }
 
         window.processGodown = function(type) {
@@ -991,11 +987,10 @@
             document.getElementById('godown-history-list').innerHTML = html;
         }
 
-        // PREMIUM FIREWORKS CELEBRATION
         window.showCelebration = function(name) { 
             document.getElementById('celeb-name').innerText = name; 
             document.getElementById('celebration-modal').style.display = 'flex'; 
-            var duration = 4000; // 4 seconds
+            var duration = 4000; 
             var animationEnd = Date.now() + duration;
             var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000 };
             function randomInRange(min, max) { return Math.random() * (max - min) + min; }
@@ -1069,7 +1064,7 @@
             }
         }
 
-        // ITEMIZED PDF DOWNLOAD FIXED
+        // ITEMIZED PDF DOWNLOAD FIXED - NOW SHOWS FULL DETAILS
         window.downloadPDFFromEntry = function() {
             if(!currentEntryData) return;
             
@@ -1083,21 +1078,30 @@
             document.getElementById('pdf-bill-no').innerText = currentEntryData.key.substring(1, 8).toUpperCase();
             document.getElementById('pdf-cust-name').innerText = currentEntryData.name;
             
-            // Check if cart details exist in DB for this entry
+            // Generate detailed table if it's an Invoice with Cart Items
             if(currentEntryData.cart && currentEntryData.cart.length > 0) {
                 let html = "";
                 currentEntryData.cart.forEach(item => {
                     html += `<tr>
-                        <td style="padding:12px; border:1px solid #e0e2e0;">${item.title}</td>
+                        <td style="padding:12px; border:1px solid #e0e2e0;">
+                            <strong>${item.cat}</strong><br>
+                            <span style="font-size:12px; color:#444746;">Color / Shade: ${item.shade}</span>
+                        </td>
                         <td style="padding:12px; border:1px solid #e0e2e0; text-align:center;">${item.qty}</td>
                         <td style="padding:12px; border:1px solid #e0e2e0; text-align:right;">₹${item.rate}</td>
-                        <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:bold;">₹${item.itemTotal}</td>
+                        <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:bold;">₹${item.itemTotal.toLocaleString('en-IN')}</td>
                     </tr>`;
                 });
                 document.getElementById('pdf-cart-body').innerHTML = html;
-                document.getElementById('pdf-table-header').innerHTML = `<tr style="background:#0a56d0; color:white;"><th style="padding:12px; text-align:left; border:1px solid #e0e2e0;">Item Details</th><th style="padding:12px; text-align:center; border:1px solid #e0e2e0;">Qty</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Rate</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Amount</th></tr>`;
+                document.getElementById('pdf-table-header').innerHTML = `
+                    <tr style="background:#0a56d0; color:white;">
+                        <th style="padding:12px; text-align:left; border:1px solid #e0e2e0;">Product Details (माल का विवरण)</th>
+                        <th style="padding:12px; text-align:center; border:1px solid #e0e2e0;">Qty (क्वांटिटी)</th>
+                        <th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Rate (रेट)</th>
+                        <th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Total Amount</th>
+                    </tr>`;
             } else {
-                // Fallback for manual ledger entries
+                // Fallback for manual Ledger entries (Udhari/Cash)
                 document.getElementById('pdf-table-header').innerHTML = `<tr style="background:#0a56d0; color:white;"><th style="padding:12px; text-align:left; border:1px solid #e0e2e0;">Description / Details</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Amount</th></tr>`;
                 document.getElementById('pdf-cart-body').innerHTML = `<tr><td style="padding:16px 12px; border:1px solid #e0e2e0; font-size:16px;">${currentEntryData.details || 'Ledger Entry'}</td><td style="padding:16px 12px; text-align:right; border:1px solid #e0e2e0; font-size:16px; font-weight:bold;">₹${currentEntryData.amount}</td></tr>`;
             }
@@ -1175,14 +1179,14 @@
         window.openLedgerDetail = function(name, phone) { currentPartyName = name; currentPartyPhone = phone || ""; document.getElementById('l-deep-name').innerText = name; document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#"; document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); renderLedgerEntries(name); openPage('ledger-deep-page'); }
 
         window.saveCalculatorEntry = function() {
-            let amount = eval(calcValue) || 0; if(amount <= 0) return alert("Enter valid amount!");
+            let amount = eval(window.calcValue) || 0; if(amount <= 0) return alert("Enter valid amount!");
             let dateVal = document.getElementById('calc-date').value; if(!dateVal) dateVal = new Date().toISOString().split('T')[0];
             
             if(window.isEditingEntry && currentEntryData) {
-                update(ref(db, 'Ledger/' + currentEntryData.key), { amount: amount, details: document.getElementById('calc-details').value || "App Entry", type: calcType, date: new Date(dateVal).toISOString() });
+                update(ref(db, 'Ledger/' + currentEntryData.key), { amount: amount, details: document.getElementById('calc-details').value || "App Entry", type: window.calcType, date: new Date(dateVal).toISOString() });
                 window.isEditingEntry = false; currentEntryData = null;
             } else {
-                push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: calcType, amount: amount, details: document.getElementById('calc-details').value || "App Entry" }); 
+                push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: window.calcType, amount: amount, details: document.getElementById('calc-details').value || "App Entry" }); 
             }
             closePage('calculator-page');
         }
@@ -1195,21 +1199,20 @@
             document.getElementById('ed-icon').innerText = icon; document.getElementById('ed-amount').innerText = `₹ ${parseFloat(currentEntryData.amount).toLocaleString()}`; document.getElementById('ed-amount').style.color = color; document.getElementById('ed-type').innerText = `You ${currentEntryData.type}`; document.getElementById('ed-type').style.color = color; document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry"; openPage('entry-details-page');
         }
 
-        // SMART EDIT & AUTO-HIDE DETAILS
         window.editCurrentEntryAmount = function() { 
             if(!currentEntryData) return; 
-            window.isEditingEntry = true; calcType = currentEntryData.type; calcValue = currentEntryData.amount.toString();
-            document.getElementById('calc-amount').value = calcValue; 
+            window.isEditingEntry = true; window.calcType = currentEntryData.type; window.calcValue = currentEntryData.amount.toString();
+            document.getElementById('calc-amount').value = window.calcValue; 
             document.getElementById('calc-details').value = currentEntryData.details || "";
             document.getElementById('calc-hidden-area').classList.add('show');
             document.getElementById('calc-save-btn').innerText = "UPDATE ENTRY";
             let d = new Date(currentEntryData.date); if(!isNaN(d)) document.getElementById('calc-date').value = d.toISOString().split('T')[0];
-            closePage('entry-details-page'); openCalculator(calcType, true); 
+            closePage('entry-details-page'); openCalculator(window.calcType, true); 
         }
 
         window.openCalculator = function(type, skipReset = false) {
             if(!skipReset) {
-                calcType = type; calcValue = ""; 
+                window.calcType = type; window.calcValue = ""; 
                 document.getElementById('calc-amount').value = ""; 
                 document.getElementById('calc-details').value = "";
                 document.getElementById('calc-hidden-area').classList.remove('show');
@@ -1222,23 +1225,18 @@
         }
 
         window.calcPress = function(val) { 
-            if(val === 'C') calcValue = ""; 
-            else if(val === 'BACK') calcValue = calcValue.slice(0, -1); 
-            else if(val === '=') { try { calcValue = eval(calcValue).toString(); } catch(e){} } 
-            else calcValue += val; 
+            if(val === 'C') window.calcValue = ""; 
+            else if(val === 'BACK') window.calcValue = window.calcValue.slice(0, -1); 
+            else if(val === '=') { try { window.calcValue = eval(window.calcValue).toString(); } catch(e){} } 
+            else window.calcValue += val; 
             
-            document.getElementById('calc-amount').value = calcValue; 
-            
-            // SMART AUTO HIDE / SHOW
-            if(parseFloat(calcValue) > 0) {
-                document.getElementById('calc-hidden-area').classList.add('show');
-            } else {
-                document.getElementById('calc-hidden-area').classList.remove('show');
-            }
-
+            document.getElementById('calc-amount').value = window.calcValue; 
+            if(parseFloat(window.calcValue) > 0) { document.getElementById('calc-hidden-area').classList.add('show'); } 
+            else { document.getElementById('calc-hidden-area').classList.remove('show'); }
             updateCalcTitle(); 
         }
-        function updateCalcTitle() { document.getElementById('calc-title-text').innerText = `You ${calcType.toLowerCase()} ₹ ${calcValue || "0"} to ${currentPartyName}`; }
+        
+        function updateCalcTitle() { document.getElementById('calc-title-text').innerText = `You ${window.calcType.toLowerCase()} ₹ ${window.calcValue || "0"} to ${currentPartyName}`; }
         
         window.deleteCurrentEntry = function() { if(confirm("Are you sure you want to delete this entry?")) { remove(ref(db, 'Ledger/' + currentEntryData.key)); closePage('entry-details-page'); } }
         window.shareCurrentEntry = function() { if(!currentEntryData) return; let typeStr = currentEntryData.type === 'Gave' ? 'You Gave' : 'You Got'; let msg = `📄 *Ledger Entry* %0A🏛️ *Vandana Enterprises*%0A%0A*Name:* ${currentEntryData.name}%0A*Type:* ${typeStr}%0A*Amount:* ₹${currentEntryData.amount}%0A*Details:* ${currentEntryData.details}`; window.open(`https://wa.me/91${currentPartyPhone}?text=${msg}`, '_blank'); }
@@ -1330,7 +1328,7 @@
             if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
         }
 
-        // ================= SMART BILLING (FIXED PDF CART SAVE) =================
+        // ================= SMART BILLING (PDF CART SAVE) =================
         let currentCart = []; let grandInvoiceTotal = 0; let invoiceBoxCount = 0;
 
         window.updatePosShades = function() {
@@ -1369,7 +1367,6 @@
 
             currentCart.forEach(item => { let key = item.cat + "_" + item.shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) - item.qty); }); });
             
-            // Added currentCart to DB so PDF can use it later
             push(ref(db, 'Ledger'), { date: new Date().toISOString(), name: partyName, type: "Got", amount: grandInvoiceTotal, details: `Invoice Sale - ${invoiceBoxCount} Box`, cart: currentCart });
             
             document.getElementById('billing-form-area').style.display = 'none'; document.getElementById('post-bill-area').style.display = 'block'; 

@@ -122,75 +122,50 @@
         .pm-cam { position: absolute; bottom: 0; right: 0; background: white; border: 1px solid var(--border); border-radius: 50%; width: 26px; height: 26px; display: flex; justify-content: center; align-items: center; font-size: 12px; cursor: pointer;}
         .pm-name { font-family: 'Product Sans', sans-serif; font-size: 22px; font-weight: 400; color: #1f1f1f; margin-bottom: 24px;}
 
-        /* 🔥 10 RACKS SYSTEM (6 SHELVES, 5 BOXES EACH) 🔥 */
-        .rack-room-title { font-size: 16px; font-weight: 700; color: #1f2937; margin: 20px 0 8px 0; font-family: 'Product Sans', sans-serif; display:flex; align-items:center; gap:6px;}
+        /* 🔥 SHOP FLOOR PLAN UI (9 RACKS) 🔥 */
+        .shop-floor {
+            display: flex; flex-direction: column; gap: 24px; padding: 20px 10px;
+            background: #e2e8f0; border-radius: 16px; margin: 0 16px 20px 16px;
+            border: 2px solid #cbd5e1;
+        }
+        .floor-row {
+            display: flex; justify-content: space-between; align-items: center; gap: 16px;
+        }
+        .side-left {
+            display: flex; gap: 12px; flex: 2; justify-content: center;
+        }
+        .side-right {
+            display: flex; flex: 1; justify-content: center;
+        }
+        .rack-obj {
+            background: #334155; color: white; padding: 24px 10px; border-radius: 8px;
+            text-align: center; font-weight: 700; font-family: 'Product Sans', sans-serif;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; flex: 1;
+            border-top: 4px solid #94a3b8; transition: transform 0.2s; display:flex; flex-direction:column; align-items:center; gap:6px;
+        }
+        .rack-obj:active { transform: scale(0.95); }
+        .rack-obj .material-symbols-rounded { font-size: 28px; color: #cbd5e1; }
+
+        /* 🔥 DETAILED RACK VIEW (SIDE A & B) 🔥 */
+        .rack-detail-container { background: #f8fafc; min-height: 100%; padding-bottom: 40px; }
+        .rack-side-tabs { display: flex; background: white; border-bottom: 1px solid var(--border); position:sticky; top:50px; z-index:40;}
+        .rack-tab { flex: 1; text-align: center; padding: 14px 0; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: 0.3s; font-family: 'Product Sans', sans-serif; }
+        .rack-tab.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: #f0f4f9;}
         
         .rack-shelf-container { 
             background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%); 
-            border: 4px solid #cbd5e1; 
-            border-radius: 12px; 
-            padding: 10px; 
-            margin-bottom: 24px; 
+            border: 4px solid #cbd5e1; border-radius: 12px; padding: 10px; margin: 20px 16px; 
             box-shadow: inset 0 4px 8px rgba(0,0,0,0.03), 0 3px 5px rgba(0,0,0,0.05); 
         }
-        
-        .rack-shelf-title { 
-            background: #334155; color: white; padding: 4px 12px; border-radius: 4px; 
-            display: inline-block; font-size: 11px; font-weight: 700; margin-bottom: 10px; 
-            letter-spacing: 0.5px; text-transform: uppercase;
-        }
-        
-        .rack-row { 
-            display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; 
-            border-bottom: 8px solid #94a3b8; 
-            padding-bottom: 8px; margin-bottom: 16px; position: relative; 
-        }
-        .rack-row::after { 
-            content: ''; position: absolute; bottom: -8px; left: -10px; right: -10px; 
-            height: 8px; background: #64748b; border-radius: 0 0 4px 4px; 
-        }
+        .rack-shelf-title { background: #334155; color: white; padding: 4px 12px; border-radius: 4px; display: inline-block; font-size: 11px; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
+        .rack-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; border-bottom: 8px solid #94a3b8; padding-bottom: 8px; margin-bottom: 16px; position: relative; }
+        .rack-row::after { content: ''; position: absolute; bottom: -8px; left: -10px; right: -10px; height: 8px; background: #64748b; border-radius: 0 0 4px 4px; }
         .rack-row:last-child { margin-bottom: 0; }
         
-        .smart-box { 
-            background: white; border-radius: 6px; border: 1px solid #e2e8f0; position: relative; 
-            padding: 6px 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.06); 
-            display: flex; flex-direction: column; align-items: center; overflow: hidden; cursor: pointer;
-            transition: transform 0.15s; min-height: 85px;
-        }
-        .smart-box:active { transform: scale(0.96); }
-        
-        .box-thumb { 
-            width: 34px; height: 34px; border-radius: 6px; object-fit: cover; 
-            background: #f1f5f9; margin-bottom: 4px; border: 1px solid #e2e8f0; 
-        }
-        
-        .box-badge { 
-            position: absolute; top: -2px; right: -2px; font-size: 10px; background: white; 
-            border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.15); width: 18px; height: 18px; 
-            display: flex; align-items: center; justify-content: center; z-index: 2;
-        }
-        .box-color-dot { 
-            position: absolute; top: 4px; left: 4px; width: 8px; height: 8px; 
-            border-radius: 50%; border: 1px solid white; box-shadow: 0 1px 2px rgba(0,0,0,0.2); z-index: 2;
-        }
-        
-        .box-title { font-size: 9px; font-weight: 700; color: #1e293b; text-align: center; line-height: 1.1; font-family: 'Product Sans', sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;}
-        .box-qty-text { font-size: 9px; font-weight: 700; color: #64748b; margin-top: 2px; background: #f1f5f9; padding: 1px 4px; border-radius: 6px;}
-        
-        .cap-bar-bg { width: 100%; height: 4px; background: #e2e8f0; border-radius: 2px; margin-top: 4px; overflow: hidden; }
-        .cap-bar-fill { height: 100%; border-radius: 2px; }
-        
-        .empty-slot { 
-            border: 1px dashed #94a3b8; background: transparent; box-shadow: none; opacity: 0.5; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 85px; border-radius: 6px;
-        }
+        .smart-box { background: white; border-radius: 6px; border: 1px solid #e2e8f0; position: relative; padding: 6px 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.06); display: flex; flex-direction: column; align-items: center; overflow: hidden; min-height: 85px; }
+        .empty-slot { border: 1px dashed #94a3b8; background: transparent; box-shadow: none; opacity: 0.5; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 85px; border-radius: 6px; }
         .empty-slot .material-symbols-rounded { font-size: 18px; color: #94a3b8; margin-bottom: 2px;}
         .empty-slot-text { font-size: 8px; font-weight: 600; color: #64748b; text-transform: uppercase;}
-
-        /* Stock Info Modal */
-        .info-modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 6000; justify-content: center; align-items: center; padding: 20px;}
-        .info-modal-box { background: white; padding: 24px; border-radius: 20px; width: 100%; max-width: 320px; text-align: center; position: relative; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
-        .info-brand-pic { width: 80px; height: 80px; border-radius: 12px; margin: 0 auto 16px auto; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid #e2e8f0;}
 
         /* Ajio & Ledger tabs */
         .ajio-tab-container { background: #e0e2e0; padding-top: 4px; border-radius: 16px; margin-bottom: 16px; display: flex; overflow: hidden; }
@@ -252,7 +227,7 @@
         .ua-item-desc { font-size: 12px; color: var(--text-muted); }
         .ua-item-count { font-size: 15px; font-weight: 600; color: var(--primary); }
         
-        .celebration-modal { display: none; fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; padding: 20px; text-align: center; }
+        .celebration-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; padding: 20px; text-align: center; }
         .celeb-box { background: white; padding: 30px 24px; border-radius: 24px; max-width: 400px; position: relative; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; box-shadow: 0 10px 25px rgba(0,0,0,0.1);}
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
@@ -287,28 +262,6 @@
             <h3 style="font-family:'Product Sans', sans-serif; font-size:22px; color:var(--primary); margin-bottom:8px;" id="celeb-name">Customer Name</h3>
             <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Top Customer Achiever! Special 2% Discount Unlocked 🎉</p>
             <button class="btn-submit" onclick="document.getElementById('celebration-modal').style.display='none'">Awesome!</button>
-        </div>
-    </div>
-
-    <!-- ℹ️ SMART BOX INFO MODAL -->
-    <div class="info-modal-overlay" id="box-info-modal" onclick="this.style.display='none'">
-        <div class="info-modal-box" onclick="event.stopPropagation()">
-            <img src="" id="info-modal-img" class="info-brand-pic">
-            <h3 id="info-modal-title" style="font-family:'Product Sans', sans-serif; font-size:20px; color:#1e293b; margin-bottom:4px;">Shade Name</h3>
-            <p id="info-modal-cat" style="font-size:12px; color:#64748b; font-weight:600; text-transform:uppercase; margin-bottom:16px;">Category</p>
-            
-            <div style="background:#f1f5f9; border-radius:12px; padding:16px; margin-bottom:20px; display:flex; justify-content:space-around;">
-                <div>
-                    <div style="font-size:11px; color:#64748b; font-weight:600; margin-bottom:4px;">CURRENT STOCK</div>
-                    <div id="info-modal-qty" style="font-size:24px; font-weight:700; color:var(--primary); font-family:'Product Sans', sans-serif;">0 Box</div>
-                </div>
-                <div style="width:1px; background:#cbd5e1;"></div>
-                <div>
-                    <div style="font-size:11px; color:#64748b; font-weight:600; margin-bottom:4px;">STATUS</div>
-                    <div id="info-modal-status" style="font-size:14px; font-weight:700; margin-top:8px;">🟢 Healthy</div>
-                </div>
-            </div>
-            <button class="btn-submit" onclick="document.getElementById('box-info-modal').style.display='none'">Close</button>
         </div>
     </div>
 
@@ -438,7 +391,7 @@
         <ul class="sidebar-menu">
             <li class="active" onclick="navTo('home', null); closeSidebar();"><i class="material-symbols-rounded">space_dashboard</i> Dashboard</li>
             <li onclick="navTo('items-page', null); closeSidebar();"><i class="material-symbols-rounded">inventory_2</i> Master Inventory</li>
-            <li onclick="navTo('rack-map-page', null); closeSidebar();"><i class="material-symbols-rounded">grid_view</i> Visual Rack Map <span style="font-size:10px; background:var(--primary); color:white; padding:2px 6px; border-radius:10px; margin-left:auto;">10 RACKS</span></li>
+            <li onclick="navTo('rack-map-page', null); closeSidebar();"><i class="material-symbols-rounded">grid_view</i> Visual Shop Floor <span style="font-size:10px; background:var(--primary); color:white; padding:2px 6px; border-radius:10px; margin-left:auto;">9 RACKS</span></li>
             <li onclick="navTo('godown-page', null); closeSidebar();"><i class="material-symbols-rounded">local_shipping</i> Godown Transfer</li>
             <li onclick="navTo('pos-page', null); closeSidebar();"><i class="material-symbols-rounded">receipt_long</i> Billing & Invoice</li>
             <li onclick="navTo('parties-page', null); closeSidebar();"><i class="material-symbols-rounded">menu_book</i> Ledger Book</li>
@@ -538,20 +491,84 @@
         </div>
     </div>
 
-    <!-- 🗺️ VISUAL RACK MAP PAGE (10 RACKS, 6 SHELVES, 5 BOXES) -->
+    <!-- 🗺️ SHOP FLOOR PLAN PAGE (9 RACKS OVERVIEW) -->
     <div class="page flex-page" id="rack-map-page">
         <div class="sub-header">
             <button class="back-btn material-symbols-rounded" onclick="closePage('rack-map-page')">arrow_back</button>
-            <h2 class="page-title">Visual 10 Racks Map</h2>
+            <h2 class="page-title">Shop Floor Plan</h2>
         </div>
         <div class="fixed-top-section">
-            <div class="search-bar-container" style="margin: 0 0 16px 0; border: 1px solid #cbd5e1; background:white;">
-                <span class="material-symbols-rounded" style="font-size:20px; color:#64748b; margin-right:8px;">search</span>
-                <input type="text" id="search-rack-map" placeholder="Search Shade, Color or Item..." onkeyup="renderVisualRackMap()">
+            <div style="background:#e8f0fe; color:var(--primary-dark); padding:12px; border-radius:12px; font-weight:500; font-size:13px; border: 1px solid #c2e7ff; display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                <span class="material-symbols-rounded" style="font-size:20px;">touch_app</span> 
+                <span>Tap any Rack to open and flip (Front/Back side).</span>
             </div>
         </div>
-        <div class="scroll-content" id="rack-map-content" style="padding-top:0; background: #f8fafc;">
-            <!-- Rendered by JS -->
+        <div class="scroll-content" style="padding-top:0; background: #f8fafc;">
+            <div class="shop-floor">
+                <!-- ROW 1 -->
+                <div class="floor-row">
+                    <div class="side-left">
+                        <div class="rack-obj" onclick="openRackDetail(1)">
+                            <span class="material-symbols-rounded">shelves</span> Rack 1
+                        </div>
+                        <div class="rack-obj" onclick="openRackDetail(2)">
+                            <span class="material-symbols-rounded">shelves</span> Rack 2
+                        </div>
+                    </div>
+                    <div class="side-right">
+                        <div class="rack-obj" onclick="openRackDetail(3)">
+                            <span class="material-symbols-rounded">shelves</span> Rack 3
+                        </div>
+                    </div>
+                </div>
+                <!-- ROW 2 -->
+                <div class="floor-row">
+                    <div class="side-left">
+                        <div class="rack-obj" onclick="openRackDetail(4)">
+                            <span class="material-symbols-rounded">shelves</span> Rack 4
+                        </div>
+                        <div class="rack-obj" onclick="openRackDetail(5)">
+                            <span class="material-symbols-rounded">shelves</span> Rack 5
+                        </div>
+                    </div>
+                    <div class="side-right">
+                        <div class="rack-obj" onclick="openRackDetail(6)">
+                            <span class="material-symbols-rounded">shelves</span> Rack 6
+                        </div>
+                    </div>
+                </div>
+                <!-- ROW 3 -->
+                <div class="floor-row">
+                    <div class="side-left">
+                        <div class="rack-obj" onclick="openRackDetail(7)">
+                            <span class="material-symbols-rounded">shelves</span> Rack 7
+                        </div>
+                        <div class="rack-obj" onclick="openRackDetail(8)">
+                            <span class="material-symbols-rounded">shelves</span> Rack 8
+                        </div>
+                    </div>
+                    <div class="side-right">
+                        <div class="rack-obj" onclick="openRackDetail(9)">
+                            <span class="material-symbols-rounded">shelves</span> Rack 9
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📦 RACK DETAIL PAGE (FRONT & BACK FLIP) -->
+    <div class="page flex-page" id="rack-detail-page" style="z-index: 4000;">
+        <div class="sub-header">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('rack-detail-page')">arrow_back</button>
+            <h2 class="page-title" id="rack-detail-title">Rack 1</h2>
+        </div>
+        <div class="rack-side-tabs">
+            <div class="rack-tab active" id="tab-side-a" onclick="switchRackSide('A')">FRONT SIDE (A)</div>
+            <div class="rack-tab" id="tab-side-b" onclick="switchRackSide('B')">BACK SIDE (B)</div>
+        </div>
+        <div class="scroll-content rack-detail-container" id="rack-detail-content" style="padding-top:0;">
+            <!-- Shelves rendered dynamically -->
         </div>
     </div>
 
@@ -947,7 +964,7 @@
             if(document.getElementById('inv-date')) document.getElementById('inv-date').value = todayStr;
             
             try {
-                onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); updatePosShades(); renderVisualRackMap(); });
+                onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); updatePosShades(); /* Only render map explicitly when needed */ });
                 onValue(ref(db, 'Customers'), (snapshot) => { let data = snapshot.val() || {}; globalCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); renderCustomerList(globalCustomers); setupPOSAutocomplete(); });
                 onValue(ref(db, 'GodownTransfers'), (snapshot) => { let data = snapshot.val() || {}; allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); renderGodownHistory(); });
                 onValue(ref(db, 'Ledger'), (snapshot) => { let data = snapshot.val() || {}; allLedgerData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); calculateGrandTotals(); if (document.getElementById('ledger-deep-page').classList.contains('active')) renderLedgerEntries(currentPartyName); });
@@ -1001,7 +1018,7 @@
             if(pageId === 'home') { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); } else { openPage(pageId); }
         }
 
-        const mainPages = ['items-page', 'parties-page', 'pos-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'rack-map-page'];
+        const mainPages = ['items-page', 'parties-page', 'pos-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'rack-map-page', 'rack-detail-page'];
         window.openPage = function(id) { 
             if(mainPages.includes(id)) { mainPages.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.remove('active'); }); }
             updateBottomNavVisibility(id); document.getElementById(id).classList.add('active'); 
@@ -1009,7 +1026,7 @@
         window.closePage = function(id) { 
             document.getElementById(id).classList.remove('active'); 
             let activePageFound = false;
-            ['parties-page', 'items-page', 'rack-map-page'].forEach(p => { if(document.getElementById(p).classList.contains('active')) { updateBottomNavVisibility(p); activePageFound = true; } });
+            ['parties-page', 'items-page', 'rack-map-page', 'rack-detail-page'].forEach(p => { if(document.getElementById(p) && document.getElementById(p).classList.contains('active')) { updateBottomNavVisibility(p); activePageFound = true; } });
             if(!activePageFound) updateBottomNavVisibility('home');
         }
 
@@ -1021,8 +1038,54 @@
         window.openAdminProfile = function() { closeSidebar(); closeProfileModal(); openPage('admin-profile-page'); }
 
         // ==========================================
-        // 🚀 10 RACKS SYSTEM (6 SHELVES, 5 BOXES EACH)
+        // 🚀 SMART 9 RACKS LOGIC (FRONT & BACK)
         // ==========================================
+        
+        let currentOpenRack = 1;
+        let currentRackSide = 'A'; // 'A' = Front, 'B' = Back
+
+        window.openRackDetail = function(rackNum) {
+            currentOpenRack = rackNum;
+            currentRackSide = 'A';
+            document.getElementById('rack-detail-title').innerText = "Rack " + rackNum;
+            switchRackSide('A'); // This will also render the inside
+            openPage('rack-detail-page');
+        }
+
+        window.switchRackSide = function(side) {
+            currentRackSide = side;
+            document.getElementById('tab-side-a').classList.toggle('active', side === 'A');
+            document.getElementById('tab-side-b').classList.toggle('active', side === 'B');
+            renderInsideRack(currentOpenRack, currentRackSide);
+        }
+
+        function renderInsideRack(rackNum, side) {
+            let container = document.getElementById('rack-detail-content');
+            let shelvesPerSide = 6;
+            let boxesPerShelf = 5;
+            let html = "";
+
+            // Currently just rendering Empty Slots since user will define items later.
+            // But we keep the structure ready for real data!
+            html += `<div class="rack-shelf-container">`;
+            
+            for (let s = 1; s <= shelvesPerSide; s++) {
+                html += `<div class="rack-shelf-title">SHELF ${s} - SIDE ${side}</div>`;
+                html += `<div class="rack-row">`;
+                
+                for (let b = 1; b <= boxesPerShelf; b++) {
+                    html += `
+                    <div class="smart-box empty-slot" onclick="alert('Rack ${rackNum} - Side ${side} - Shelf ${s} - Box ${b}\\nआप यहाँ बाद में धागा/आइटम सेट कर सकेंगे!')">
+                        <span class="material-symbols-rounded">add_circle</span>
+                        <span class="empty-slot-text">EMPTY</span>
+                    </div>`;
+                }
+                html += `</div>`;
+            }
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
         function stringToColor(str) {
             let hash = 0;
             for (let i = 0; i < str.length; i++) { hash = str.charCodeAt(i) + ((hash << 5) - hash); }
@@ -1032,93 +1095,6 @@
                 color += ('00' + value.toString(16)).substr(-2);
             }
             return color;
-        }
-
-        window.showSmartBoxInfo = function(cat, shade, qty, thumbUrl) {
-            document.getElementById('info-modal-title').innerText = shade;
-            document.getElementById('info-modal-cat').innerText = cat;
-            document.getElementById('info-modal-qty').innerText = qty + " Box";
-            document.getElementById('info-modal-img').src = thumbUrl;
-            
-            let status = "🟢 Healthy";
-            if(qty <= 0) status = "🔴 Empty";
-            else if(qty <= 5) status = "🟡 Low Stock";
-            else if(qty > 30) status = "🔥 High/Hot";
-            
-            document.getElementById('info-modal-status').innerText = status;
-            document.getElementById('box-info-modal').style.display = 'flex';
-        }
-
-        window.renderVisualRackMap = function() {
-            let container = document.getElementById('rack-map-content');
-            if(!container) return;
-            let query = document.getElementById('search-rack-map') ? document.getElementById('search-rack-map').value.toUpperCase() : "";
-            
-            // Collect all inventory items into a flat list
-            let inventoryList = [];
-            for (let key in smartInventory) {
-                let parts = key.split("_");
-                let cat = parts[0];
-                let shade = parts[1] || "";
-                let qty = smartInventory[key];
-                if (!query || shade.toUpperCase().includes(query) || cat.toUpperCase().includes(query)) {
-                    inventoryList.push({ cat, shade, qty });
-                }
-            }
-
-            let totalRacks = 10;
-            let shelvesPerRack = 6;
-            let boxesPerShelf = 5;
-            let boxesPerRack = shelvesPerRack * boxesPerShelf; // 30 boxes per rack
-            let html = "";
-            let itemIndex = 0;
-
-            for (let r = 1; r <= totalRacks; r++) {
-                html += `<div class="rack-room-title"><span class="material-symbols-rounded" style="color:var(--primary);">warehouse</span> RACK #${r}</div>`;
-                html += `<div class="rack-shelf-container">`;
-
-                for (let s = 1; s <= shelvesPerRack; s++) {
-                    html += `<div class="rack-shelf-title">SHELF ${s}</div>`;
-                    html += `<div class="rack-row">`;
-
-                    for (let b = 1; b <= boxesPerShelf; b++) {
-                        let item = inventoryList[itemIndex];
-                        itemIndex++;
-
-                        if (item && item.qty > 0) {
-                            let percentage = Math.min((item.qty / 50) * 100, 100);
-                            let barColor = "var(--success)";
-                            let statusText = `${item.qty} Box`;
-                            let badgeHtml = "";
-                            if(item.qty <= 5) { barColor = "var(--warning)"; badgeHtml = `<div class="box-badge">❄️</div>`; }
-                            else if(item.qty > 30) { badgeHtml = `<div class="box-badge">🔥</div>`; }
-
-                            let swatchColor = stringToColor(item.shade + item.cat);
-                            let thumbUrl = `https://ui-avatars.com/api/?name=${item.cat.substring(0,3)}&background=random&color=fff&size=80`;
-
-                            html += `
-                            <div class="smart-box" onclick="showSmartBoxInfo('${item.cat}', '${item.shade}', ${item.qty}, '${thumbUrl}')">
-                                ${badgeHtml}
-                                <div class="box-color-dot" style="background-color:${swatchColor};"></div>
-                                <img src="${thumbUrl}" class="box-thumb" alt="Box">
-                                <div class="box-title">${item.shade}</div>
-                                <div class="box-qty-text">${statusText}</div>
-                                <div class="cap-bar-bg"><div class="cap-bar-fill" style="width:${percentage}%; background:${barColor};"></div></div>
-                            </div>`;
-                        } else {
-                            html += `
-                            <div class="smart-box empty-slot">
-                                <span class="material-symbols-rounded">inventory_2</span>
-                                <span class="empty-slot-text">Empty</span>
-                            </div>`;
-                        }
-                    }
-                    html += `</div>`; // Close rack-row
-                }
-                html += `</div>`; // Close rack-shelf-container
-            }
-
-            container.innerHTML = html;
         }
 
         // 📊 REPORTS LOGIC (WITH PREVIEW)

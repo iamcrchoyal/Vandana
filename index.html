@@ -117,7 +117,7 @@
         .pm-close { position: absolute; top: 16px; right: 16px; font-size: 20px; color: var(--text-muted); cursor: pointer; }
         .pm-email { font-size: 13px; color: var(--text-dark); margin-bottom: 20px; font-weight: 500; font-family: 'Product Sans', sans-serif;}
         .pm-avatar-wrap { position: relative; margin-bottom: 16px;}
-        .pm-avatar { width: 80px; height: 80px; border-radius: 50%; box-shadow: 0 0 0 2px white, 0 0 0 4px #e0e2e0; display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:700; color:var(--primary); background:white;}
+        .pm-avatar { width: 80px; height: 80px; border-radius: 50%; box-shadow: 0 0 0 2px white, 0 0 0 4px #e0e2e0; display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:700; color:var(--primary); background:white; cursor:pointer;}
         .pm-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover;}
         .pm-cam { position: absolute; bottom: 0; right: 0; background: white; border: 1px solid var(--border); border-radius: 50%; width: 26px; height: 26px; display: flex; justify-content: center; align-items: center; font-size: 12px; cursor: pointer;}
         .pm-name { font-family: 'Product Sans', sans-serif; font-size: 22px; font-weight: 400; color: #1f1f1f; margin-bottom: 24px;}
@@ -181,10 +181,11 @@
         .calc-btn.light-blue { background: #e8f0fe; color: var(--primary); border: none;}
         .calc-btn.dark-blue { background: var(--primary); color: white; border: none;}
 
-        .ua-item { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 16px; padding: 14px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
-        .ua-item-name { font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 2px; display:flex; align-items:center; gap:6px; font-family: 'Product Sans', sans-serif;}
-        .ua-item-desc { font-size: 12px; color: var(--text-muted); }
-        .ua-item-count { font-size: 15px; font-weight: 600; color: var(--primary); }
+        .ua-item { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 16px; padding: 14px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
+        .ua-item-name { font-size: 14px; font-weight: 600; color: var(--text-dark); width: 60%; white-space: nowrap; overflow-x: auto; scrollbar-width: none; font-family: 'Product Sans', sans-serif;}
+        .ua-item-name::-webkit-scrollbar { display: none; }
+        .ua-item-count { font-size: 13px; font-weight: 600; color: var(--primary); width: 40%; text-align: right; white-space: nowrap; overflow-x: auto; scrollbar-width: none;}
+        .ua-item-count::-webkit-scrollbar { display: none; }
         
         .celebration-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; padding: 20px; text-align: center; }
         .celeb-box { background: white; padding: 30px 24px; border-radius: 24px; max-width: 400px; position: relative; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; box-shadow: 0 10px 25px rgba(0,0,0,0.1);}
@@ -210,15 +211,39 @@
 
         #preview-render-area { background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; overflow-x: hidden; zoom: 0.52; }
         
-        /* New class for scrolling text horizontally smoothly without scrollbars */
         .scroll-text { white-space: nowrap; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
         .scroll-text::-webkit-scrollbar { display: none; }
+
+        /* DP Viewer */
+        .dp-modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content:center; align-items:center; flex-direction:column; }
+        .dp-modal-img { max-width: 90%; max-height: 80vh; border-radius: 8px; object-fit: contain; transform: scale(0.8); transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .dp-modal-overlay.active .dp-modal-img { transform: scale(1); }
+        .dp-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; background: rgba(0,0,0,0.5); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+
+        /* Thread 3D Box */
+        .thread-grid { display: grid; grid-template-columns: 1fr; gap: 16px; padding: 10px 0; }
+        .thread-3d-card { background: linear-gradient(145deg, #ffffff, #f8fafd); border-radius: 16px; padding: 16px; box-shadow: 0 6px 12px rgba(10,86,208,0.06), inset 0 2px 4px rgba(255,255,255,0.8); border: 1px solid #c2e7ff; position: relative; overflow: hidden;}
+        .t-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px dashed #c2e7ff; padding-bottom: 10px;}
+        .t-card-title { font-size: 18px; font-weight: 700; color: var(--primary-dark); font-family: 'Product Sans', sans-serif;}
+        .t-card-qty { font-size: 18px; font-weight: 800; color: var(--primary); background:#e8f0fe; padding:4px 10px; border-radius:8px;}
+        .t-tx-list { display: flex; flex-direction: column; gap: 6px; }
+        .t-tx-item { display: flex; justify-content: space-between; font-size: 11px; padding: 8px; background: rgba(255,255,255,0.8); border-radius: 8px; align-items: center; border: 1px solid rgba(0,0,0,0.03);}
+        .t-tx-date { color: var(--text-muted); font-weight: 500;}
+        .t-tx-party { font-weight: 600; color: var(--text-dark); flex: 1; margin: 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .t-tx-qty.in { color: var(--success); font-weight: 700; background:#e6f4ea; padding:2px 6px; border-radius:4px;}
+        .t-tx-qty.out { color: var(--danger); font-weight: 700; background:#fdf2f2; padding:2px 6px; border-radius:4px;}
     </style>
 </head>
 <body>
 
     <!-- 🌟 LOADER -->
     <div id="loader" class="loader-overlay" style="display: none;"><div class="spinner"></div></div>
+
+    <!-- 🖼️ DP VIEWER MODAL -->
+    <div id="dp-viewer" class="dp-modal-overlay" onclick="closeDpViewer()">
+        <div class="dp-close" onclick="closeDpViewer()">&times;</div>
+        <img id="dp-viewer-img" class="dp-modal-img" src="" onclick="event.stopPropagation()">
+    </div>
 
     <!-- 🏆 CELEBRATION MODAL -->
     <div class="celebration-modal" id="celebration-modal" onclick="this.style.display='none'">
@@ -337,6 +362,7 @@
                         <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Date & Time</th>
                         <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Action Type</th>
                         <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Item Detail</th>
+                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Party / Location</th>
                         <th style="padding:10px; border:1px solid #e0e2e0; text-align:right;">Qty (Box)</th>
                     </tr>
                 </thead>
@@ -375,7 +401,7 @@
         <span class="pm-close" onclick="closeProfileModal()">✕</span>
         <div class="pm-email" id="pm-email-display">admin@vandana.com</div>
         <div class="pm-avatar-wrap">
-            <div class="pm-avatar">
+            <div class="pm-avatar" id="pm-avatar-container" onclick="let img=document.getElementById('pm-avatar-img'); if(img.style.display!=='none') openDpViewer(img.src);">
                 <img src="" id="pm-avatar-img" style="display:none;">
                 <span id="pm-avatar-text">A</span>
             </div>
@@ -672,15 +698,15 @@
         <div class="sub-header" style="justify-content: flex-start; position: relative;">
             <button class="back-btn material-symbols-rounded" onclick="closePage('customer-profile-page')" style="flex-shrink:0; margin-right: 12px;">arrow_back</button>
             <div style="display:flex; align-items:center; gap:10px; opacity:0; transform:translateY(10px); transition:all 0.2s ease; flex:1; overflow:hidden;" id="cp-header-group">
-                <div class="kb-avatar" id="cp-mini-avatar" style="width:32px; height:32px; font-size:13px; background:#e8f0fe; color:var(--primary); overflow:hidden; flex-shrink:0;">C</div>
-                <h2 class="page-title scroll-text" id="cp-header-name" style="font-size:16px; margin:0;">Name</h2>
+                <div class="kb-avatar" id="cp-mini-avatar" style="width:28px; height:28px; font-size:12px; background:#e8f0fe; color:var(--primary); overflow:hidden; flex-shrink:0;">C</div>
+                <h2 class="page-title scroll-text" id="cp-header-name" style="font-size:16px; margin:0; max-width:60%;">Name</h2>
             </div>
             <h2 class="page-title" id="cp-main-title" style="position:absolute; left:52px; transition:opacity 0.2s ease; margin:0;">Customer Profile</h2>
         </div>
         <div class="scroll-content" id="cp-scroll-content" style="padding-top:16px;">
             <div style="display:flex; justify-content:center; margin-bottom:16px;">
                 <div class="pm-avatar-wrap" style="margin:0;">
-                    <div class="kb-avatar" id="cp-avatar" style="width:80px; height:80px; font-size:30px; box-shadow: 0 0 0 4px #e0e2e0;">C</div>
+                    <div class="kb-avatar" id="cp-avatar" style="width:80px; height:80px; font-size:30px; box-shadow: 0 0 0 4px #e0e2e0; cursor:pointer;" onclick="let img=this.querySelector('img'); if(img) openDpViewer(img.src);">C</div>
                     <div class="pm-cam material-symbols-rounded" style="font-size:14px; width:28px; height:28px;" onclick="document.getElementById('cust-upload-hidden').click()">photo_camera</div>
                     <input type="file" id="cust-upload-hidden" accept="image/*" style="display:none;" onchange="handleCustPic(event)">
                 </div>
@@ -758,14 +784,16 @@
         </div>
     </div>
 
-    <!-- 🧵 THREAD STOCK PAGE -->
+    <!-- 🧵 THREAD STOCK PAGE (NOW WITH 3D GRID) -->
     <div class="page flex-page" id="thread-stock-page">
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('thread-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Thread Stock</h2><button class="pro-add-btn" onclick="document.getElementById('thread-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
         <div class="fixed-top-section">
             <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-thread" placeholder="Search Shade Number..." onkeyup="filterStockList('search-thread', 'thread-stock-list')"></div>
             <div class="form-panel anim-form form-hidden" id="thread-anim-form" style="margin-bottom:10px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="thread-shade-input" placeholder="Shade No."><input type="number" class="form-control" id="thread-box-input" placeholder="Boxes"></div><div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-box-input', true)">➖ OUT</button></div></div>
         </div>
-        <div class="scroll-content" style="padding-top:0;"><table class="invoice-table"><thead><tr><th>Shade No.</th><th>Total Boxes</th></tr></thead><tbody id="thread-stock-list"></tbody></table></div>
+        <div class="scroll-content" style="padding-top:0;">
+            <div id="thread-stock-list" class="thread-grid"></div>
+        </div>
     </div>
 
     <!-- ✨ ZARI STOCK PAGE -->
@@ -863,8 +891,8 @@
             try {
                 onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); updatePosShades(); });
                 onValue(ref(db, 'Customers'), (snapshot) => { let data = snapshot.val() || {}; globalCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); renderCustomerList(globalCustomers); setupPOSAutocomplete(); });
-                onValue(ref(db, 'GodownTransfers'), (snapshot) => { let data = snapshot.val() || {}; allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); renderGodownHistory(); });
-                onValue(ref(db, 'Ledger'), (snapshot) => { let data = snapshot.val() || {}; allLedgerData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); calculateGrandTotals(); if (document.getElementById('ledger-deep-page').classList.contains('active')) renderLedgerEntries(currentPartyName); });
+                onValue(ref(db, 'GodownTransfers'), (snapshot) => { let data = snapshot.val() || {}; allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); renderGodownHistory(); renderInventoryList(); });
+                onValue(ref(db, 'Ledger'), (snapshot) => { let data = snapshot.val() || {}; allLedgerData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); calculateGrandTotals(); if (document.getElementById('ledger-deep-page').classList.contains('active')) renderLedgerEntries(currentPartyName); renderInventoryList(); });
                 onValue(ref(db, 'RecycleBin'), (snapshot) => { let data = snapshot.val() || {}; allRecycleData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); renderRecycleBin(); });
             } catch (error) {}
 
@@ -913,7 +941,7 @@
             if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
-        const mainPages = ['items-page', 'parties-page', 'pos-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page'];
+        const mainPages = ['items-page', 'parties-page', 'pos-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page'];
         
         window.openPage = function(id) { 
             if(mainPages.includes(id)) { 
@@ -970,6 +998,17 @@
         window.closeProfileModal = function() { document.getElementById('profile-modal-overlay').style.display='none'; document.getElementById('profile-modal').style.display='none'; }
         window.openAdminProfile = function() { closeSidebar(); closeProfileModal(); navTo('admin-profile-page', null); }
 
+        window.openDpViewer = function(src) {
+            if(!src) return;
+            document.getElementById('dp-viewer-img').src = src;
+            document.getElementById('dp-viewer').style.display = 'flex';
+            setTimeout(()=> document.getElementById('dp-viewer').classList.add('active'), 10);
+        }
+        window.closeDpViewer = function() {
+            document.getElementById('dp-viewer').classList.remove('active');
+            setTimeout(()=> document.getElementById('dp-viewer').style.display = 'none', 200);
+        }
+
         // 📊 REPORTS LOGIC (WITH PREVIEW)
         window.openReportModal = function(type) { document.getElementById('report-modal-type').value = type; document.getElementById('report-modal-title').innerText = type === 'ledger' ? 'Account Statement' : 'Daily Stock Report'; document.getElementById('report-modal').style.display = 'flex'; }
         window.downloadReport = function() { let fromD = document.getElementById('rep-from').value; let toD = document.getElementById('rep-to').value; let type = document.getElementById('report-modal-type').value; if(!fromD || !toD) return alert("Please select both dates!"); document.getElementById('report-modal').style.display = 'none'; if(type === 'ledger') generateAccountStatement(fromD, toD); else generateStockReport(fromD, toD); }
@@ -989,17 +1028,17 @@
         function generateStockReport(fromD, toD) {
             let fromTime = new Date(fromD).getTime(); let toTime = new Date(toD + "T23:59:59").getTime(); let stockHtml = "";
             let filteredTransfers = allGodownTransfers.filter(t => { let eTime = new Date(t.date).getTime(); return eTime >= fromTime && eTime <= toTime; });
-            filteredTransfers.forEach(t => { let dStr = new Date(t.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); let action = t.type === 'IN' ? 'Transfer IN' : 'Transfer OUT'; stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">${action}</td><td style="padding:10px; border:1px solid #e0e2e0;">${t.item} (${t.cat})</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${t.qty}</td></tr>`; });
+            filteredTransfers.forEach(t => { let dStr = new Date(t.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); let action = t.type === 'IN' ? 'Transfer IN' : 'Transfer OUT'; stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">${action}</td><td style="padding:10px; border:1px solid #e0e2e0;">${t.item} (${t.cat})</td><td style="padding:10px; border:1px solid #e0e2e0;">Godown</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${t.qty}</td></tr>`; });
             let salesEntries = allLedgerData.filter(e => { let eTime = new Date(e.date).getTime(); return eTime >= fromTime && eTime <= toTime && e.cart && e.type === 'Gave'; });
-            salesEntries.forEach(entry => { let dStr = new Date(entry.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); entry.cart.forEach(item => { stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">Sale (OUT)</td><td style="padding:10px; border:1px solid #e0e2e0;">${item.shade} (${item.cat})</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${item.qty}</td></tr>`; }); });
-            if(!stockHtml) stockHtml = `<tr><td colspan="4" style="text-align:center; padding:20px;">No stock movement found for these dates.</td></tr>`;
+            salesEntries.forEach(entry => { let dStr = new Date(entry.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); entry.cart.forEach(item => { stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">Sale (OUT)</td><td style="padding:10px; border:1px solid #e0e2e0;">${item.shade} (${item.cat})</td><td style="padding:10px; border:1px solid #e0e2e0;">${entry.name}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${item.qty}</td></tr>`; }); });
+            if(!stockHtml) stockHtml = `<tr><td colspan="5" style="text-align:center; padding:20px;">No stock movement found for these dates.</td></tr>`;
             document.getElementById('psr-date-range').innerText = `From: ${new Date(fromD).toLocaleDateString('en-GB')} To: ${new Date(toD).toLocaleDateString('en-GB')}`; document.getElementById('psr-table-body').innerHTML = stockHtml;
             let previewHtml = document.getElementById('pdf-stock-template').innerHTML; document.getElementById('preview-render-area').innerHTML = previewHtml; window.currentReportElemId = 'pdf-stock-template'; window.currentReportFilename = `Stock_Report_${fromD}.pdf`; openPage('report-preview-page');
         }
 
         window.executeReportDownload = function() { let elem = document.getElementById(window.currentReportElemId); let opt = { margin: 0.4, filename: window.currentReportFilename, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; alert("Downloading PDF... Please wait."); html2pdf().set(opt).from(elem).save(); }
 
-        window.openAbsentCustomers = function() { let today = document.getElementById('dash-date-picker').value; let activeToday = new Set(); allLedgerData.forEach(entry => { try { let d = new Date(entry.date).toISOString().split('T')[0]; if(d === today) activeToday.add(entry.name); }catch(e){} }); let absentList = globalCustomers.filter(c => !activeToday.has(c.name) && (c.type === 'Customer' || !c.type)); let html = ""; if(absentList.length === 0) { html = "<div style='padding:40px 20px; text-align:center; color:var(--text-muted); font-size:14px;'>Wow! Every customer has an entry today. 🎉</div>"; } else { absentList.forEach(c => { let initial = c.name ? c.name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = c.pic || adminPic; let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; let msg = encodeURIComponent(`नमस्ते ${c.name} जी, वंदना एंटरप्राइजेज से। आज आप शॉप पर नहीं आए, अगर कोई आर्डर या रिक्वायरमेंट हो तो जरूर बताएं।`); html += `<div class="kb-list-item"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${c.name}</div><div class="kb-time">📱 ${c.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:0 16px; flex-direction:row; align-items:center; gap:10px; border-left:none; background:transparent;"><a href="tel:${c.phone}" style="text-decoration:none; background:#e8f0fe; color:var(--primary); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">call</span></a><a href="#" onclick="window.open('https://wa.me/91${c.phone}?text=${msg}', '_blank')" style="text-decoration:none; background:#e6f4ea; color:var(--success); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">chat</span></a></div></div>`; }); } document.getElementById('absent-list-container').innerHTML = html; navTo('absent-page', null); }
+        window.openAbsentCustomers = function() { let today = document.getElementById('dash-date-picker').value; let activeToday = new Set(); allLedgerData.forEach(entry => { try { let d = new Date(entry.date).toISOString().split('T')[0]; if(d === today) activeToday.add(entry.name); }catch(e){} }); let absentList = globalCustomers.filter(c => !activeToday.has(c.name) && (c.type === 'Customer' || !c.type)); let html = ""; if(absentList.length === 0) { html = "<div style='padding:40px 20px; text-align:center; color:var(--text-muted); font-size:14px;'>Wow! Every customer has an entry today. 🎉</div>"; } else { absentList.forEach(c => { let initial = c.name ? c.name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = c.pic || adminPic; let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; let msg = encodeURIComponent(`नमस्ते ${c.name} जी, वंदना एंटरप्राइजेज से। आज आप शॉप पर नहीं आए, अगर कोई आर्डर या रिक्वायरमेंट हो বিকেল तो जरूर बताएं।`); html += `<div class="kb-list-item"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${c.name}</div><div class="kb-time">📱 ${c.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:0 16px; flex-direction:row; align-items:center; gap:10px; border-left:none; background:transparent;"><a href="tel:${c.phone}" style="text-decoration:none; background:#e8f0fe; color:var(--primary); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">call</span></a><a href="#" onclick="window.open('https://wa.me/91${c.phone}?text=${msg}', '_blank')" style="text-decoration:none; background:#e6f4ea; color:var(--success); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">chat</span></a></div></div>`; }); } document.getElementById('absent-list-container').innerHTML = html; navTo('absent-page', null); }
 
         function loadAdminProfile() { let pName = localStorage.getItem('v_adminName') || "Admin"; let pPhone = localStorage.getItem('v_adminPhone') || ""; let pEmail = localStorage.getItem('v_adminEmail') || "admin@vandana.com"; let pGst = localStorage.getItem('v_adminGst') || ""; let pAddr = localStorage.getItem('v_adminAddr') || ""; let pPic = localStorage.getItem('v_adminPic'); if(document.getElementById('ap-name')) document.getElementById('ap-name').value = pName; if(document.getElementById('ap-phone')) document.getElementById('ap-phone').value = pPhone; if(document.getElementById('ap-email')) document.getElementById('ap-email').value = pEmail; if(document.getElementById('ap-gst')) document.getElementById('ap-gst').value = pGst; if(document.getElementById('ap-address')) document.getElementById('ap-address').value = pAddr; if(document.getElementById('pm-email-display')) document.getElementById('pm-email-display').innerText = pEmail; if(pPic) { if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').src = pPic; document.getElementById('pm-avatar-img').style.display = 'block'; document.getElementById('pm-avatar-text').style.display = 'none'; } if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').src = pPic; document.getElementById('top-avatar-img').style.display = 'block'; document.getElementById('top-avatar-text').style.display = 'none'; } } else { let initial = pName.charAt(0).toUpperCase(); if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').style.display = 'none'; document.getElementById('pm-avatar-text').innerText = initial; document.getElementById('pm-avatar-text').style.display = 'block'; } if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').style.display = 'none'; document.getElementById('top-avatar-text').innerText = initial; document.getElementById('top-avatar-text').style.display = 'flex'; } } updateGreeting(); }
         window.saveAdminProfile = function() { localStorage.setItem('v_adminName', document.getElementById('ap-name').value); localStorage.setItem('v_adminPhone', document.getElementById('ap-phone').value); localStorage.setItem('v_adminEmail', document.getElementById('ap-email').value); localStorage.setItem('v_adminGst', document.getElementById('ap-gst').value.toUpperCase()); localStorage.setItem('v_adminAddr', document.getElementById('ap-address').value); loadAdminProfile(); alert("Profile Saved Successfully!"); }
@@ -1048,7 +1087,7 @@
             }
             window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet }; updateLedgerTotalsUI(); if(document.getElementById('parties-page').classList.contains('active')) { renderCustomerList(globalCustomers); }
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
-            let activeSalesData = window.currentTopCustTab === 'current' ? currMonthSales : lastMonthSales; let topCustHtml = ""; let sortedCustomers = Object.entries(activeSalesData).sort((a, b) => b[1] - a[1]).slice(0, 5); if(sortedCustomers.length === 0) { topCustHtml = '<div style="text-align:center; padding:10px; color:gray; font-size:12px;">No sales data available.</div>'; } else { sortedCustomers.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-name">${cust[0]} </div><div class="ua-item-count">₹${cust[1].toLocaleString('en-IN')} <span style="color:var(--text-muted); margin-left:6px;" class="material-symbols-rounded">chevron_right</span></div></div>`; }); } document.getElementById('top-customers-list').innerHTML = topCustHtml;
+            let activeSalesData = window.currentTopCustTab === 'current' ? currMonthSales : lastMonthSales; let topCustHtml = ""; let sortedCustomers = Object.entries(activeSalesData).sort((a, b) => b[1] - a[1]).slice(0, 5); if(sortedCustomers.length === 0) { topCustHtml = '<div style="text-align:center; padding:10px; color:gray; font-size:12px;">No sales data available.</div>'; } else { sortedCustomers.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-name scroll-text">${cust[0]}</div><div class="ua-item-count scroll-text">₹${cust[1].toLocaleString('en-IN')} <span style="color:var(--text-muted); font-size:16px; vertical-align:middle;" class="material-symbols-rounded">chevron_right</span></div></div>`; }); } document.getElementById('top-customers-list').innerHTML = topCustHtml;
         }
         
         window.openLedgerDetail = function(name, phone) { currentPartyName = name; currentPartyPhone = phone || ""; document.getElementById('l-deep-name').innerText = name; document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#"; document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); let customer = globalCustomers.find(c => c.name === name); let initial = name ? name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = customer && customer.pic ? customer.pic : adminPic; if(custPic) { document.getElementById('l-deep-avatar-text').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; } else { document.getElementById('l-deep-avatar-text').innerHTML = initial; } renderLedgerEntries(name); openPage('ledger-deep-page'); }
@@ -1106,7 +1145,84 @@
 
         window.addSpecificStock = function(category, shadeId, qtyId, isOut = false) { let shade = document.getElementById(shadeId).value; let qty = parseInt(document.getElementById(qtyId).value); if(!shade || isNaN(qty)) return alert("Please enter Detail and Box Quantity!"); let key = category + "_" + shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then((snap) => { let currentQty = snap.val() || 0; let newQty = isOut ? currentQty - qty : currentQty + qty; if(newQty < 0) newQty = 0; set(itemRef, newQty); }); if(document.getElementById(shadeId).tagName !== 'SELECT') { document.getElementById(shadeId).value = ''; } document.getElementById(qtyId).value = ''; alert(isOut ? "Stock Reduced (OUT) Successfully!" : "Stock Added (IN) Successfully!"); document.getElementById(category.toLowerCase() + '-anim-form').classList.add('form-hidden'); }
         window.filterStockList = function(inputId, listId) { let filter = document.getElementById(inputId).value.toUpperCase(); let rows = document.querySelectorAll('#' + listId + ' .stock-row'); rows.forEach(row => { let name = row.getAttribute('data-name'); row.style.display = name.includes(filter) ? '' : 'none'; }); }
-        window.renderInventoryList = function() { let threadHtml = ""; let zariHtml = ""; let nylonHtml = ""; let cordingHtml = ""; let bobbinHtml = ""; let lowstockHtml = ""; let threadCount = 0; let zariCount = 0; let nylonCount = 0; let cordingCount = 0; let bobbinCount = 0; let lowstockCount = 0; for (let key in smartInventory) { let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let qty = smartInventory[key]; let color = qty <= 5 ? 'var(--danger)' : 'var(--text-dark)'; let rowHtml = `<tr class="stock-row" data-name="${shade.toUpperCase()}"><td><strong>${shade}</strong></td><td style="color:${color}; font-weight:700;">${qty} BOX</td></tr>`; if(cat === "Thread") { threadHtml += rowHtml; threadCount += qty; } else if(cat === "Zari") { zariHtml += rowHtml; zariCount += qty; } else if(cat === "Nylon") { nylonHtml += rowHtml; nylonCount += qty; } else if(cat === "Cording") { cordingHtml += rowHtml; cordingCount += qty; } else if(cat === "Bobbin") { bobbinHtml += rowHtml; bobbinCount += qty; } if(qty <= 5 && qty > 0) { lowstockCount++; lowstockHtml += `<tr><td><strong>${shade}</strong><br><span style="font-size:10px; color:gray;">${cat}</span></td><td style="color:var(--danger); font-weight:700;">${qty} BOX</td></tr>`; } } if(document.getElementById('thread-stock-list')) document.getElementById('thread-stock-list').innerHTML = threadHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; if(document.getElementById('zari-stock-list')) document.getElementById('zari-stock-list').innerHTML = zariHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; if(document.getElementById('nylon-stock-list')) document.getElementById('nylon-stock-list').innerHTML = nylonHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; if(document.getElementById('cording-stock-list')) document.getElementById('cording-stock-list').innerHTML = cordingHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; if(document.getElementById('bobbin-stock-list')) document.getElementById('bobbin-stock-list').innerHTML = bobbinHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; if(document.getElementById('lowstock-list')) document.getElementById('lowstock-list').innerHTML = lowstockHtml || '<tr><td colspan="2" style="text-align:center;">All stocks are healthy! 🎉</td></tr>'; if(document.getElementById('stock-val-thread')) document.getElementById('stock-val-thread').innerText = threadCount; if(document.getElementById('stock-val-zari')) document.getElementById('stock-val-zari').innerText = zariCount; if(document.getElementById('stock-val-nylon')) document.getElementById('stock-val-nylon').innerText = nylonCount; if(document.getElementById('stock-val-cording')) document.getElementById('stock-val-cording').innerText = cordingCount; if(document.getElementById('stock-val-bobbin')) document.getElementById('stock-val-bobbin').innerText = bobbinCount; if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount; }
+        
+        function getThreadLast5Tx(shade) {
+            let list = [];
+            allGodownTransfers.forEach(t => {
+                if(t.cat === 'Thread' && t.item === shade) {
+                    list.push({ date: t.date, type: t.type, qty: t.qty, party: 'Godown Transfer' });
+                }
+            });
+            allLedgerData.forEach(e => {
+                if(e.cart && e.type === 'Gave') {
+                    e.cart.forEach(c => {
+                        if(c.cat === 'Thread' && c.shade === shade) {
+                            list.push({ date: e.date, type: 'OUT', qty: c.qty, party: e.name });
+                        }
+                    });
+                }
+            });
+            list.sort((a,b) => new Date(b.date) - new Date(a.date));
+            return list.slice(0, 5);
+        }
+
+        window.renderInventoryList = function() { 
+            let threadHtml = ""; let zariHtml = ""; let nylonHtml = ""; let cordingHtml = ""; let bobbinHtml = ""; let lowstockHtml = ""; 
+            let threadCount = 0; let zariCount = 0; let nylonCount = 0; let cordingCount = 0; let bobbinCount = 0; let lowstockCount = 0; 
+            
+            for (let key in smartInventory) { 
+                let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let qty = smartInventory[key]; 
+                let color = qty <= 5 ? 'var(--danger)' : 'var(--text-dark)'; 
+                let rowHtml = `<tr class="stock-row" data-name="${shade.toUpperCase()}"><td><strong>${shade}</strong></td><td style="color:${color}; font-weight:700;">${qty} BOX</td></tr>`; 
+                
+                if(cat === "Thread") { 
+                    let txList = getThreadLast5Tx(shade);
+                    let txHtml = "";
+                    if(txList.length === 0) {
+                        txHtml = `<div class="t-tx-item" style="justify-content:center; color:gray;">No recent transactions</div>`;
+                    } else {
+                        txList.forEach(tx => {
+                            let isOut = tx.type === 'OUT' || tx.type === 'Gave';
+                            let qClass = isOut ? 'out' : 'in';
+                            let sign = isOut ? '-' : '+';
+                            let dateStr = new Date(tx.date).toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+                            txHtml += `<div class="t-tx-item"><span class="t-tx-date">${dateStr}</span><span class="t-tx-party">${tx.party}</span><span class="t-tx-qty ${qClass}">${sign}${tx.qty}</span></div>`;
+                        });
+                    }
+                    threadHtml += `<div class="stock-row thread-3d-card" data-name="${shade.toUpperCase()}">
+                        <div class="t-card-header">
+                            <div class="t-card-title">Shade ${shade}</div>
+                            <div class="t-card-qty">${qty} BOX</div>
+                        </div>
+                        <div class="t-tx-list">${txHtml}</div>
+                    </div>`;
+                    threadCount += qty; 
+                } else if(cat === "Zari") { 
+                    zariHtml += rowHtml; zariCount += qty; 
+                } else if(cat === "Nylon") { 
+                    nylonHtml += rowHtml; nylonCount += qty; 
+                } else if(cat === "Cording") { 
+                    cordingHtml += rowHtml; cordingCount += qty; 
+                } else if(cat === "Bobbin") { 
+                    bobbinHtml += rowHtml; bobbinCount += qty; 
+                } 
+                if(qty <= 5 && qty > 0) { lowstockCount++; lowstockHtml += `<tr><td><strong>${shade}</strong><br><span style="font-size:10px; color:gray;">${cat}</span></td><td style="color:var(--danger); font-weight:700;">${qty} BOX</td></tr>`; } 
+            } 
+            
+            if(document.getElementById('thread-stock-list')) document.getElementById('thread-stock-list').innerHTML = threadHtml || '<div style="text-align:center; padding:20px; color:gray;">No Stock Available</div>'; 
+            if(document.getElementById('zari-stock-list')) document.getElementById('zari-stock-list').innerHTML = zariHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; 
+            if(document.getElementById('nylon-stock-list')) document.getElementById('nylon-stock-list').innerHTML = nylonHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; 
+            if(document.getElementById('cording-stock-list')) document.getElementById('cording-stock-list').innerHTML = cordingHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; 
+            if(document.getElementById('bobbin-stock-list')) document.getElementById('bobbin-stock-list').innerHTML = bobbinHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; 
+            if(document.getElementById('lowstock-list')) document.getElementById('lowstock-list').innerHTML = lowstockHtml || '<tr><td colspan="2" style="text-align:center;">All stocks are healthy! 🎉</td></tr>'; 
+            if(document.getElementById('stock-val-thread')) document.getElementById('stock-val-thread').innerText = threadCount; 
+            if(document.getElementById('stock-val-zari')) document.getElementById('stock-val-zari').innerText = zariCount; 
+            if(document.getElementById('stock-val-nylon')) document.getElementById('stock-val-nylon').innerText = nylonCount; 
+            if(document.getElementById('stock-val-cording')) document.getElementById('stock-val-cording').innerText = cordingCount; 
+            if(document.getElementById('stock-val-bobbin')) document.getElementById('stock-val-bobbin').innerText = bobbinCount; 
+            if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount; 
+        }
+
         window.shareLowStock = function() { let msg = "⚠️ *Low Stock Alert - Vandana Enterprises* ⚠️%0A%0A"; let hasLow = false; for (let key in smartInventory) { if(smartInventory[key] <= 5 && smartInventory[key] > 0) { let parts = key.split("_"); msg += `▪️ *${parts[1]}* (${parts[0]}) - Only ${smartInventory[key]} Box%0A`; hasLow = true; } } if(!hasLow) return alert("Everything is fully stocked! No low stock items to share."); window.open(`https://wa.me/?text=${msg}`, '_blank'); }
 
         let currentCart = []; let grandInvoiceTotal = 0; let invoiceBoxCount = 0;

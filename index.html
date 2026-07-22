@@ -74,8 +74,8 @@
         .nav-icon-wrap { width: 60px; height: 30px; border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 22px; transition: background 0.3s; }
         .nav-item span { font-size: 11px; font-weight: 500; font-family: 'Inter', sans-serif;}
 
-        .page { position: fixed; top: 60px; bottom: 0; left: 0; width: 100%; background: var(--bg-color); z-index: 3500; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display:flex; flex-direction:column; overscroll-behavior-y: none; }
-        .page.active { transform: translateX(0); }
+        .page { position: fixed; top: 60px; bottom: 0; left: 0; width: 100%; background: var(--bg-color); z-index: 3500; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display:none; flex-direction:column; overscroll-behavior-y: none; }
+        .page.active { transform: translateX(0); display: flex; }
         .sub-header { position: sticky; top: 0; background: var(--bg-color); height: 50px; display: flex; align-items: center; padding: 0 16px; z-index: 50; border-bottom: 1px solid var(--border); flex-shrink: 0;}
         .back-btn { background: transparent; border: none; color: var(--text-dark); font-size: 24px; margin-right: 12px; cursor: pointer; padding: 5px; font-weight: 300;}
         .page-title { font-size: 18px; font-weight: 500; margin: 0; color: var(--text-dark); font-family: 'Product Sans', sans-serif;}
@@ -220,18 +220,20 @@
         .dp-modal-overlay.active .dp-modal-img { transform: scale(1); }
         .dp-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; background: rgba(0,0,0,0.5); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
 
-        /* Thread 3D Box */
-        .thread-grid { display: grid; grid-template-columns: 1fr; gap: 16px; padding: 10px 0; }
-        .thread-3d-card { background: linear-gradient(145deg, #ffffff, #f8fafd); border-radius: 16px; padding: 16px; box-shadow: 0 6px 12px rgba(10,86,208,0.06), inset 0 2px 4px rgba(255,255,255,0.8); border: 1px solid #c2e7ff; position: relative; overflow: hidden;}
-        .t-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px dashed #c2e7ff; padding-bottom: 10px;}
-        .t-card-title { font-size: 18px; font-weight: 700; color: var(--primary-dark); font-family: 'Product Sans', sans-serif;}
-        .t-card-qty { font-size: 18px; font-weight: 800; color: var(--primary); background:#e8f0fe; padding:4px 10px; border-radius:8px;}
-        .t-tx-list { display: flex; flex-direction: column; gap: 6px; }
-        .t-tx-item { display: flex; justify-content: space-between; font-size: 11px; padding: 8px; background: rgba(255,255,255,0.8); border-radius: 8px; align-items: center; border: 1px solid rgba(0,0,0,0.03);}
-        .t-tx-date { color: var(--text-muted); font-weight: 500;}
-        .t-tx-party { font-weight: 600; color: var(--text-dark); flex: 1; margin: 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-        .t-tx-qty.in { color: var(--success); font-weight: 700; background:#e6f4ea; padding:2px 6px; border-radius:4px;}
-        .t-tx-qty.out { color: var(--danger); font-weight: 700; background:#fdf2f2; padding:2px 6px; border-radius:4px;}
+        /* Inventory 3D Box Grid System */
+        .inventory-grid { display: grid; gap: 12px; padding: 10px 0; }
+        .inv-card { background: linear-gradient(145deg, #ffffff, #f8fafd); border-radius: 12px; padding: 12px; box-shadow: 0 4px 8px rgba(10,86,208,0.06), inset 0 2px 4px rgba(255,255,255,0.8); border: 1px solid #c2e7ff; cursor: pointer; position: relative; transition: all 0.2s; display:flex; flex-direction:column;}
+        .inv-card-header { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; flex:1;}
+        .inv-card-title { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; font-family: 'Product Sans', sans-serif; word-wrap:break-word; max-width:100%;}
+        .inv-card-qty { font-size: 16px; font-weight: 800; color: var(--primary); background:#e8f0fe; padding:4px 12px; border-radius:12px;}
+        .inv-tx-list { display: none; flex-direction: column; gap: 6px; margin-top: 12px; border-top: 1px dashed #c2e7ff; padding-top: 10px;}
+        .inv-card.expanded .inv-tx-list { display: flex; }
+        .inv-card.expanded { grid-column: 1 / -1; }
+        .inv-tx-item { display: flex; justify-content: space-between; font-size: 11px; padding: 8px; background: rgba(255,255,255,0.8); border-radius: 8px; align-items: center; border: 1px solid rgba(0,0,0,0.03);}
+        .inv-tx-date { color: var(--text-muted); font-weight: 500; min-width:45px;}
+        .inv-tx-party { font-weight: 600; color: var(--text-dark); flex: 1; margin: 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .inv-tx-qty.in { color: var(--success); font-weight: 700; background:#e6f4ea; padding:2px 6px; border-radius:4px;}
+        .inv-tx-qty.out { color: var(--danger); font-weight: 700; background:#fdf2f2; padding:2px 6px; border-radius:4px;}
     </style>
 </head>
 <body>
@@ -424,7 +426,7 @@
     </header>
 
     <!-- 🏠 MAIN DASHBOARD -->
-    <div class="main-wrapper" id="home">
+    <div class="main-wrapper page active" id="home">
         <div class="main-content">
             <div class="greeting-section">
                 <h2 id="dynamic-greeting">Good afternoon, Admin</h2>
@@ -487,8 +489,9 @@
         <div class="scroll-content" style="padding-top:16px; background:#e0e2e0;">
             <div id="preview-render-area"></div>
         </div>
-        <div class="bottom-action-bar" style="justify-content:center; z-index:9999;">
-            <button class="btn-submit" onclick="executeReportDownload()" style="display:flex; align-items:center; justify-content:center; gap:8px;"><span class="material-symbols-rounded">download</span> Download PDF Report</button>
+        <div class="bottom-action-bar" style="padding: 12px 16px; gap: 8px; z-index:9999;">
+            <button class="btn-submit" onclick="shareReportPDF()" style="flex: 1; background: var(--success); display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded">share</span> Share</button>
+            <button class="btn-submit" onclick="executeReportDownload()" style="flex: 1; background: var(--primary-dark); display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded">download</span> Download</button>
         </div>
     </div>
 
@@ -704,7 +707,7 @@
             <h2 class="page-title" id="cp-main-title" style="position:absolute; left:52px; transition:opacity 0.2s ease; margin:0;">Customer Profile</h2>
         </div>
         <div class="scroll-content" id="cp-scroll-content" style="padding-top:16px;">
-            <div style="display:flex; justify-content:center; margin-bottom:16px;">
+            <div style="display:flex; justify-content:center; margin-bottom:16px;" id="cp-big-avatar-wrap">
                 <div class="pm-avatar-wrap" style="margin:0;">
                     <div class="kb-avatar" id="cp-avatar" style="width:80px; height:80px; font-size:30px; box-shadow: 0 0 0 4px #e0e2e0; cursor:pointer;" onclick="let img=this.querySelector('img'); if(img) openDpViewer(img.src);">C</div>
                     <div class="pm-cam material-symbols-rounded" style="font-size:14px; width:28px; height:28px;" onclick="document.getElementById('cust-upload-hidden').click()">photo_camera</div>
@@ -784,16 +787,14 @@
         </div>
     </div>
 
-    <!-- 🧵 THREAD STOCK PAGE (NOW WITH 3D GRID) -->
+    <!-- 🧵 THREAD STOCK PAGE -->
     <div class="page flex-page" id="thread-stock-page">
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('thread-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Thread Stock</h2><button class="pro-add-btn" onclick="document.getElementById('thread-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
         <div class="fixed-top-section">
             <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-thread" placeholder="Search Shade Number..." onkeyup="filterStockList('search-thread', 'thread-stock-list')"></div>
             <div class="form-panel anim-form form-hidden" id="thread-anim-form" style="margin-bottom:10px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="thread-shade-input" placeholder="Shade No."><input type="number" class="form-control" id="thread-box-input" placeholder="Boxes"></div><div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-box-input', true)">➖ OUT</button></div></div>
         </div>
-        <div class="scroll-content" style="padding-top:0;">
-            <div id="thread-stock-list" class="thread-grid"></div>
-        </div>
+        <div class="scroll-content" style="padding-top:0;"><div id="thread-stock-list" class="inventory-grid"></div></div>
     </div>
 
     <!-- ✨ ZARI STOCK PAGE -->
@@ -803,7 +804,7 @@
             <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-zari" placeholder="Search Item..." onkeyup="filterStockList('search-zari', 'zari-stock-list')"></div>
             <div class="form-panel anim-form form-hidden" id="zari-anim-form" style="margin-bottom:10px;"><select class="form-control" id="zari-item-select" style="margin-bottom: 12px;"><option value="Water 20">Water 20</option><option value="Ice Silver">Ice Silver</option><option value="Sike Water 150">Sike Water 150</option><option value="Sike Water 180">Sike Water 180</option><option value="S B C H Yellow">S B C H Yellow</option><option value="Water 10">Water 10</option><option value="Chandan">Chandan</option><option value="J Gold 77">J Gold 77</option></select><input type="number" class="form-control" id="zari-box-input" placeholder="Boxes" style="margin-bottom: 12px;"><div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Zari', 'zari-item-select', 'zari-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Zari', 'zari-item-select', 'zari-box-input', true)">➖ OUT</button></div></div>
         </div>
-        <div class="scroll-content" style="padding-top:0;"><table class="invoice-table"><thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead><tbody id="zari-stock-list"></tbody></table></div>
+        <div class="scroll-content" style="padding-top:0;"><div id="zari-stock-list" class="inventory-grid"></div></div>
     </div>
 
     <!-- 🪢 CORDING STOCK PAGE -->
@@ -813,7 +814,7 @@
             <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-cording" placeholder="Search Item..." onkeyup="filterStockList('search-cording', 'cording-stock-list')"></div>
             <div class="form-panel anim-form form-hidden" id="cording-anim-form" style="margin-bottom:10px;"><select class="form-control" id="cording-item-select" style="margin-bottom: 12px;"><option value="Cotton Cording">Cotton Cording</option><option value="I Very 3 Taar">I Very 3 Taar</option><option value="M 17 Taar">M 17 Taar</option><option value="Anmol Two 5 Taar">Anmol Two 5 Taar</option><option value="Anmol One 4 Taar">Anmol One 4 Taar</option><option value="R Water 3 Taar">R Water 3 Taar</option><option value="R Water 4 Taar">R Water 4 Taar</option></select><input type="number" class="form-control" id="cording-box-input" placeholder="Boxes" style="margin-bottom: 12px;"><div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Cording', 'cording-item-select', 'cording-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Cording', 'cording-item-select', 'cording-box-input', true)">➖ OUT</button></div></div>
         </div>
-        <div class="scroll-content" style="padding-top:0;"><table class="invoice-table"><thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead><tbody id="cording-stock-list"></tbody></table></div>
+        <div class="scroll-content" style="padding-top:0;"><div id="cording-stock-list" class="inventory-grid"></div></div>
     </div>
 
     <!-- 🧶 NYLON STOCK PAGE -->
@@ -823,7 +824,7 @@
             <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-nylon" placeholder="Search Item..." onkeyup="filterStockList('search-nylon', 'nylon-stock-list')"></div>
             <div class="form-panel anim-form form-hidden" id="nylon-anim-form" style="margin-bottom:10px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="nylon-item-input" placeholder="Item Name / Shade"><input type="number" class="form-control" id="nylon-box-input" placeholder="Boxes"></div><div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Nylon', 'nylon-item-input', 'nylon-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Nylon', 'nylon-item-input', 'nylon-box-input', true)">➖ OUT</button></div></div>
         </div>
-        <div class="scroll-content" style="padding-top:0;"><table class="invoice-table"><thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead><tbody id="nylon-stock-list"></tbody></table></div>
+        <div class="scroll-content" style="padding-top:0;"><div id="nylon-stock-list" class="inventory-grid"></div></div>
     </div>
 
     <!-- 🛞 BOBBIN STOCK PAGE -->
@@ -833,7 +834,7 @@
             <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-bobbin" placeholder="Search Item..." onkeyup="filterStockList('search-bobbin', 'bobbin-stock-list')"></div>
             <div class="form-panel anim-form form-hidden" id="bobbin-anim-form" style="margin-bottom:10px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="bobbin-item-input" placeholder="Item Name"><input type="number" class="form-control" id="bobbin-box-input" placeholder="Boxes"></div><div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Bobbin', 'bobbin-item-input', 'bobbin-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Bobbin', 'bobbin-item-input', 'bobbin-box-input', true)">➖ OUT</button></div></div>
         </div>
-        <div class="scroll-content" style="padding-top:0;"><table class="invoice-table"><thead><tr><th>Item Name</th><th>Total Boxes</th></tr></thead><tbody id="bobbin-stock-list"></tbody></table></div>
+        <div class="scroll-content" style="padding-top:0;"><div id="bobbin-stock-list" class="inventory-grid"></div></div>
     </div>
 
     <!-- ⚠️ LOW STOCK PAGE -->
@@ -844,7 +845,7 @@
                 <span class="material-symbols-rounded" style="font-size:20px;">warning</span> <span>Below items have 5 or less boxes left. Time to re-order!</span>
             </div>
         </div>
-        <div class="scroll-content" style="padding-top:0; padding-bottom: 80px;"><table class="invoice-table"><thead><tr><th>Item Details</th><th>Remaining</th></tr></thead><tbody id="lowstock-list"></tbody></table></div>
+        <div class="scroll-content" style="padding-top:0; padding-bottom: 80px;"><div id="lowstock-list" class="inventory-grid"></div></div>
         <div class="bottom-action-bar" style="justify-content:center;"><button class="btn-submit" onclick="shareLowStock()" style="display:flex; align-items:center; justify-content:center; gap:8px;"><span class="material-symbols-rounded">share</span> Share Low Stock List</button></div>
     </div>
 
@@ -875,7 +876,7 @@
         window.editingBillNo = null; window.editingEntryKey = null; window.editingEntryDate = null;
         window.currentTabType = 'Customer'; window.currentTopCustTab = 'current'; window.currentPaymentMode = 'credit';
         window.ledgerTotals = { custGive:0, custGet:0, supGive:0, supGet:0 }; window.globalBalances = {}; 
-        let cropper; let custCropper;
+        let cropper; let custCropper; let dataLoadCount = 0;
 
         try { history.pushState(null, null, location.href); window.onpopstate = function () { history.go(1); }; } catch(e) {}
 
@@ -889,20 +890,20 @@
             if(document.getElementById('inv-date')) document.getElementById('inv-date').value = todayStr;
             
             try {
-                onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); updatePosShades(); });
-                onValue(ref(db, 'Customers'), (snapshot) => { let data = snapshot.val() || {}; globalCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); renderCustomerList(globalCustomers); setupPOSAutocomplete(); });
-                onValue(ref(db, 'GodownTransfers'), (snapshot) => { let data = snapshot.val() || {}; allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); renderGodownHistory(); renderInventoryList(); });
-                onValue(ref(db, 'Ledger'), (snapshot) => { let data = snapshot.val() || {}; allLedgerData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); calculateGrandTotals(); if (document.getElementById('ledger-deep-page').classList.contains('active')) renderLedgerEntries(currentPartyName); renderInventoryList(); });
+                onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); updatePosShades(); checkRestore(); });
+                onValue(ref(db, 'Customers'), (snapshot) => { let data = snapshot.val() || {}; globalCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); renderCustomerList(globalCustomers); setupPOSAutocomplete(); checkRestore(); });
+                onValue(ref(db, 'GodownTransfers'), (snapshot) => { let data = snapshot.val() || {}; allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); renderGodownHistory(); renderInventoryList(); checkRestore(); });
+                onValue(ref(db, 'Ledger'), (snapshot) => { let data = snapshot.val() || {}; allLedgerData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); calculateGrandTotals(); if (document.getElementById('ledger-deep-page').classList.contains('active')) renderLedgerEntries(currentPartyName); renderInventoryList(); checkRestore(); });
                 onValue(ref(db, 'RecycleBin'), (snapshot) => { let data = snapshot.val() || {}; allRecycleData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); renderRecycleBin(); });
             } catch (error) {}
 
             document.getElementById('inv-party').addEventListener('input', function(e) { let val = e.target.value; let cust = globalCustomers.find(c => c.name.toLowerCase() === val.toLowerCase()); if(cust && cust.phone) { document.getElementById('inv-phone').value = cust.phone; } });
 
-            // WhatsApp Style Profile Scroll Listener
             document.getElementById('cp-scroll-content').addEventListener('scroll', function() {
                 let st = this.scrollTop;
                 let headerGroup = document.getElementById('cp-header-group');
                 let mainTitle = document.getElementById('cp-main-title');
+                let bigAvatarWrap = document.getElementById('cp-big-avatar-wrap');
                 
                 let maxScroll = 50;
                 let progress = Math.min(st / maxScroll, 1);
@@ -910,6 +911,13 @@
                 headerGroup.style.opacity = progress;
                 headerGroup.style.transform = `translateY(${(1 - progress) * 10}px)`;
                 mainTitle.style.opacity = 1 - progress;
+
+                if(bigAvatarWrap) {
+                    bigAvatarWrap.style.opacity = 1 - progress;
+                    bigAvatarWrap.style.transform = `scale(${1 - (progress * 0.2)})`;
+                    if(progress > 0.9) bigAvatarWrap.style.pointerEvents = 'none';
+                    else bigAvatarWrap.style.pointerEvents = 'auto';
+                }
             });
 
             let lastScrollTop = 0;
@@ -920,13 +928,28 @@
                 lastScrollTop = st <= 0 ? 0 : st;
             });
             loadAdminProfile();
-
-            // Restore active page state on refresh
-            let savedPage = sessionStorage.getItem('v_activePage') || 'home';
-            if(savedPage !== 'home' && document.getElementById(savedPage)) {
-                navTo(savedPage, null);
-            }
         });
+
+        function checkRestore() {
+            dataLoadCount++;
+            if(dataLoadCount === 4) { // Assumes Inventory, Customers, Godown, Ledger loaded once
+                let savedPage = sessionStorage.getItem('v_activePage');
+                if(savedPage === 'ledger-deep-page') {
+                    let pName = sessionStorage.getItem('v_currentPartyName');
+                    let pPhone = sessionStorage.getItem('v_currentPartyPhone');
+                    if(pName) openLedgerDetail(pName, pPhone);
+                } else if(savedPage === 'customer-profile-page') {
+                    let pName = sessionStorage.getItem('v_currentPartyName');
+                    currentPartyName = pName;
+                    if(pName) openCustomerProfile();
+                } else if(savedPage === 'entry-details-page') {
+                    let eKey = sessionStorage.getItem('v_currentEntryKey');
+                    if(eKey) openEntryDetails(eKey);
+                } else if(savedPage && savedPage !== 'home') {
+                    navTo(savedPage, null);
+                }
+            }
+        }
 
         document.getElementById('dash-date-picker').addEventListener('change', function(e) { calculateGrandTotals(); });
 
@@ -941,13 +964,11 @@
             if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
-        const mainPages = ['items-page', 'parties-page', 'pos-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page'];
+        const allPagesList = ['items-page', 'parties-page', 'pos-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'home'];
         
         window.openPage = function(id) { 
-            if(mainPages.includes(id)) { 
-                mainPages.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.remove('active'); }); 
-                sessionStorage.setItem('v_activePage', id);
-            }
+            allPagesList.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.remove('active'); }); 
+            sessionStorage.setItem('v_activePage', id);
             updateBottomNavVisibility(id); 
             document.getElementById(id).classList.add('active'); 
         }
@@ -961,37 +982,24 @@
                 if(pageId === 'items-page') document.getElementById('nav-btn-inventory')?.classList.add('active');
                 if(pageId === 'parties-page') document.getElementById('nav-btn-ledger')?.classList.add('active');
             }
-            updateBottomNavVisibility(pageId);
-            if(pageId === 'home') { 
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
-                sessionStorage.setItem('v_activePage', 'home');
-            } else { 
-                openPage(pageId); 
-            }
+            openPage(pageId);
         }
 
         window.closePage = function(id) { 
             document.getElementById(id).classList.remove('active'); 
             let activePageFound = false;
-            ['parties-page', 'items-page', 'pos-page', 'godown-page'].forEach(p => { 
-                if(document.getElementById(p).classList.contains('active')) { 
-                    updateBottomNavVisibility(p); 
+            ['parties-page', 'items-page', 'pos-page', 'godown-page', 'ledger-deep-page'].forEach(p => { 
+                if(document.getElementById(p) && document.getElementById(p).style.display !== 'none' && document.getElementById(p).classList.contains('active')) { 
                     activePageFound = true; 
                     sessionStorage.setItem('v_activePage', p);
-                    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                    if(p === 'items-page') document.getElementById('nav-btn-inventory')?.classList.add('active');
-                    if(p === 'parties-page') document.getElementById('nav-btn-ledger')?.classList.add('active');
                 } 
             });
             if(!activePageFound) { 
-                updateBottomNavVisibility('home'); 
-                sessionStorage.setItem('v_activePage', 'home');
-                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                document.getElementById('nav-btn-home')?.classList.add('active');
+                navTo('home', null);
             }
         }
 
-        window.goHome = function() { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); document.getElementById('nav-btn-home').classList.add('active'); updateBottomNavVisibility('home'); sessionStorage.setItem('v_activePage', 'home'); }
+        window.goHome = function() { navTo('home', null); }
         window.openSidebar = function() { document.getElementById('sidebar').classList.add('active'); document.getElementById('sidebar-overlay').style.display = 'block'; document.body.classList.add('sidebar-locked'); }
         window.closeSidebar = function() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebar-overlay').style.display = 'none'; document.body.classList.remove('sidebar-locked'); }
         window.openProfileModal = function() { document.getElementById('profile-modal-overlay').style.display='block'; document.getElementById('profile-modal').style.display='flex'; }
@@ -1037,8 +1045,24 @@
         }
 
         window.executeReportDownload = function() { let elem = document.getElementById(window.currentReportElemId); let opt = { margin: 0.4, filename: window.currentReportFilename, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; alert("Downloading PDF... Please wait."); html2pdf().set(opt).from(elem).save(); }
+        
+        window.shareReportPDF = async function() { 
+            let elem = document.getElementById(window.currentReportElemId); 
+            let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: window.currentReportFilename, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
+            try { 
+                alert("Preparing PDF for direct sharing... this may take a few seconds."); 
+                let pdfBlob = await html2pdf().set(opt).from(elem).output('blob'); 
+                let file = new File([pdfBlob], opt.filename, { type: 'application/pdf' }); 
+                if (navigator.canShare && navigator.canShare({ files: [file] })) { 
+                    await navigator.share({ files: [file], title: 'Vandana Enterprises Report', text: `Please find attached the report.` }); 
+                } else { 
+                    alert("Your browser does not support direct PDF sharing. Downloading instead..."); 
+                    html2pdf().set(opt).from(elem).save(); 
+                } 
+            } catch(e) { console.error(e); } 
+        }
 
-        window.openAbsentCustomers = function() { let today = document.getElementById('dash-date-picker').value; let activeToday = new Set(); allLedgerData.forEach(entry => { try { let d = new Date(entry.date).toISOString().split('T')[0]; if(d === today) activeToday.add(entry.name); }catch(e){} }); let absentList = globalCustomers.filter(c => !activeToday.has(c.name) && (c.type === 'Customer' || !c.type)); let html = ""; if(absentList.length === 0) { html = "<div style='padding:40px 20px; text-align:center; color:var(--text-muted); font-size:14px;'>Wow! Every customer has an entry today. 🎉</div>"; } else { absentList.forEach(c => { let initial = c.name ? c.name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = c.pic || adminPic; let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; let msg = encodeURIComponent(`नमस्ते ${c.name} जी, वंदना एंटरप्राइजेज से। आज आप शॉप पर नहीं आए, अगर कोई आर्डर या रिक्वायरमेंट हो বিকেল तो जरूर बताएं।`); html += `<div class="kb-list-item"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${c.name}</div><div class="kb-time">📱 ${c.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:0 16px; flex-direction:row; align-items:center; gap:10px; border-left:none; background:transparent;"><a href="tel:${c.phone}" style="text-decoration:none; background:#e8f0fe; color:var(--primary); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">call</span></a><a href="#" onclick="window.open('https://wa.me/91${c.phone}?text=${msg}', '_blank')" style="text-decoration:none; background:#e6f4ea; color:var(--success); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">chat</span></a></div></div>`; }); } document.getElementById('absent-list-container').innerHTML = html; navTo('absent-page', null); }
+        window.openAbsentCustomers = function() { let today = document.getElementById('dash-date-picker').value; let activeToday = new Set(); allLedgerData.forEach(entry => { try { let d = new Date(entry.date).toISOString().split('T')[0]; if(d === today) activeToday.add(entry.name); }catch(e){} }); let absentList = globalCustomers.filter(c => !activeToday.has(c.name) && (c.type === 'Customer' || !c.type)); let html = ""; if(absentList.length === 0) { html = "<div style='padding:40px 20px; text-align:center; color:var(--text-muted); font-size:14px;'>Wow! Every customer has an entry today. 🎉</div>"; } else { absentList.forEach(c => { let initial = c.name ? c.name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = c.pic || adminPic; let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; let msg = encodeURIComponent(`नमस्ते ${c.name} जी, वंदना एंटरप्राइजेज से। आज आप शॉप पर नहीं आए, अगर कोई आर्डर या रिक्वायरमेंट हो तो जरूर बताएं।`); html += `<div class="kb-list-item"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${c.name}</div><div class="kb-time">📱 ${c.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:0 16px; flex-direction:row; align-items:center; gap:10px; border-left:none; background:transparent;"><a href="tel:${c.phone}" style="text-decoration:none; background:#e8f0fe; color:var(--primary); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">call</span></a><a href="#" onclick="window.open('https://wa.me/91${c.phone}?text=${msg}', '_blank')" style="text-decoration:none; background:#e6f4ea; color:var(--success); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">chat</span></a></div></div>`; }); } document.getElementById('absent-list-container').innerHTML = html; openPage('absent-page'); }
 
         function loadAdminProfile() { let pName = localStorage.getItem('v_adminName') || "Admin"; let pPhone = localStorage.getItem('v_adminPhone') || ""; let pEmail = localStorage.getItem('v_adminEmail') || "admin@vandana.com"; let pGst = localStorage.getItem('v_adminGst') || ""; let pAddr = localStorage.getItem('v_adminAddr') || ""; let pPic = localStorage.getItem('v_adminPic'); if(document.getElementById('ap-name')) document.getElementById('ap-name').value = pName; if(document.getElementById('ap-phone')) document.getElementById('ap-phone').value = pPhone; if(document.getElementById('ap-email')) document.getElementById('ap-email').value = pEmail; if(document.getElementById('ap-gst')) document.getElementById('ap-gst').value = pGst; if(document.getElementById('ap-address')) document.getElementById('ap-address').value = pAddr; if(document.getElementById('pm-email-display')) document.getElementById('pm-email-display').innerText = pEmail; if(pPic) { if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').src = pPic; document.getElementById('pm-avatar-img').style.display = 'block'; document.getElementById('pm-avatar-text').style.display = 'none'; } if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').src = pPic; document.getElementById('top-avatar-img').style.display = 'block'; document.getElementById('top-avatar-text').style.display = 'none'; } } else { let initial = pName.charAt(0).toUpperCase(); if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').style.display = 'none'; document.getElementById('pm-avatar-text').innerText = initial; document.getElementById('pm-avatar-text').style.display = 'block'; } if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').style.display = 'none'; document.getElementById('top-avatar-text').innerText = initial; document.getElementById('top-avatar-text').style.display = 'flex'; } } updateGreeting(); }
         window.saveAdminProfile = function() { localStorage.setItem('v_adminName', document.getElementById('ap-name').value); localStorage.setItem('v_adminPhone', document.getElementById('ap-phone').value); localStorage.setItem('v_adminEmail', document.getElementById('ap-email').value); localStorage.setItem('v_adminGst', document.getElementById('ap-gst').value.toUpperCase()); localStorage.setItem('v_adminAddr', document.getElementById('ap-address').value); loadAdminProfile(); alert("Profile Saved Successfully!"); }
@@ -1058,8 +1082,8 @@
 
         function setupPOSAutocomplete() { let dlHtml = ""; globalCustomers.forEach(c => dlHtml += `<option value="${c.name}">`); document.getElementById('pos-customers-dl').innerHTML = dlHtml; }
 
-        window.openCustomerProfile = function() { let customer = globalCustomers.find(c => c.name === currentPartyName); if(!customer) return; currentPartyKey = customer.key; let adminPic = localStorage.getItem('v_adminPic'); let custPic = customer.pic || adminPic; if(custPic) { document.getElementById('cp-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; document.getElementById('cp-mini-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; } else { document.getElementById('cp-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); document.getElementById('cp-mini-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); } document.getElementById('cp-edit-name').value = customer.name; document.getElementById('cp-edit-phone').value = customer.phone || ""; document.getElementById('cp-edit-email').value = customer.email || ""; document.getElementById('cp-edit-address').value = customer.address || ""; document.getElementById('cp-header-name').innerText = customer.name; document.getElementById('cp-scroll-content').scrollTop = 0; document.getElementById('cp-header-group').style.opacity = '0'; document.getElementById('cp-header-group').style.transform = 'translateY(10px)'; document.getElementById('cp-main-title').style.opacity = '1'; openPage('customer-profile-page'); }
-        window.saveCustomerProfile = function() { let nName = document.getElementById('cp-edit-name').value.trim(); let nPhone = document.getElementById('cp-edit-phone').value; let nEmail = document.getElementById('cp-edit-email').value.trim(); let nAddr = document.getElementById('cp-edit-address').value; if(!nName) return alert("Name is required!"); update(ref(db, 'Customers/' + currentPartyKey), { name: nName, phone: nPhone, email: nEmail, address: nAddr }); currentPartyName = nName; currentPartyPhone = nPhone; document.getElementById('l-deep-name').innerText = nName; document.getElementById('cp-header-name').innerText = nName; alert("Updated!"); closePage('customer-profile-page'); }
+        window.openCustomerProfile = function() { let customer = globalCustomers.find(c => c.name === currentPartyName); if(!customer) return; currentPartyKey = customer.key; sessionStorage.setItem('v_currentPartyName', currentPartyName); let adminPic = localStorage.getItem('v_adminPic'); let custPic = customer.pic || adminPic; if(custPic) { document.getElementById('cp-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; document.getElementById('cp-mini-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; } else { document.getElementById('cp-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); document.getElementById('cp-mini-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); } document.getElementById('cp-edit-name').value = customer.name; document.getElementById('cp-edit-phone').value = customer.phone || ""; document.getElementById('cp-edit-email').value = customer.email || ""; document.getElementById('cp-edit-address').value = customer.address || ""; document.getElementById('cp-header-name').innerText = customer.name; document.getElementById('cp-scroll-content').scrollTop = 0; document.getElementById('cp-header-group').style.opacity = '0'; document.getElementById('cp-header-group').style.transform = 'translateY(10px)'; document.getElementById('cp-main-title').style.opacity = '1'; let bWrap = document.getElementById('cp-big-avatar-wrap'); if(bWrap) { bWrap.style.opacity = '1'; bWrap.style.transform = 'scale(1)'; bWrap.style.pointerEvents = 'auto'; } openPage('customer-profile-page'); }
+        window.saveCustomerProfile = function() { let nName = document.getElementById('cp-edit-name').value.trim(); let nPhone = document.getElementById('cp-edit-phone').value; let nEmail = document.getElementById('cp-edit-email').value.trim(); let nAddr = document.getElementById('cp-edit-address').value; if(!nName) return alert("Name is required!"); update(ref(db, 'Customers/' + currentPartyKey), { name: nName, phone: nPhone, email: nEmail, address: nAddr }); currentPartyName = nName; currentPartyPhone = nPhone; sessionStorage.setItem('v_currentPartyName', nName); document.getElementById('l-deep-name').innerText = nName; document.getElementById('cp-header-name').innerText = nName; alert("Updated!"); closePage('customer-profile-page'); }
         window.addCustomerToCloud = function() { let name = document.getElementById('new-party-name').value.trim(); let phone = document.getElementById('new-party-phone').value; let address = document.getElementById('new-party-address').value; if(!name) return alert("Please enter Name!"); push(ref(db, 'Customers'), { name, phone, address, date: new Date().toISOString(), status: "Active", type: currentTabType }); closePage('add-party-page'); document.getElementById('new-party-name').value = ''; document.getElementById('new-party-phone').value = ''; document.getElementById('new-party-address').value = ''; }
         window.deleteCurrentCustomer = function() { if(confirm(`WARNING: Are you sure you want to permanently delete ${currentPartyName}?`)) { remove(ref(db, 'Customers/' + currentPartyKey)); closePage('customer-profile-page'); closePage('ledger-deep-page'); alert("Deleted!"); } }
 
@@ -1090,39 +1114,29 @@
             let activeSalesData = window.currentTopCustTab === 'current' ? currMonthSales : lastMonthSales; let topCustHtml = ""; let sortedCustomers = Object.entries(activeSalesData).sort((a, b) => b[1] - a[1]).slice(0, 5); if(sortedCustomers.length === 0) { topCustHtml = '<div style="text-align:center; padding:10px; color:gray; font-size:12px;">No sales data available.</div>'; } else { sortedCustomers.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-name scroll-text">${cust[0]}</div><div class="ua-item-count scroll-text">₹${cust[1].toLocaleString('en-IN')} <span style="color:var(--text-muted); font-size:16px; vertical-align:middle;" class="material-symbols-rounded">chevron_right</span></div></div>`; }); } document.getElementById('top-customers-list').innerHTML = topCustHtml;
         }
         
-        window.openLedgerDetail = function(name, phone) { currentPartyName = name; currentPartyPhone = phone || ""; document.getElementById('l-deep-name').innerText = name; document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#"; document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); let customer = globalCustomers.find(c => c.name === name); let initial = name ? name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = customer && customer.pic ? customer.pic : adminPic; if(custPic) { document.getElementById('l-deep-avatar-text').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; } else { document.getElementById('l-deep-avatar-text').innerHTML = initial; } renderLedgerEntries(name); openPage('ledger-deep-page'); }
+        window.openLedgerDetail = function(name, phone) { currentPartyName = name; currentPartyPhone = phone || ""; sessionStorage.setItem('v_currentPartyName', name); sessionStorage.setItem('v_currentPartyPhone', phone || ""); document.getElementById('l-deep-name').innerText = name; document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#"; document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); let customer = globalCustomers.find(c => c.name === name); let initial = name ? name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = customer && customer.pic ? customer.pic : adminPic; if(custPic) { document.getElementById('l-deep-avatar-text').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; } else { document.getElementById('l-deep-avatar-text').innerHTML = initial; } renderLedgerEntries(name); openPage('ledger-deep-page'); }
         window.saveCalculatorEntry = function() { let amount = eval(window.calcValue) || 0; if(amount <= 0) return alert("Enter valid amount!"); let dateVal = document.getElementById('calc-date').value; if(!dateVal) dateVal = new Date().toISOString().split('T')[0]; if(window.isEditingEntry && currentEntryData) { update(ref(db, 'Ledger/' + currentEntryData.key), { amount: amount, details: document.getElementById('calc-details').value || "App Entry", type: window.calcType, date: new Date(dateVal).toISOString() }); window.isEditingEntry = false; currentEntryData = null; } else { push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: window.calcType, amount: amount, details: document.getElementById('calc-details').value || "App Entry" }); } closePage('calculator-page'); }
 
-        window.openEntryDetails = function(key) { currentEntryData = allLedgerData.find(e => e.key === key); if(!currentEntryData) return; document.getElementById('ed-party-name').innerText = currentEntryData.name; let d = new Date(currentEntryData.date); document.getElementById('ed-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}); let color = currentEntryData.type === 'Gave' ? 'var(--danger)' : 'var(--success)'; document.getElementById('ed-amount').innerText = `₹ ${parseFloat(currentEntryData.amount).toLocaleString()}`; document.getElementById('ed-amount').style.color = color; document.getElementById('ed-type').innerText = `You ${currentEntryData.type}`; document.getElementById('ed-type').style.color = color; document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry"; if(currentEntryData.cart && currentEntryData.cart.length > 0) { document.getElementById('ed-edit-btn-container').innerHTML = `<button class="btn-outline" onclick="editCurrentInvoice()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:18px;">edit_document</span> Edit Invoice</button>`; } else { document.getElementById('ed-edit-btn-container').innerHTML = `<button class="btn-outline" onclick="editCurrentEntryAmount()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:18px;">edit</span> Edit Amount & Details</button>`; } openPage('entry-details-page'); }
+        window.openEntryDetails = function(key) { sessionStorage.setItem('v_currentEntryKey', key); currentEntryData = allLedgerData.find(e => e.key === key); if(!currentEntryData) return; document.getElementById('ed-party-name').innerText = currentEntryData.name; let d = new Date(currentEntryData.date); document.getElementById('ed-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}); let color = currentEntryData.type === 'Gave' ? 'var(--danger)' : 'var(--success)'; document.getElementById('ed-amount').innerText = `₹ ${parseFloat(currentEntryData.amount).toLocaleString()}`; document.getElementById('ed-amount').style.color = color; document.getElementById('ed-type').innerText = `You ${currentEntryData.type}`; document.getElementById('ed-type').style.color = color; document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry"; if(currentEntryData.cart && currentEntryData.cart.length > 0) { document.getElementById('ed-edit-btn-container').innerHTML = `<button class="btn-outline" onclick="editCurrentInvoice()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:18px;">edit_document</span> Edit Invoice</button>`; } else { document.getElementById('ed-edit-btn-container').innerHTML = `<button class="btn-outline" onclick="editCurrentEntryAmount()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:18px;">edit</span> Edit Amount & Details</button>`; } openPage('entry-details-page'); }
         
         window.editCurrentInvoice = function() { 
             if(!confirm("Are you sure you want to edit this invoice?")) return; 
-            
-            // Revert stock silently for now so it doesn't break inventory limits while editing
             currentEntryData.cart.forEach(item => { 
                 let key = item.cat + "_" + item.shade; 
                 let itemRef = ref(db, 'Inventory/' + key); 
                 get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) + item.qty); }); 
             }); 
-            
-            // Store original exact data to update the SAME entry later
             window.editingEntryKey = currentEntryData.key;
             window.editingBillNo = currentEntryData.billNo;
             window.editingEntryDate = currentEntryData.date;
-            
             currentCart = [...currentEntryData.cart]; 
             document.getElementById('inv-party').value = currentEntryData.name; 
             let cust = globalCustomers.find(c => c.name === currentEntryData.name); 
             document.getElementById('inv-phone').value = cust ? cust.phone : ""; 
-            
             let d = new Date(currentEntryData.date); 
             if(!isNaN(d)) document.getElementById('inv-date').value = d.toISOString().split('T')[0]; 
-            
-            window.setPaymentMode('credit'); // default to credit when editing Gave bill
-            
+            window.setPaymentMode('credit'); 
             renderCartUi(); 
-            closePage('entry-details-page'); 
-            closePage('ledger-deep-page'); 
             navTo('pos-page', null); 
             document.getElementById('billing-form-area').style.display = 'block'; 
             document.getElementById('post-bill-area').style.display = 'none'; 
@@ -1146,17 +1160,23 @@
         window.addSpecificStock = function(category, shadeId, qtyId, isOut = false) { let shade = document.getElementById(shadeId).value; let qty = parseInt(document.getElementById(qtyId).value); if(!shade || isNaN(qty)) return alert("Please enter Detail and Box Quantity!"); let key = category + "_" + shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then((snap) => { let currentQty = snap.val() || 0; let newQty = isOut ? currentQty - qty : currentQty + qty; if(newQty < 0) newQty = 0; set(itemRef, newQty); }); if(document.getElementById(shadeId).tagName !== 'SELECT') { document.getElementById(shadeId).value = ''; } document.getElementById(qtyId).value = ''; alert(isOut ? "Stock Reduced (OUT) Successfully!" : "Stock Added (IN) Successfully!"); document.getElementById(category.toLowerCase() + '-anim-form').classList.add('form-hidden'); }
         window.filterStockList = function(inputId, listId) { let filter = document.getElementById(inputId).value.toUpperCase(); let rows = document.querySelectorAll('#' + listId + ' .stock-row'); rows.forEach(row => { let name = row.getAttribute('data-name'); row.style.display = name.includes(filter) ? '' : 'none'; }); }
         
-        function getThreadLast5Tx(shade) {
+        function getGridCols(count) {
+            if(count === 4) return 2;
+            if(count === 6 || count === 9) return 3;
+            return Math.min(4, Math.max(2, count));
+        }
+
+        function getLast5Tx(cat, item) {
             let list = [];
             allGodownTransfers.forEach(t => {
-                if(t.cat === 'Thread' && t.item === shade) {
-                    list.push({ date: t.date, type: t.type, qty: t.qty, party: 'Godown Transfer' });
+                if(t.cat === cat && t.item === item) {
+                    list.push({ date: t.date, type: t.type, qty: t.qty, party: 'Godown' });
                 }
             });
             allLedgerData.forEach(e => {
                 if(e.cart && e.type === 'Gave') {
                     e.cart.forEach(c => {
-                        if(c.cat === 'Thread' && c.shade === shade) {
+                        if(c.cat === cat && c.shade === item) {
                             list.push({ date: e.date, type: 'OUT', qty: c.qty, party: e.name });
                         }
                     });
@@ -1166,61 +1186,64 @@
             return list.slice(0, 5);
         }
 
+        window.toggleInvCard = function(el) { el.classList.toggle('expanded'); }
+
         window.renderInventoryList = function() { 
-            let threadHtml = ""; let zariHtml = ""; let nylonHtml = ""; let cordingHtml = ""; let bobbinHtml = ""; let lowstockHtml = ""; 
-            let threadCount = 0; let zariCount = 0; let nylonCount = 0; let cordingCount = 0; let bobbinCount = 0; let lowstockCount = 0; 
+            let htmlMaps = { Thread: "", Zari: "", Nylon: "", Cording: "", Bobbin: "" };
+            let countMaps = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
+            let itemsCount = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
+            let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
             
             for (let key in smartInventory) { 
                 let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let qty = smartInventory[key]; 
-                let color = qty <= 5 ? 'var(--danger)' : 'var(--text-dark)'; 
-                let rowHtml = `<tr class="stock-row" data-name="${shade.toUpperCase()}"><td><strong>${shade}</strong></td><td style="color:${color}; font-weight:700;">${qty} BOX</td></tr>`; 
                 
-                if(cat === "Thread") { 
-                    let txList = getThreadLast5Tx(shade);
+                if (htmlMaps[cat] !== undefined) {
+                    let txList = getLast5Tx(cat, shade);
                     let txHtml = "";
                     if(txList.length === 0) {
-                        txHtml = `<div class="t-tx-item" style="justify-content:center; color:gray;">No recent transactions</div>`;
+                        txHtml = `<div class="inv-tx-item" style="justify-content:center; color:gray;">No recent transactions</div>`;
                     } else {
                         txList.forEach(tx => {
                             let isOut = tx.type === 'OUT' || tx.type === 'Gave';
                             let qClass = isOut ? 'out' : 'in';
                             let sign = isOut ? '-' : '+';
                             let dateStr = new Date(tx.date).toLocaleDateString('en-GB', {day:'numeric', month:'short'});
-                            txHtml += `<div class="t-tx-item"><span class="t-tx-date">${dateStr}</span><span class="t-tx-party">${tx.party}</span><span class="t-tx-qty ${qClass}">${sign}${tx.qty}</span></div>`;
+                            txHtml += `<div class="inv-tx-item"><span class="inv-tx-date">${dateStr}</span><span class="inv-tx-party">${tx.party}</span><span class="inv-tx-qty ${qClass}">${sign}${tx.qty}</span></div>`;
                         });
                     }
-                    threadHtml += `<div class="stock-row thread-3d-card" data-name="${shade.toUpperCase()}">
-                        <div class="t-card-header">
-                            <div class="t-card-title">Shade ${shade}</div>
-                            <div class="t-card-qty">${qty} BOX</div>
-                        </div>
-                        <div class="t-tx-list">${txHtml}</div>
+                    htmlMaps[cat] += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)">
+                        <div class="inv-card-header"><div class="inv-card-title">${shade}</div><div class="inv-card-qty">${qty} BOX</div></div>
+                        <div class="inv-tx-list" onclick="event.stopPropagation()">${txHtml}</div>
                     </div>`;
-                    threadCount += qty; 
-                } else if(cat === "Zari") { 
-                    zariHtml += rowHtml; zariCount += qty; 
-                } else if(cat === "Nylon") { 
-                    nylonHtml += rowHtml; nylonCount += qty; 
-                } else if(cat === "Cording") { 
-                    cordingHtml += rowHtml; cordingCount += qty; 
-                } else if(cat === "Bobbin") { 
-                    bobbinHtml += rowHtml; bobbinCount += qty; 
+                    countMaps[cat] += qty;
+                    itemsCount[cat]++;
+                }
+
+                if(qty <= 5 && qty > 0) { 
+                    lowstockCount++; lowstockItemsCount++;
+                    lowstockHtml += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)" style="border-color:#f8cbcb;">
+                        <div class="inv-card-header"><div class="inv-card-title">${shade} <span style="font-size:10px;color:gray;">(${cat})</span></div><div class="inv-card-qty" style="color:var(--danger); background:#fdf2f2;">${qty} BOX</div></div>
+                        <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Time to re-order!</div></div>
+                    </div>`;
                 } 
-                if(qty <= 5 && qty > 0) { lowstockCount++; lowstockHtml += `<tr><td><strong>${shade}</strong><br><span style="font-size:10px; color:gray;">${cat}</span></td><td style="color:var(--danger); font-weight:700;">${qty} BOX</td></tr>`; } 
             } 
             
-            if(document.getElementById('thread-stock-list')) document.getElementById('thread-stock-list').innerHTML = threadHtml || '<div style="text-align:center; padding:20px; color:gray;">No Stock Available</div>'; 
-            if(document.getElementById('zari-stock-list')) document.getElementById('zari-stock-list').innerHTML = zariHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; 
-            if(document.getElementById('nylon-stock-list')) document.getElementById('nylon-stock-list').innerHTML = nylonHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; 
-            if(document.getElementById('cording-stock-list')) document.getElementById('cording-stock-list').innerHTML = cordingHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; 
-            if(document.getElementById('bobbin-stock-list')) document.getElementById('bobbin-stock-list').innerHTML = bobbinHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; 
-            if(document.getElementById('lowstock-list')) document.getElementById('lowstock-list').innerHTML = lowstockHtml || '<tr><td colspan="2" style="text-align:center;">All stocks are healthy! 🎉</td></tr>'; 
-            if(document.getElementById('stock-val-thread')) document.getElementById('stock-val-thread').innerText = threadCount; 
-            if(document.getElementById('stock-val-zari')) document.getElementById('stock-val-zari').innerText = zariCount; 
-            if(document.getElementById('stock-val-nylon')) document.getElementById('stock-val-nylon').innerText = nylonCount; 
-            if(document.getElementById('stock-val-cording')) document.getElementById('stock-val-cording').innerText = cordingCount; 
-            if(document.getElementById('stock-val-bobbin')) document.getElementById('stock-val-bobbin').innerText = bobbinCount; 
-            if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount; 
+            for(let cat in htmlMaps) {
+                let el = document.getElementById(cat.toLowerCase() + '-stock-list');
+                if(el) {
+                    el.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[cat])}, 1fr)`;
+                    el.innerHTML = htmlMaps[cat] || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:gray;">No Stock Available</div>';
+                }
+                let valEl = document.getElementById('stock-val-' + cat.toLowerCase());
+                if(valEl) valEl.innerText = countMaps[cat];
+            }
+
+            let lowEl = document.getElementById('lowstock-list');
+            if(lowEl) {
+                lowEl.style.gridTemplateColumns = `repeat(${getGridCols(lowstockItemsCount)}, 1fr)`;
+                lowEl.innerHTML = lowstockHtml || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--success); font-weight:600;">All stocks are healthy! 🎉</div>';
+            }
+            if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
         }
 
         window.shareLowStock = function() { let msg = "⚠️ *Low Stock Alert - Vandana Enterprises* ⚠️%0A%0A"; let hasLow = false; for (let key in smartInventory) { if(smartInventory[key] <= 5 && smartInventory[key] > 0) { let parts = key.split("_"); msg += `▪️ *${parts[1]}* (${parts[0]}) - Only ${smartInventory[key]} Box%0A`; hasLow = true; } } if(!hasLow) return alert("Everything is fully stocked! No low stock items to share."); window.open(`https://wa.me/?text=${msg}`, '_blank'); }

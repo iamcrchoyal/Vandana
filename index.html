@@ -121,102 +121,102 @@
         .pm-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover;}
         .pm-cam { position: absolute; bottom: 0; right: 0; background: white; border: 1px solid var(--border); border-radius: 50%; width: 26px; height: 26px; display: flex; justify-content: center; align-items: center; font-size: 12px; cursor: pointer;}
         .pm-name { font-family: 'Product Sans', sans-serif; font-size: 22px; font-weight: 400; color: #1f1f1f; margin-bottom: 24px;}
+
+        /* 🔥 NEW PROFESSIONAL VISUAL RACK MAP STYLES 🔥 */
+        .rack-room-title { font-size: 18px; font-weight: 700; color: #1f2937; margin: 16px 0 10px 0; font-family: 'Product Sans', sans-serif; display:flex; align-items:center; gap:8px;}
         
-        .crop-modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index: 9999; flex-direction: column; justify-content:center; align-items:center;}
-        .crop-area { width: 100%; max-height: 70vh; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #000;}
-        .crop-area img { max-width: 100%; max-height: 100%; display: block; }
-        .crop-actions { padding: 20px; background: #111; display: flex; gap: 15px; width: 100%; justify-content: center;}
-
-        .ajio-tab-container { background: #e0e2e0; padding-top: 4px; border-radius: 16px; margin-bottom: 16px; display: flex; overflow: hidden; }
-        .kb-tab { flex: 1; text-align: center; padding: 10px 0; color: var(--text-muted); font-weight: 600; font-size: 12px; cursor: pointer; border-radius: 16px; transition: all 0.3s; font-family: 'Product Sans', sans-serif;}
-        .kb-tab.active { background: white; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-
-        .invoice-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; background: white; border-radius: 12px; border: 1px solid var(--border);}
-        .invoice-table th { position: sticky; top: -1px; background: #ffffff; padding: 12px; color: var(--text-muted); font-weight: 700; z-index: 20; outline: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
-        .invoice-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-weight: 500; }
+        .rack-shelf-container { 
+            background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%); 
+            border: 4px solid #cbd5e1; 
+            border-radius: 12px; 
+            padding: 12px; 
+            margin-bottom: 30px; 
+            box-shadow: inset 0 6px 10px rgba(0,0,0,0.03), 0 4px 6px rgba(0,0,0,0.05); 
+        }
         
-        .kb-summary-card { background: white; border-radius: 16px; margin: 0 0 16px 0; box-shadow: 0 1px 4px rgba(0,0,0,0.03); border: 1px solid var(--border);}
-        .kb-summary-split { display: flex; padding: 16px 0; }
-        .kb-summary-box { flex: 1; text-align: center; border-right: 1px solid var(--border); }
-        .kb-summary-box:last-child { border-right: none; }
-        .kb-summary-label { font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase;}
-        .kb-summary-val { font-size: 18px; font-weight: 600; margin-top: 4px; font-family: 'Product Sans', sans-serif;}
+        .rack-shelf-title { 
+            background: #334155; color: white; padding: 6px 16px; border-radius: 6px; 
+            display: inline-block; font-size: 12px; font-weight: 700; margin-bottom: 16px; 
+            letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
         
-        .kb-list-item { background: white; margin: 0 0 10px 0; border-radius: 16px; display: flex; justify-content: space-between; align-items: stretch; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.02); border: 1px solid var(--border);}
-        .kb-list-left { display: flex; align-items: center; gap: 12px; padding: 12px 16px; flex:1;}
-        .kb-avatar { width: 40px; height: 40px; border-radius: 50%; background: #e8f0fe; display: flex; align-items: center; justify-content: center; font-weight: 600; color: var(--primary); font-size: 15px; flex-shrink: 0; overflow: hidden;}
-        .kb-name { font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 2px; font-family: 'Product Sans', sans-serif;}
-        .kb-time { font-size: 12px; color: var(--text-muted);}
-        .kb-list-right { display: flex; flex-direction: column; justify-content: center; padding: 16px; min-width: 80px; text-align: right; border-left: 1px solid #f1f5f9; background: #f8fafd; border-top-right-radius: 16px; border-bottom-right-radius: 16px;}
+        .rack-row { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 12px; 
+            border-bottom: 10px solid #94a3b8; /* The physical shelf */
+            padding-bottom: 12px; margin-bottom: 24px; position: relative; 
+        }
+        .rack-row::after { 
+            content: ''; position: absolute; bottom: -10px; left: -12px; right: -12px; 
+            height: 10px; background: #64748b; border-radius: 0 0 4px 4px; /* Shelf depth illusion */
+        }
+        .rack-row:last-child { margin-bottom: 0; }
         
-        .kb-fab { position: fixed !important; bottom: 30px; right: 20px; height: 56px; background: var(--primary); color: white; border-radius: 16px; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: 600; box-shadow: 0 4px 10px rgba(10, 86, 208, 0.3); border: none; z-index: 1001; cursor: pointer; padding: 0 20px; white-space: nowrap;}
+        .smart-box { 
+            background: white; border-radius: 10px; border: 1px solid #e2e8f0; position: relative; 
+            padding: 10px 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); 
+            display: flex; flex-direction: column; align-items: center; overflow: hidden; cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .smart-box:active { transform: scale(0.96); }
         
-        .ledger-header-area { background: var(--bg-color); color: var(--text-dark); padding: 10px 16px;}
-        .ledger-bal-card { background: white; border-radius: 16px; padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border: 1px solid var(--border);}
-        .ledger-action-tabs { display: flex; margin: 16px 0; gap: 10px;}
-        .l-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 12px; color: var(--text-dark); font-weight: 600; background: white; border-radius: 20px; cursor: pointer; border: 1px solid var(--border);}
-        .entry-card { background: white; border-radius: 12px; display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 10px; cursor: pointer; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.02);}
-        .ec-left { padding: 14px 16px; flex: 2; border-right: 1px solid #f1f5f9; }
-        .ec-gave, .ec-got { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; }
-        .ec-gave { background: #fdf2f2; color: var(--danger); }
-        .ec-got { background: #e6f4ea; color: var(--success); border-top-right-radius: 12px; border-bottom-right-radius: 12px;}
-        .bottom-action-bar { position: fixed; bottom: 0; width: 100%; left: 0; background: white; padding: 12px 16px; display: flex; gap: 12px; border-top: 1px solid var(--border); z-index: 9999; box-shadow: 0 -2px 10px rgba(0,0,0,0.02); padding-bottom: calc(12px + env(safe-area-inset-bottom));}
-        .btn-l-gave { flex: 1; background: #fdf2f2; color: var(--danger); border: none; padding: 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
-        .btn-l-got { flex: 1; background: #e6f4ea; color: var(--success); border: none; padding: 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
-
-        .entry-detail-card { background: white; margin-bottom: 16px; border-radius: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); overflow: hidden; border: 1px solid var(--border);}
-        .ed-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 16px; border-bottom: 1px solid var(--border); background: #f8fafd;}
-        .ed-amt { font-size: 26px; font-weight: 700; font-family: 'Product Sans', sans-serif;}
-        .ed-row { padding: 20px 16px; border-bottom: 1px solid var(--border); }
-        .ed-edit-btn { text-align: center; padding: 16px; }
-
-        .amount-input-box { background: white; border: 1px solid var(--border); border-radius: 16px; margin-bottom: 12px; padding: 16px; display: flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
-        .amount-input-box input { border: none; outline: none; font-size: 32px; font-weight: 600; color: var(--danger); width: 100%; background: transparent; font-family: 'Product Sans', sans-serif;}
-        #calc-hidden-area { transition: all 0.3s ease; opacity: 0; max-height: 0; overflow: hidden; }
-        #calc-hidden-area.show { opacity: 1; max-height: 250px; margin-bottom: 10px; }
-        .calc-details-input { background: #ffffff; border: 2px solid var(--border); border-radius: 12px; margin: 0 0 10px 0; padding: 12px 14px; width: 100%; font-size: 14px; font-weight: 500; color: var(--text-dark); outline: none; transition: all 0.3s; font-family: inherit; box-sizing: border-box;}
+        /* Show overlay on hover for desktop, or tap for mobile */
+        .smart-box:hover .quick-actions, .smart-box:active .quick-actions { opacity: 1; transform: translateY(0); pointer-events: auto;}
         
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 10px 16px; background: var(--bg-color);}
-        .calc-btn { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 10px 0; font-size: 18px; font-weight: 500; cursor: pointer; color: var(--text-dark); display: flex; justify-content: center; align-items: center; font-family: 'Product Sans', sans-serif;}
-        .calc-btn.light-blue { background: #e8f0fe; color: var(--primary); border: none;}
-        .calc-btn.dark-blue { background: var(--primary); color: white; border: none;}
-
-        .ua-item { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 16px; padding: 14px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
-        .ua-item-name { font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 2px; display:flex; align-items:center; gap:6px; font-family: 'Product Sans', sans-serif;}
-        .ua-item-desc { font-size: 12px; color: var(--text-muted); }
-        .ua-item-count { font-size: 15px; font-weight: 600; color: var(--primary); }
+        .box-thumb { 
+            width: 54px; height: 54px; border-radius: 8px; object-fit: cover; 
+            background: #f1f5f9; margin-bottom: 10px; border: 1px solid #e2e8f0; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
         
-        .celebration-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; padding: 20px; text-align: center; }
-        .celeb-box { background: white; padding: 30px 24px; border-radius: 24px; max-width: 400px; position: relative; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; box-shadow: 0 10px 25px rgba(0,0,0,0.1);}
-        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .box-badge { 
+            position: absolute; top: -6px; right: -6px; font-size: 14px; background: white; 
+            border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.15); width: 26px; height: 26px; 
+            display: flex; align-items: center; justify-content: center; z-index: 2; border: 1px solid #f1f5f9;
+        }
+        .box-color-dot { 
+            position: absolute; top: 8px; left: 8px; width: 14px; height: 14px; 
+            border-radius: 50%; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2); z-index: 2;
+        }
+        
+        .box-title { font-size: 11px; font-weight: 700; color: #1e293b; text-align: center; line-height: 1.2; font-family: 'Product Sans', sans-serif;}
+        .box-qty-text { font-size: 11px; font-weight: 700; color: #64748b; margin-top: 4px; background: #f1f5f9; padding: 2px 8px; border-radius: 10px;}
+        
+        .cap-bar-bg { width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; margin-top: 8px; overflow: hidden; }
+        .cap-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+        
+        .quick-actions { 
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+            background: rgba(255,255,255,0.92); backdrop-filter: blur(2px);
+            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px; 
+            opacity: 0; transform: translateY(15px); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10;
+            pointer-events: none; /* Ignore clicks when hidden */
+        }
+        .qa-btn-group { display: flex; gap: 10px; }
+        .qa-btn { 
+            width: 36px; height: 36px; border-radius: 50%; border: none; font-size: 20px; font-weight: bold; 
+            color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2); transition: transform 0.1s;
+        }
+        .qa-btn:active { transform: scale(0.9); }
+        .qa-in { background: #146c2e; } /* Success Green */
+        .qa-out { background: #b3261e; } /* Danger Red */
+        .qa-info { 
+            background: #0a56d0; font-size: 11px; padding: 6px 12px; border-radius: 16px; 
+            color: white; border: none; font-weight: 600; cursor: pointer; letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(10,86,208,0.3);
+        }
+        
+        .empty-slot { 
+            border: 2px dashed #94a3b8; background: transparent; box-shadow: none; opacity: 0.6; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; height: 130px; border-radius: 10px;
+        }
+        .empty-slot .material-symbols-rounded { font-size: 32px; color: #94a3b8; margin-bottom: 8px;}
+        .empty-slot-text { font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;}
 
-        .stock-overview-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;}
-        .stock-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
-        .stock-grid-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer;}
-        .sg-title { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; font-family: 'Inter', sans-serif;}
-        .sg-value { font-size: 22px; font-weight: 500; color: var(--primary); margin-bottom: 0; line-height:1; font-family: 'Product Sans', sans-serif;}
-        .sg-icon { position: absolute; right: 12px; top: 12px; width: 28px; height: 28px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 14px; }
-
-        .pro-add-btn { background: var(--primary); color: white; border-radius: 20px; padding: 8px 16px; font-size: 13px; font-weight: 600; box-shadow: 0 2px 6px rgba(10,86,208,0.3); border: none; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: transform 0.2s;}
-        .pro-add-btn:active { transform: scale(0.95); }
-        .anim-form { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; max-height: 500px; opacity: 1; background:#f8fafd; border:1px solid #c2e7ff !important; padding:16px; border-radius:16px;}
-        .anim-form.form-hidden { max-height: 0; opacity: 0; margin-bottom: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; border: none !important; }
-        .in-out-btn-group { display: flex; gap: 10px; }
-        .btn-in { flex: 1; background: #e6f4ea; color: var(--success); border: none; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; font-size:13px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);}
-        .btn-out { flex: 1; background: #fdf2f2; color: var(--danger); border: none; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; font-size:13px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);}
-
-        .report-modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 6000; justify-content: center; align-items: center;}
-        .report-modal-box { background: white; padding: 24px; border-radius: 20px; width: 90%; max-width: 350px; text-align: left; position: relative;}
-
-        /* Visual Rack Map Styles */
-        .rack-section-title { font-size: 13px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin: 16px 0 8px 0; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
-        .rack-grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
-        .rack-box-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
-        .rack-box-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 20px; margin-bottom: 8px; background: #f0f4f9; color: var(--primary); }
-        .rack-box-title { font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 2px; font-family: 'Product Sans', sans-serif; }
-        .rack-box-qty { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 6px; margin-top: 6px; }
-
-        #preview-render-area { background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; overflow-x: hidden; zoom: 0.52; }
+        /* Stock Info Modal */
+        .info-modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 6000; justify-content: center; align-items: center; padding: 20px;}
+        .info-modal-box { background: white; padding: 24px; border-radius: 20px; width: 100%; max-width: 320px; text-align: center; position: relative; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
+        .info-brand-pic { width: 80px; height: 80px; border-radius: 12px; margin: 0 auto 16px auto; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid #e2e8f0;}
     </style>
 </head>
 <body>
@@ -231,6 +231,28 @@
             <h3 style="font-family:'Product Sans', sans-serif; font-size:22px; color:var(--primary); margin-bottom:8px;" id="celeb-name">Customer Name</h3>
             <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Top Customer Achiever! Special 2% Discount Unlocked 🎉</p>
             <button class="btn-submit" onclick="document.getElementById('celebration-modal').style.display='none'">Awesome!</button>
+        </div>
+    </div>
+
+    <!-- ℹ️ SMART BOX INFO MODAL -->
+    <div class="info-modal-overlay" id="box-info-modal" onclick="this.style.display='none'">
+        <div class="info-modal-box" onclick="event.stopPropagation()">
+            <img src="" id="info-modal-img" class="info-brand-pic">
+            <h3 id="info-modal-title" style="font-family:'Product Sans', sans-serif; font-size:20px; color:#1e293b; margin-bottom:4px;">Shade Name</h3>
+            <p id="info-modal-cat" style="font-size:12px; color:#64748b; font-weight:600; text-transform:uppercase; margin-bottom:16px;">Category</p>
+            
+            <div style="background:#f1f5f9; border-radius:12px; padding:16px; margin-bottom:20px; display:flex; justify-content:space-around;">
+                <div>
+                    <div style="font-size:11px; color:#64748b; font-weight:600; margin-bottom:4px;">CURRENT STOCK</div>
+                    <div id="info-modal-qty" style="font-size:24px; font-weight:700; color:var(--primary); font-family:'Product Sans', sans-serif;">0 Box</div>
+                </div>
+                <div style="width:1px; background:#cbd5e1;"></div>
+                <div>
+                    <div style="font-size:11px; color:#64748b; font-weight:600; margin-bottom:4px;">STATUS</div>
+                    <div id="info-modal-status" style="font-size:14px; font-weight:700; margin-top:8px;">🟢 Healthy</div>
+                </div>
+            </div>
+            <button class="btn-submit" onclick="document.getElementById('box-info-modal').style.display='none'">Close</button>
         </div>
     </div>
 
@@ -360,7 +382,7 @@
         <ul class="sidebar-menu">
             <li class="active" onclick="navTo('home', null); closeSidebar();"><i class="material-symbols-rounded">space_dashboard</i> Dashboard</li>
             <li onclick="navTo('items-page', null); closeSidebar();"><i class="material-symbols-rounded">inventory_2</i> Master Inventory</li>
-            <li onclick="navTo('rack-map-page', null); closeSidebar();"><i class="material-symbols-rounded">grid_view</i> Visual Rack Map</li>
+            <li onclick="navTo('rack-map-page', null); closeSidebar();"><i class="material-symbols-rounded">grid_view</i> Visual Rack Map <span style="font-size:10px; background:var(--primary); color:white; padding:2px 6px; border-radius:10px; margin-left:auto;">PRO</span></li>
             <li onclick="navTo('godown-page', null); closeSidebar();"><i class="material-symbols-rounded">local_shipping</i> Godown Transfer</li>
             <li onclick="navTo('pos-page', null); closeSidebar();"><i class="material-symbols-rounded">receipt_long</i> Billing & Invoice</li>
             <li onclick="navTo('parties-page', null); closeSidebar();"><i class="material-symbols-rounded">menu_book</i> Ledger Book</li>
@@ -460,19 +482,19 @@
         </div>
     </div>
 
-    <!-- 🗺️ VISUAL RACK MAP PAGE -->
+    <!-- 🗺️ VISUAL RACK MAP PAGE (PRO) -->
     <div class="page flex-page" id="rack-map-page">
         <div class="sub-header">
             <button class="back-btn material-symbols-rounded" onclick="closePage('rack-map-page')">arrow_back</button>
-            <h2 class="page-title">Visual Rack Map</h2>
+            <h2 class="page-title">Digital Twin 3D View</h2>
         </div>
         <div class="fixed-top-section">
-            <div class="search-bar-container" style="margin: 0 0 16px 0;">
-                <span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span>
-                <input type="text" id="search-rack-map" placeholder="Search Shade or Item..." onkeyup="renderVisualRackMap()">
+            <div class="search-bar-container" style="margin: 0 0 16px 0; border: 1px solid #cbd5e1; background:white;">
+                <span class="material-symbols-rounded" style="font-size:20px; color:#64748b; margin-right:8px;">search</span>
+                <input type="text" id="search-rack-map" placeholder="Search Shade, Color or Item..." onkeyup="renderVisualRackMap()">
             </div>
         </div>
-        <div class="scroll-content" id="rack-map-content" style="padding-top:0;">
+        <div class="scroll-content" id="rack-map-content" style="padding-top:0; background: #f8fafc;">
             <!-- Rendered by JS -->
         </div>
     </div>
@@ -942,13 +964,61 @@
         window.closeProfileModal = function() { document.getElementById('profile-modal-overlay').style.display='none'; document.getElementById('profile-modal').style.display='none'; }
         window.openAdminProfile = function() { closeSidebar(); closeProfileModal(); openPage('admin-profile-page'); }
 
-        // 🗺️ VISUAL RACK MAP RENDER LOGIC
+        // ==========================================
+        // 🚀 SMART VISUAL RACK MAP LOGIC
+        // ==========================================
+        function stringToColor(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) { hash = str.charCodeAt(i) + ((hash << 5) - hash); }
+            let color = '#';
+            for (let i = 0; i < 3; i++) {
+                let value = (hash >> (i * 8)) & 0xFF;
+                color += ('00' + value.toString(16)).substr(-2);
+            }
+            return color;
+        }
+
+        // Global quick update function for IN/OUT buttons
+        window.quickUpdateStock = function(category, shade, isOut) {
+            let key = category + "_" + shade;
+            let itemRef = ref(db, 'Inventory/' + key);
+            get(itemRef).then((snap) => {
+                let currentQty = snap.val() || 0;
+                let newQty = isOut ? currentQty - 1 : currentQty + 1;
+                if(newQty < 0) newQty = 0;
+                set(itemRef, newQty);
+                
+                // Show tiny feedback toast or just let Firebase reactive sync update UI
+                let toast = document.createElement('div');
+                toast.innerHTML = isOut ? `➖ 1 Box OUT` : `➕ 1 Box IN`;
+                toast.style.cssText = `position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#1f293b; color:white; padding:8px 16px; border-radius:20px; font-weight:600; z-index:9999; box-shadow:0 4px 10px rgba(0,0,0,0.2); transition:opacity 0.3s; pointer-events:none;`;
+                document.body.appendChild(toast);
+                setTimeout(() => { toast.style.opacity = '0'; setTimeout(()=>toast.remove(), 300); }, 1500);
+            });
+        }
+
+        window.showSmartBoxInfo = function(cat, shade, qty, thumbUrl) {
+            document.getElementById('info-modal-title').innerText = shade;
+            document.getElementById('info-modal-cat').innerText = cat;
+            document.getElementById('info-modal-qty').innerText = qty + " Box";
+            document.getElementById('info-modal-img').src = thumbUrl;
+            
+            let status = "🟢 Healthy";
+            if(qty <= 0) status = "🔴 Empty";
+            else if(qty <= 5) status = "🟡 Low Stock";
+            else if(qty > 30) status = "🔥 High/Hot";
+            
+            document.getElementById('info-modal-status').innerText = status;
+            document.getElementById('box-info-modal').style.display = 'flex';
+        }
+
         window.renderVisualRackMap = function() {
             let container = document.getElementById('rack-map-content');
             if(!container) return;
             let query = document.getElementById('search-rack-map') ? document.getElementById('search-rack-map').value.toUpperCase() : "";
             let categories = ["Thread", "Zari", "Nylon", "Cording", "Bobbin"];
             let html = "";
+            let maxCapacity = 50; // Set arbitrary max capacity for visual bar
             
             categories.forEach(cat => {
                 let catItems = [];
@@ -964,25 +1034,88 @@
                 }
                 
                 if (catItems.length > 0) {
-                    html += `<div class="rack-section-title">📦 ${cat.toUpperCase()} RACK</div>`;
-                    html += `<div class="rack-grid-container">`;
-                    catItems.forEach(item => {
-                        let badgeBg = "#e6f4ea"; let badgeColor = "var(--success)"; let statusText = `${item.qty} Box`;
-                        if(item.qty <= 0) { badgeBg = "#fdf2f2"; badgeColor = "var(--danger)"; statusText = "Empty / 0"; }
-                        else if(item.qty <= 5) { badgeBg = "#fef7e0"; badgeColor = "var(--warning)"; statusText = `${item.qty} Box (Low)`; }
+                    // Start Category Rack Room
+                    html += `<div class="rack-room-title"><span class="material-symbols-rounded" style="color:var(--primary);">door_front</span> ${cat.toUpperCase()} WAREHOUSE</div>`;
+                    html += `<div class="rack-shelf-container">`;
+                    
+                    // Group items into chunks of 4-5 to mimic physical shelves (rack-row)
+                    let itemsPerShelf = 4;
+                    for (let i = 0; i < catItems.length; i += itemsPerShelf) {
+                        let shelfItems = catItems.slice(i, i + itemsPerShelf);
                         
-                        html += `<div class="rack-box-card">
-                            <div class="rack-box-icon material-symbols-rounded">inventory_2</div>
-                            <div class="rack-box-title">${item.shade}</div>
-                            <div class="rack-box-qty" style="background:${badgeBg}; color:${badgeColor};">${statusText}</div>
-                        </div>`;
-                    });
-                    html += `</div>`;
+                        html += `<div class="rack-shelf-title">SHELF ${Math.floor(i/itemsPerShelf) + 1}</div>`;
+                        html += `<div class="rack-row">`;
+                        
+                        shelfItems.forEach(item => {
+                            let percentage = Math.min((item.qty / maxCapacity) * 100, 100);
+                            let barColor = "var(--success)";
+                            let statusText = `${item.qty} Box`;
+                            let badgeHtml = "";
+                            let isEmpty = item.qty === 0;
+                            
+                            if(isEmpty) { 
+                                barColor = "#e2e8f0"; 
+                            } else if(item.qty <= 5) { 
+                                barColor = "var(--warning)"; 
+                                badgeHtml = `<div class="box-badge" style="color:var(--primary);">❄️</div>`; 
+                            } else if(item.qty > 30) { 
+                                badgeHtml = `<div class="box-badge" style="color:var(--danger);">🔥</div>`; 
+                            }
+
+                            // Generate Color Swatch Dot based on name
+                            let swatchColor = stringToColor(item.shade + cat);
+                            
+                            // Placeholder Image mimicking actual box
+                            let brandText = cat.substring(0,3).toUpperCase();
+                            let thumbUrl = `https://ui-avatars.com/api/?name=${brandText}&background=random&color=fff&font-size=0.33&size=100`;
+
+                            if(isEmpty) {
+                                html += `
+                                <div class="smart-box empty-slot" onclick="navTo('items-page', null)">
+                                    <span class="material-symbols-rounded">add_circle</span>
+                                    <span class="empty-slot-text">Empty Slot</span>
+                                    <div class="box-title" style="margin-top:4px;">${item.shade}</div>
+                                </div>`;
+                            } else {
+                                html += `
+                                <div class="smart-box">
+                                    ${badgeHtml}
+                                    <div class="box-color-dot" style="background-color:${swatchColor};"></div>
+                                    <img src="${thumbUrl}" class="box-thumb" alt="Box">
+                                    <div class="box-title">${item.shade}</div>
+                                    <div class="box-qty-text">${statusText}</div>
+                                    
+                                    <div class="cap-bar-bg"><div class="cap-bar-fill" style="width:${percentage}%; background:${barColor};"></div></div>
+                                    
+                                    <div class="quick-actions">
+                                        <div class="qa-btn-group">
+                                            <button class="qa-btn qa-in" onclick="event.stopPropagation(); quickUpdateStock('${cat}', '${item.shade}', false)">+</button>
+                                            <button class="qa-btn qa-out" onclick="event.stopPropagation(); quickUpdateStock('${cat}', '${item.shade}', true)">-</button>
+                                        </div>
+                                        <button class="qa-info" onclick="event.stopPropagation(); showSmartBoxInfo('${cat}', '${item.shade}', ${item.qty}, '${thumbUrl}')">View Info</button>
+                                    </div>
+                                </div>`;
+                            }
+                        });
+                        
+                        // Add intentional empty space at end of shelf if row is not full
+                        let emptySpaces = itemsPerShelf - shelfItems.length;
+                        for(let e=0; e<emptySpaces; e++) {
+                            html += `
+                            <div class="smart-box empty-slot">
+                                <span class="material-symbols-rounded">inventory_2</span>
+                                <span class="empty-slot-text">Space</span>
+                            </div>`;
+                        }
+
+                        html += `</div>`; // Close rack-row
+                    }
+                    html += `</div>`; // Close rack-shelf-container
                 }
             });
             
             if(!html) {
-                html = `<div style="text-align:center; padding:40px; color:var(--text-muted);">No racks or items found.</div>`;
+                html = `<div style="text-align:center; padding:40px; color:var(--text-muted);"><span class="material-symbols-rounded" style="font-size:40px; margin-bottom:10px;">inventory</span><br>No racks or items found.</div>`;
             }
             container.innerHTML = html;
         }

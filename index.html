@@ -669,16 +669,13 @@
 
     <!-- 📄 WHATSAPP STYLE CUSTOMER PROFILE PAGE -->
     <div class="page flex-page" id="customer-profile-page">
-        <div class="sub-header">
-            <button class="back-btn material-symbols-rounded" onclick="closePage('customer-profile-page')" style="flex-shrink:0; width:36px;">arrow_back</button>
-            <div style="flex:1; display:flex; justify-content:center; align-items:center; position:relative; overflow:hidden;">
-                <div style="display:flex; align-items:center; gap:10px; opacity:0; transform:translateY(20px); transition:transform 0.1s ease, opacity 0.1s ease; position:absolute; width:100%; justify-content:center;" id="cp-header-group">
-                    <div class="kb-avatar" id="cp-mini-avatar" style="width:28px; height:28px; font-size:12px; background:#e8f0fe; color:var(--primary); overflow:hidden; flex-shrink:0;">C</div>
-                    <h2 class="page-title scroll-text" id="cp-header-name" style="font-size:16px; margin:0; max-width:60%;">Name</h2>
-                </div>
-                <h2 class="page-title" id="cp-main-title" style="margin:0; transition:opacity 0.1s ease;">Customer Profile</h2>
+        <div class="sub-header" style="justify-content: flex-start; position: relative;">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('customer-profile-page')" style="flex-shrink:0; margin-right: 12px;">arrow_back</button>
+            <div style="display:flex; align-items:center; gap:10px; opacity:0; transform:translateY(10px); transition:all 0.2s ease; flex:1; overflow:hidden;" id="cp-header-group">
+                <div class="kb-avatar" id="cp-mini-avatar" style="width:32px; height:32px; font-size:13px; background:#e8f0fe; color:var(--primary); overflow:hidden; flex-shrink:0;">C</div>
+                <h2 class="page-title scroll-text" id="cp-header-name" style="font-size:16px; margin:0;">Name</h2>
             </div>
-            <div style="width:36px; flex-shrink:0;"></div>
+            <h2 class="page-title" id="cp-main-title" style="position:absolute; left:52px; transition:opacity 0.2s ease; margin:0;">Customer Profile</h2>
         </div>
         <div class="scroll-content" id="cp-scroll-content" style="padding-top:16px;">
             <div style="display:flex; justify-content:center; margin-bottom:16px;">
@@ -883,7 +880,7 @@
                 let progress = Math.min(st / maxScroll, 1);
                 
                 headerGroup.style.opacity = progress;
-                headerGroup.style.transform = `translateY(${(1 - progress) * 20}px)`;
+                headerGroup.style.transform = `translateY(${(1 - progress) * 10}px)`;
                 mainTitle.style.opacity = 1 - progress;
             });
 
@@ -895,6 +892,12 @@
                 lastScrollTop = st <= 0 ? 0 : st;
             });
             loadAdminProfile();
+
+            // Restore active page state on refresh
+            let savedPage = sessionStorage.getItem('v_activePage') || 'home';
+            if(savedPage !== 'home' && document.getElementById(savedPage)) {
+                navTo(savedPage, null);
+            }
         });
 
         document.getElementById('dash-date-picker').addEventListener('change', function(e) { calculateGrandTotals(); });
@@ -910,30 +913,62 @@
             if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
-        window.navTo = function(pageId, element) {
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); if(element) element.classList.add('active');
-            updateBottomNavVisibility(pageId);
-            if(pageId === 'home') { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); } else { openPage(pageId); }
+        const mainPages = ['items-page', 'parties-page', 'pos-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page'];
+        
+        window.openPage = function(id) { 
+            if(mainPages.includes(id)) { 
+                mainPages.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.remove('active'); }); 
+                sessionStorage.setItem('v_activePage', id);
+            }
+            updateBottomNavVisibility(id); 
+            document.getElementById(id).classList.add('active'); 
         }
 
-        const mainPages = ['items-page', 'parties-page', 'pos-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page'];
-        window.openPage = function(id) { 
-            if(mainPages.includes(id)) { mainPages.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.remove('active'); }); }
-            updateBottomNavVisibility(id); document.getElementById(id).classList.add('active'); 
+        window.navTo = function(pageId, element) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); 
+            if(element) {
+                element.classList.add('active');
+            } else {
+                if(pageId === 'home') document.getElementById('nav-btn-home')?.classList.add('active');
+                if(pageId === 'items-page') document.getElementById('nav-btn-inventory')?.classList.add('active');
+                if(pageId === 'parties-page') document.getElementById('nav-btn-ledger')?.classList.add('active');
+            }
+            updateBottomNavVisibility(pageId);
+            if(pageId === 'home') { 
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
+                sessionStorage.setItem('v_activePage', 'home');
+            } else { 
+                openPage(pageId); 
+            }
         }
+
         window.closePage = function(id) { 
             document.getElementById(id).classList.remove('active'); 
             let activePageFound = false;
-            ['parties-page', 'items-page'].forEach(p => { if(document.getElementById(p).classList.contains('active')) { updateBottomNavVisibility(p); activePageFound = true; } });
-            if(!activePageFound) updateBottomNavVisibility('home');
+            ['parties-page', 'items-page', 'pos-page', 'godown-page'].forEach(p => { 
+                if(document.getElementById(p).classList.contains('active')) { 
+                    updateBottomNavVisibility(p); 
+                    activePageFound = true; 
+                    sessionStorage.setItem('v_activePage', p);
+                    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                    if(p === 'items-page') document.getElementById('nav-btn-inventory')?.classList.add('active');
+                    if(p === 'parties-page') document.getElementById('nav-btn-ledger')?.classList.add('active');
+                } 
+            });
+            if(!activePageFound) { 
+                updateBottomNavVisibility('home'); 
+                sessionStorage.setItem('v_activePage', 'home');
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                document.getElementById('nav-btn-home')?.classList.add('active');
+            }
         }
 
-        window.goHome = function() { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); document.getElementById('nav-btn-home').classList.add('active'); updateBottomNavVisibility('home'); }
+        window.goHome = function() { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); document.getElementById('nav-btn-home').classList.add('active'); updateBottomNavVisibility('home'); sessionStorage.setItem('v_activePage', 'home'); }
         window.openSidebar = function() { document.getElementById('sidebar').classList.add('active'); document.getElementById('sidebar-overlay').style.display = 'block'; document.body.classList.add('sidebar-locked'); }
         window.closeSidebar = function() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebar-overlay').style.display = 'none'; document.body.classList.remove('sidebar-locked'); }
         window.openProfileModal = function() { document.getElementById('profile-modal-overlay').style.display='block'; document.getElementById('profile-modal').style.display='flex'; }
         window.closeProfileModal = function() { document.getElementById('profile-modal-overlay').style.display='none'; document.getElementById('profile-modal').style.display='none'; }
-        window.openAdminProfile = function() { closeSidebar(); closeProfileModal(); openPage('admin-profile-page'); }
+        window.openAdminProfile = function() { closeSidebar(); closeProfileModal(); navTo('admin-profile-page', null); }
 
         // 📊 REPORTS LOGIC (WITH PREVIEW)
         window.openReportModal = function(type) { document.getElementById('report-modal-type').value = type; document.getElementById('report-modal-title').innerText = type === 'ledger' ? 'Account Statement' : 'Daily Stock Report'; document.getElementById('report-modal').style.display = 'flex'; }
@@ -964,7 +999,7 @@
 
         window.executeReportDownload = function() { let elem = document.getElementById(window.currentReportElemId); let opt = { margin: 0.4, filename: window.currentReportFilename, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; alert("Downloading PDF... Please wait."); html2pdf().set(opt).from(elem).save(); }
 
-        window.openAbsentCustomers = function() { let today = document.getElementById('dash-date-picker').value; let activeToday = new Set(); allLedgerData.forEach(entry => { try { let d = new Date(entry.date).toISOString().split('T')[0]; if(d === today) activeToday.add(entry.name); }catch(e){} }); let absentList = globalCustomers.filter(c => !activeToday.has(c.name) && (c.type === 'Customer' || !c.type)); let html = ""; if(absentList.length === 0) { html = "<div style='padding:40px 20px; text-align:center; color:var(--text-muted); font-size:14px;'>Wow! Every customer has an entry today. 🎉</div>"; } else { absentList.forEach(c => { let initial = c.name ? c.name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = c.pic || adminPic; let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; let msg = encodeURIComponent(`नमस्ते ${c.name} जी, वंदना एंटरप्राइजेज से। आज आप शॉप पर नहीं आए, अगर कोई आर्डर या रिक्वायरमेंट हो तो जरूर बताएं।`); html += `<div class="kb-list-item"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${c.name}</div><div class="kb-time">📱 ${c.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:0 16px; flex-direction:row; align-items:center; gap:10px; border-left:none; background:transparent;"><a href="tel:${c.phone}" style="text-decoration:none; background:#e8f0fe; color:var(--primary); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">call</span></a><a href="#" onclick="window.open('https://wa.me/91${c.phone}?text=${msg}', '_blank')" style="text-decoration:none; background:#e6f4ea; color:var(--success); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">chat</span></a></div></div>`; }); } document.getElementById('absent-list-container').innerHTML = html; openPage('absent-page'); }
+        window.openAbsentCustomers = function() { let today = document.getElementById('dash-date-picker').value; let activeToday = new Set(); allLedgerData.forEach(entry => { try { let d = new Date(entry.date).toISOString().split('T')[0]; if(d === today) activeToday.add(entry.name); }catch(e){} }); let absentList = globalCustomers.filter(c => !activeToday.has(c.name) && (c.type === 'Customer' || !c.type)); let html = ""; if(absentList.length === 0) { html = "<div style='padding:40px 20px; text-align:center; color:var(--text-muted); font-size:14px;'>Wow! Every customer has an entry today. 🎉</div>"; } else { absentList.forEach(c => { let initial = c.name ? c.name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = c.pic || adminPic; let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; let msg = encodeURIComponent(`नमस्ते ${c.name} जी, वंदना एंटरप्राइजेज से। आज आप शॉप पर नहीं आए, अगर कोई आर्डर या रिक्वायरमेंट हो तो जरूर बताएं।`); html += `<div class="kb-list-item"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${c.name}</div><div class="kb-time">📱 ${c.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:0 16px; flex-direction:row; align-items:center; gap:10px; border-left:none; background:transparent;"><a href="tel:${c.phone}" style="text-decoration:none; background:#e8f0fe; color:var(--primary); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">call</span></a><a href="#" onclick="window.open('https://wa.me/91${c.phone}?text=${msg}', '_blank')" style="text-decoration:none; background:#e6f4ea; color:var(--success); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">chat</span></a></div></div>`; }); } document.getElementById('absent-list-container').innerHTML = html; navTo('absent-page', null); }
 
         function loadAdminProfile() { let pName = localStorage.getItem('v_adminName') || "Admin"; let pPhone = localStorage.getItem('v_adminPhone') || ""; let pEmail = localStorage.getItem('v_adminEmail') || "admin@vandana.com"; let pGst = localStorage.getItem('v_adminGst') || ""; let pAddr = localStorage.getItem('v_adminAddr') || ""; let pPic = localStorage.getItem('v_adminPic'); if(document.getElementById('ap-name')) document.getElementById('ap-name').value = pName; if(document.getElementById('ap-phone')) document.getElementById('ap-phone').value = pPhone; if(document.getElementById('ap-email')) document.getElementById('ap-email').value = pEmail; if(document.getElementById('ap-gst')) document.getElementById('ap-gst').value = pGst; if(document.getElementById('ap-address')) document.getElementById('ap-address').value = pAddr; if(document.getElementById('pm-email-display')) document.getElementById('pm-email-display').innerText = pEmail; if(pPic) { if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').src = pPic; document.getElementById('pm-avatar-img').style.display = 'block'; document.getElementById('pm-avatar-text').style.display = 'none'; } if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').src = pPic; document.getElementById('top-avatar-img').style.display = 'block'; document.getElementById('top-avatar-text').style.display = 'none'; } } else { let initial = pName.charAt(0).toUpperCase(); if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').style.display = 'none'; document.getElementById('pm-avatar-text').innerText = initial; document.getElementById('pm-avatar-text').style.display = 'block'; } if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').style.display = 'none'; document.getElementById('top-avatar-text').innerText = initial; document.getElementById('top-avatar-text').style.display = 'flex'; } } updateGreeting(); }
         window.saveAdminProfile = function() { localStorage.setItem('v_adminName', document.getElementById('ap-name').value); localStorage.setItem('v_adminPhone', document.getElementById('ap-phone').value); localStorage.setItem('v_adminEmail', document.getElementById('ap-email').value); localStorage.setItem('v_adminGst', document.getElementById('ap-gst').value.toUpperCase()); localStorage.setItem('v_adminAddr', document.getElementById('ap-address').value); loadAdminProfile(); alert("Profile Saved Successfully!"); }
@@ -984,7 +1019,7 @@
 
         function setupPOSAutocomplete() { let dlHtml = ""; globalCustomers.forEach(c => dlHtml += `<option value="${c.name}">`); document.getElementById('pos-customers-dl').innerHTML = dlHtml; }
 
-        window.openCustomerProfile = function() { let customer = globalCustomers.find(c => c.name === currentPartyName); if(!customer) return; currentPartyKey = customer.key; let adminPic = localStorage.getItem('v_adminPic'); let custPic = customer.pic || adminPic; if(custPic) { document.getElementById('cp-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; document.getElementById('cp-mini-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; } else { document.getElementById('cp-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); document.getElementById('cp-mini-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); } document.getElementById('cp-edit-name').value = customer.name; document.getElementById('cp-edit-phone').value = customer.phone || ""; document.getElementById('cp-edit-email').value = customer.email || ""; document.getElementById('cp-edit-address').value = customer.address || ""; document.getElementById('cp-header-name').innerText = customer.name; document.getElementById('cp-scroll-content').scrollTop = 0; document.getElementById('cp-header-group').style.opacity = '0'; document.getElementById('cp-main-title').style.opacity = '1'; openPage('customer-profile-page'); }
+        window.openCustomerProfile = function() { let customer = globalCustomers.find(c => c.name === currentPartyName); if(!customer) return; currentPartyKey = customer.key; let adminPic = localStorage.getItem('v_adminPic'); let custPic = customer.pic || adminPic; if(custPic) { document.getElementById('cp-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; document.getElementById('cp-mini-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; } else { document.getElementById('cp-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); document.getElementById('cp-mini-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); } document.getElementById('cp-edit-name').value = customer.name; document.getElementById('cp-edit-phone').value = customer.phone || ""; document.getElementById('cp-edit-email').value = customer.email || ""; document.getElementById('cp-edit-address').value = customer.address || ""; document.getElementById('cp-header-name').innerText = customer.name; document.getElementById('cp-scroll-content').scrollTop = 0; document.getElementById('cp-header-group').style.opacity = '0'; document.getElementById('cp-header-group').style.transform = 'translateY(10px)'; document.getElementById('cp-main-title').style.opacity = '1'; openPage('customer-profile-page'); }
         window.saveCustomerProfile = function() { let nName = document.getElementById('cp-edit-name').value.trim(); let nPhone = document.getElementById('cp-edit-phone').value; let nEmail = document.getElementById('cp-edit-email').value.trim(); let nAddr = document.getElementById('cp-edit-address').value; if(!nName) return alert("Name is required!"); update(ref(db, 'Customers/' + currentPartyKey), { name: nName, phone: nPhone, email: nEmail, address: nAddr }); currentPartyName = nName; currentPartyPhone = nPhone; document.getElementById('l-deep-name').innerText = nName; document.getElementById('cp-header-name').innerText = nName; alert("Updated!"); closePage('customer-profile-page'); }
         window.addCustomerToCloud = function() { let name = document.getElementById('new-party-name').value.trim(); let phone = document.getElementById('new-party-phone').value; let address = document.getElementById('new-party-address').value; if(!name) return alert("Please enter Name!"); push(ref(db, 'Customers'), { name, phone, address, date: new Date().toISOString(), status: "Active", type: currentTabType }); closePage('add-party-page'); document.getElementById('new-party-name').value = ''; document.getElementById('new-party-phone').value = ''; document.getElementById('new-party-address').value = ''; }
         window.deleteCurrentCustomer = function() { if(confirm(`WARNING: Are you sure you want to permanently delete ${currentPartyName}?`)) { remove(ref(db, 'Customers/' + currentPartyKey)); closePage('customer-profile-page'); closePage('ledger-deep-page'); alert("Deleted!"); } }
@@ -1067,7 +1102,7 @@
 
         window.renderLedgerEntries = function(name) { let entryList = document.getElementById('ledger-entries-list'); entryList.innerHTML = ''; let totalGave = 0; let totalGot = 0; let customerEntries = allLedgerData.filter(e => e.name === name); if(customerEntries.length === 0) { entryList.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No entries yet.</div>`; } else { customerEntries.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let gaveHtml = entry.type === 'Gave' ? `₹ ${amt}` : ''; let gotHtml = entry.type === 'Got' ? `₹ ${amt}` : ''; if(entry.type === 'Gave') totalGave += amt; if(entry.type === 'Got') totalGot += amt; let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short'}); entryList.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')"><div class="ec-left"><div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${dateStr}</div><div style="font-size:13px; color:var(--text-dark); font-weight:500;">${entry.details || 'App Entry'}</div></div><div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div></div>`; }); } let balEl = document.getElementById('l-deep-bal-amt'); let txtEl = document.getElementById('l-deep-bal-text'); let finalBal = totalGave - totalGot; if(finalBal > 0) { balEl.innerText = "₹ " + finalBal.toLocaleString(); balEl.style.color = "var(--success)"; txtEl.innerText = "You will get"; } else if (finalBal < 0) { balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); balEl.style.color = "var(--danger)"; txtEl.innerText = "You will give"; } else { balEl.innerText = "₹ 0"; balEl.style.color = "var(--text-dark)"; txtEl.innerText = "Settled"; } }
         window.renderCustomerList = function(list) { let filteredList = list.filter(c => (c.type || 'Customer') === currentTabType); let html = ""; filteredList.forEach(cust => { let initial = cust.name ? cust.name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = cust.pic || adminPic; let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; let netBal = window.globalBalances[cust.name] || 0; let balText = ""; let balColor = ""; if(netBal > 0) { balText = `₹${netBal.toLocaleString()} <span style="font-size:10px; color:var(--text-muted); font-weight:500;">(Get)</span>`; balColor = "var(--success)"; } else if(netBal < 0) { balText = `₹${Math.abs(netBal).toLocaleString()} <span style="font-size:10px; color:var(--text-muted); font-weight:500;">(Give)</span>`; balColor = "var(--danger)"; } else { balText = "₹0"; balColor = "var(--text-muted)"; } html += `<div class="kb-list-item" onclick="openLedgerDetail('${cust.name}', '${cust.phone}')"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${cust.name}</div><div class="kb-time">📱 ${cust.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:16px 16px 16px 8px;"><div style="font-size:14px; font-weight:700; color:${balColor}; font-family:'Product Sans', sans-serif;">${balText}</div></div></div>`; }); document.getElementById('kb-customer-list').innerHTML = html || `<div style="padding:40px; text-align:center; color:gray;">No ${currentTabType}s found</div>`; }
-        window.openInvoicesPage = function() { let listContainer = document.getElementById('invoices-list-container'); listContainer.innerHTML = ''; let selectedDateString = document.getElementById('dash-date-picker').value; let todayInvoices = allLedgerData.filter(entry => { let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){} return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice"); }); if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } else { todayInvoices.forEach(entry => { listContainer.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; cursor:pointer;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--success); font-weight:800; font-size: 16px; font-family:'Product Sans', sans-serif;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;"><span>${entry.details}</span><span style="color:var(--primary); font-weight:600; display:flex; align-items:center;"><span class="material-symbols-rounded" style="font-size:16px;">visibility</span> View</span></div></div>`; }); } openPage('invoices-page'); }
+        window.openInvoicesPage = function() { let listContainer = document.getElementById('invoices-list-container'); listContainer.innerHTML = ''; let selectedDateString = document.getElementById('dash-date-picker').value; let todayInvoices = allLedgerData.filter(entry => { let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){} return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice"); }); if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } else { todayInvoices.forEach(entry => { listContainer.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; cursor:pointer;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--success); font-weight:800; font-size: 16px; font-family:'Product Sans', sans-serif;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;"><span>${entry.details}</span><span style="color:var(--primary); font-weight:600; display:flex; align-items:center;"><span class="material-symbols-rounded" style="font-size:16px;">visibility</span> View</span></div></div>`; }); } navTo('invoices-page', null); }
 
         window.addSpecificStock = function(category, shadeId, qtyId, isOut = false) { let shade = document.getElementById(shadeId).value; let qty = parseInt(document.getElementById(qtyId).value); if(!shade || isNaN(qty)) return alert("Please enter Detail and Box Quantity!"); let key = category + "_" + shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then((snap) => { let currentQty = snap.val() || 0; let newQty = isOut ? currentQty - qty : currentQty + qty; if(newQty < 0) newQty = 0; set(itemRef, newQty); }); if(document.getElementById(shadeId).tagName !== 'SELECT') { document.getElementById(shadeId).value = ''; } document.getElementById(qtyId).value = ''; alert(isOut ? "Stock Reduced (OUT) Successfully!" : "Stock Added (IN) Successfully!"); document.getElementById(category.toLowerCase() + '-anim-form').classList.add('form-hidden'); }
         window.filterStockList = function(inputId, listId) { let filter = document.getElementById(inputId).value.toUpperCase(); let rows = document.querySelectorAll('#' + listId + ' .stock-row'); rows.forEach(row => { let name = row.getAttribute('data-name'); row.style.display = name.includes(filter) ? '' : 'none'; }); }

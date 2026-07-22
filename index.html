@@ -208,6 +208,14 @@
         .report-modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 6000; justify-content: center; align-items: center;}
         .report-modal-box { background: white; padding: 24px; border-radius: 20px; width: 90%; max-width: 350px; text-align: left; position: relative;}
 
+        /* Visual Rack Map Styles */
+        .rack-section-title { font-size: 13px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin: 16px 0 8px 0; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
+        .rack-grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .rack-box-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .rack-box-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 20px; margin-bottom: 8px; background: #f0f4f9; color: var(--primary); }
+        .rack-box-title { font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 2px; font-family: 'Product Sans', sans-serif; }
+        .rack-box-qty { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 6px; margin-top: 6px; }
+
         #preview-render-area { background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; overflow-x: hidden; zoom: 0.52; }
     </style>
 </head>
@@ -352,6 +360,7 @@
         <ul class="sidebar-menu">
             <li class="active" onclick="navTo('home', null); closeSidebar();"><i class="material-symbols-rounded">space_dashboard</i> Dashboard</li>
             <li onclick="navTo('items-page', null); closeSidebar();"><i class="material-symbols-rounded">inventory_2</i> Master Inventory</li>
+            <li onclick="navTo('rack-map-page', null); closeSidebar();"><i class="material-symbols-rounded">grid_view</i> Visual Rack Map</li>
             <li onclick="navTo('godown-page', null); closeSidebar();"><i class="material-symbols-rounded">local_shipping</i> Godown Transfer</li>
             <li onclick="navTo('pos-page', null); closeSidebar();"><i class="material-symbols-rounded">receipt_long</i> Billing & Invoice</li>
             <li onclick="navTo('parties-page', null); closeSidebar();"><i class="material-symbols-rounded">menu_book</i> Ledger Book</li>
@@ -448,6 +457,23 @@
         </div>
         <div class="nav-item" id="nav-btn-ledger" onclick="navTo('parties-page', this)">
             <div class="nav-icon-wrap material-symbols-rounded">menu_book</div><span>Ledger</span>
+        </div>
+    </div>
+
+    <!-- 🗺️ VISUAL RACK MAP PAGE -->
+    <div class="page flex-page" id="rack-map-page">
+        <div class="sub-header">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('rack-map-page')">arrow_back</button>
+            <h2 class="page-title">Visual Rack Map</h2>
+        </div>
+        <div class="fixed-top-section">
+            <div class="search-bar-container" style="margin: 0 0 16px 0;">
+                <span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span>
+                <input type="text" id="search-rack-map" placeholder="Search Shade or Item..." onkeyup="renderVisualRackMap()">
+            </div>
+        </div>
+        <div class="scroll-content" id="rack-map-content" style="padding-top:0;">
+            <!-- Rendered by JS -->
         </div>
     </div>
 
@@ -843,7 +869,7 @@
             if(document.getElementById('inv-date')) document.getElementById('inv-date').value = todayStr;
             
             try {
-                onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); updatePosShades(); });
+                onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); updatePosShades(); renderVisualRackMap(); });
                 onValue(ref(db, 'Customers'), (snapshot) => { let data = snapshot.val() || {}; globalCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); renderCustomerList(globalCustomers); setupPOSAutocomplete(); });
                 onValue(ref(db, 'GodownTransfers'), (snapshot) => { let data = snapshot.val() || {}; allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); renderGodownHistory(); });
                 onValue(ref(db, 'Ledger'), (snapshot) => { let data = snapshot.val() || {}; allLedgerData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); calculateGrandTotals(); if (document.getElementById('ledger-deep-page').classList.contains('active')) renderLedgerEntries(currentPartyName); });
@@ -897,7 +923,7 @@
             if(pageId === 'home') { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); } else { openPage(pageId); }
         }
 
-        const mainPages = ['items-page', 'parties-page', 'pos-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page'];
+        const mainPages = ['items-page', 'parties-page', 'pos-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'rack-map-page'];
         window.openPage = function(id) { 
             if(mainPages.includes(id)) { mainPages.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.remove('active'); }); }
             updateBottomNavVisibility(id); document.getElementById(id).classList.add('active'); 
@@ -905,7 +931,7 @@
         window.closePage = function(id) { 
             document.getElementById(id).classList.remove('active'); 
             let activePageFound = false;
-            ['parties-page', 'items-page'].forEach(p => { if(document.getElementById(p).classList.contains('active')) { updateBottomNavVisibility(p); activePageFound = true; } });
+            ['parties-page', 'items-page', 'rack-map-page'].forEach(p => { if(document.getElementById(p).classList.contains('active')) { updateBottomNavVisibility(p); activePageFound = true; } });
             if(!activePageFound) updateBottomNavVisibility('home');
         }
 
@@ -915,6 +941,51 @@
         window.openProfileModal = function() { document.getElementById('profile-modal-overlay').style.display='block'; document.getElementById('profile-modal').style.display='flex'; }
         window.closeProfileModal = function() { document.getElementById('profile-modal-overlay').style.display='none'; document.getElementById('profile-modal').style.display='none'; }
         window.openAdminProfile = function() { closeSidebar(); closeProfileModal(); openPage('admin-profile-page'); }
+
+        // 🗺️ VISUAL RACK MAP RENDER LOGIC
+        window.renderVisualRackMap = function() {
+            let container = document.getElementById('rack-map-content');
+            if(!container) return;
+            let query = document.getElementById('search-rack-map') ? document.getElementById('search-rack-map').value.toUpperCase() : "";
+            let categories = ["Thread", "Zari", "Nylon", "Cording", "Bobbin"];
+            let html = "";
+            
+            categories.forEach(cat => {
+                let catItems = [];
+                for (let key in smartInventory) {
+                    let parts = key.split("_");
+                    if (parts[0] === cat) {
+                        let shade = parts[1] || "";
+                        let qty = smartInventory[key];
+                        if (!query || shade.toUpperCase().includes(query) || cat.toUpperCase().includes(query)) {
+                            catItems.push({ shade, qty });
+                        }
+                    }
+                }
+                
+                if (catItems.length > 0) {
+                    html += `<div class="rack-section-title">📦 ${cat.toUpperCase()} RACK</div>`;
+                    html += `<div class="rack-grid-container">`;
+                    catItems.forEach(item => {
+                        let badgeBg = "#e6f4ea"; let badgeColor = "var(--success)"; let statusText = `${item.qty} Box`;
+                        if(item.qty <= 0) { badgeBg = "#fdf2f2"; badgeColor = "var(--danger)"; statusText = "Empty / 0"; }
+                        else if(item.qty <= 5) { badgeBg = "#fef7e0"; badgeColor = "var(--warning)"; statusText = `${item.qty} Box (Low)`; }
+                        
+                        html += `<div class="rack-box-card">
+                            <div class="rack-box-icon material-symbols-rounded">inventory_2</div>
+                            <div class="rack-box-title">${item.shade}</div>
+                            <div class="rack-box-qty" style="background:${badgeBg}; color:${badgeColor};">${statusText}</div>
+                        </div>`;
+                    });
+                    html += `</div>`;
+                }
+            });
+            
+            if(!html) {
+                html = `<div style="text-align:center; padding:40px; color:var(--text-muted);">No racks or items found.</div>`;
+            }
+            container.innerHTML = html;
+        }
 
         // 📊 REPORTS LOGIC (WITH PREVIEW)
         window.openReportModal = function(type) { document.getElementById('report-modal-type').value = type; document.getElementById('report-modal-title').innerText = type === 'ledger' ? 'Account Statement' : 'Daily Stock Report'; document.getElementById('report-modal').style.display = 'flex'; }

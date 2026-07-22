@@ -121,53 +121,12 @@
         .pm-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover;}
         .pm-cam { position: absolute; bottom: 0; right: 0; background: white; border: 1px solid var(--border); border-radius: 50%; width: 26px; height: 26px; display: flex; justify-content: center; align-items: center; font-size: 12px; cursor: pointer;}
         .pm-name { font-family: 'Product Sans', sans-serif; font-size: 22px; font-weight: 400; color: #1f1f1f; margin-bottom: 24px;}
-
-        /* 🔥 SHOP FLOOR PLAN UI (9 RACKS) 🔥 */
-        .shop-floor {
-            display: flex; flex-direction: column; gap: 24px; padding: 20px 10px;
-            background: #e2e8f0; border-radius: 16px; margin: 0 16px 20px 16px;
-            border: 2px solid #cbd5e1;
-        }
-        .floor-row {
-            display: flex; justify-content: space-between; align-items: center; gap: 16px;
-        }
-        .side-left {
-            display: flex; gap: 12px; flex: 2; justify-content: center;
-        }
-        .side-right {
-            display: flex; flex: 1; justify-content: center;
-        }
-        .rack-obj {
-            background: #334155; color: white; padding: 24px 10px; border-radius: 8px;
-            text-align: center; font-weight: 700; font-family: 'Product Sans', sans-serif;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; flex: 1;
-            border-top: 4px solid #94a3b8; transition: transform 0.2s; display:flex; flex-direction:column; align-items:center; gap:6px;
-        }
-        .rack-obj:active { transform: scale(0.95); }
-        .rack-obj .material-symbols-rounded { font-size: 28px; color: #cbd5e1; }
-
-        /* 🔥 DETAILED RACK VIEW (SIDE A & B) 🔥 */
-        .rack-detail-container { background: #f8fafc; min-height: 100%; padding-bottom: 40px; }
-        .rack-side-tabs { display: flex; background: white; border-bottom: 1px solid var(--border); position:sticky; top:50px; z-index:40;}
-        .rack-tab { flex: 1; text-align: center; padding: 14px 0; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: 0.3s; font-family: 'Product Sans', sans-serif; }
-        .rack-tab.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: #f0f4f9;}
         
-        .rack-shelf-container { 
-            background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%); 
-            border: 4px solid #cbd5e1; border-radius: 12px; padding: 10px; margin: 20px 16px; 
-            box-shadow: inset 0 4px 8px rgba(0,0,0,0.03), 0 3px 5px rgba(0,0,0,0.05); 
-        }
-        .rack-shelf-title { background: #334155; color: white; padding: 4px 12px; border-radius: 4px; display: inline-block; font-size: 11px; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
-        .rack-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; border-bottom: 8px solid #94a3b8; padding-bottom: 8px; margin-bottom: 16px; position: relative; }
-        .rack-row::after { content: ''; position: absolute; bottom: -8px; left: -10px; right: -10px; height: 8px; background: #64748b; border-radius: 0 0 4px 4px; }
-        .rack-row:last-child { margin-bottom: 0; }
-        
-        .smart-box { background: white; border-radius: 6px; border: 1px solid #e2e8f0; position: relative; padding: 6px 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.06); display: flex; flex-direction: column; align-items: center; overflow: hidden; min-height: 85px; }
-        .empty-slot { border: 1px dashed #94a3b8; background: transparent; box-shadow: none; opacity: 0.5; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 85px; border-radius: 6px; }
-        .empty-slot .material-symbols-rounded { font-size: 18px; color: #94a3b8; margin-bottom: 2px;}
-        .empty-slot-text { font-size: 8px; font-weight: 600; color: #64748b; text-transform: uppercase;}
+        .crop-modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index: 9999; flex-direction: column; justify-content:center; align-items:center;}
+        .crop-area { width: 100%; max-height: 70vh; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #000;}
+        .crop-area img { max-width: 100%; max-height: 100%; display: block; }
+        .crop-actions { padding: 20px; background: #111; display: flex; gap: 15px; width: 100%; justify-content: center;}
 
-        /* Ajio & Ledger tabs */
         .ajio-tab-container { background: #e0e2e0; padding-top: 4px; border-radius: 16px; margin-bottom: 16px; display: flex; overflow: hidden; }
         .kb-tab { flex: 1; text-align: center; padding: 10px 0; color: var(--text-muted); font-weight: 600; font-size: 12px; cursor: pointer; border-radius: 16px; transition: all 0.3s; font-family: 'Product Sans', sans-serif;}
         .kb-tab.active { background: white; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
@@ -248,6 +207,8 @@
 
         .report-modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 6000; justify-content: center; align-items: center;}
         .report-modal-box { background: white; padding: 24px; border-radius: 20px; width: 90%; max-width: 350px; text-align: left; position: relative;}
+
+        #preview-render-area { background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; overflow-x: hidden; zoom: 0.52; }
     </style>
 </head>
 <body>
@@ -391,7 +352,6 @@
         <ul class="sidebar-menu">
             <li class="active" onclick="navTo('home', null); closeSidebar();"><i class="material-symbols-rounded">space_dashboard</i> Dashboard</li>
             <li onclick="navTo('items-page', null); closeSidebar();"><i class="material-symbols-rounded">inventory_2</i> Master Inventory</li>
-            <li onclick="navTo('rack-map-page', null); closeSidebar();"><i class="material-symbols-rounded">grid_view</i> Visual Shop Floor <span style="font-size:10px; background:var(--primary); color:white; padding:2px 6px; border-radius:10px; margin-left:auto;">9 RACKS</span></li>
             <li onclick="navTo('godown-page', null); closeSidebar();"><i class="material-symbols-rounded">local_shipping</i> Godown Transfer</li>
             <li onclick="navTo('pos-page', null); closeSidebar();"><i class="material-symbols-rounded">receipt_long</i> Billing & Invoice</li>
             <li onclick="navTo('parties-page', null); closeSidebar();"><i class="material-symbols-rounded">menu_book</i> Ledger Book</li>
@@ -488,87 +448,6 @@
         </div>
         <div class="nav-item" id="nav-btn-ledger" onclick="navTo('parties-page', this)">
             <div class="nav-icon-wrap material-symbols-rounded">menu_book</div><span>Ledger</span>
-        </div>
-    </div>
-
-    <!-- 🗺️ SHOP FLOOR PLAN PAGE (9 RACKS OVERVIEW) -->
-    <div class="page flex-page" id="rack-map-page">
-        <div class="sub-header">
-            <button class="back-btn material-symbols-rounded" onclick="closePage('rack-map-page')">arrow_back</button>
-            <h2 class="page-title">Shop Floor Plan</h2>
-        </div>
-        <div class="fixed-top-section">
-            <div style="background:#e8f0fe; color:var(--primary-dark); padding:12px; border-radius:12px; font-weight:500; font-size:13px; border: 1px solid #c2e7ff; display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-                <span class="material-symbols-rounded" style="font-size:20px;">touch_app</span> 
-                <span>Tap any Rack to open and flip (Front/Back side).</span>
-            </div>
-        </div>
-        <div class="scroll-content" style="padding-top:0; background: #f8fafc;">
-            <div class="shop-floor">
-                <!-- ROW 1 -->
-                <div class="floor-row">
-                    <div class="side-left">
-                        <div class="rack-obj" onclick="openRackDetail(1)">
-                            <span class="material-symbols-rounded">shelves</span> Rack 1
-                        </div>
-                        <div class="rack-obj" onclick="openRackDetail(2)">
-                            <span class="material-symbols-rounded">shelves</span> Rack 2
-                        </div>
-                    </div>
-                    <div class="side-right">
-                        <div class="rack-obj" onclick="openRackDetail(3)">
-                            <span class="material-symbols-rounded">shelves</span> Rack 3
-                        </div>
-                    </div>
-                </div>
-                <!-- ROW 2 -->
-                <div class="floor-row">
-                    <div class="side-left">
-                        <div class="rack-obj" onclick="openRackDetail(4)">
-                            <span class="material-symbols-rounded">shelves</span> Rack 4
-                        </div>
-                        <div class="rack-obj" onclick="openRackDetail(5)">
-                            <span class="material-symbols-rounded">shelves</span> Rack 5
-                        </div>
-                    </div>
-                    <div class="side-right">
-                        <div class="rack-obj" onclick="openRackDetail(6)">
-                            <span class="material-symbols-rounded">shelves</span> Rack 6
-                        </div>
-                    </div>
-                </div>
-                <!-- ROW 3 -->
-                <div class="floor-row">
-                    <div class="side-left">
-                        <div class="rack-obj" onclick="openRackDetail(7)">
-                            <span class="material-symbols-rounded">shelves</span> Rack 7
-                        </div>
-                        <div class="rack-obj" onclick="openRackDetail(8)">
-                            <span class="material-symbols-rounded">shelves</span> Rack 8
-                        </div>
-                    </div>
-                    <div class="side-right">
-                        <div class="rack-obj" onclick="openRackDetail(9)">
-                            <span class="material-symbols-rounded">shelves</span> Rack 9
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 📦 RACK DETAIL PAGE (FRONT & BACK FLIP) -->
-    <div class="page flex-page" id="rack-detail-page" style="z-index: 4000;">
-        <div class="sub-header">
-            <button class="back-btn material-symbols-rounded" onclick="closePage('rack-detail-page')">arrow_back</button>
-            <h2 class="page-title" id="rack-detail-title">Rack 1</h2>
-        </div>
-        <div class="rack-side-tabs">
-            <div class="rack-tab active" id="tab-side-a" onclick="switchRackSide('A')">FRONT SIDE (A)</div>
-            <div class="rack-tab" id="tab-side-b" onclick="switchRackSide('B')">BACK SIDE (B)</div>
-        </div>
-        <div class="scroll-content rack-detail-container" id="rack-detail-content" style="padding-top:0;">
-            <!-- Shelves rendered dynamically -->
         </div>
     </div>
 
@@ -964,7 +843,7 @@
             if(document.getElementById('inv-date')) document.getElementById('inv-date').value = todayStr;
             
             try {
-                onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); updatePosShades(); /* Only render map explicitly when needed */ });
+                onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); updatePosShades(); });
                 onValue(ref(db, 'Customers'), (snapshot) => { let data = snapshot.val() || {}; globalCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); renderCustomerList(globalCustomers); setupPOSAutocomplete(); });
                 onValue(ref(db, 'GodownTransfers'), (snapshot) => { let data = snapshot.val() || {}; allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); renderGodownHistory(); });
                 onValue(ref(db, 'Ledger'), (snapshot) => { let data = snapshot.val() || {}; allLedgerData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); calculateGrandTotals(); if (document.getElementById('ledger-deep-page').classList.contains('active')) renderLedgerEntries(currentPartyName); });
@@ -1018,7 +897,7 @@
             if(pageId === 'home') { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); } else { openPage(pageId); }
         }
 
-        const mainPages = ['items-page', 'parties-page', 'pos-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'rack-map-page', 'rack-detail-page'];
+        const mainPages = ['items-page', 'parties-page', 'pos-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page'];
         window.openPage = function(id) { 
             if(mainPages.includes(id)) { mainPages.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.remove('active'); }); }
             updateBottomNavVisibility(id); document.getElementById(id).classList.add('active'); 
@@ -1026,7 +905,7 @@
         window.closePage = function(id) { 
             document.getElementById(id).classList.remove('active'); 
             let activePageFound = false;
-            ['parties-page', 'items-page', 'rack-map-page', 'rack-detail-page'].forEach(p => { if(document.getElementById(p) && document.getElementById(p).classList.contains('active')) { updateBottomNavVisibility(p); activePageFound = true; } });
+            ['parties-page', 'items-page'].forEach(p => { if(document.getElementById(p).classList.contains('active')) { updateBottomNavVisibility(p); activePageFound = true; } });
             if(!activePageFound) updateBottomNavVisibility('home');
         }
 
@@ -1036,66 +915,6 @@
         window.openProfileModal = function() { document.getElementById('profile-modal-overlay').style.display='block'; document.getElementById('profile-modal').style.display='flex'; }
         window.closeProfileModal = function() { document.getElementById('profile-modal-overlay').style.display='none'; document.getElementById('profile-modal').style.display='none'; }
         window.openAdminProfile = function() { closeSidebar(); closeProfileModal(); openPage('admin-profile-page'); }
-
-        // ==========================================
-        // 🚀 SMART 9 RACKS LOGIC (FRONT & BACK)
-        // ==========================================
-        
-        let currentOpenRack = 1;
-        let currentRackSide = 'A'; // 'A' = Front, 'B' = Back
-
-        window.openRackDetail = function(rackNum) {
-            currentOpenRack = rackNum;
-            currentRackSide = 'A';
-            document.getElementById('rack-detail-title').innerText = "Rack " + rackNum;
-            switchRackSide('A'); // This will also render the inside
-            openPage('rack-detail-page');
-        }
-
-        window.switchRackSide = function(side) {
-            currentRackSide = side;
-            document.getElementById('tab-side-a').classList.toggle('active', side === 'A');
-            document.getElementById('tab-side-b').classList.toggle('active', side === 'B');
-            renderInsideRack(currentOpenRack, currentRackSide);
-        }
-
-        function renderInsideRack(rackNum, side) {
-            let container = document.getElementById('rack-detail-content');
-            let shelvesPerSide = 6;
-            let boxesPerShelf = 5;
-            let html = "";
-
-            // Currently just rendering Empty Slots since user will define items later.
-            // But we keep the structure ready for real data!
-            html += `<div class="rack-shelf-container">`;
-            
-            for (let s = 1; s <= shelvesPerSide; s++) {
-                html += `<div class="rack-shelf-title">SHELF ${s} - SIDE ${side}</div>`;
-                html += `<div class="rack-row">`;
-                
-                for (let b = 1; b <= boxesPerShelf; b++) {
-                    html += `
-                    <div class="smart-box empty-slot" onclick="alert('Rack ${rackNum} - Side ${side} - Shelf ${s} - Box ${b}\\nआप यहाँ बाद में धागा/आइटम सेट कर सकेंगे!')">
-                        <span class="material-symbols-rounded">add_circle</span>
-                        <span class="empty-slot-text">EMPTY</span>
-                    </div>`;
-                }
-                html += `</div>`;
-            }
-            html += `</div>`;
-            container.innerHTML = html;
-        }
-
-        function stringToColor(str) {
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) { hash = str.charCodeAt(i) + ((hash << 5) - hash); }
-            let color = '#';
-            for (let i = 0; i < 3; i++) {
-                let value = (hash >> (i * 8)) & 0xFF;
-                color += ('00' + value.toString(16)).substr(-2);
-            }
-            return color;
-        }
 
         // 📊 REPORTS LOGIC (WITH PREVIEW)
         window.openReportModal = function(type) { document.getElementById('report-modal-type').value = type; document.getElementById('report-modal-title').innerText = type === 'ledger' ? 'Account Statement' : 'Daily Stock Report'; document.getElementById('report-modal').style.display = 'flex'; }

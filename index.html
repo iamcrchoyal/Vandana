@@ -31,41 +31,7 @@
         @keyframes gemini-mesh { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         #home { background: linear-gradient(135deg, #f0f4f9 0%, #d2e3fc 30%, #fad2e1 70%, #e8dff5 100%); background-size: 300% 300%; animation: gemini-mesh 12s ease-in-out infinite; min-height: 100vh; }
 
-        /* ================= LOGIN SCREEN STYLES ================= */
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; transition: opacity 0.5s ease; }
-        .login-card { background: #ffffff; width: 100%; max-width: 400px; border-radius: 28px; padding: 40px 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.8); }
-        .login-logo { font-size: 48px; color: var(--primary); margin-bottom: 16px; }
-        .login-title { font-family: 'Product Sans', sans-serif; font-size: 26px; font-weight: 400; color: var(--text-dark); margin-bottom: 8px; }
-        .login-title span { font-weight: 700; color: var(--primary); }
-        .login-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 32px; font-weight: 500; }
-        
-        .btn-google { background: #ffffff; border: 1px solid var(--border); color: var(--text-dark); width: 100%; padding: 14px; border-radius: 20px; font-size: 15px; font-weight: 600; font-family: 'Product Sans', sans-serif; display: flex; align-items: center; justify-content: center; gap: 12px; cursor: pointer; transition: background 0.2s, box-shadow 0.2s; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
-        .btn-google:active { background: #f8fafd; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
-        .btn-google img { width: 20px; height: 20px; }
-
-        .divider { display: flex; align-items: center; text-align: center; margin-bottom: 20px; color: var(--text-muted); font-size: 12px; font-weight: 600; }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
-        .divider:not(:empty)::before { margin-right: .5em; }
-        .divider:not(:empty)::after { margin-left: .5em; }
-
-        .login-input-group { background: #f8fafd; border: 1px solid var(--border); border-radius: 16px; padding: 8px 16px; display: flex; align-items: center; margin-bottom: 16px; transition: border-color 0.3s, background 0.3s; }
-        .login-input-group:focus-within { border-color: var(--primary); background: #ffffff; box-shadow: 0 0 0 2px rgba(10, 86, 208, 0.1); }
-        .login-input-group span { font-size: 18px; color: var(--text-muted); margin-right: 12px; font-weight: 600; }
-        .login-input-group input { border: none; background: transparent; width: 100%; outline: none; font-size: 16px; font-family: 'Product Sans', sans-serif; color: var(--text-dark); font-weight: 500; padding: 8px 0; }
-        
-        .otp-inputs { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 24px; }
-        .otp-inputs input { width: 50px; height: 50px; text-align: center; font-size: 24px; font-weight: 700; border: 1px solid var(--border); border-radius: 12px; background: #f8fafd; outline: none; color: var(--primary); font-family: 'Product Sans', sans-serif; transition: all 0.3s; }
-        .otp-inputs input:focus { border-color: var(--primary); background: #ffffff; box-shadow: 0 0 0 2px rgba(10, 86, 208, 0.1); }
-
-        .btn-login-main { background: var(--primary); color: white; width: 100%; padding: 16px; border-radius: 20px; font-size: 15px; font-weight: 600; font-family: 'Product Sans', sans-serif; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(10, 86, 208, 0.25); display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.2s; }
-        .btn-login-main:active { transform: scale(0.98); }
-
-        #otp-section { display: none; animation: slideInRight 0.3s forwards; }
-        #phone-section { animation: fadeIn 0.3s forwards; }
-        @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* ================= REST OF THE APP STYLES ================= */
+        /* ================= APP STYLES ================= */
         .global-app-bar { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: rgba(240, 244, 249, 0.8); backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 5000; border-bottom: 1px solid transparent; transition: background 0.3s, border-bottom 0.3s;}
         .global-app-bar.scrolled { background: rgba(255, 255, 255, 0.95); border-bottom: 1px solid var(--border); }
         .app-bar-left { display: flex; align-items: center; gap: 12px; }
@@ -246,64 +212,6 @@
     </style>
 </head>
 <body>
-
-    <!-- 🔐 REAL FIREBASE AUTH LOGIN SCREEN -->
-    <div id="login-screen">
-        <div class="login-card">
-            <div class="login-logo material-symbols-rounded" style="font-size: 60px;">account_balance</div>
-            <h1 class="login-title"><span>Vandana</span> Enterprises</h1>
-            <p class="login-subtitle">Secure ERP & Inventory Management</p>
-
-            <div id="phone-section">
-                <!-- Real Google Login -->
-                <button class="btn-google" onclick="handleGoogleLogin()">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
-                    Continue with Google
-                </button>
-
-                <div class="divider">OR</div>
-
-                <!-- Phone Number Login -->
-                <div class="login-input-group">
-                    <span>+91</span>
-                    <input type="tel" id="login-phone-number" placeholder="Enter Mobile Number" maxlength="10">
-                </div>
-                <button class="btn-login-main" onclick="sendOTP()">
-                    Get Secure OTP <span class="material-symbols-rounded" style="font-size:18px;">arrow_forward</span>
-                </button>
-            </div>
-
-            <!-- OTP Input Section -->
-            <div id="otp-section">
-                <div style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
-                    OTP sent to <strong id="display-otp-phone" style="color:var(--text-dark);">+91 0000000000</strong>
-                    <br><span style="color:var(--primary); cursor:pointer; font-weight:600;" onclick="editPhoneNumber()">✏️ Edit Number</span>
-                </div>
-                
-                <div class="otp-inputs">
-                    <input type="text" maxlength="1" id="otp1" oninput="moveToNext(this, 'otp2')">
-                    <input type="text" maxlength="1" id="otp2" oninput="moveToNext(this, 'otp3')" onkeydown="moveToPrev(event, 'otp1')">
-                    <input type="text" maxlength="1" id="otp3" oninput="moveToNext(this, 'otp4')" onkeydown="moveToPrev(event, 'otp2')">
-                    <input type="text" maxlength="1" id="otp4" onkeydown="moveToPrev(event, 'otp3')">
-                </div>
-                
-                <button class="btn-login-main" onclick="verifyOTP()">
-                    Verify & Login <span class="material-symbols-rounded" style="font-size:18px;">check_circle</span>
-                </button>
-            </div>
-
-            <!-- Invisible Recaptcha Container required for Firebase Phone Auth -->
-            <div id="recaptcha-container"></div>
-
-            <!-- Temporary Bypass Button for testing -->
-            <div style="margin-top: 20px;">
-                <button class="btn-outline" style="border:none; color:var(--text-muted); background:transparent; font-size:13px; text-decoration:underline;" onclick="bypassLogin()">
-                    Skip for Testing (Bypass)
-                </button>
-            </div>
-        </div>
-    </div>
-
 
     <!-- 🌟 LOADER -->
     <div id="loader" class="loader-overlay" style="display: none;"><div class="spinner"></div></div>
@@ -875,11 +783,10 @@
         <div class="bottom-action-bar" style="justify-content:center;"><button class="btn-submit" onclick="shareLowStock()" style="display:flex; align-items:center; justify-content:center; gap:8px;"><span class="material-symbols-rounded">share</span> Share Low Stock List</button></div>
     </div>
 
-    <!-- ================= FIREBASE & AUTH JAVASCRIPT ================= -->
+    <!-- ================= FIREBASE JAVASCRIPT ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, get, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAGcWUM4lqJKmV2Zz2Em3WtI-D0fcQeuzQ",
@@ -893,7 +800,6 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const auth = getAuth(app);
 
         let allLedgerData = []; let globalCustomers = []; let smartInventory = {}; let allGodownTransfers = []; let allRecycleData = [];
         let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null; 
@@ -905,71 +811,6 @@
         let cropper; let custCropper;
 
         try { history.pushState(null, null, location.href); window.onpopstate = function () { history.go(1); }; } catch(e) {}
-
-        // ================= REAL FIREBASE AUTH LOGIC =================
-        window.handleGoogleLogin = function() {
-            const provider = new GoogleAuthProvider();
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    window.bypassLogin();
-                })
-                .catch((error) => {
-                    alert("Google Login Failed: " + error.message);
-                });
-        }
-
-        window.sendOTP = function() {
-            let phone = document.getElementById('login-phone-number').value;
-            if(phone.length !== 10) return alert("Please enter a valid 10-digit mobile number!");
-            
-            let phoneNumber = "+91" + phone;
-            document.getElementById('display-otp-phone').innerText = phoneNumber;
-
-            if (!window.recaptchaVerifier) {
-                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                    'size': 'invisible'
-                });
-            }
-
-            const appVerifier = window.recaptchaVerifier;
-            signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-                .then((confirmationResult) => {
-                    window.confirmationResult = confirmationResult;
-                    document.getElementById('phone-section').style.display = 'none';
-                    document.getElementById('otp-section').style.display = 'block';
-                    document.getElementById('otp1').focus();
-                    alert("OTP sent successfully!");
-                })
-                .catch((error) => {
-                    alert("SMS Error: " + error.message);
-                });
-        }
-
-        window.editPhoneNumber = function() {
-            document.getElementById('otp-section').style.display = 'none';
-            document.getElementById('phone-section').style.display = 'block';
-        }
-
-        window.moveToNext = function(current, nextFieldID) { if (current.value.length >= 1) document.getElementById(nextFieldID).focus(); }
-        window.moveToPrev = function(event, prevFieldID) { if (event.key === "Backspace" && event.target.value === "") document.getElementById(prevFieldID).focus(); }
-
-        window.verifyOTP = function() {
-            let otp = document.getElementById('otp1').value + document.getElementById('otp2').value + document.getElementById('otp3').value + document.getElementById('otp4').value;
-            if(otp.length !== 4) return alert("Please enter 4-digit OTP!");
-            
-            window.confirmationResult.confirm(otp)
-                .then((result) => {
-                    window.bypassLogin();
-                })
-                .catch((error) => {
-                    alert("Invalid OTP! Please try again.");
-                });
-        }
-
-        window.bypassLogin = function() {
-            document.getElementById('login-screen').style.opacity = '0';
-            setTimeout(() => { document.getElementById('login-screen').style.display = 'none'; }, 500);
-        }
 
         window.addEventListener('DOMContentLoaded', () => {
             let todayStr = new Date().toISOString().split('T')[0];
@@ -1125,7 +966,7 @@
         window.renderCustomerList = function(list) { let filteredList = list.filter(c => (c.type || 'Customer') === currentTabType); let html = ""; filteredList.forEach(cust => { let initial = cust.name ? cust.name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = cust.pic || adminPic; let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; let netBal = window.globalBalances[cust.name] || 0; let balText = ""; let balColor = ""; if(netBal > 0) { balText = `₹${netBal.toLocaleString()} <span style="font-size:10px; color:var(--text-muted); font-weight:500;">(Get)</span>`; balColor = "var(--success)"; } else if(netBal < 0) { balText = `₹${Math.abs(netBal).toLocaleString()} <span style="font-size:10px; color:var(--text-muted); font-weight:500;">(Give)</span>`; balColor = "var(--danger)"; } else { balText = "₹0"; balColor = "var(--text-muted)"; } html += `<div class="kb-list-item" onclick="openLedgerDetail('${cust.name}', '${cust.phone}')"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${cust.name}</div><div class="kb-time">📱 ${cust.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:16px 16px 16px 8px;"><div style="font-size:14px; font-weight:700; color:${balColor}; font-family:'Product Sans', sans-serif;">${balText}</div></div></div>`; }); document.getElementById('kb-customer-list').innerHTML = html || `<div style="padding:40px; text-align:center; color:gray;">No ${currentTabType}s found</div>`; }
         window.openInvoicesPage = function() { let listContainer = document.getElementById('invoices-list-container'); listContainer.innerHTML = ''; let selectedDateString = document.getElementById('dash-date-picker').value; let todayInvoices = allLedgerData.filter(entry => { let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){} return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice Sale"); }); if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } else { todayInvoices.forEach(entry => { listContainer.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; cursor:pointer;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--success); font-weight:800; font-size: 16px; font-family:'Product Sans', sans-serif;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;"><span>${entry.details}</span><span style="color:var(--primary); font-weight:600; display:flex; align-items:center;"><span class="material-symbols-rounded" style="font-size:16px;">visibility</span> View</span></div></div>`; }); } openPage('invoices-page'); }
 
-        window.addSpecificStock = function(category, shadeId, qtyId, isOut = false) { let shade = document.getElementById(shadeId).value; let qty = parseInt(document.getElementById(qtyId).value); if(!shade || isNaN(qty)) return alert("Please enter Detail and Box Quantity!"); let key = category + "_" + shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then((snap) => { let currentQty = snap.val() || 0; let newQty = isOut ? currentQty - qty : currentQty + qty; if(newQty < 0) newQty = 0; set(itemRef, newQty); }); if(document.getElementById(shadeId).tagName !== 'SELECT') { document.getElementById(shadeId).value = ''; } document.getElementById(qtyId).value = ''; alert(isOut ? "Stock Reduced (OUT) Successfully!" : "Stock Added (IN) Successfully!"); document.getElementById(category.toLowerCase() + '-anim-form').classList.add('form-hidden'); }
+        window.addSpecificStock = function(category, shadeId, qtyId, isOut = false) { let shade = document.getElementById(shadeId).value; let qty = parseInt(document.getElementById(qtyId).value); if(!shade || isNaN(qty)) return alert("Please enter Detail and Box Quantity!"); let key = category + "_" + shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then((snap) => { let currentQty = snap.val() || 0; let newQty = type === 'OUT' ? currentQty - qty : currentQty + qty; if(newQty < 0) newQty = 0; set(itemRef, newQty); }); if(document.getElementById(shadeId).tagName !== 'SELECT') { document.getElementById(shadeId).value = ''; } document.getElementById(qtyId).value = ''; alert(isOut ? "Stock Reduced (OUT) Successfully!" : "Stock Added (IN) Successfully!"); document.getElementById(category.toLowerCase() + '-anim-form').classList.add('form-hidden'); }
         window.filterStockList = function(inputId, listId) { let filter = document.getElementById(inputId).value.toUpperCase(); let rows = document.querySelectorAll('#' + listId + ' .stock-row'); rows.forEach(row => { let name = row.getAttribute('data-name'); row.style.display = name.includes(filter) ? '' : 'none'; }); }
         window.renderInventoryList = function() { let threadHtml = ""; let zariHtml = ""; let nylonHtml = ""; let cordingHtml = ""; let bobbinHtml = ""; let lowstockHtml = ""; let threadCount = 0; let zariCount = 0; let nylonCount = 0; let cordingCount = 0; let bobbinCount = 0; let lowstockCount = 0; for (let key in smartInventory) { let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let qty = smartInventory[key]; let color = qty <= 5 ? 'var(--danger)' : 'var(--text-dark)'; let rowHtml = `<tr class="stock-row" data-name="${shade.toUpperCase()}"><td><strong>${shade}</strong></td><td style="color:${color}; font-weight:700;">${qty} BOX</td></tr>`; if(cat === "Thread") { threadHtml += rowHtml; threadCount += qty; } else if(cat === "Zari") { zariHtml += rowHtml; zariCount += qty; } else if(cat === "Nylon") { nylonHtml += rowHtml; nylonCount += qty; } else if(cat === "Cording") { cordingHtml += rowHtml; cordingCount += qty; } else if(cat === "Bobbin") { bobbinHtml += rowHtml; bobbinCount += qty; } if(qty <= 5 && qty > 0) { lowstockCount++; lowstockHtml += `<tr><td><strong>${shade}</strong><br><span style="font-size:10px; color:gray;">${cat}</span></td><td style="color:var(--danger); font-weight:700;">${qty} BOX</td></tr>`; } } if(document.getElementById('thread-stock-list')) document.getElementById('thread-stock-list').innerHTML = threadHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; if(document.getElementById('zari-stock-list')) document.getElementById('zari-stock-list').innerHTML = zariHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; if(document.getElementById('nylon-stock-list')) document.getElementById('nylon-stock-list').innerHTML = nylonHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; if(document.getElementById('cording-stock-list')) document.getElementById('cording-stock-list').innerHTML = cordingHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; if(document.getElementById('bobbin-stock-list')) document.getElementById('bobbin-stock-list').innerHTML = bobbinHtml || '<tr><td colspan="2" style="text-align:center;">No Stock Available</td></tr>'; if(document.getElementById('lowstock-list')) document.getElementById('lowstock-list').innerHTML = lowstockHtml || '<tr><td colspan="2" style="text-align:center;">All stocks are healthy! 🎉</td></tr>'; if(document.getElementById('stock-val-thread')) document.getElementById('stock-val-thread').innerText = threadCount; if(document.getElementById('stock-val-zari')) document.getElementById('stock-val-zari').innerText = zariCount; if(document.getElementById('stock-val-nylon')) document.getElementById('stock-val-nylon').innerText = nylonCount; if(document.getElementById('stock-val-cording')) document.getElementById('stock-val-cording').innerText = cordingCount; if(document.getElementById('stock-val-bobbin')) document.getElementById('stock-val-bobbin').innerText = bobbinCount; if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount; }
         window.shareLowStock = function() { let msg = "⚠️ *Low Stock Alert - Vandana Enterprises* ⚠️%0A%0A"; let hasLow = false; for (let key in smartInventory) { if(smartInventory[key] <= 5 && smartInventory[key] > 0) { let parts = key.split("_"); msg += `▪️ *${parts[1]}* (${parts[0]}) - Only ${smartInventory[key]} Box%0A`; hasLow = true; } } if(!hasLow) return alert("Everything is fully stocked! No low stock items to share."); window.open(`https://wa.me/?text=${msg}`, '_blank'); }

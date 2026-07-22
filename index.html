@@ -21,7 +21,7 @@
             --bg-color: #f0f4f9; --surface: #ffffff; --text-dark: #1f1f1f; --text-muted: #444746; --border: #e0e2e0;
         }
 
-        html, body { background-color: var(--bg-color); height: 100%; overscroll-behavior-y: auto; }
+        html, body { background-color: var(--bg-color); height: 100%; overscroll-behavior-y: auto; max-width: 100vw; overflow-x: hidden; position: relative;}
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         body { color: var(--text-dark); font-family: 'Inter', sans-serif; overflow-x: hidden; font-size: 14px; user-select: none;}
         body.sidebar-locked { overflow: hidden; position: fixed; width: 100%; height: 100%; }
@@ -74,14 +74,14 @@
         .nav-icon-wrap { width: 60px; height: 30px; border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 22px; transition: background 0.3s; }
         .nav-item span { font-size: 11px; font-weight: 500; font-family: 'Inter', sans-serif;}
 
-        .page { position: fixed; top: 60px; bottom: 0; left: 0; width: 100%; background: var(--bg-color); z-index: 3500; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display:none; flex-direction:column; overscroll-behavior-y: none; }
+        .page { position: fixed; top: 60px; bottom: 0; left: 0; width: 100%; max-width: 100vw; background: var(--bg-color); z-index: 3500; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display:none; flex-direction:column; overscroll-behavior-y: none; overflow-x: hidden; }
         .page.active { transform: translateX(0); display: flex; }
         .sub-header { position: sticky; top: 0; background: var(--bg-color); height: 50px; display: flex; align-items: center; padding: 0 16px; z-index: 50; border-bottom: 1px solid var(--border); flex-shrink: 0;}
         .back-btn { background: transparent; border: none; color: var(--text-dark); font-size: 24px; margin-right: 12px; cursor: pointer; padding: 5px; font-weight: 300;}
         .page-title { font-size: 18px; font-weight: 500; margin: 0; color: var(--text-dark); font-family: 'Product Sans', sans-serif;}
         
         .fixed-top-section { flex-shrink: 0; background: var(--bg-color); z-index: 10; padding: 16px 16px 0 16px; }
-        .scroll-content { flex: 1; overflow-y: auto; padding: 0 16px 100px 16px; position: relative; overscroll-behavior-y: none; }
+        .scroll-content { flex: 1; overflow-y: auto; padding: 0 16px 100px 16px; position: relative; overscroll-behavior-y: none; overflow-x: hidden;}
 
         .form-panel { background: white; padding: 16px; border-radius: 16px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.02);}
         .form-group { margin-bottom: 16px; }
@@ -221,11 +221,11 @@
         .dp-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; background: rgba(0,0,0,0.5); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
 
         /* Inventory 3D Box Grid System */
-        .inventory-grid { display: grid; gap: 12px; padding: 10px 0; }
-        .inv-card { background: linear-gradient(145deg, #ffffff, #f8fafd); border-radius: 12px; padding: 12px; box-shadow: 0 4px 8px rgba(10,86,208,0.06), inset 0 2px 4px rgba(255,255,255,0.8); border: 1px solid #c2e7ff; cursor: pointer; position: relative; transition: all 0.2s; display:flex; flex-direction:column;}
+        .inventory-grid { display: grid; gap: 10px; padding: 10px 0; width: 100%; box-sizing: border-box; overflow-x: hidden;}
+        .inv-card { background: linear-gradient(145deg, #ffffff, #f8fafd); border-radius: 12px; padding: 10px; box-shadow: 0 4px 8px rgba(10,86,208,0.06), inset 0 2px 4px rgba(255,255,255,0.8); border: 1px solid #c2e7ff; cursor: pointer; position: relative; transition: all 0.2s; display:flex; flex-direction:column; min-width: 0; box-sizing: border-box;}
         .inv-card-header { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; flex:1;}
-        .inv-card-title { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; font-family: 'Product Sans', sans-serif; word-wrap:break-word; max-width:100%;}
-        .inv-card-qty { font-size: 16px; font-weight: 800; color: var(--primary); background:#e8f0fe; padding:4px 12px; border-radius:12px;}
+        .inv-card-title { font-size: 13px; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; font-family: 'Product Sans', sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+        .inv-card-qty { font-size: 14px; font-weight: 800; color: var(--primary); background:#e8f0fe; padding:4px 6px; border-radius:10px; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         .inv-tx-list { display: none; flex-direction: column; gap: 6px; margin-top: 12px; border-top: 1px dashed #c2e7ff; padding-top: 10px;}
         .inv-card.expanded .inv-tx-list { display: flex; }
         .inv-card.expanded { grid-column: 1 / -1; }
@@ -609,7 +609,7 @@
 
             <div id="post-bill-area" style="display:none; text-align:center; margin-top:20px;">
                 <div style="font-size:50px; margin-bottom:10px;" class="material-symbols-rounded">check_circle</div>
-                <h3 style="margin-bottom:20px; color:var(--success); font-weight:500; font-family: 'Product Sans', sans-serif;">Bill Generated Successfully!</h3>
+                <h3 id="success-msg-title" style="margin-bottom:20px; color:var(--success); font-weight:500; font-family: 'Product Sans', sans-serif;">Bill Generated Successfully!</h3>
                 <p style="color:var(--text-muted); font-size:13px; margin-bottom:20px;">Open this bill from Dashboard or Ledger to Share/Download PDF.</p>
                 <div style="display:flex; gap:10px;">
                     <button class="btn-outline" style="flex:1; border-color:var(--border); color:var(--text-dark);" onclick="resetBillingPage()">➕ Create New Bill</button>
@@ -794,7 +794,9 @@
             <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-thread" placeholder="Search Shade Number..." onkeyup="filterStockList('search-thread', 'thread-stock-list')"></div>
             <div class="form-panel anim-form form-hidden" id="thread-anim-form" style="margin-bottom:10px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="thread-shade-input" placeholder="Shade No."><input type="number" class="form-control" id="thread-box-input" placeholder="Boxes"></div><div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-box-input', true)">➖ OUT</button></div></div>
         </div>
-        <div class="scroll-content" style="padding-top:0;"><div id="thread-stock-list" class="inventory-grid"></div></div>
+        <div class="scroll-content" style="padding-top:0;">
+            <div id="thread-stock-list" class="inventory-grid"></div>
+        </div>
     </div>
 
     <!-- ✨ ZARI STOCK PAGE -->
@@ -932,7 +934,7 @@
 
         function checkRestore() {
             dataLoadCount++;
-            if(dataLoadCount === 4) { // Assumes Inventory, Customers, Godown, Ledger loaded once
+            if(dataLoadCount === 4) { 
                 let savedPage = sessionStorage.getItem('v_activePage');
                 if(savedPage === 'ledger-deep-page') {
                     let pName = sessionStorage.getItem('v_currentPartyName');
@@ -1017,6 +1019,17 @@
             setTimeout(()=> document.getElementById('dp-viewer').style.display = 'none', 200);
         }
 
+        window.toggleInvCard = function(el) { 
+            let isExpanded = el.classList.contains('expanded');
+            let parentGrid = el.closest('.inventory-grid');
+            if(parentGrid) {
+                parentGrid.querySelectorAll('.inv-card.expanded').forEach(c => c.classList.remove('expanded'));
+            }
+            if(!isExpanded) {
+                el.classList.add('expanded');
+            }
+        }
+
         // 📊 REPORTS LOGIC (WITH PREVIEW)
         window.openReportModal = function(type) { document.getElementById('report-modal-type').value = type; document.getElementById('report-modal-title').innerText = type === 'ledger' ? 'Account Statement' : 'Daily Stock Report'; document.getElementById('report-modal').style.display = 'flex'; }
         window.downloadReport = function() { let fromD = document.getElementById('rep-from').value; let toD = document.getElementById('rep-to').value; let type = document.getElementById('report-modal-type').value; if(!fromD || !toD) return alert("Please select both dates!"); document.getElementById('report-modal').style.display = 'none'; if(type === 'ledger') generateAccountStatement(fromD, toD); else generateStockReport(fromD, toD); }
@@ -1062,7 +1075,7 @@
             } catch(e) { console.error(e); } 
         }
 
-        window.openAbsentCustomers = function() { let today = document.getElementById('dash-date-picker').value; let activeToday = new Set(); allLedgerData.forEach(entry => { try { let d = new Date(entry.date).toISOString().split('T')[0]; if(d === today) activeToday.add(entry.name); }catch(e){} }); let absentList = globalCustomers.filter(c => !activeToday.has(c.name) && (c.type === 'Customer' || !c.type)); let html = ""; if(absentList.length === 0) { html = "<div style='padding:40px 20px; text-align:center; color:var(--text-muted); font-size:14px;'>Wow! Every customer has an entry today. 🎉</div>"; } else { absentList.forEach(c => { let initial = c.name ? c.name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = c.pic || adminPic; let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; let msg = encodeURIComponent(`नमस्ते ${c.name} जी, वंदना एंटरप्राइजेज से। आज आप शॉप पर नहीं आए, अगर कोई आर्डर या रिक्वायरमेंट हो तो जरूर बताएं।`); html += `<div class="kb-list-item"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${c.name}</div><div class="kb-time">📱 ${c.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:0 16px; flex-direction:row; align-items:center; gap:10px; border-left:none; background:transparent;"><a href="tel:${c.phone}" style="text-decoration:none; background:#e8f0fe; color:var(--primary); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">call</span></a><a href="#" onclick="window.open('https://wa.me/91${c.phone}?text=${msg}', '_blank')" style="text-decoration:none; background:#e6f4ea; color:var(--success); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">chat</span></a></div></div>`; }); } document.getElementById('absent-list-container').innerHTML = html; openPage('absent-page'); }
+        window.openAbsentCustomers = function() { let today = document.getElementById('dash-date-picker').value; let activeToday = new Set(); allLedgerData.forEach(entry => { try { let d = new Date(entry.date).toISOString().split('T')[0]; if(d === today) activeToday.add(entry.name); }catch(e){} }); let absentList = globalCustomers.filter(c => !activeToday.has(c.name) && (c.type === 'Customer' || !c.type)); let html = ""; if(absentList.length === 0) { html = "<div style='padding:40px 20px; text-align:center; color:var(--text-muted); font-size:14px;'>Wow! Every customer has an entry today. 🎉</div>"; } else { absentList.forEach(c => { let initial = c.name ? c.name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = c.pic || adminPic; let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; let msg = encodeURIComponent(`नमस्ते ${c.name} जी, वंदना एंटरप्राइजेज से। आज आप शॉप पर नहीं आए, अगर कोई आर्डर या रिक्वायरमेंट हो तो जरूर बताएं।`); html += `<div class="kb-list-item"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${c.name}</div><div class="kb-time">📱 ${c.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:0 16px; flex-direction:row; align-items:center; gap:10px; border-left:none; background:transparent;"><a href="tel:${c.phone}" style="text-decoration:none; background:#e8f0fe; color:var(--primary); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">call</span></a><a href="#" onclick="window.open('https://wa.me/91${c.phone}?text=${msg}', '_blank')" style="text-decoration:none; background:#e6f4ea; color:var(--success); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">chat</span></a></div></div>`; }); } document.getElementById('absent-list-container').innerHTML = html; navTo('absent-page', null); }
 
         function loadAdminProfile() { let pName = localStorage.getItem('v_adminName') || "Admin"; let pPhone = localStorage.getItem('v_adminPhone') || ""; let pEmail = localStorage.getItem('v_adminEmail') || "admin@vandana.com"; let pGst = localStorage.getItem('v_adminGst') || ""; let pAddr = localStorage.getItem('v_adminAddr') || ""; let pPic = localStorage.getItem('v_adminPic'); if(document.getElementById('ap-name')) document.getElementById('ap-name').value = pName; if(document.getElementById('ap-phone')) document.getElementById('ap-phone').value = pPhone; if(document.getElementById('ap-email')) document.getElementById('ap-email').value = pEmail; if(document.getElementById('ap-gst')) document.getElementById('ap-gst').value = pGst; if(document.getElementById('ap-address')) document.getElementById('ap-address').value = pAddr; if(document.getElementById('pm-email-display')) document.getElementById('pm-email-display').innerText = pEmail; if(pPic) { if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').src = pPic; document.getElementById('pm-avatar-img').style.display = 'block'; document.getElementById('pm-avatar-text').style.display = 'none'; } if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').src = pPic; document.getElementById('top-avatar-img').style.display = 'block'; document.getElementById('top-avatar-text').style.display = 'none'; } } else { let initial = pName.charAt(0).toUpperCase(); if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').style.display = 'none'; document.getElementById('pm-avatar-text').innerText = initial; document.getElementById('pm-avatar-text').style.display = 'block'; } if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').style.display = 'none'; document.getElementById('top-avatar-text').innerText = initial; document.getElementById('top-avatar-text').style.display = 'flex'; } } updateGreeting(); }
         window.saveAdminProfile = function() { localStorage.setItem('v_adminName', document.getElementById('ap-name').value); localStorage.setItem('v_adminPhone', document.getElementById('ap-phone').value); localStorage.setItem('v_adminEmail', document.getElementById('ap-email').value); localStorage.setItem('v_adminGst', document.getElementById('ap-gst').value.toUpperCase()); localStorage.setItem('v_adminAddr', document.getElementById('ap-address').value); loadAdminProfile(); alert("Profile Saved Successfully!"); }
@@ -1186,8 +1199,6 @@
             return list.slice(0, 5);
         }
 
-        window.toggleInvCard = function(el) { el.classList.toggle('expanded'); }
-
         window.renderInventoryList = function() { 
             let htmlMaps = { Thread: "", Zari: "", Nylon: "", Cording: "", Bobbin: "" };
             let countMaps = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
@@ -1231,7 +1242,7 @@
             for(let cat in htmlMaps) {
                 let el = document.getElementById(cat.toLowerCase() + '-stock-list');
                 if(el) {
-                    el.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[cat])}, 1fr)`;
+                    el.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[cat])}, minmax(0, 1fr))`;
                     el.innerHTML = htmlMaps[cat] || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:gray;">No Stock Available</div>';
                 }
                 let valEl = document.getElementById('stock-val-' + cat.toLowerCase());
@@ -1240,7 +1251,7 @@
 
             let lowEl = document.getElementById('lowstock-list');
             if(lowEl) {
-                lowEl.style.gridTemplateColumns = `repeat(${getGridCols(lowstockItemsCount)}, 1fr)`;
+                lowEl.style.gridTemplateColumns = `repeat(${getGridCols(lowstockItemsCount)}, minmax(0, 1fr))`;
                 lowEl.innerHTML = lowstockHtml || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--success); font-weight:600;">All stocks are healthy! 🎉</div>';
             }
             if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
@@ -1298,7 +1309,8 @@
             let partyName = document.getElementById('inv-party').value.trim() || "Cash Sale"; let partyPhone = document.getElementById('inv-phone').value.trim(); 
             if(partyName !== "Cash Sale") { let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); if(!exists) { push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); } } 
             
-            // Deduct new stock
+            let isUpdating = !!window.editingEntryKey;
+            
             currentCart.forEach(item => { let key = item.cat + "_" + item.shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) - item.qty); }); }); 
             
             let maxInv = 0;
@@ -1313,19 +1325,19 @@
                 finalDateTime = new Date(invDate).toISOString();
             }
 
-            // 1. BILL ENTRY 
             let newEntry = { date: finalDateTime, name: partyName, type: "Gave", amount: grandInvoiceTotal, details: `Invoice #${newBillNo} - ${invoiceBoxCount} Box`, cart: currentCart, billNo: newBillNo };
             
+            document.getElementById('success-msg-title').innerText = isUpdating ? "Invoice Updated Successfully!" : "Bill Generated Successfully!";
+
             if (window.editingEntryKey) {
                 update(ref(db, 'Ledger/' + window.editingEntryKey), newEntry);
                 window.lastGeneratedEntryData = { key: window.editingEntryKey, ...newEntry };
-                window.editingEntryKey = null; // reset
+                window.editingEntryKey = null; 
             } else {
                 let newRef = push(ref(db, 'Ledger'), newEntry); 
                 window.lastGeneratedEntryData = { key: newRef.key, ...newEntry };
             }
 
-            // 2. PAYMENT ENTRY 
             if(receivedAmt > 0) {
                 let paymentEntry = { date: finalDateTime, name: partyName, type: "Got", amount: receivedAmt, details: `Payment against #${newBillNo}` };
                 push(ref(db, 'Ledger'), paymentEntry);

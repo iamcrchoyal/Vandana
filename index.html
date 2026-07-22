@@ -554,10 +554,23 @@
                     <thead><tr><th>Details</th><th>Qty</th><th>Rate</th><th>Total</th></tr></thead>
                     <tbody id="cart-rows"><tr><td colspan="4" style="text-align:center; padding:16px; color:var(--text-muted);">Cart is empty</td></tr></tbody>
                 </table>
-                <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#f8fafd; border:1px solid #c2e7ff;">
+                <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:16px;">
                     <span style="font-weight:600; font-size:16px; color:var(--primary); font-family: 'Product Sans', sans-serif;">Grand Total:</span>
                     <span style="font-size:26px; font-weight:700; color:var(--primary); font-family: 'Product Sans', sans-serif;" id="cart-grand-total">₹ 0</span>
                 </div>
+
+                <div class="form-panel" style="margin-bottom: 16px;">
+                    <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Payment Status (भुगतान की स्थिति)</label>
+                    <div style="display:flex; gap:10px; margin-bottom:8px;">
+                        <button id="pm-credit" class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger); background:#fdf2f2; padding:10px 4px; font-size:13px;" onclick="setPaymentMode('credit')">🧾 पूरी उधारी</button>
+                        <button id="pm-cash" class="btn-outline" style="flex:1; padding:10px 4px; font-size:13px;" onclick="setPaymentMode('cash')">💵 पूरा नकद</button>
+                        <button id="pm-partial" class="btn-outline" style="flex:1; padding:10px 4px; font-size:13px;" onclick="setPaymentMode('partial')">🌗 आधा जमा</button>
+                    </div>
+                    <div id="partial-amount-container" style="display:none; margin-top:12px;">
+                        <input type="number" class="form-control" id="inv-received-amt" placeholder="Advance / Received Amount (₹)">
+                    </div>
+                </div>
+
                 <button id="save-bill-btn" class="btn-submit" onclick="triggerSaveAndShare()">💾 Generate Bill</button>
             </div>
 
@@ -827,7 +840,7 @@
         
         window.calcValue = ""; window.calcType = "Gave"; window.isEditingEntry = false;
         window.currentReportElemId = ""; window.currentReportFilename = ""; window.editingBillNo = null;
-        window.currentTabType = 'Customer'; window.currentTopCustTab = 'current'; 
+        window.currentTabType = 'Customer'; window.currentTopCustTab = 'current'; window.currentPaymentMode = 'credit';
         window.ledgerTotals = { custGive:0, custGet:0, supGive:0, supGet:0 }; window.globalBalances = {}; 
         let cropper; let custCropper;
 
@@ -936,7 +949,7 @@
             let fromTime = new Date(fromD).getTime(); let toTime = new Date(toD + "T23:59:59").getTime(); let stockHtml = "";
             let filteredTransfers = allGodownTransfers.filter(t => { let eTime = new Date(t.date).getTime(); return eTime >= fromTime && eTime <= toTime; });
             filteredTransfers.forEach(t => { let dStr = new Date(t.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); let action = t.type === 'IN' ? 'Transfer IN' : 'Transfer OUT'; stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">${action}</td><td style="padding:10px; border:1px solid #e0e2e0;">${t.item} (${t.cat})</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${t.qty}</td></tr>`; });
-            let salesEntries = allLedgerData.filter(e => { let eTime = new Date(e.date).getTime(); return eTime >= fromTime && eTime <= toTime && e.cart; });
+            let salesEntries = allLedgerData.filter(e => { let eTime = new Date(e.date).getTime(); return eTime >= fromTime && eTime <= toTime && e.cart && e.type === 'Gave'; });
             salesEntries.forEach(entry => { let dStr = new Date(entry.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); entry.cart.forEach(item => { stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">Sale (OUT)</td><td style="padding:10px; border:1px solid #e0e2e0;">${item.shade} (${item.cat})</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${item.qty}</td></tr>`; }); });
             if(!stockHtml) stockHtml = `<tr><td colspan="4" style="text-align:center; padding:20px;">No stock movement found for these dates.</td></tr>`;
             document.getElementById('psr-date-range').innerText = `From: ${new Date(fromD).toLocaleDateString('en-GB')} To: ${new Date(toD).toLocaleDateString('en-GB')}`; document.getElementById('psr-table-body').innerHTML = stockHtml;
@@ -976,7 +989,7 @@
 
         window.calculateGrandTotals = function() {
             let balances = {}; let todayTotalSale = 0; let todayTotalBox = 0; let currMonthSales = {}; let lastMonthSales = {}; let selectedDateString = document.getElementById('dash-date-picker').value; let todayDate = new Date(); let currentMonth = todayDate.toISOString().slice(0, 7); let lmDate = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1); let lastMonth = lmDate.toISOString().slice(0, 7);
-            allLedgerData.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let entryDateString = ""; let entryMonthString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) { entryDateString = d.toISOString().split('T')[0]; entryMonthString = d.toISOString().slice(0, 7); } } catch(e){} if(!balances[entry.name]) balances[entry.name] = 0; if(entry.type === 'Gave') balances[entry.name] += amt; if(entry.type === 'Got') balances[entry.name] -= amt; if (entry.details && entry.details.includes("Invoice Sale")) { if(entryMonthString === currentMonth) { currMonthSales[entry.name] = (currMonthSales[entry.name] || 0) + amt; } if(entryMonthString === lastMonth) { lastMonthSales[entry.name] = (lastMonthSales[entry.name] || 0) + amt; } if(entryDateString === selectedDateString){ todayTotalSale += amt; let boxMatch = entry.details.match(/(\d+)\s*Box/i); if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); } } });
+            allLedgerData.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let entryDateString = ""; let entryMonthString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) { entryDateString = d.toISOString().split('T')[0]; entryMonthString = d.toISOString().slice(0, 7); } } catch(e){} if(!balances[entry.name]) balances[entry.name] = 0; if(entry.type === 'Gave') balances[entry.name] += amt; if(entry.type === 'Got') balances[entry.name] -= amt; if (entry.details && entry.details.includes("Invoice")) { if(entryMonthString === currentMonth) { currMonthSales[entry.name] = (currMonthSales[entry.name] || 0) + amt; } if(entryMonthString === lastMonth) { lastMonthSales[entry.name] = (lastMonthSales[entry.name] || 0) + amt; } if(entryDateString === selectedDateString){ todayTotalSale += amt; let boxMatch = entry.details.match(/(\d+)\s*Box/i); if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); } } });
             window.globalBalances = balances; 
             let partyTypes = {}; 
             globalCustomers.forEach(c => { if(c.name) partyTypes[c.name.toLowerCase()] = c.type || 'Customer'; }); 
@@ -1015,7 +1028,7 @@
 
         window.renderLedgerEntries = function(name) { let entryList = document.getElementById('ledger-entries-list'); entryList.innerHTML = ''; let totalGave = 0; let totalGot = 0; let customerEntries = allLedgerData.filter(e => e.name === name); if(customerEntries.length === 0) { entryList.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No entries yet.</div>`; } else { customerEntries.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let gaveHtml = entry.type === 'Gave' ? `₹ ${amt}` : ''; let gotHtml = entry.type === 'Got' ? `₹ ${amt}` : ''; if(entry.type === 'Gave') totalGave += amt; if(entry.type === 'Got') totalGot += amt; let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short'}); entryList.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')"><div class="ec-left"><div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${dateStr}</div><div style="font-size:13px; color:var(--text-dark); font-weight:500;">${entry.details || 'App Entry'}</div></div><div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div></div>`; }); } let balEl = document.getElementById('l-deep-bal-amt'); let txtEl = document.getElementById('l-deep-bal-text'); let finalBal = totalGave - totalGot; if(finalBal > 0) { balEl.innerText = "₹ " + finalBal.toLocaleString(); balEl.style.color = "var(--success)"; txtEl.innerText = "You will get"; } else if (finalBal < 0) { balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); balEl.style.color = "var(--danger)"; txtEl.innerText = "You will give"; } else { balEl.innerText = "₹ 0"; balEl.style.color = "var(--text-dark)"; txtEl.innerText = "Settled"; } }
         window.renderCustomerList = function(list) { let filteredList = list.filter(c => (c.type || 'Customer') === currentTabType); let html = ""; filteredList.forEach(cust => { let initial = cust.name ? cust.name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = cust.pic || adminPic; let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; let netBal = window.globalBalances[cust.name] || 0; let balText = ""; let balColor = ""; if(netBal > 0) { balText = `₹${netBal.toLocaleString()} <span style="font-size:10px; color:var(--text-muted); font-weight:500;">(Get)</span>`; balColor = "var(--success)"; } else if(netBal < 0) { balText = `₹${Math.abs(netBal).toLocaleString()} <span style="font-size:10px; color:var(--text-muted); font-weight:500;">(Give)</span>`; balColor = "var(--danger)"; } else { balText = "₹0"; balColor = "var(--text-muted)"; } html += `<div class="kb-list-item" onclick="openLedgerDetail('${cust.name}', '${cust.phone}')"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${cust.name}</div><div class="kb-time">📱 ${cust.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:16px 16px 16px 8px;"><div style="font-size:14px; font-weight:700; color:${balColor}; font-family:'Product Sans', sans-serif;">${balText}</div></div></div>`; }); document.getElementById('kb-customer-list').innerHTML = html || `<div style="padding:40px; text-align:center; color:gray;">No ${currentTabType}s found</div>`; }
-        window.openInvoicesPage = function() { let listContainer = document.getElementById('invoices-list-container'); listContainer.innerHTML = ''; let selectedDateString = document.getElementById('dash-date-picker').value; let todayInvoices = allLedgerData.filter(entry => { let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){} return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice Sale"); }); if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } else { todayInvoices.forEach(entry => { listContainer.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; cursor:pointer;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--success); font-weight:800; font-size: 16px; font-family:'Product Sans', sans-serif;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;"><span>${entry.details}</span><span style="color:var(--primary); font-weight:600; display:flex; align-items:center;"><span class="material-symbols-rounded" style="font-size:16px;">visibility</span> View</span></div></div>`; }); } openPage('invoices-page'); }
+        window.openInvoicesPage = function() { let listContainer = document.getElementById('invoices-list-container'); listContainer.innerHTML = ''; let selectedDateString = document.getElementById('dash-date-picker').value; let todayInvoices = allLedgerData.filter(entry => { let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){} return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice"); }); if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } else { todayInvoices.forEach(entry => { listContainer.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; cursor:pointer;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--success); font-weight:800; font-size: 16px; font-family:'Product Sans', sans-serif;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;"><span>${entry.details}</span><span style="color:var(--primary); font-weight:600; display:flex; align-items:center;"><span class="material-symbols-rounded" style="font-size:16px;">visibility</span> View</span></div></div>`; }); } openPage('invoices-page'); }
 
         window.addSpecificStock = function(category, shadeId, qtyId, isOut = false) { let shade = document.getElementById(shadeId).value; let qty = parseInt(document.getElementById(qtyId).value); if(!shade || isNaN(qty)) return alert("Please enter Detail and Box Quantity!"); let key = category + "_" + shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then((snap) => { let currentQty = snap.val() || 0; let newQty = isOut ? currentQty - qty : currentQty + qty; if(newQty < 0) newQty = 0; set(itemRef, newQty); }); if(document.getElementById(shadeId).tagName !== 'SELECT') { document.getElementById(shadeId).value = ''; } document.getElementById(qtyId).value = ''; alert(isOut ? "Stock Reduced (OUT) Successfully!" : "Stock Added (IN) Successfully!"); document.getElementById(category.toLowerCase() + '-anim-form').classList.add('form-hidden'); }
         window.filterStockList = function(inputId, listId) { let filter = document.getElementById(inputId).value.toUpperCase(); let rows = document.querySelectorAll('#' + listId + ' .stock-row'); rows.forEach(row => { let name = row.getAttribute('data-name'); row.style.display = name.includes(filter) ? '' : 'none'; }); }
@@ -1023,12 +1036,52 @@
         window.shareLowStock = function() { let msg = "⚠️ *Low Stock Alert - Vandana Enterprises* ⚠️%0A%0A"; let hasLow = false; for (let key in smartInventory) { if(smartInventory[key] <= 5 && smartInventory[key] > 0) { let parts = key.split("_"); msg += `▪️ *${parts[1]}* (${parts[0]}) - Only ${smartInventory[key]} Box%0A`; hasLow = true; } } if(!hasLow) return alert("Everything is fully stocked! No low stock items to share."); window.open(`https://wa.me/?text=${msg}`, '_blank'); }
 
         let currentCart = []; let grandInvoiceTotal = 0; let invoiceBoxCount = 0;
+        
+        window.setPaymentMode = function(mode) {
+            window.currentPaymentMode = mode;
+            let btnCredit = document.getElementById('pm-credit');
+            let btnCash = document.getElementById('pm-cash');
+            let btnPartial = document.getElementById('pm-partial');
+            
+            [btnCredit, btnCash, btnPartial].forEach(btn => {
+                btn.style.background = 'white';
+                btn.style.color = 'var(--text-dark)';
+                btn.style.borderColor = 'var(--border)';
+            });
+
+            if(mode === 'credit') {
+                btnCredit.style.background = '#fdf2f2';
+                btnCredit.style.color = 'var(--danger)';
+                btnCredit.style.borderColor = 'var(--danger)';
+                document.getElementById('partial-amount-container').style.display = 'none';
+            } else if(mode === 'cash') {
+                btnCash.style.background = '#e6f4ea';
+                btnCash.style.color = 'var(--success)';
+                btnCash.style.borderColor = 'var(--success)';
+                document.getElementById('partial-amount-container').style.display = 'none';
+            } else if(mode === 'partial') {
+                btnPartial.style.background = '#e8f0fe';
+                btnPartial.style.color = 'var(--primary)';
+                btnPartial.style.borderColor = 'var(--primary)';
+                document.getElementById('partial-amount-container').style.display = 'block';
+            }
+        }
+
         window.updatePosShades = function() { let cat = document.getElementById('inv-cat').value; let shadeSelect = document.getElementById('inv-shade'); shadeSelect.innerHTML = '<option value="">Select Shade/Item</option>'; if(!cat) return; for (let key in smartInventory) { let parts = key.split("_"); if(parts[0] === cat && smartInventory[key] > 0) { shadeSelect.innerHTML += `<option value="${parts[1]}">${parts[1]} (${smartInventory[key]} Box Left)</option>`; } } }
         window.addCartItem = function() { const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value; const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0; if (!cat || !shade) return alert("Select Category and Item first!"); if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!"); let key = cat + "_" + shade; let currentStock = smartInventory[key] || 0; if(qty > currentStock) { alert(`OUT OF STOCK! You only have ${currentStock} Box of ${shade} left.`); return; } currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty, rate, itemTotal: qty * rate }); renderCartUi(); }
         function renderCartUi() { let tbody = document.getElementById('cart-rows'); tbody.innerHTML = ''; grandInvoiceTotal = 0; invoiceBoxCount = 0; currentCart.forEach(item => { grandInvoiceTotal += item.itemTotal; invoiceBoxCount += item.qty; tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.qty}</td><td>₹${item.rate}</td><td><strong>₹${item.itemTotal.toLocaleString()}</strong></td></tr>`; }); document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`; document.getElementById('inv-qty').value=''; document.getElementById('inv-rate').value=''; let btn = document.getElementById('save-bill-btn'); if(btn) { btn.innerText = window.editingBillNo ? "💾 Update Bill" : "💾 Generate Bill"; btn.style.background = window.editingBillNo ? "var(--warning)" : "var(--primary)"; } }
         
         window.triggerSaveAndShare = function() { 
             if (currentCart.length === 0) return alert("Cart is empty!"); 
+            
+            let receivedAmt = 0;
+            if(window.currentPaymentMode === 'cash') {
+                receivedAmt = grandInvoiceTotal;
+            } else if (window.currentPaymentMode === 'partial') {
+                receivedAmt = parseFloat(document.getElementById('inv-received-amt').value) || 0;
+                if(receivedAmt > grandInvoiceTotal) return alert("Received amount cannot be greater than Total Bill!");
+            }
+
             let partyName = document.getElementById('inv-party').value.trim() || "Cash Sale"; let partyPhone = document.getElementById('inv-phone').value.trim(); 
             if(partyName !== "Cash Sale") { let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); if(!exists) { push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); } } 
             currentCart.forEach(item => { let key = item.cat + "_" + item.shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) - item.qty); }); }); 
@@ -1038,9 +1091,17 @@
             let newBillNo = window.editingBillNo || ("VE " + String(maxInv + 1).padStart(2, '0'));
             let invDate = document.getElementById('inv-date').value; if(!invDate) invDate = new Date().toISOString().split('T')[0];
             
-            let newEntry = { date: new Date(invDate).toISOString(), name: partyName, type: "Got", amount: grandInvoiceTotal, details: `Invoice Sale - ${invoiceBoxCount} Box`, cart: currentCart, billNo: newBillNo };
+            // 1. BILL ENTRY (Added to "You Gave" to properly increase credit balance)
+            let newEntry = { date: new Date(invDate).toISOString(), name: partyName, type: "Gave", amount: grandInvoiceTotal, details: `Invoice #${newBillNo} - ${invoiceBoxCount} Box`, cart: currentCart, billNo: newBillNo };
             let newRef = push(ref(db, 'Ledger'), newEntry); 
             window.lastGeneratedEntryData = { key: newRef.key, ...newEntry };
+
+            // 2. PAYMENT ENTRY (If cash or partial payment was received, add to "You Got" immediately)
+            if(receivedAmt > 0) {
+                let paymentEntry = { date: new Date(invDate).toISOString(), name: partyName, type: "Got", amount: receivedAmt, details: `Payment against #${newBillNo}` };
+                push(ref(db, 'Ledger'), paymentEntry);
+            }
+
             window.editingBillNo = null; 
             document.getElementById('billing-form-area').style.display = 'none'; 
             document.getElementById('post-bill-area').style.display = 'block';  
@@ -1055,7 +1116,7 @@
             }
         }
         
-        window.resetBillingPage = function() { currentCart = []; renderCartUi(); window.editingBillNo = null; document.getElementById('inv-date').value = new Date().toISOString().split('T')[0]; document.getElementById('inv-party').value = ''; document.getElementById('inv-phone').value = ''; document.getElementById('billing-form-area').style.display = 'block'; document.getElementById('post-bill-area').style.display = 'none'; }
+        window.resetBillingPage = function() { currentCart = []; renderCartUi(); window.editingBillNo = null; document.getElementById('inv-date').value = new Date().toISOString().split('T')[0]; document.getElementById('inv-party').value = ''; document.getElementById('inv-phone').value = ''; window.setPaymentMode('credit'); if(document.getElementById('inv-received-amt')) document.getElementById('inv-received-amt').value = ''; document.getElementById('billing-form-area').style.display = 'block'; document.getElementById('post-bill-area').style.display = 'none'; }
         window.searchParties = function() { let filter = document.getElementById('party-search').value.toUpperCase(); document.querySelectorAll('#kb-customer-list .kb-list-item').forEach(item => { item.style.display = item.querySelector('.kb-name').innerText.toUpperCase().indexOf(filter) > -1 ? "" : "none"; }); }
         window.openPhonebook = async function(nameId, phoneId) { if ('contacts' in navigator) { try { const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false }); if (contacts.length > 0) { if (contacts[0].name) document.getElementById(nameId).value = contacts[0].name[0]; if (contacts[0].tel) document.getElementById(phoneId).value = String(contacts[0].tel[0]).replace(/\D/g, '').slice(-10); } } catch(e) {} } }
         

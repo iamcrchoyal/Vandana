@@ -209,6 +209,10 @@
         .report-modal-box { background: white; padding: 24px; border-radius: 20px; width: 90%; max-width: 350px; text-align: left; position: relative;}
 
         #preview-render-area { background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; overflow-x: hidden; zoom: 0.52; }
+        
+        /* New class for scrolling text horizontally smoothly without scrollbars */
+        .scroll-text { white-space: nowrap; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+        .scroll-text::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
@@ -621,12 +625,12 @@
         <div class="fixed-top-section" style="padding:0;">
             <div class="ledger-header-area">
                 <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <button class="back-btn material-symbols-rounded" onclick="closePage('ledger-deep-page')" style="padding:0; margin:0;">arrow_back</button>
-                        <div class="kb-avatar" id="l-deep-avatar-text" style="width:36px; height:36px; font-size:14px; background:#e8f0fe; color:var(--primary);" onclick="openCustomerProfile()"></div>
-                        <div class="l-name" id="l-deep-name" style="color:var(--text-dark); font-size:18px; cursor:pointer; font-weight:500; font-family:'Product Sans', sans-serif;" onclick="openCustomerProfile()">Name</div>
+                    <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:0;">
+                        <button class="back-btn material-symbols-rounded" onclick="closePage('ledger-deep-page')" style="padding:0; margin:0; flex-shrink:0;">arrow_back</button>
+                        <div class="kb-avatar" id="l-deep-avatar-text" style="width:36px; height:36px; font-size:14px; background:#e8f0fe; color:var(--primary); flex-shrink:0;" onclick="openCustomerProfile()"></div>
+                        <div class="l-name scroll-text" id="l-deep-name" style="color:var(--text-dark); font-size:18px; cursor:pointer; font-weight:500; font-family:'Product Sans', sans-serif; flex:1;" onclick="openCustomerProfile()">Name</div>
                     </div>
-                    <a href="#" id="l-call-btn" style="color:var(--primary); text-decoration:none; font-size:20px; border:1px solid var(--border); border-radius:50%; width:36px; height:36px; display:flex; justify-content:center; align-items:center; background:white; box-shadow:0 1px 2px rgba(0,0,0,0.02); flex-shrink:0;" class="material-symbols-rounded">call</a>
+                    <a href="#" id="l-call-btn" style="color:var(--primary); text-decoration:none; font-size:20px; border:1px solid var(--border); border-radius:50%; width:36px; height:36px; display:flex; justify-content:center; align-items:center; background:white; box-shadow:0 1px 2px rgba(0,0,0,0.02); flex-shrink:0; margin-left:12px;" class="material-symbols-rounded">call</a>
                 </div>
             </div>
             <div class="ledger-bal-card">
@@ -666,12 +670,15 @@
     <!-- 📄 WHATSAPP STYLE CUSTOMER PROFILE PAGE -->
     <div class="page flex-page" id="customer-profile-page">
         <div class="sub-header">
-            <button class="back-btn material-symbols-rounded" onclick="closePage('customer-profile-page')">arrow_back</button>
-            <div style="display:flex; align-items:center; gap:10px; opacity:0; transform:translateY(10px); transition:all 0.2s ease;" id="cp-header-group">
-                <div class="kb-avatar" id="cp-mini-avatar" style="width:32px; height:32px; font-size:13px; background:#e8f0fe; color:var(--primary); overflow:hidden;">C</div>
-                <h2 class="page-title" id="cp-header-name" style="font-size:16px; margin:0;">Name</h2>
+            <button class="back-btn material-symbols-rounded" onclick="closePage('customer-profile-page')" style="flex-shrink:0; width:36px;">arrow_back</button>
+            <div style="flex:1; display:flex; justify-content:center; align-items:center; position:relative; overflow:hidden;">
+                <div style="display:flex; align-items:center; gap:10px; opacity:0; transform:translateY(20px); transition:transform 0.1s ease, opacity 0.1s ease; position:absolute; width:100%; justify-content:center;" id="cp-header-group">
+                    <div class="kb-avatar" id="cp-mini-avatar" style="width:28px; height:28px; font-size:12px; background:#e8f0fe; color:var(--primary); overflow:hidden; flex-shrink:0;">C</div>
+                    <h2 class="page-title scroll-text" id="cp-header-name" style="font-size:16px; margin:0; max-width:60%;">Name</h2>
+                </div>
+                <h2 class="page-title" id="cp-main-title" style="margin:0; transition:opacity 0.1s ease;">Customer Profile</h2>
             </div>
-            <h2 class="page-title" id="cp-main-title" style="margin:0;">Customer Profile</h2>
+            <div style="width:36px; flex-shrink:0;"></div>
         </div>
         <div class="scroll-content" id="cp-scroll-content" style="padding-top:16px;">
             <div style="display:flex; justify-content:center; margin-bottom:16px;">
@@ -839,7 +846,8 @@
         window.lastGeneratedEntryData = null;
         
         window.calcValue = ""; window.calcType = "Gave"; window.isEditingEntry = false;
-        window.currentReportElemId = ""; window.currentReportFilename = ""; window.editingBillNo = null;
+        window.currentReportElemId = ""; window.currentReportFilename = ""; 
+        window.editingBillNo = null; window.editingEntryKey = null; window.editingEntryDate = null;
         window.currentTabType = 'Customer'; window.currentTopCustTab = 'current'; window.currentPaymentMode = 'credit';
         window.ledgerTotals = { custGive:0, custGet:0, supGive:0, supGet:0 }; window.globalBalances = {}; 
         let cropper; let custCropper;
@@ -870,15 +878,13 @@
                 let st = this.scrollTop;
                 let headerGroup = document.getElementById('cp-header-group');
                 let mainTitle = document.getElementById('cp-main-title');
-                if(st > 50) {
-                    headerGroup.style.opacity = '1';
-                    headerGroup.style.transform = 'translateY(0)';
-                    mainTitle.style.opacity = '0';
-                } else {
-                    headerGroup.style.opacity = '0';
-                    headerGroup.style.transform = 'translateY(10px)';
-                    mainTitle.style.opacity = '1';
-                }
+                
+                let maxScroll = 50;
+                let progress = Math.min(st / maxScroll, 1);
+                
+                headerGroup.style.opacity = progress;
+                headerGroup.style.transform = `translateY(${(1 - progress) * 20}px)`;
+                mainTitle.style.opacity = 1 - progress;
             });
 
             let lastScrollTop = 0;
@@ -1014,7 +1020,40 @@
         window.saveCalculatorEntry = function() { let amount = eval(window.calcValue) || 0; if(amount <= 0) return alert("Enter valid amount!"); let dateVal = document.getElementById('calc-date').value; if(!dateVal) dateVal = new Date().toISOString().split('T')[0]; if(window.isEditingEntry && currentEntryData) { update(ref(db, 'Ledger/' + currentEntryData.key), { amount: amount, details: document.getElementById('calc-details').value || "App Entry", type: window.calcType, date: new Date(dateVal).toISOString() }); window.isEditingEntry = false; currentEntryData = null; } else { push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: window.calcType, amount: amount, details: document.getElementById('calc-details').value || "App Entry" }); } closePage('calculator-page'); }
 
         window.openEntryDetails = function(key) { currentEntryData = allLedgerData.find(e => e.key === key); if(!currentEntryData) return; document.getElementById('ed-party-name').innerText = currentEntryData.name; let d = new Date(currentEntryData.date); document.getElementById('ed-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}); let color = currentEntryData.type === 'Gave' ? 'var(--danger)' : 'var(--success)'; document.getElementById('ed-amount').innerText = `₹ ${parseFloat(currentEntryData.amount).toLocaleString()}`; document.getElementById('ed-amount').style.color = color; document.getElementById('ed-type').innerText = `You ${currentEntryData.type}`; document.getElementById('ed-type').style.color = color; document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry"; if(currentEntryData.cart && currentEntryData.cart.length > 0) { document.getElementById('ed-edit-btn-container').innerHTML = `<button class="btn-outline" onclick="editCurrentInvoice()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:18px;">edit_document</span> Edit Invoice</button>`; } else { document.getElementById('ed-edit-btn-container').innerHTML = `<button class="btn-outline" onclick="editCurrentEntryAmount()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:18px;">edit</span> Edit Amount & Details</button>`; } openPage('entry-details-page'); }
-        window.editCurrentInvoice = function() { if(!confirm("Are you sure you want to edit this invoice? It will be loaded into the billing screen and the old entry will be removed.")) return; currentEntryData.cart.forEach(item => { let key = item.cat + "_" + item.shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) + item.qty); }); }); set(ref(db, 'RecycleBin/' + currentEntryData.key), currentEntryData); remove(ref(db, 'Ledger/' + currentEntryData.key)); currentCart = [...currentEntryData.cart]; document.getElementById('inv-party').value = currentEntryData.name; let cust = globalCustomers.find(c => c.name === currentEntryData.name); document.getElementById('inv-phone').value = cust ? cust.phone : ""; let d = new Date(currentEntryData.date); if(!isNaN(d)) document.getElementById('inv-date').value = d.toISOString().split('T')[0]; window.editingBillNo = currentEntryData.billNo; renderCartUi(); closePage('entry-details-page'); closePage('ledger-deep-page'); navTo('pos-page', null); document.getElementById('billing-form-area').style.display = 'block'; document.getElementById('post-bill-area').style.display = 'none'; }
+        
+        window.editCurrentInvoice = function() { 
+            if(!confirm("Are you sure you want to edit this invoice?")) return; 
+            
+            // Revert stock silently for now so it doesn't break inventory limits while editing
+            currentEntryData.cart.forEach(item => { 
+                let key = item.cat + "_" + item.shade; 
+                let itemRef = ref(db, 'Inventory/' + key); 
+                get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) + item.qty); }); 
+            }); 
+            
+            // Store original exact data to update the SAME entry later
+            window.editingEntryKey = currentEntryData.key;
+            window.editingBillNo = currentEntryData.billNo;
+            window.editingEntryDate = currentEntryData.date;
+            
+            currentCart = [...currentEntryData.cart]; 
+            document.getElementById('inv-party').value = currentEntryData.name; 
+            let cust = globalCustomers.find(c => c.name === currentEntryData.name); 
+            document.getElementById('inv-phone').value = cust ? cust.phone : ""; 
+            
+            let d = new Date(currentEntryData.date); 
+            if(!isNaN(d)) document.getElementById('inv-date').value = d.toISOString().split('T')[0]; 
+            
+            window.setPaymentMode('credit'); // default to credit when editing Gave bill
+            
+            renderCartUi(); 
+            closePage('entry-details-page'); 
+            closePage('ledger-deep-page'); 
+            navTo('pos-page', null); 
+            document.getElementById('billing-form-area').style.display = 'block'; 
+            document.getElementById('post-bill-area').style.display = 'none'; 
+        }
+
         window.editCurrentEntryAmount = function() { if(!currentEntryData) return; window.isEditingEntry = true; window.calcType = currentEntryData.type; window.calcValue = currentEntryData.amount.toString(); document.getElementById('calc-amount').value = window.calcValue; document.getElementById('calc-details').value = currentEntryData.details || ""; document.getElementById('calc-hidden-area').classList.add('show'); document.getElementById('calc-save-btn').innerText = "UPDATE ENTRY"; let d = new Date(currentEntryData.date); if(!isNaN(d)) document.getElementById('calc-date').value = d.toISOString().split('T')[0]; closePage('entry-details-page'); openCalculator(window.calcType, true); }
         
         window.openCalculator = function(type, skipReset = false) { if(!skipReset) { window.calcType = type; window.calcValue = ""; document.getElementById('calc-amount').value = ""; document.getElementById('calc-details').value = ""; document.getElementById('calc-hidden-area').classList.remove('show'); document.getElementById('calc-save-btn').innerText = "SAVE ENTRY"; window.isEditingEntry = false; } let color = type === 'Gave' ? 'var(--danger)' : 'var(--success)'; document.getElementById('calc-header').style.color = color; document.getElementById('calc-back-btn').style.color = color; document.getElementById('calc-symbol').style.color = color; document.getElementById('calc-amount').style.color = color; document.getElementById('calc-save-btn').style.backgroundColor = color; updateCalcTitle(); openPage('calculator-page'); }
@@ -1084,25 +1123,42 @@
 
             let partyName = document.getElementById('inv-party').value.trim() || "Cash Sale"; let partyPhone = document.getElementById('inv-phone').value.trim(); 
             if(partyName !== "Cash Sale") { let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); if(!exists) { push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); } } 
+            
+            // Deduct new stock
             currentCart.forEach(item => { let key = item.cat + "_" + item.shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) - item.qty); }); }); 
             
             let maxInv = 0;
             allLedgerData.forEach(e => { if(e.billNo && e.billNo.startsWith('VE ')) { let num = parseInt(e.billNo.replace('VE ', '')); if(!isNaN(num) && num > maxInv) maxInv = num; } });
             let newBillNo = window.editingBillNo || ("VE " + String(maxInv + 1).padStart(2, '0'));
-            let invDate = document.getElementById('inv-date').value; if(!invDate) invDate = new Date().toISOString().split('T')[0];
             
-            // 1. BILL ENTRY (Added to "You Gave" to properly increase credit balance)
-            let newEntry = { date: new Date(invDate).toISOString(), name: partyName, type: "Gave", amount: grandInvoiceTotal, details: `Invoice #${newBillNo} - ${invoiceBoxCount} Box`, cart: currentCart, billNo: newBillNo };
-            let newRef = push(ref(db, 'Ledger'), newEntry); 
-            window.lastGeneratedEntryData = { key: newRef.key, ...newEntry };
+            let invDate = document.getElementById('inv-date').value; 
+            if(!invDate) invDate = new Date().toISOString().split('T')[0];
+            
+            let finalDateTime = window.editingEntryKey ? window.editingEntryDate : new Date(invDate).toISOString();
+            if (window.editingEntryKey && finalDateTime.split('T')[0] !== invDate) {
+                finalDateTime = new Date(invDate).toISOString();
+            }
 
-            // 2. PAYMENT ENTRY (If cash or partial payment was received, add to "You Got" immediately)
+            // 1. BILL ENTRY 
+            let newEntry = { date: finalDateTime, name: partyName, type: "Gave", amount: grandInvoiceTotal, details: `Invoice #${newBillNo} - ${invoiceBoxCount} Box`, cart: currentCart, billNo: newBillNo };
+            
+            if (window.editingEntryKey) {
+                update(ref(db, 'Ledger/' + window.editingEntryKey), newEntry);
+                window.lastGeneratedEntryData = { key: window.editingEntryKey, ...newEntry };
+                window.editingEntryKey = null; // reset
+            } else {
+                let newRef = push(ref(db, 'Ledger'), newEntry); 
+                window.lastGeneratedEntryData = { key: newRef.key, ...newEntry };
+            }
+
+            // 2. PAYMENT ENTRY 
             if(receivedAmt > 0) {
-                let paymentEntry = { date: new Date(invDate).toISOString(), name: partyName, type: "Got", amount: receivedAmt, details: `Payment against #${newBillNo}` };
+                let paymentEntry = { date: finalDateTime, name: partyName, type: "Got", amount: receivedAmt, details: `Payment against #${newBillNo}` };
                 push(ref(db, 'Ledger'), paymentEntry);
             }
 
             window.editingBillNo = null; 
+            window.editingEntryDate = null;
             document.getElementById('billing-form-area').style.display = 'none'; 
             document.getElementById('post-bill-area').style.display = 'block';  
         }
@@ -1116,7 +1172,21 @@
             }
         }
         
-        window.resetBillingPage = function() { currentCart = []; renderCartUi(); window.editingBillNo = null; document.getElementById('inv-date').value = new Date().toISOString().split('T')[0]; document.getElementById('inv-party').value = ''; document.getElementById('inv-phone').value = ''; window.setPaymentMode('credit'); if(document.getElementById('inv-received-amt')) document.getElementById('inv-received-amt').value = ''; document.getElementById('billing-form-area').style.display = 'block'; document.getElementById('post-bill-area').style.display = 'none'; }
+        window.resetBillingPage = function() { 
+            currentCart = []; 
+            renderCartUi(); 
+            window.editingBillNo = null; 
+            window.editingEntryKey = null;
+            window.editingEntryDate = null;
+            document.getElementById('inv-date').value = new Date().toISOString().split('T')[0]; 
+            document.getElementById('inv-party').value = ''; 
+            document.getElementById('inv-phone').value = ''; 
+            window.setPaymentMode('credit'); 
+            if(document.getElementById('inv-received-amt')) document.getElementById('inv-received-amt').value = ''; 
+            document.getElementById('billing-form-area').style.display = 'block'; 
+            document.getElementById('post-bill-area').style.display = 'none'; 
+        }
+        
         window.searchParties = function() { let filter = document.getElementById('party-search').value.toUpperCase(); document.querySelectorAll('#kb-customer-list .kb-list-item').forEach(item => { item.style.display = item.querySelector('.kb-name').innerText.toUpperCase().indexOf(filter) > -1 ? "" : "none"; }); }
         window.openPhonebook = async function(nameId, phoneId) { if ('contacts' in navigator) { try { const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false }); if (contacts.length > 0) { if (contacts[0].name) document.getElementById(nameId).value = contacts[0].name[0]; if (contacts[0].tel) document.getElementById(phoneId).value = String(contacts[0].tel[0]).replace(/\D/g, '').slice(-10); } } catch(e) {} } }
         

@@ -240,6 +240,28 @@
 </head>
 <body>
 
+    <!-- 🔒 LOGIN OVERLAY (नया लॉगिन पेज) -->
+    <div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
+        <div style="background: white; padding: 30px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center;">
+            <div style="font-size: 40px; margin-bottom: 10px;" class="material-symbols-rounded">security</div>
+            <h2 style="font-family: 'Product Sans', sans-serif; color: var(--primary-dark); margin-bottom: 8px;">Vandana ERP</h2>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;" id="login-msg">लॉगिन करने के लिए मोबाइल नंबर डालें</p>
+            
+            <div id="phone-section">
+                <input type="tel" id="login-phone" class="form-control" placeholder="+91" value="+91" style="margin-bottom: 16px; font-size: 16px; font-weight: 600; text-align: center; letter-spacing: 1px;">
+                <button class="btn-submit" id="send-otp-btn" onclick="sendOTP()">Send OTP</button>
+            </div>
+            
+            <div id="otp-section" style="display: none;">
+                <input type="number" id="login-otp" class="form-control" placeholder="6-digit OTP" style="margin-bottom: 16px; font-size: 20px; font-weight: 700; text-align: center; letter-spacing: 4px;">
+                <button class="btn-submit" id="verify-otp-btn" onclick="verifyOTP()" style="background: var(--success);">Verify & Login</button>
+                <button class="btn-outline" style="width: 100%; margin-top: 10px; border:none; color:var(--primary);" onclick="location.reload()">Back / Cancel</button>
+            </div>
+            
+            <div id="recaptcha-container" style="margin-top: 20px; display: flex; justify-content: center;"></div>
+        </div>
+    </div>
+
     <!-- 🌟 LOADER -->
     <div id="loader" class="loader-overlay" style="display: none;"><div class="spinner"></div></div>
 

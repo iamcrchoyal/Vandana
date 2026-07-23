@@ -913,6 +913,18 @@ import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, 
         try { history.pushState(null, null, location.href); window.onpopstate = function () { history.go(1); }; } catch(e) {}
 
         window.addEventListener('DOMContentLoaded', () => {
+            // --- NEW AUTH LOGIC STARTS ---
+            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    document.getElementById('login-overlay').style.display = 'none'; // सही लॉगिन पर ऐप खुलेगा
+                } else {
+                    document.getElementById('login-overlay').style.display = 'flex'; // वर्ना लॉगिन पेज दिखेगा
+                }
+            });
+            // --- NEW AUTH LOGIC ENDS ---
+
             let todayStr = new Date().toISOString().split('T')[0];
             if(document.getElementById('dash-date-picker')) document.getElementById('dash-date-picker').value = todayStr;
             if(document.getElementById('calc-date')) document.getElementById('calc-date').value = todayStr;

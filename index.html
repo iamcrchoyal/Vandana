@@ -1007,6 +1007,12 @@ import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, 
             if (phone.length < 10) return alert("कृपया सही मोबाइल नंबर डालें (जैसे: +919876543210)");
             
             document.getElementById('send-otp-btn').innerText = "Sending...";
+
+            // अगर पुराना reCAPTCHA पहले से बना हो तो उसे रीसेट करें
+            if(!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+            }
+
             signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
                 .then((confirmationResult) => {
                     window.confirmationResult = confirmationResult;
@@ -1014,9 +1020,14 @@ import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, 
                     document.getElementById('otp-section').style.display = 'block';
                     document.getElementById('login-msg').innerText = "OTP भेजा गया है। कृपया नीचे दर्ज करें।";
                 }).catch((error) => {
-                    console.error(error);
-                    alert("OTP भेजने में एरर! कृपया दोबारा कोशिश करें।");
+                    console.error("Firebase Auth Error:", error);
+                    alert("OTP एरर: " + (error.message || "कृपया दोबारा कोशिश करें।"));
                     document.getElementById('send-otp-btn').innerText = "Send OTP";
+                    // एरर आने पर reCAPTCHA को फिर से नया कर दें
+                    if(window.recaptchaVerifier) {
+                        window.recaptchaVerifier.clear();
+                        window.recaptchaVerifier = null;
+                    }
                 });
         }
 

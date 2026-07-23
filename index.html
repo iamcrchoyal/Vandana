@@ -996,6 +996,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
         // --- GOOGLE LOGIN FUNCTION ---
         window.loginWithGoogle = function() {
+            const googleProvider = new GoogleAuthProvider(); // <--- हमने चाबी यहाँ अंदर रख दी!
+            
             let loginBtn = document.getElementById('google-login-btn');
             loginBtn.innerHTML = "Checking...";
             

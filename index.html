@@ -913,11 +913,25 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.addEventListener('DOMContentLoaded', () => {
             // --- NEW AUTH LOGIC STARTS ---
             const googleProvider = new GoogleAuthProvider();
+
             onAuthStateChanged(auth, (user) => {
                 if (user) {
-                    document.getElementById('login-overlay').style.display = 'none'; // सही लॉगिन पर ऐप खुलेगा
+                    // 1. लॉगिन स्क्रीन छुपाएं
+                    document.getElementById('login-overlay').style.display = 'none'; 
+                    
+                    // 2. यूजर की फोटो और नाम गूगल से निकालकर स्क्रीन पर लगाएं
+                    document.getElementById('user-profile-badge').style.display = 'flex';
+                    
+                    if (user.displayName) {
+                        document.getElementById('user-name').innerText = user.displayName;
+                    }
+                    if (user.photoURL) {
+                        document.getElementById('user-photo').src = user.photoURL;
+                    }
                 } else {
-                    document.getElementById('login-overlay').style.display = 'flex'; // वर्ना लॉगिन पेज दिखेगा
+                    // अगर लॉगिन नहीं है तो लॉगिन स्क्रीन दिखाएं और प्रोफाइल छुपाएं
+                    document.getElementById('login-overlay').style.display = 'flex'; 
+                    document.getElementById('user-profile-badge').style.display = 'none';
                 }
             });
             // --- NEW AUTH LOGIC ENDS ---

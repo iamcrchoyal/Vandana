@@ -1001,6 +1001,40 @@ import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, 
 
         document.getElementById('dash-date-picker').addEventListener('change', function(e) { calculateGrandTotals(); });
 
+        // --- OTP SEND & VERIFY FUNCTIONS ---
+        window.sendOTP = function() {
+            let phone = document.getElementById('login-phone').value;
+            if (phone.length < 10) return alert("कृपया सही मोबाइल नंबर डालें (जैसे: +919876543210)");
+            
+            document.getElementById('send-otp-btn').innerText = "Sending...";
+            signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
+                .then((confirmationResult) => {
+                    window.confirmationResult = confirmationResult;
+                    document.getElementById('phone-section').style.display = 'none';
+                    document.getElementById('otp-section').style.display = 'block';
+                    document.getElementById('login-msg').innerText = "OTP भेजा गया है। कृपया नीचे दर्ज करें।";
+                }).catch((error) => {
+                    console.error(error);
+                    alert("OTP भेजने में एरर! कृपया दोबारा कोशिश करें।");
+                    document.getElementById('send-otp-btn').innerText = "Send OTP";
+                });
+        }
+
+        window.verifyOTP = function() {
+            let code = document.getElementById('login-otp').value;
+            if (code.length < 6) return alert("कृपया 6-अंकों का OTP डालें!");
+            
+            document.getElementById('verify-otp-btn').innerText = "Verifying...";
+            window.confirmationResult.confirm(code).then((result) => {
+                alert("Login Successful! (लॉगिन सफल)");
+                document.getElementById('login-overlay').style.display = 'none';
+            }).catch((error) => {
+                alert("गलत OTP! कृपया दोबारा चेक करें।");
+                document.getElementById('verify-otp-btn').innerText = "Verify & Login";
+            });
+        }
+        // -----------------------------------
+
         window.updateGreeting = function() {
             const hour = new Date().getHours(); let greeting = "Good morning";
             if (hour >= 12 && hour < 17) greeting = "Good afternoon"; else if (hour >= 17) greeting = "Good evening";

@@ -761,588 +761,84 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPas
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const auth = getAuth(app); // OTP के लिए नया ताला
-        window.confirmationResult = null;
+    const googleProvider = new GoogleAuthProvider();
 
-        let allLedgerData = []; let globalCustomers = []; let smartInventory = {}; let allGodownTransfers = []; let allRecycleData = [];
-        let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null; 
-        window.lastGeneratedEntryData = null;
-        
-        window.calcValue = ""; window.calcType = "Gave"; window.isEditingEntry = false;
-        window.currentReportElemId = ""; window.currentReportFilename = ""; 
-        window.editingBillNo = null; window.editingEntryKey = null; window.editingEntryDate = null;
-        window.currentTabType = 'Customer'; window.currentTopCustTab = 'current'; window.currentPaymentMode = 'credit';
-        window.ledgerTotals = { custGive:0, custGet:0, supGive:0, supGet:0 }; window.globalBalances = {}; 
-        let cropper; let custCropper; let dataLoadCount = 0;
-        
-        window.pageStack = ['home'];
+        // 1. UI Tab Switcher (Sign In / Sign Up स्क्रीन बदलना)
+        window.switchTab = function(tab) {
+            const signinForm = document.getElementById('form-signin');
+            const signupForm = document.getElementById('form-signup');
+            const tabSignin = document.getElementById('tab-signin');
+            const tabSignup = document.getElementById('tab-signup');
+            const title = document.getElementById('header-title');
+            const desc = document.getElementById('header-desc');
 
-        try { history.pushState(null, null, location.href); window.onpopstate = function () { history.go(1); }; } catch(e) {}
-
-        window.addEventListener('DOMContentLoaded', () => {
-            // --- NEW AUTH LOGIC STARTS ---
-            const googleProvider = new GoogleAuthProvider();
-
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    // 1. लॉगिन स्क्रीन छुपाएं
-                    document.getElementById('login-overlay').style.display = 'none'; 
-                    
-                    // 2. यूजर की फोटो और नाम गूगल से निकालकर स्क्रीन पर लगाएं
-                    document.getElementById('user-profile-badge').style.display = 'flex';
-                    
-                    if (user.displayName) {
-                        document.getElementById('user-name').innerText = user.displayName;
-                    }
-                    if (user.photoURL) {
-                        document.getElementById('user-photo').src = user.photoURL;
-                    }
-                } else {
-                    // अगर लॉगिन नहीं है तो लॉगिन स्क्रीन दिखाएं और प्रोफाइल छुपाएं
-                    document.getElementById('login-overlay').style.display = 'flex'; 
-                    document.getElementById('user-profile-badge').style.display = 'none';
-                }
-            });
-            // --- NEW AUTH LOGIC ENDS ---
-
-            let todayStr = new Date().toISOString().split('T')[0];
-            if(document.getElementById('dash-date-picker')) document.getElementById('dash-date-picker').value = todayStr;
-            if(document.getElementById('calc-date')) document.getElementById('calc-date').value = todayStr;
-            if(document.getElementById('godown-date-picker')) document.getElementById('godown-date-picker').value = todayStr;
-            if(document.getElementById('rep-from')) document.getElementById('rep-from').value = todayStr;
-            if(document.getElementById('rep-to')) document.getElementById('rep-to').value = todayStr;
-            if(document.getElementById('inv-date')) document.getElementById('inv-date').value = todayStr;
-            
-            try {
-                let savedStack = sessionStorage.getItem('v_pageStack');
-                if(savedStack) window.pageStack = JSON.parse(savedStack);
-            } catch(e){}
-            
-            try {
-                onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); updatePosShades(); checkRestore(); });
-                onValue(ref(db, 'Customers'), (snapshot) => { let data = snapshot.val() || {}; globalCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); renderCustomerList(globalCustomers); setupPOSAutocomplete(); checkRestore(); });
-                onValue(ref(db, 'GodownTransfers'), (snapshot) => { let data = snapshot.val() || {}; allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); renderGodownHistory(); renderInventoryList(); checkRestore(); });
-                onValue(ref(db, 'Ledger'), (snapshot) => { let data = snapshot.val() || {}; allLedgerData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); calculateGrandTotals(); if (document.getElementById('ledger-deep-page').classList.contains('active')) renderLedgerEntries(currentPartyName); renderInventoryList(); checkRestore(); });
-                onValue(ref(db, 'RecycleBin'), (snapshot) => { let data = snapshot.val() || {}; allRecycleData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); renderRecycleBin(); });
-            } catch (error) {}
-
-            document.getElementById('inv-party').addEventListener('input', function(e) { let val = e.target.value; let cust = globalCustomers.find(c => c.name.toLowerCase() === val.toLowerCase()); if(cust && cust.phone) { document.getElementById('inv-phone').value = cust.phone; } });
-
-            document.getElementById('cp-scroll-content').addEventListener('scroll', function() {
-                let st = this.scrollTop;
-                let headerGroup = document.getElementById('cp-header-group');
-                let mainTitle = document.getElementById('cp-main-title');
-                let bigAvatarWrap = document.getElementById('cp-big-avatar-wrap');
-                
-                let maxScroll = 50;
-                let progress = Math.min(st / maxScroll, 1);
-                
-                headerGroup.style.opacity = progress;
-                headerGroup.style.transform = `translateY(${(1 - progress) * 10}px)`;
-                mainTitle.style.opacity = 1 - progress;
-
-                if(bigAvatarWrap) {
-                    bigAvatarWrap.style.opacity = 1 - progress;
-                    bigAvatarWrap.style.transform = `scale(${1 - (progress * 0.2)})`;
-                    if(progress > 0.9) bigAvatarWrap.style.pointerEvents = 'none';
-                    else bigAvatarWrap.style.pointerEvents = 'auto';
-                }
-            });
-
-            let lastScrollTop = 0;
-            document.querySelector('.main-wrapper').addEventListener('scroll', function() {
-                let st = this.scrollTop;
-                if(st > 10) { document.getElementById('main-app-bar').classList.add('scrolled'); } else { document.getElementById('main-app-bar').classList.remove('scrolled'); }
-                if(st > lastScrollTop && st > 50) { document.getElementById('bottom-nav-bar').classList.add('hidden-by-scroll'); } else { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-scroll'); }
-                lastScrollTop = st <= 0 ? 0 : st;
-            });
-            loadAdminProfile();
-        });
-
-        function checkRestore() {
-            dataLoadCount++;
-            if(dataLoadCount === 4) { 
-                let savedPage = sessionStorage.getItem('v_activePage');
-                if(savedPage === 'ledger-deep-page') {
-                    let pName = sessionStorage.getItem('v_currentPartyName');
-                    let pPhone = sessionStorage.getItem('v_currentPartyPhone');
-                    if(pName) { currentPartyName = pName; openLedgerDetail(pName, pPhone); openPage('ledger-deep-page', true); }
-                } else if(savedPage === 'customer-profile-page') {
-                    let pName = sessionStorage.getItem('v_currentPartyName');
-                    if(pName) { currentPartyName = pName; openCustomerProfile(); openPage('customer-profile-page', true); }
-                } else if(savedPage === 'entry-details-page') {
-                    let eKey = sessionStorage.getItem('v_currentEntryKey');
-                    if(eKey) { openEntryDetails(eKey); openPage('entry-details-page', true); }
-                } else if(savedPage && savedPage !== 'home') {
-                    openPage(savedPage, true);
-                }
-            }
-        }
-
-        document.getElementById('dash-date-picker').addEventListener('change', function(e) { calculateGrandTotals(); });
-
-        // --- GOOGLE LOGIN FUNCTION ---
-        window.loginWithGoogle = function() {
-            const googleProvider = new GoogleAuthProvider(); // <--- हमने चाबी यहाँ अंदर रख दी!
-            
-            let loginBtn = document.getElementById('google-login-btn');
-            loginBtn.innerHTML = "Checking...";
-            
-            signInWithPopup(auth, googleProvider)
-                .then((result) => {
-                    const user = result.user;
-                    alert("Welcome " + user.displayName + "! (लॉगिन सफल)");
-                    document.getElementById('login-overlay').style.display = 'none';
-                    loginBtn.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 24px;"> Sign in with Google`;
-                })
-                .catch((error) => {
-                    console.error(error);
-                    alert("लॉगिन कैंसल हो गया या एरर आया।");
-                    loginBtn.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 24px;"> Sign in with Google`;
-                });
-        }
-        // -----------------------------------
-
-        window.updateGreeting = function() {
-            const hour = new Date().getHours(); let greeting = "Good morning";
-            if (hour >= 12 && hour < 17) greeting = "Good afternoon"; else if (hour >= 17) greeting = "Good evening";
-            let pName = localStorage.getItem('v_adminName') || "Admin";
-            document.getElementById('dynamic-greeting').innerText = greeting + ", " + (pName.split(' ')[0] || "Admin");
-        }
-
-        function updateBottomNavVisibility(pageId) {
-            if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
-        }
-
-        const allPagesList = ['items-page', 'parties-page', 'pos-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'home'];
-        
-        window.openPage = function(id, isBack = false) { 
-            if(!isBack && window.pageStack[window.pageStack.length-1] !== id) {
-                window.pageStack.push(id);
-            }
-            allPagesList.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.remove('active'); }); 
-            sessionStorage.setItem('v_activePage', id);
-            sessionStorage.setItem('v_pageStack', JSON.stringify(window.pageStack));
-            updateBottomNavVisibility(id); 
-            let targetElem = document.getElementById(id);
-            if(targetElem) targetElem.classList.add('active'); 
-            
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            if(id === 'home') document.getElementById('nav-btn-home')?.classList.add('active');
-            if(id === 'items-page') document.getElementById('nav-btn-inventory')?.classList.add('active');
-            if(id === 'parties-page') document.getElementById('nav-btn-ledger')?.classList.add('active');
-        }
-
-        window.navTo = function(pageId, element) {
-            window.pageStack = ['home'];
-            if(pageId !== 'home') window.pageStack.push(pageId);
-            openPage(pageId, true);
-        }
-
-        window.closePage = function(id) { 
-            if(window.pageStack && window.pageStack.length > 1) {
-                if(window.pageStack[window.pageStack.length - 1] === id) {
-                    window.pageStack.pop(); 
-                }
-                let prevPage = window.pageStack[window.pageStack.length - 1] || 'home';
-                openPage(prevPage, true);
+            if(tab === 'signup') {
+                signinForm.classList.add('hidden'); signupForm.classList.remove('hidden');
+                tabSignin.classList.remove('active'); tabSignup.classList.add('active');
+                title.innerText = "Sign up now to access your personal account";
+                desc.innerText = "Sign up to access your account and exclusive features.";
             } else {
-                navTo('home', null);
+                signupForm.classList.add('hidden'); signinForm.classList.remove('hidden');
+                tabSignup.classList.remove('active'); tabSignin.classList.add('active');
+                title.innerText = "Go ahead and complete your account and setup";
+                desc.innerText = "Create your account and simplify your workflow instantly.";
             }
         }
 
-        window.goHome = function() { navTo('home', null); }
-        window.openSidebar = function() { document.getElementById('sidebar').classList.add('active'); document.getElementById('sidebar-overlay').style.display = 'block'; document.body.classList.add('sidebar-locked'); }
-        window.closeSidebar = function() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebar-overlay').style.display = 'none'; document.body.classList.remove('sidebar-locked'); }
-        window.openProfileModal = function() { document.getElementById('profile-modal-overlay').style.display='block'; document.getElementById('profile-modal').style.display='flex'; }
-        window.closeProfileModal = function() { document.getElementById('profile-modal-overlay').style.display='none'; document.getElementById('profile-modal').style.display='none'; }
-        window.openAdminProfile = function() { closeSidebar(); closeProfileModal(); openPage('admin-profile-page'); }
-
-        window.openDpViewer = function(src) {
-            if(!src) return;
-            document.getElementById('dp-viewer-img').src = src;
-            document.getElementById('dp-viewer').style.display = 'flex';
-            setTimeout(()=> document.getElementById('dp-viewer').classList.add('active'), 10);
-        }
-        window.closeDpViewer = function() {
-            document.getElementById('dp-viewer').classList.remove('active');
-            setTimeout(()=> document.getElementById('dp-viewer').style.display = 'none', 200);
+        // 2. Google Login (गूगल से लॉगिन)
+        window.loginWithGoogle = function() {
+            signInWithPopup(auth, googleProvider).catch((error) => alert(error.message));
         }
 
-        window.toggleInvCard = function(el) { 
-            let isExpanded = el.classList.contains('expanded');
-            let parentGrid = el.closest('.inventory-grid');
-            if(parentGrid) {
-                parentGrid.querySelectorAll('.inv-card.expanded').forEach(c => c.classList.remove('expanded'));
-            }
-            if(!isExpanded) {
-                el.classList.add('expanded');
-            }
+        // 3. Email Registration (नया अकाउंट बनाना)
+        window.signUpEmail = function() {
+            let email = document.getElementById('up-email').value;
+            let pass = document.getElementById('up-password').value;
+            let fname = document.getElementById('up-fname').value;
+            let lname = document.getElementById('up-lname').value;
+
+            if(!email || !pass || !fname) return alert("Please fill all fields!");
+
+            createUserWithEmailAndPassword(auth, email, pass)
+                .then((userCredential) => {
+                    updateProfile(userCredential.user, { displayName: fname + " " + lname });
+                    alert("अकाउंट सफलतापूर्वक बन गया! (Account Created)");
+                }).catch((error) => alert(error.message));
         }
 
-        // 📊 REPORTS LOGIC (WITH PREVIEW)
-        window.openReportModal = function(type) { document.getElementById('report-modal-type').value = type; document.getElementById('report-modal-title').innerText = type === 'ledger' ? 'Account Statement' : 'Daily Stock Report'; document.getElementById('report-modal').style.display = 'flex'; }
-        window.downloadReport = function() { let fromD = document.getElementById('rep-from').value; let toD = document.getElementById('rep-to').value; let type = document.getElementById('report-modal-type').value; if(!fromD || !toD) return alert("Please select both dates!"); document.getElementById('report-modal').style.display = 'none'; if(type === 'ledger') generateAccountStatement(fromD, toD); else generateStockReport(fromD, toD); }
-
-        function generateAccountStatement(fromD, toD) {
-            let fromTime = new Date(fromD).getTime(); let toTime = new Date(toD + "T23:59:59").getTime();
-            let custEntries = allLedgerData.filter(e => e.name === currentPartyName).sort((a,b) => new Date(a.date) - new Date(b.date));
-            let openingBal = 0; let statementHtml = ""; let currentBal = 0;
-            custEntries.forEach(entry => { let eTime = new Date(entry.date).getTime(); let amt = parseFloat(entry.amount) || 0; if(eTime < fromTime) { if(entry.type === 'Gave') openingBal += amt; else openingBal -= amt; } });
-            currentBal = openingBal;
-            let opBalStr = openingBal > 0 ? `₹${openingBal} Dr` : (openingBal < 0 ? `₹${Math.abs(openingBal)} Cr` : `₹0`);
-            statementHtml += `<tr><td colspan="4" style="padding:10px; border:1px solid #e0e2e0; text-align:right; font-weight:bold;">Opening Balance:</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right; font-weight:bold;">${opBalStr}</td></tr>`;
-            custEntries.forEach(entry => { let eTime = new Date(entry.date).getTime(); if(eTime >= fromTime && eTime <= toTime) { let amt = parseFloat(entry.amount) || 0; let gave = entry.type === 'Gave' ? amt : 0; let got = entry.type === 'Got' ? amt : 0; currentBal += (gave - got); let dStr = new Date(entry.date).toLocaleDateString('en-GB'); let curBalStr = currentBal > 0 ? `₹${currentBal} Dr` : (currentBal < 0 ? `₹${Math.abs(currentBal)} Cr` : `₹0`); statementHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">${entry.details || 'App Entry'}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${gave ? '₹'+gave : '-'}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${got ? '₹'+got : '-'}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right; font-weight:bold;">${curBalStr}</td></tr>`; } });
-            document.getElementById('ps-date-range').innerText = `From: ${new Date(fromD).toLocaleDateString('en-GB')} To: ${new Date(toD).toLocaleDateString('en-GB')}`; document.getElementById('ps-party-name').innerText = currentPartyName; document.getElementById('ps-table-body').innerHTML = statementHtml; let finalBalStr = currentBal > 0 ? `₹${currentBal} Dr` : (currentBal < 0 ? `₹${Math.abs(currentBal)} Cr` : `₹0`); document.getElementById('ps-closing-bal').innerText = finalBalStr;
-            let previewHtml = document.getElementById('pdf-statement-template').innerHTML; document.getElementById('preview-render-area').innerHTML = previewHtml; window.currentReportElemId = 'pdf-statement-template'; window.currentReportFilename = `Statement_${currentPartyName}_${fromD}.pdf`; openPage('report-preview-page');
+        // 4. Email Login (ईमेल-पासवर्ड से लॉगिन)
+        window.signInEmail = function() {
+            let email = document.getElementById('in-email').value;
+            let pass = document.getElementById('in-password').value;
+            
+            if(!email || !pass) return alert("Please enter email and password!");
+            
+            signInWithEmailAndPassword(auth, email, pass).catch((error) => alert("Wrong Email or Password!"));
         }
 
-        function generateStockReport(fromD, toD) {
-            let fromTime = new Date(fromD).getTime(); let toTime = new Date(toD + "T23:59:59").getTime(); let stockHtml = "";
-            let filteredTransfers = allGodownTransfers.filter(t => { let eTime = new Date(t.date).getTime(); return eTime >= fromTime && eTime <= toTime; });
-            filteredTransfers.forEach(t => { let dStr = new Date(t.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); let action = t.type === 'IN' ? 'Transfer IN' : 'Transfer OUT'; stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">${action}</td><td style="padding:10px; border:1px solid #e0e2e0;">${t.item} (${t.cat})</td><td style="padding:10px; border:1px solid #e0e2e0;">Godown</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${t.qty}</td></tr>`; });
-            let salesEntries = allLedgerData.filter(e => { let eTime = new Date(e.date).getTime(); return eTime >= fromTime && eTime <= toTime && e.cart && e.type === 'Gave'; });
-            salesEntries.forEach(entry => { let dStr = new Date(entry.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); entry.cart.forEach(item => { stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">Sale (OUT)</td><td style="padding:10px; border:1px solid #e0e2e0;">${item.shade} (${item.cat})</td><td style="padding:10px; border:1px solid #e0e2e0;">${entry.name}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${item.qty}</td></tr>`; }); });
-            if(!stockHtml) stockHtml = `<tr><td colspan="5" style="text-align:center; padding:20px;">No stock movement found for these dates.</td></tr>`;
-            document.getElementById('psr-date-range').innerText = `From: ${new Date(fromD).toLocaleDateString('en-GB')} To: ${new Date(toD).toLocaleDateString('en-GB')}`; document.getElementById('psr-table-body').innerHTML = stockHtml;
-            let previewHtml = document.getElementById('pdf-stock-template').innerHTML; document.getElementById('preview-render-area').innerHTML = previewHtml; window.currentReportElemId = 'pdf-stock-template'; window.currentReportFilename = `Stock_Report_${fromD}.pdf`; openPage('report-preview-page');
-        }
-
-        window.executeReportDownload = function() { let elem = document.getElementById(window.currentReportElemId); let opt = { margin: 0.4, filename: window.currentReportFilename, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; alert("Downloading PDF... Please wait."); html2pdf().set(opt).from(elem).save(); }
-        
-        window.shareReportPDF = async function() { 
-            let elem = document.getElementById(window.currentReportElemId); 
-            let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: window.currentReportFilename, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
-            try { 
-                alert("Preparing PDF for direct sharing... this may take a few seconds."); 
-                let pdfBlob = await html2pdf().set(opt).from(elem).output('blob'); 
-                let file = new File([pdfBlob], opt.filename, { type: 'application/pdf' }); 
-                if (navigator.canShare && navigator.canShare({ files: [file] })) { 
-                    await navigator.share({ files: [file], title: 'Vandana Enterprises Report', text: `Please find attached the report.` }); 
-                } else { 
-                    alert("Your browser does not support direct PDF sharing. Downloading instead..."); 
-                    html2pdf().set(opt).from(elem).save(); 
-                } 
-            } catch(e) { console.error(e); } 
-        }
-
-        window.openAbsentCustomers = function() { let today = document.getElementById('dash-date-picker').value; let activeToday = new Set(); allLedgerData.forEach(entry => { try { let d = new Date(entry.date).toISOString().split('T')[0]; if(d === today) activeToday.add(entry.name); }catch(e){} }); let absentList = globalCustomers.filter(c => !activeToday.has(c.name) && (c.type === 'Customer' || !c.type)); let html = ""; if(absentList.length === 0) { html = "<div style='padding:40px 20px; text-align:center; color:var(--text-muted); font-size:14px;'>Wow! Every customer has an entry today. 🎉</div>"; } else { absentList.forEach(c => { let initial = c.name ? c.name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = c.pic || adminPic; let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; let msg = encodeURIComponent(`नमस्ते ${c.name} जी, वंदना एंटरप्राइजेज से। आज आप शॉप पर नहीं आए, अगर कोई आर्डर या रिक्वायरमेंट हो तो जरूर बताएं।`); html += `<div class="kb-list-item"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${c.name}</div><div class="kb-time">📱 ${c.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:0 16px; flex-direction:row; align-items:center; gap:10px; border-left:none; background:transparent;"><a href="tel:${c.phone}" style="text-decoration:none; background:#e8f0fe; color:var(--primary); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">call</span></a><a href="#" onclick="window.open('https://wa.me/91${c.phone}?text=${msg}', '_blank')" style="text-decoration:none; background:#e6f4ea; color:var(--success); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">chat</span></a></div></div>`; }); } document.getElementById('absent-list-container').innerHTML = html; openPage('absent-page'); }
-
-        function loadAdminProfile() { let pName = localStorage.getItem('v_adminName') || "Admin"; let pPhone = localStorage.getItem('v_adminPhone') || ""; let pEmail = localStorage.getItem('v_adminEmail') || "admin@vandana.com"; let pGst = localStorage.getItem('v_adminGst') || ""; let pAddr = localStorage.getItem('v_adminAddr') || ""; let pPic = localStorage.getItem('v_adminPic'); if(document.getElementById('ap-name')) document.getElementById('ap-name').value = pName; if(document.getElementById('ap-phone')) document.getElementById('ap-phone').value = pPhone; if(document.getElementById('ap-email')) document.getElementById('ap-email').value = pEmail; if(document.getElementById('ap-gst')) document.getElementById('ap-gst').value = pGst; if(document.getElementById('ap-address')) document.getElementById('ap-address').value = pAddr; if(document.getElementById('pm-email-display')) document.getElementById('pm-email-display').innerText = pEmail; if(pPic) { if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').src = pPic; document.getElementById('pm-avatar-img').style.display = 'block'; document.getElementById('pm-avatar-text').style.display = 'none'; } if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').src = pPic; document.getElementById('top-avatar-img').style.display = 'block'; document.getElementById('top-avatar-text').style.display = 'none'; } } else { let initial = pName.charAt(0).toUpperCase(); if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').style.display = 'none'; document.getElementById('pm-avatar-text').innerText = initial; document.getElementById('pm-avatar-text').style.display = 'block'; } if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').style.display = 'none'; document.getElementById('top-avatar-text').innerText = initial; document.getElementById('top-avatar-text').style.display = 'flex'; } } updateGreeting(); }
-        window.saveAdminProfile = function() { localStorage.setItem('v_adminName', document.getElementById('ap-name').value); localStorage.setItem('v_adminPhone', document.getElementById('ap-phone').value); localStorage.setItem('v_adminEmail', document.getElementById('ap-email').value); localStorage.setItem('v_adminGst', document.getElementById('ap-gst').value.toUpperCase()); localStorage.setItem('v_adminAddr', document.getElementById('ap-address').value); loadAdminProfile(); alert("Profile Saved Successfully!"); }
-
-        window.handleAdminPic = function(event) { let file = event.target.files[0]; if(file) { let reader = new FileReader(); reader.onload = function(e) { document.getElementById('crop-modal').style.display = 'flex'; let img = document.getElementById('crop-image'); img.src = e.target.result; if(cropper) cropper.destroy(); setTimeout(() => { cropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, background: false }); }, 200); }; reader.readAsDataURL(file); } }
-        window.cancelCrop = function() { document.getElementById('crop-modal').style.display = 'none'; }
-        window.applyCrop = function() { if(!cropper) return; let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 }); localStorage.setItem('v_adminPic', canvas.toDataURL('image/jpeg', 0.8)); loadAdminProfile(); document.getElementById('crop-modal').style.display = 'none'; }
-
-        window.handleCustPic = function(event) { let file = event.target.files[0]; if(file) { let reader = new FileReader(); reader.onload = function(e) { document.getElementById('cust-crop-modal').style.display = 'flex'; let img = document.getElementById('cust-crop-image'); img.src = e.target.result; if(custCropper) custCropper.destroy(); setTimeout(() => { custCropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, background: false }); }, 200); }; reader.readAsDataURL(file); } }
-        window.cancelCustCrop = function() { document.getElementById('cust-crop-modal').style.display = 'none'; }
-        window.applyCustCrop = function() { if(!custCropper) return; let dataUrl = custCropper.getCroppedCanvas({ width: 300, height: 300 }).toDataURL('image/jpeg', 0.8); update(ref(db, 'Customers/' + currentPartyKey), { pic: dataUrl }); document.getElementById('cp-avatar').innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; document.getElementById('cp-mini-avatar').innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; document.getElementById('cust-crop-modal').style.display = 'none'; }
-
-        window.processGodown = function(type) { let cat = document.getElementById('gd-cat').value; let item = document.getElementById('gd-item').value; let qty = parseInt(document.getElementById('gd-qty').value); if(!item || isNaN(qty) || qty <= 0) return alert("Please enter Item Name and Valid Quantity!"); let key = cat + "_" + item; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then((snap) => { let currentQty = snap.val() || 0; let newQty = type === 'OUT' ? currentQty - qty : currentQty + qty; if(newQty < 0) newQty = 0; set(itemRef, newQty); }); push(ref(db, 'GodownTransfers'), { date: new Date().toISOString(), cat: cat, item: item, qty: qty, type: type }); document.getElementById('gd-item').value = ''; document.getElementById('gd-qty').value = ''; alert(type === 'IN' ? `Stock Received!` : `Stock Returned!`); document.getElementById('gd-form-panel').classList.add('form-hidden'); }
-        window.renderGodownHistory = function() { let filterDate = document.getElementById('godown-date-picker').value; let filteredTransfers = allGodownTransfers.filter(t => { let tDate = ""; try { tDate = new Date(t.date).toISOString().split('T')[0]; } catch(e){} return tDate === filterDate; }); let html = ""; if(filteredTransfers.length === 0) { html = '<tr><td colspan="2" style="text-align:center; padding:16px;">No transfers on this date.</td></tr>'; } else { filteredTransfers.forEach(t => { let d = new Date(t.date); let timeStr = isNaN(d) ? t.date : t.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}); let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)'; let icon = t.type === 'IN' ? '🟢 IN' : '🔴 OUT'; html += `<tr><td><div style="font-weight:600; color:var(--text-dark);">${t.item} <span style="font-size:10px; color:var(--text-muted);">(${t.cat})</span></div><div style="font-size:11px; color:var(--text-muted);">${timeStr}</div></td><td style="color:${color}; font-weight:700;">${icon} <br>${t.qty} BOX</td></tr>`; }); } document.getElementById('godown-history-list').innerHTML = html; }
-
-        window.showCelebration = function(name) { document.getElementById('celeb-name').innerText = name; document.getElementById('celebration-modal').style.display = 'flex'; var duration = 4000; var animationEnd = Date.now() + duration; var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000 }; function randomInRange(min, max) { return Math.random() * (max - min) + min; } var interval = setInterval(function() { var timeLeft = animationEnd - Date.now(); if (timeLeft <= 0) return clearInterval(interval); var particleCount = 50 * (timeLeft / duration); confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 } })); }, 250); }
-
-        function setupPOSAutocomplete() { let dlHtml = ""; globalCustomers.forEach(c => dlHtml += `<option value="${c.name}">`); document.getElementById('pos-customers-dl').innerHTML = dlHtml; }
-
-        window.openCustomerProfile = function() { let customer = globalCustomers.find(c => c.name === currentPartyName); if(!customer) return; currentPartyKey = customer.key; sessionStorage.setItem('v_currentPartyName', currentPartyName); let adminPic = localStorage.getItem('v_adminPic'); let custPic = customer.pic || adminPic; if(custPic) { document.getElementById('cp-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; document.getElementById('cp-mini-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; } else { document.getElementById('cp-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); document.getElementById('cp-mini-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); } document.getElementById('cp-edit-name').value = customer.name; document.getElementById('cp-edit-phone').value = customer.phone || ""; document.getElementById('cp-edit-email').value = customer.email || ""; document.getElementById('cp-edit-address').value = customer.address || ""; document.getElementById('cp-header-name').innerText = customer.name; document.getElementById('cp-scroll-content').scrollTop = 0; document.getElementById('cp-header-group').style.opacity = '0'; document.getElementById('cp-header-group').style.transform = 'translateY(10px)'; document.getElementById('cp-main-title').style.opacity = '1'; let bWrap = document.getElementById('cp-big-avatar-wrap'); if(bWrap) { bWrap.style.opacity = '1'; bWrap.style.transform = 'scale(1)'; bWrap.style.pointerEvents = 'auto'; } openPage('customer-profile-page'); }
-        window.saveCustomerProfile = function() { let nName = document.getElementById('cp-edit-name').value.trim(); let nPhone = document.getElementById('cp-edit-phone').value; let nEmail = document.getElementById('cp-edit-email').value.trim(); let nAddr = document.getElementById('cp-edit-address').value; if(!nName) return alert("Name is required!"); update(ref(db, 'Customers/' + currentPartyKey), { name: nName, phone: nPhone, email: nEmail, address: nAddr }); currentPartyName = nName; currentPartyPhone = nPhone; sessionStorage.setItem('v_currentPartyName', nName); document.getElementById('l-deep-name').innerText = nName; document.getElementById('cp-header-name').innerText = nName; alert("Updated!"); closePage('customer-profile-page'); }
-        window.addCustomerToCloud = function() { let name = document.getElementById('new-party-name').value.trim(); let phone = document.getElementById('new-party-phone').value; let address = document.getElementById('new-party-address').value; if(!name) return alert("Please enter Name!"); push(ref(db, 'Customers'), { name, phone, address, date: new Date().toISOString(), status: "Active", type: currentTabType }); closePage('add-party-page'); document.getElementById('new-party-name').value = ''; document.getElementById('new-party-phone').value = ''; document.getElementById('new-party-address').value = ''; }
-        window.deleteCurrentCustomer = function() { if(confirm(`WARNING: Are you sure you want to permanently delete ${currentPartyName}?`)) { remove(ref(db, 'Customers/' + currentPartyKey)); closePage('customer-profile-page'); closePage('ledger-deep-page'); alert("Deleted!"); } }
-
-        window.switchPartyTab = function(type) { currentTabType = type; document.getElementById('tab-customers').classList.toggle('active', type === 'Customer'); document.getElementById('tab-suppliers').classList.toggle('active', type === 'Supplier'); let btnText = type === 'Customer' ? 'Add Customer' : 'Add Supplier'; document.getElementById('fab-text').innerText = btnText; updateLedgerTotalsUI(); renderCustomerList(globalCustomers); }
-        window.updateLedgerTotalsUI = function() { if(currentTabType === 'Customer') { document.getElementById('lbl-give').innerText = "Total You Give"; document.getElementById('total-give-all').innerText = "₹ " + window.ledgerTotals.custGive.toLocaleString(); document.getElementById('lbl-get').innerText = "Total You Get"; document.getElementById('total-get-all').innerText = "₹ " + window.ledgerTotals.custGet.toLocaleString(); } else { document.getElementById('lbl-give').innerText = "Total You Give"; document.getElementById('total-give-all').innerText = "₹ " + window.ledgerTotals.supGive.toLocaleString(); document.getElementById('lbl-get').innerText = "Total You Get"; document.getElementById('total-get-all').innerText = "₹ " + window.ledgerTotals.supGet.toLocaleString(); } }
-        window.switchTopCustTab = function(type) { window.currentTopCustTab = type; document.getElementById('tc-curr-tab').classList.toggle('active', type === 'current'); document.getElementById('tc-last-tab').classList.toggle('active', type === 'last'); calculateGrandTotals(); }
-
-        window.calculateGrandTotals = function() {
-            let balances = {}; let todayTotalSale = 0; let todayTotalBox = 0; let currMonthSales = {}; let lastMonthSales = {}; let selectedDateString = document.getElementById('dash-date-picker').value; let todayDate = new Date(); let currentMonth = todayDate.toISOString().slice(0, 7); let lmDate = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1); let lastMonth = lmDate.toISOString().slice(0, 7);
-            allLedgerData.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let entryDateString = ""; let entryMonthString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) { entryDateString = d.toISOString().split('T')[0]; entryMonthString = d.toISOString().slice(0, 7); } } catch(e){} if(!balances[entry.name]) balances[entry.name] = 0; if(entry.type === 'Gave') balances[entry.name] += amt; if(entry.type === 'Got') balances[entry.name] -= amt; if (entry.details && entry.details.includes("Invoice")) { if(entryMonthString === currentMonth) { currMonthSales[entry.name] = (currMonthSales[entry.name] || 0) + amt; } if(entryMonthString === lastMonth) { lastMonthSales[entry.name] = (lastMonthSales[entry.name] || 0) + amt; } if(entryDateString === selectedDateString){ todayTotalSale += amt; let boxMatch = entry.details.match(/(\d+)\s*Box/i); if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); } } });
-            window.globalBalances = balances; 
-            let partyTypes = {}; 
-            globalCustomers.forEach(c => { if(c.name) partyTypes[c.name.toLowerCase()] = c.type || 'Customer'; }); 
-            let cGive = 0, cGet = 0, sGive = 0, sGet = 0; 
-            for(let cust in balances) { 
-                let pType = partyTypes[cust.toLowerCase()] || 'Customer'; 
-                let bal = balances[cust]; 
-                if(pType === 'Customer') { 
-                    if(bal > 0) cGet += bal; 
-                    if(bal < 0) cGive += Math.abs(bal); 
-                } else { 
-                    if(bal > 0) sGet += bal; 
-                    if(bal < 0) sGive += Math.abs(bal); 
-                } 
-            }
-            window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet }; updateLedgerTotalsUI(); if(document.getElementById('parties-page').classList.contains('active')) { renderCustomerList(globalCustomers); }
-            if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
-            let activeSalesData = window.currentTopCustTab === 'current' ? currMonthSales : lastMonthSales; let topCustHtml = ""; let sortedCustomers = Object.entries(activeSalesData).sort((a, b) => b[1] - a[1]).slice(0, 5); if(sortedCustomers.length === 0) { topCustHtml = '<div style="text-align:center; padding:10px; color:gray; font-size:12px;">No sales data available.</div>'; } else { sortedCustomers.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-name scroll-text">${cust[0]}</div><div class="ua-item-count scroll-text">₹${cust[1].toLocaleString('en-IN')} <span style="color:var(--text-muted); font-size:16px; vertical-align:middle;" class="material-symbols-rounded">chevron_right</span></div></div>`; }); } document.getElementById('top-customers-list').innerHTML = topCustHtml;
-        }
-        
-        window.openLedgerDetail = function(name, phone) { currentPartyName = name; currentPartyPhone = phone || ""; sessionStorage.setItem('v_currentPartyName', name); sessionStorage.setItem('v_currentPartyPhone', phone || ""); document.getElementById('l-deep-name').innerText = name; document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#"; document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); let customer = globalCustomers.find(c => c.name === name); let initial = name ? name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = customer && customer.pic ? customer.pic : adminPic; if(custPic) { document.getElementById('l-deep-avatar-text').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; } else { document.getElementById('l-deep-avatar-text').innerHTML = initial; } renderLedgerEntries(name); openPage('ledger-deep-page'); }
-        window.saveCalculatorEntry = function() { let amount = eval(window.calcValue) || 0; if(amount <= 0) return alert("Enter valid amount!"); let dateVal = document.getElementById('calc-date').value; if(!dateVal) dateVal = new Date().toISOString().split('T')[0]; if(window.isEditingEntry && currentEntryData) { update(ref(db, 'Ledger/' + currentEntryData.key), { amount: amount, details: document.getElementById('calc-details').value || "App Entry", type: window.calcType, date: new Date(dateVal).toISOString() }); window.isEditingEntry = false; currentEntryData = null; } else { push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: window.calcType, amount: amount, details: document.getElementById('calc-details').value || "App Entry" }); } closePage('calculator-page'); }
-
-        window.openEntryDetails = function(key) { sessionStorage.setItem('v_currentEntryKey', key); currentEntryData = allLedgerData.find(e => e.key === key); if(!currentEntryData) return; document.getElementById('ed-party-name').innerText = currentEntryData.name; let d = new Date(currentEntryData.date); document.getElementById('ed-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}); let color = currentEntryData.type === 'Gave' ? 'var(--danger)' : 'var(--success)'; document.getElementById('ed-amount').innerText = `₹ ${parseFloat(currentEntryData.amount).toLocaleString()}`; document.getElementById('ed-amount').style.color = color; document.getElementById('ed-type').innerText = `You ${currentEntryData.type}`; document.getElementById('ed-type').style.color = color; document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry"; if(currentEntryData.cart && currentEntryData.cart.length > 0) { document.getElementById('ed-edit-btn-container').innerHTML = `<button class="btn-outline" onclick="editCurrentInvoice()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:18px;">edit_document</span> Edit Invoice</button>`; } else { document.getElementById('ed-edit-btn-container').innerHTML = `<button class="btn-outline" onclick="editCurrentEntryAmount()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:18px;">edit</span> Edit Amount & Details</button>`; } openPage('entry-details-page'); }
-        
-        window.editCurrentInvoice = function() { 
-            if(!confirm("Are you sure you want to edit this invoice?")) return; 
-            currentEntryData.cart.forEach(item => { 
-                let key = item.cat + "_" + item.shade; 
-                let itemRef = ref(db, 'Inventory/' + key); 
-                get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) + item.qty); }); 
-            }); 
-            window.editingEntryKey = currentEntryData.key;
-            window.editingBillNo = currentEntryData.billNo;
-            window.editingEntryDate = currentEntryData.date;
-            currentCart = [...currentEntryData.cart]; 
-            document.getElementById('inv-party').value = currentEntryData.name; 
-            let cust = globalCustomers.find(c => c.name === currentEntryData.name); 
-            document.getElementById('inv-phone').value = cust ? cust.phone : ""; 
-            let d = new Date(currentEntryData.date); 
-            if(!isNaN(d)) document.getElementById('inv-date').value = d.toISOString().split('T')[0]; 
-            window.setPaymentMode('credit'); 
-            renderCartUi(); 
-            navTo('pos-page', null); 
-            document.getElementById('billing-form-area').style.display = 'block'; 
-            document.getElementById('post-bill-area').style.display = 'none'; 
-        }
-
-        window.editCurrentEntryAmount = function() { if(!currentEntryData) return; window.isEditingEntry = true; window.calcType = currentEntryData.type; window.calcValue = currentEntryData.amount.toString(); document.getElementById('calc-amount').value = window.calcValue; document.getElementById('calc-details').value = currentEntryData.details || ""; document.getElementById('calc-hidden-area').classList.add('show'); document.getElementById('calc-save-btn').innerText = "UPDATE ENTRY"; let d = new Date(currentEntryData.date); if(!isNaN(d)) document.getElementById('calc-date').value = d.toISOString().split('T')[0]; closePage('entry-details-page'); openCalculator(window.calcType, true); }
-        
-        window.openCalculator = function(type, skipReset = false) { if(!skipReset) { window.calcType = type; window.calcValue = ""; document.getElementById('calc-amount').value = ""; document.getElementById('calc-details').value = ""; document.getElementById('calc-hidden-area').classList.remove('show'); document.getElementById('calc-save-btn').innerText = "SAVE ENTRY"; window.isEditingEntry = false; } let color = type === 'Gave' ? 'var(--danger)' : 'var(--success)'; document.getElementById('calc-header').style.color = color; document.getElementById('calc-back-btn').style.color = color; document.getElementById('calc-symbol').style.color = color; document.getElementById('calc-amount').style.color = color; document.getElementById('calc-save-btn').style.backgroundColor = color; updateCalcTitle(); openPage('calculator-page'); }
-        window.calcPress = function(val) { if(val === 'C') window.calcValue = ""; else if(val === 'BACK') window.calcValue = window.calcValue.slice(0, -1); else if(val === '=') { try { window.calcValue = eval(window.calcValue).toString(); } catch(e){} } else window.calcValue += val; document.getElementById('calc-amount').value = window.calcValue; if(parseFloat(window.calcValue) > 0) { document.getElementById('calc-hidden-area').classList.add('show'); } else { document.getElementById('calc-hidden-area').classList.remove('show'); } updateCalcTitle(); }
-        function updateCalcTitle() { document.getElementById('calc-title-text').innerText = `You ${window.calcType.toLowerCase()} ₹ ${window.calcValue || "0"} to ${currentPartyName}`; }
-        
-        window.deleteCurrentEntry = function() { if(confirm("Are you sure you want to delete this entry? It will be moved to Recycle Bin.")) { set(ref(db, 'RecycleBin/' + currentEntryData.key), currentEntryData); remove(ref(db, 'Ledger/' + currentEntryData.key)); closePage('entry-details-page'); } }
-        window.renderRecycleBin = function() { let container = document.getElementById('recycle-list-container'); if(allRecycleData.length === 0) { container.innerHTML = `<div style="text-align:center; padding:40px; color:gray;">Recycle Bin is empty.</div>`; return; } let html = ""; allRecycleData.forEach(entry => { let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB'); html += `<div class="entry-card" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--text-dark); font-weight:800; font-size: 16px;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">${dateStr} | ${entry.details}</div><div style="display:flex; gap:10px;"><button class="btn-submit" style="flex:1; background:#e8f0fe; color:var(--primary); padding:8px; border-radius:12px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="restoreRecycle('${entry.key}')"><span class="material-symbols-rounded" style="font-size:16px;">settings_backup_restore</span> Restore</button><button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger); padding:8px; border-radius:12px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="permanentlyDeleteRecycle('${entry.key}')"><span class="material-symbols-rounded" style="font-size:16px;">delete_forever</span> Delete</button></div></div>`; }); container.innerHTML = html; }
-        window.restoreRecycle = function(key) { let entry = allRecycleData.find(e => e.key === key); if(entry) { let dbEntry = {...entry}; delete dbEntry.key; set(ref(db, 'Ledger/' + key), dbEntry); remove(ref(db, 'RecycleBin/' + key)); } }
-        window.permanentlyDeleteRecycle = function(key) { if(confirm("Permanently delete this invoice? It cannot be recovered.")) { remove(ref(db, 'RecycleBin/' + key)); } }
-
-        window.renderLedgerEntries = function(name) { let entryList = document.getElementById('ledger-entries-list'); entryList.innerHTML = ''; let totalGave = 0; let totalGot = 0; let customerEntries = allLedgerData.filter(e => e.name === name); if(customerEntries.length === 0) { entryList.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No entries yet.</div>`; } else { customerEntries.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let gaveHtml = entry.type === 'Gave' ? `₹ ${amt}` : ''; let gotHtml = entry.type === 'Got' ? `₹ ${amt}` : ''; if(entry.type === 'Gave') totalGave += amt; if(entry.type === 'Got') totalGot += amt; let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short'}); entryList.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')"><div class="ec-left"><div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${dateStr}</div><div style="font-size:13px; color:var(--text-dark); font-weight:500;">${entry.details || 'App Entry'}</div></div><div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div></div>`; }); } let balEl = document.getElementById('l-deep-bal-amt'); let txtEl = document.getElementById('l-deep-bal-text'); let finalBal = totalGave - totalGot; if(finalBal > 0) { balEl.innerText = "₹ " + finalBal.toLocaleString(); balEl.style.color = "var(--success)"; txtEl.innerText = "You will get"; } else if (finalBal < 0) { balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); balEl.style.color = "var(--danger)"; txtEl.innerText = "You will give"; } else { balEl.innerText = "₹ 0"; balEl.style.color = "var(--text-dark)"; txtEl.innerText = "Settled"; } }
-        window.renderCustomerList = function(list) { let filteredList = list.filter(c => (c.type || 'Customer') === currentTabType); let html = ""; filteredList.forEach(cust => { let initial = cust.name ? cust.name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = cust.pic || adminPic; let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; let netBal = window.globalBalances[cust.name] || 0; let balText = ""; let balColor = ""; if(netBal > 0) { balText = `₹${netBal.toLocaleString()} <span style="font-size:10px; color:var(--text-muted); font-weight:500;">(Get)</span>`; balColor = "var(--success)"; } else if(netBal < 0) { balText = `₹${Math.abs(netBal).toLocaleString()} <span style="font-size:10px; color:var(--text-muted); font-weight:500;">(Give)</span>`; balColor = "var(--danger)"; } else { balText = "₹0"; balColor = "var(--text-muted)"; } html += `<div class="kb-list-item" onclick="openLedgerDetail('${cust.name}', '${cust.phone}')"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${cust.name}</div><div class="kb-time">📱 ${cust.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:16px 16px 16px 8px;"><div style="font-size:14px; font-weight:700; color:${balColor}; font-family:'Product Sans', sans-serif;">${balText}</div></div></div>`; }); document.getElementById('kb-customer-list').innerHTML = html || `<div style="padding:40px; text-align:center; color:gray;">No ${currentTabType}s found</div>`; }
-        window.openInvoicesPage = function() { let listContainer = document.getElementById('invoices-list-container'); listContainer.innerHTML = ''; let selectedDateString = document.getElementById('dash-date-picker').value; let todayInvoices = allLedgerData.filter(entry => { let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){} return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice"); }); if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } else { todayInvoices.forEach(entry => { listContainer.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; cursor:pointer;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--success); font-weight:800; font-size: 16px; font-family:'Product Sans', sans-serif;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;"><span>${entry.details}</span><span style="color:var(--primary); font-weight:600; display:flex; align-items:center;"><span class="material-symbols-rounded" style="font-size:16px;">visibility</span> View</span></div></div>`; }); } navTo('invoices-page', null); }
-
-        window.addSpecificStock = function(category, shadeId, qtyId, isOut = false) { let shade = document.getElementById(shadeId).value; let qty = parseInt(document.getElementById(qtyId).value); if(!shade || isNaN(qty)) return alert("Please enter Detail and Box Quantity!"); let key = category + "_" + shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then((snap) => { let currentQty = snap.val() || 0; let newQty = isOut ? currentQty - qty : currentQty + qty; if(newQty < 0) newQty = 0; set(itemRef, newQty); }); if(document.getElementById(shadeId).tagName !== 'SELECT') { document.getElementById(shadeId).value = ''; } document.getElementById(qtyId).value = ''; alert(isOut ? "Stock Reduced (OUT) Successfully!" : "Stock Added (IN) Successfully!"); document.getElementById(category.toLowerCase() + '-anim-form').classList.add('form-hidden'); }
-        window.filterStockList = function(inputId, listId) { let filter = document.getElementById(inputId).value.toUpperCase(); let rows = document.querySelectorAll('#' + listId + ' .stock-row'); rows.forEach(row => { let name = row.getAttribute('data-name'); row.style.display = name.includes(filter) ? '' : 'none'; }); }
-        
-        function getGridCols(count) {
-            if(count === 4) return 2;
-            if(count === 6 || count === 9) return 3;
-            return Math.min(4, Math.max(2, count));
-        }
-
-        function getLast5Tx(cat, item) {
-            let list = [];
-            allGodownTransfers.forEach(t => {
-                if(t.cat === cat && t.item === item) {
-                    list.push({ date: t.date, type: t.type, qty: t.qty, party: 'Godown' });
-                }
-            });
-            allLedgerData.forEach(e => {
-                if(e.cart && e.type === 'Gave') {
-                    e.cart.forEach(c => {
-                        if(c.cat === cat && c.shade === item) {
-                            list.push({ date: e.date, type: 'OUT', qty: c.qty, party: e.name });
-                        }
+        // 5. Auto-Logout (15 मिनट तक कुछ न करने पर सुरक्षा के लिए अपने-आप बाहर)
+        let inactivityTimer;
+        function resetTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                if (auth.currentUser) {
+                    signOut(auth).then(() => {
+                        alert("सुरक्षा कारणों से आपको ऑटो-लॉगआउट कर दिया गया है।");
+                        location.reload();
                     });
                 }
-            });
-            list.sort((a,b) => new Date(b.date) - new Date(a.date));
-            return list.slice(0, 5);
+            }, 15 * 60 * 1000); // 15 मिनट
         }
+        window.onload = resetTimer; window.onmousemove = resetTimer; window.keypress = resetTimer;
 
-        window.renderInventoryList = function() { 
-            let htmlMaps = { Thread: "", Zari: "", Nylon: "", Cording: "", Bobbin: "" };
-            let countMaps = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
-            let itemsCount = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
-            let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
-            
-            for (let key in smartInventory) { 
-                let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let qty = smartInventory[key]; 
-                
-                if (htmlMaps[cat] !== undefined) {
-                    let txList = getLast5Tx(cat, shade);
-                    let txHtml = "";
-                    if(txList.length === 0) {
-                        txHtml = `<div class="inv-tx-item" style="justify-content:center; color:gray;">No recent transactions</div>`;
-                    } else {
-                        txList.forEach(tx => {
-                            let isOut = tx.type === 'OUT' || tx.type === 'Gave';
-                            let qClass = isOut ? 'out' : 'in';
-                            let sign = isOut ? '-' : '+';
-                            let dateStr = new Date(tx.date).toLocaleDateString('en-GB', {day:'numeric', month:'short'});
-                            txHtml += `<div class="inv-tx-item"><span class="inv-tx-date">${dateStr}</span><span class="inv-tx-party">${tx.party}</span><span class="inv-tx-qty ${qClass}">${sign}${tx.qty}</span></div>`;
-                        });
-                    }
-                    htmlMaps[cat] += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)">
-                        <div class="inv-card-header"><div class="inv-card-title">${shade}</div><div class="inv-card-qty">${qty} BOX</div></div>
-                        <div class="inv-tx-list" onclick="event.stopPropagation()">${txHtml}</div>
-                    </div>`;
-                    countMaps[cat] += qty;
-                    itemsCount[cat]++;
-                }
-
-                if(qty <= 5 && qty > 0) { 
-                    lowstockCount++; lowstockItemsCount++;
-                    lowstockHtml += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)" style="border-color:#f8cbcb;">
-                        <div class="inv-card-header"><div class="inv-card-title">${shade} <span style="font-size:10px;color:gray;">(${cat})</span></div><div class="inv-card-qty" style="color:var(--danger); background:#fdf2f2;">${qty} BOX</div></div>
-                        <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Time to re-order!</div></div>
-                    </div>`;
-                } 
-            } 
-            
-            for(let cat in htmlMaps) {
-                let el = document.getElementById(cat.toLowerCase() + '-stock-list');
-                if(el) {
-                    el.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[cat])}, minmax(0, 1fr))`;
-                    el.innerHTML = htmlMaps[cat] || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:gray;">No Stock Available</div>';
-                }
-                let valEl = document.getElementById('stock-val-' + cat.toLowerCase());
-                if(valEl) valEl.innerText = countMaps[cat];
-            }
-
-            let lowEl = document.getElementById('lowstock-list');
-            if(lowEl) {
-                lowEl.style.gridTemplateColumns = `repeat(${getGridCols(lowstockItemsCount)}, minmax(0, 1fr))`;
-                lowEl.innerHTML = lowstockHtml || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--success); font-weight:600;">All stocks are healthy! 🎉</div>';
-            }
-            if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
-        }
-
-        window.shareLowStock = function() { let msg = "⚠️ *Low Stock Alert - Vandana Enterprises* ⚠️%0A%0A"; let hasLow = false; for (let key in smartInventory) { if(smartInventory[key] <= 5 && smartInventory[key] > 0) { let parts = key.split("_"); msg += `▪️ *${parts[1]}* (${parts[0]}) - Only ${smartInventory[key]} Box%0A`; hasLow = true; } } if(!hasLow) return alert("Everything is fully stocked! No low stock items to share."); window.open(`https://wa.me/?text=${msg}`, '_blank'); }
-
-        let currentCart = []; let grandInvoiceTotal = 0; let invoiceBoxCount = 0;
-        
-        window.setPaymentMode = function(mode) {
-            window.currentPaymentMode = mode;
-            let btnCredit = document.getElementById('pm-credit');
-            let btnCash = document.getElementById('pm-cash');
-            let btnPartial = document.getElementById('pm-partial');
-            
-            [btnCredit, btnCash, btnPartial].forEach(btn => {
-                btn.style.background = 'white';
-                btn.style.color = 'var(--text-dark)';
-                btn.style.borderColor = 'var(--border)';
-            });
-
-            if(mode === 'credit') {
-                btnCredit.style.background = '#fdf2f2';
-                btnCredit.style.color = 'var(--danger)';
-                btnCredit.style.borderColor = 'var(--danger)';
-                document.getElementById('partial-amount-container').style.display = 'none';
-            } else if(mode === 'cash') {
-                btnCash.style.background = '#e6f4ea';
-                btnCash.style.color = 'var(--success)';
-                btnCash.style.borderColor = 'var(--success)';
-                document.getElementById('partial-amount-container').style.display = 'none';
-            } else if(mode === 'partial') {
-                btnPartial.style.background = '#e8f0fe';
-                btnPartial.style.color = 'var(--primary)';
-                btnPartial.style.borderColor = 'var(--primary)';
-                document.getElementById('partial-amount-container').style.display = 'block';
-            }
-        }
-
-        window.updatePosShades = function() { let cat = document.getElementById('inv-cat').value; let shadeSelect = document.getElementById('inv-shade'); shadeSelect.innerHTML = '<option value="">Select Shade/Item</option>'; if(!cat) return; for (let key in smartInventory) { let parts = key.split("_"); if(parts[0] === cat && smartInventory[key] > 0) { shadeSelect.innerHTML += `<option value="${parts[1]}">${parts[1]} (${smartInventory[key]} Box Left)</option>`; } } }
-        window.addCartItem = function() { const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value; const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0; if (!cat || !shade) return alert("Select Category and Item first!"); if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!"); let key = cat + "_" + shade; let currentStock = smartInventory[key] || 0; if(qty > currentStock) { alert(`OUT OF STOCK! You only have ${currentStock} Box of ${shade} left.`); return; } currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty, rate, itemTotal: qty * rate }); renderCartUi(); }
-        function renderCartUi() { let tbody = document.getElementById('cart-rows'); tbody.innerHTML = ''; grandInvoiceTotal = 0; invoiceBoxCount = 0; currentCart.forEach(item => { grandInvoiceTotal += item.itemTotal; invoiceBoxCount += item.qty; tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.qty}</td><td>₹${item.rate}</td><td><strong>₹${item.itemTotal.toLocaleString()}</strong></td></tr>`; }); document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`; document.getElementById('inv-qty').value=''; document.getElementById('inv-rate').value=''; let btn = document.getElementById('save-bill-btn'); if(btn) { btn.innerText = window.editingBillNo ? "💾 Update Bill" : "💾 Generate Bill"; btn.style.background = window.editingBillNo ? "var(--warning)" : "var(--primary)"; } }
-        
-        window.triggerSaveAndShare = function() { 
-            if (currentCart.length === 0) return alert("Cart is empty!"); 
-            
-            let receivedAmt = 0;
-            if(window.currentPaymentMode === 'cash') {
-                receivedAmt = grandInvoiceTotal;
-            } else if (window.currentPaymentMode === 'partial') {
-                receivedAmt = parseFloat(document.getElementById('inv-received-amt').value) || 0;
-                if(receivedAmt > grandInvoiceTotal) return alert("Received amount cannot be greater than Total Bill!");
-            }
-
-            let partyName = document.getElementById('inv-party').value.trim() || "Cash Sale"; let partyPhone = document.getElementById('inv-phone').value.trim(); 
-            if(partyName !== "Cash Sale") { let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); if(!exists) { push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); } } 
-            
-            let isUpdating = !!window.editingEntryKey;
-            
-            currentCart.forEach(item => { let key = item.cat + "_" + item.shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) - item.qty); }); }); 
-            
-            let maxInv = 0;
-            allLedgerData.forEach(e => { if(e.billNo && e.billNo.startsWith('VE ')) { let num = parseInt(e.billNo.replace('VE ', '')); if(!isNaN(num) && num > maxInv) maxInv = num; } });
-            let newBillNo = window.editingBillNo || ("VE " + String(maxInv + 1).padStart(2, '0'));
-            
-            let invDate = document.getElementById('inv-date').value; 
-            if(!invDate) invDate = new Date().toISOString().split('T')[0];
-            
-            let finalDateTime = window.editingEntryKey ? window.editingEntryDate : new Date(invDate).toISOString();
-            if (window.editingEntryKey && finalDateTime.split('T')[0] !== invDate) {
-                finalDateTime = new Date(invDate).toISOString();
-            }
-
-            let newEntry = { date: finalDateTime, name: partyName, type: "Gave", amount: grandInvoiceTotal, details: `Invoice #${newBillNo} - ${invoiceBoxCount} Box`, cart: currentCart, billNo: newBillNo };
-            
-            document.getElementById('success-msg-title').innerText = isUpdating ? "Invoice Updated Successfully!" : "Bill Generated Successfully!";
-
-            if (window.editingEntryKey) {
-                update(ref(db, 'Ledger/' + window.editingEntryKey), newEntry);
-                window.lastGeneratedEntryData = { key: window.editingEntryKey, ...newEntry };
-                window.editingEntryKey = null; 
+        // 6. Check Login Status (लॉगिन होते ही स्क्रीन हटाना)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('login-overlay').style.display = 'none'; 
             } else {
-                let newRef = push(ref(db, 'Ledger'), newEntry); 
-                window.lastGeneratedEntryData = { key: newRef.key, ...newEntry };
+                document.getElementById('login-overlay').style.display = 'flex'; 
             }
-
-            if(receivedAmt > 0) {
-                let paymentEntry = { date: finalDateTime, name: partyName, type: "Got", amount: receivedAmt, details: `Payment against #${newBillNo}` };
-                push(ref(db, 'Ledger'), paymentEntry);
-            }
-
-            window.editingBillNo = null; 
-            window.editingEntryDate = null;
-            document.getElementById('billing-form-area').style.display = 'none'; 
-            document.getElementById('post-bill-area').style.display = 'block';  
-        }
-
-        window.shareLastGeneratedInvoice = function() {
-            if(window.lastGeneratedEntryData) {
-                currentEntryData = window.lastGeneratedEntryData;
-                shareCurrentEntryPDF();
-            } else {
-                alert("No recent bill found to share!");
-            }
-        }
-        
-        window.resetBillingPage = function() { 
-            currentCart = []; 
-            renderCartUi(); 
-            window.editingBillNo = null; 
-            window.editingEntryKey = null;
-            window.editingEntryDate = null;
-            document.getElementById('inv-date').value = new Date().toISOString().split('T')[0]; 
-            document.getElementById('inv-party').value = ''; 
-            document.getElementById('inv-phone').value = ''; 
-            window.setPaymentMode('credit'); 
-            if(document.getElementById('inv-received-amt')) document.getElementById('inv-received-amt').value = ''; 
-            document.getElementById('billing-form-area').style.display = 'block'; 
-            document.getElementById('post-bill-area').style.display = 'none'; 
-        }
-        
-        window.searchParties = function() { let filter = document.getElementById('party-search').value.toUpperCase(); document.querySelectorAll('#kb-customer-list .kb-list-item').forEach(item => { item.style.display = item.querySelector('.kb-name').innerText.toUpperCase().indexOf(filter) > -1 ? "" : "none"; }); }
-        window.openPhonebook = async function(nameId, phoneId) { if ('contacts' in navigator) { try { const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false }); if (contacts.length > 0) { if (contacts[0].name) document.getElementById(nameId).value = contacts[0].name[0]; if (contacts[0].tel) document.getElementById(phoneId).value = String(contacts[0].tel[0]).replace(/\D/g, '').slice(-10); } } catch(e) {} } }
-        
-        function preparePDFData() {
-            document.getElementById('pdf-biz-name').innerText = localStorage.getItem('v_adminName') || "Vandana Enterprises"; document.getElementById('pdf-biz-phone').innerText = "Phone: +91 " + (localStorage.getItem('v_adminPhone') || "----------"); document.getElementById('pdf-biz-address').innerText = "Address: " + (localStorage.getItem('v_adminAddr') || "Not Added"); document.getElementById('pdf-biz-gst').innerText = "GSTIN: " + (localStorage.getItem('v_adminGst') || "Not Added");
-            let d = new Date(currentEntryData.date); document.getElementById('pdf-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleDateString('en-GB'); 
-            document.getElementById('pdf-bill-no').innerText = currentEntryData.billNo || currentEntryData.key.substring(1, 8).toUpperCase(); 
-            document.getElementById('pdf-cust-name').innerText = currentEntryData.name;
-            if(currentEntryData.cart && currentEntryData.cart.length > 0) {
-                let html = ""; currentEntryData.cart.forEach(item => { html += `<tr><td style="padding:12px; border:1px solid #e0e2e0;"><strong>${item.cat} (Category)</strong><br><span style="font-size:12px; color:#444746;">Color / Shade: ${item.shade}</span></td><td style="padding:12px; border:1px solid #e0e2e0; text-align:center;">${item.qty} Box</td><td style="padding:12px; border:1px solid #e0e2e0; text-align:right;">₹${item.rate}</td><td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:bold;">₹${item.itemTotal.toLocaleString('en-IN')}</td></tr>`; }); document.getElementById('pdf-cart-body').innerHTML = html;
-                document.getElementById('pdf-table-header').innerHTML = `<tr style="background:#0a56d0; color:white;"><th style="padding:12px; text-align:left; border:1px solid #e0e2e0;">Product Details (माल का विवरण)</th><th style="padding:12px; text-align:center; border:1px solid #e0e2e0;">Qty (क्वांटिटी)</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Rate (रेट)</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Total Amount</th></tr>`;
-            } else {
-                document.getElementById('pdf-table-header').innerHTML = `<tr style="background:#0a56d0; color:white;"><th style="padding:12px; text-align:left; border:1px solid #e0e2e0;">Description / Details</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Amount</th></tr>`; document.getElementById('pdf-cart-body').innerHTML = `<tr><td style="padding:16px 12px; border:1px solid #e0e2e0; font-size:16px;">${currentEntryData.details || 'Ledger Entry'}</td><td style="padding:16px 12px; text-align:right; border:1px solid #e0e2e0; font-size:16px; font-weight:bold;">₹${parseFloat(currentEntryData.amount).toLocaleString('en-IN')}</td></tr>`;
-            }
-            document.getElementById('pdf-total').innerText = "₹ " + parseFloat(currentEntryData.amount).toLocaleString('en-IN');
-        }
-
-        window.downloadPDFFromEntry = function() { if(!currentEntryData) return; preparePDFData(); let elem = document.getElementById('pdf-invoice-template'); let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; alert("Generating PDF... Please wait a moment."); html2pdf().set(opt).from(elem).save(); }
-        window.shareCurrentEntryPDF = async function() { if(!currentEntryData) return; preparePDFData(); let elem = document.getElementById('pdf-invoice-template'); let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; try { alert("Preparing PDF for direct sharing... this may take a few seconds."); let pdfBlob = await html2pdf().set(opt).from(elem).output('blob'); let file = new File([pdfBlob], opt.filename, { type: 'application/pdf' }); if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'Invoice from Vandana Enterprises', text: `Please find attached your invoice (Total: ₹${currentEntryData.amount}).` }); } else { alert("Your browser does not support direct PDF sharing. Downloading instead..."); html2pdf().set(opt).from(elem).save(); } } catch(e) { console.error(e); } }
+        });    
     </script>
 </body>
 </html>

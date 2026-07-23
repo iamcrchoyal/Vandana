@@ -15,61 +15,38 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <style>
+       /* --- 🎨 NEW LOGIN UI CSS --- */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        .login-wrapper { background: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; width: 100%; position: fixed; top: 0; left: 0; z-index: 99999; }
+        .app-container { width: 100%; max-width: 400px; height: 100vh; max-height: 850px; background: linear-gradient(180deg, #009dff 0%, #0075ff 100%); position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 20px; }
+        @media (max-width: 400px) { .app-container { border-radius: 0; } }
         
-        /* बैकग्राउंड और लेआउट */
-        body { 
-            background: #f4f7f6; /* ऐप के पीछे का हल्का रंग */
-            display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh;
-        }
-
-        /* मोबाइल स्क्रीन जैसा कंटेनर */
-        .app-container {
-            width: 100%; max-width: 400px; height: 850px; max-height: 100vh;
-            background: linear-gradient(180deg, #009dff 0%, #0075ff 100%);
-            position: relative; overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        /* ऊपर का नीला हिस्सा (Header) */
         .top-header { padding: 40px 30px 20px 30px; color: white; }
         .back-btn { background: white; color: #0075ff; width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor: pointer; border: none; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .header-title { font-size: 24px; font-weight: 700; margin-bottom: 10px; line-height: 1.3; }
-        .header-sub { font-size: 13px; opacity: 0.9; }
+        .header-title { font-size: 24px; font-weight: 700; margin-bottom: 10px; line-height: 1.3; font-family: 'Inter', sans-serif; }
+        .header-sub { font-size: 13px; opacity: 0.9; font-family: 'Inter', sans-serif; }
 
-        /* नीचे का सफेद कार्ड (White Form Box) */
-        .bottom-card {
-            background: white; border-radius: 30px 30px 0 0;
-            padding: 30px 25px; position: absolute; bottom: 0; width: 100%; height: 75%;
-            display: flex; flex-direction: column; overflow-y: auto;
-        }
-
-        /* Sign In / Sign Up टॉगल बटन */
+        .bottom-card { background: white; border-radius: 30px 30px 0 0; padding: 30px 25px; position: absolute; bottom: 0; width: 100%; height: 75%; display: flex; flex-direction: column; overflow-y: auto; }
+        
         .toggle-box { background: #f0f4f8; border-radius: 30px; display: flex; padding: 4px; margin-bottom: 25px; }
         .toggle-btn { flex: 1; padding: 12px; border: none; background: transparent; border-radius: 26px; font-weight: 600; font-size: 14px; color: #64748b; cursor: pointer; transition: 0.3s; }
         .toggle-btn.active { background: white; color: #0075ff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
-        /* इनपुट फील्ड्स */
         .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 12px; color: #64748b; margin-bottom: 6px; font-weight: 500; }
+        .input-group label { display: block; font-size: 12px; color: #64748b; margin-bottom: 6px; font-weight: 500; font-family: 'Inter', sans-serif; }
         .input-box { width: 100%; padding: 14px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 14px; color: #1e293b; outline: none; transition: 0.3s; }
         .input-box:focus { border-color: #0075ff; box-shadow: 0 0 0 3px rgba(0, 117, 255, 0.1); }
 
-        /* नीली मुख्य बटन */
-        .btn-primary { width: 100%; background: linear-gradient(90deg, #0075ff 0%, #009dff 100%); color: white; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(0, 117, 255, 0.3); }
+        .btn-primary { width: 100%; background: linear-gradient(90deg, #0075ff 0%, #009dff 100%); color: white; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(0, 117, 255, 0.3); font-family: 'Inter', sans-serif; }
         
-        /* सोशल लॉगिन (Google/Apple) */
         .social-login { display: flex; gap: 15px; margin-top: 20px; }
-        .btn-social { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background: white; border: 1px solid #e2e8f0; padding: 12px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; color: #1e293b; }
+        .btn-social { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background: white; border: 1px solid #e2e8f0; padding: 12px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; color: #1e293b; font-family: 'Inter', sans-serif; }
         .btn-social img { width: 20px; }
         
-        /* एक्स्ट्रा लिंक्स (Forgot password etc) */
-        .flex-between { display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-top: -5px; margin-bottom: 15px; }
-        
+        .flex-between { display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-top: -5px; margin-bottom: 15px; font-family: 'Inter', sans-serif;}
         .hidden { display: none !important; }
+        /* -------------------------- */
     </style>
 </head>
 <body>

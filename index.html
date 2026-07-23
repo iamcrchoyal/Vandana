@@ -858,6 +858,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, get, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAGcWUM4lqJKmV2Zz2Em3WtI-D0fcQeuzQ",
@@ -871,6 +872,8 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const auth = getAuth(app); // OTP के लिए नया ताला
+        window.confirmationResult = null;
 
         let allLedgerData = []; let globalCustomers = []; let smartInventory = {}; let allGodownTransfers = []; let allRecycleData = [];
         let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null; 

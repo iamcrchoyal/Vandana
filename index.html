@@ -1008,10 +1008,14 @@ import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, 
             
             document.getElementById('send-otp-btn').innerText = "Sending...";
 
-            // अगर पुराना reCAPTCHA पहले से बना हो तो उसे रीसेट करें
-            if(!window.recaptchaVerifier) {
-                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+            // reCAPTCHA को पूरी तरह से क्लीन और रिफ्रेश करें
+            if (window.recaptchaVerifier) {
+                window.recaptchaVerifier.clear();
+                window.recaptchaVerifier = null;
             }
+            document.getElementById('recaptcha-container').innerHTML = ''; // बॉक्स को अंदर से खाली करें
+            
+            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
 
             signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
                 .then((confirmationResult) => {

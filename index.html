@@ -874,7 +874,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, get, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAGcWUM4lqJKmV2Zz2Em3WtI-D0fcQeuzQ",
@@ -908,8 +908,7 @@ import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, 
 
         window.addEventListener('DOMContentLoaded', () => {
             // --- NEW AUTH LOGIC STARTS ---
-            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
-
+            const googleProvider = new GoogleAuthProvider();
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     document.getElementById('login-overlay').style.display = 'none'; // सही लॉगिन पर ऐप खुलेगा

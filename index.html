@@ -1719,7 +1719,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
         }
         // ===============================================================
-    // ================= ROLE-BASED ACCESS CONTROL (RBAC) =================
+   // ================= ROLE-BASED ACCESS CONTROL (RBAC) =================
         window.applyRoleBasedAccess = function(role) {
             // चेक करें कि क्या यूजर एडमिन है?
             let isAdmin = (role === 'admin');
@@ -1742,9 +1742,25 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let ledgerBottomBar = document.querySelector('#ledger-deep-page .bottom-action-bar');
             if (ledgerBottomBar) ledgerBottomBar.style.display = isAdmin ? 'flex' : 'none';
             
-            // 5. एंट्री डिटेल में "Delete" और "Edit" बटन छुपाएं
+            // 5. एंट्री डिटेल में "Edit" बटन छुपाएं
             let entryEditBtn = document.getElementById('ed-edit-btn-container');
             if(entryEditBtn) entryEditBtn.style.display = isAdmin ? 'block' : 'none';
+
+            // 6. 🔥 सबसे जरूरी: बिल/एंट्री के नीचे वाला "Delete" बटन छुपाएं
+            let entryDeleteBtn = document.querySelector('button[onclick="deleteCurrentEntry()"]');
+            if(entryDeleteBtn) entryDeleteBtn.style.display = isAdmin ? 'inline-block' : 'none';
+
+            // 7. 🔥 कस्टमर प्रोफाइल से "Delete Account" बटन छुपाएं
+            let customerDeleteBtn = document.querySelector('button[onclick="deleteCurrentCustomer()"]');
+            if(customerDeleteBtn) customerDeleteBtn.style.display = isAdmin ? 'block' : 'none';
+
+            // 8. 🔥 साइडबार से "Recycle Bin", "Absent Today" और "Stock Report" छुपाएं
+            document.querySelectorAll('.sidebar-menu li').forEach(li => {
+                let onclickText = li.getAttribute('onclick') || "";
+                if(onclickText.includes('recycle-page') || onclickText.includes('openAbsentCustomers') || onclickText.includes('stock')) {
+                    li.style.display = isAdmin ? 'flex' : 'none';
+                }
+            });
         }
         // ====================================================================
     

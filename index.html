@@ -253,7 +253,26 @@
             </button>
         </div>
     </div>
-
+<!-- 📝 NEW CUSTOMER DETAILS POPUP -->
+    <div id="new-customer-popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 99999; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
+        <div style="background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center;">
+            <div style="font-size: 40px; margin-bottom: 10px;">👋</div>
+            <h2 style="color: #2c3e50; margin-bottom: 8px; font-size: 22px; font-weight: 700; font-family: 'Product Sans', sans-serif;">Welcome to Vandana ERP!</h2>
+            <p style="color: #7f8c8d; font-size: 13px; margin-bottom: 25px;">Please provide your contact details to continue.</p>
+            
+            <div class="form-group" style="text-align: left;">
+                <label class="form-label">Mobile Number (WhatsApp) *</label>
+                <input type="tel" id="nc-phone" class="form-control" placeholder="10-digit mobile number">
+            </div>
+            <div class="form-group" style="text-align: left;">
+                <label class="form-label">Shop Name & Address *</label>
+                <textarea id="nc-address" class="form-control" rows="3" placeholder="Enter full address"></textarea>
+            </div>
+            
+            <button id="nc-submit-btn" onclick="submitNewCustomerDetails()" class="btn-submit" style="width: 100%; margin-top: 10px;">Save & Continue</button>
+        </div>
+    </div>
+    
     <!-- 👤 USER PROFILE BADGE (लॉगिन के बाद दाईं तरफ ऊपर दिखेगा) -->
     <div id="user-profile-badge" style="display: none; position: fixed; top: 15px; right: 20px; background: white; padding: 6px 16px 6px 6px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); z-index: 999; display: flex; align-items: center; gap: 12px; cursor: pointer; border: 1px solid #eee;" onclick="alert('Profile Edit Feature Coming Soon!')">
         <img id="user-photo" src="https://www.svgrepo.com/show/384674/account-avatar-profile-user-11.svg" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;">

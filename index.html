@@ -1596,6 +1596,36 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         }
         // ==================================================
         
+    // ================= NEW CUSTOMER DETAILS SUBMIT =================
+        window.submitNewCustomerDetails = function() {
+            let phone = document.getElementById('nc-phone').value.trim();
+            let address = document.getElementById('nc-address').value.trim();
+            let user = auth.currentUser;
+
+            if(!phone || phone.length < 10) return alert("कृपया सही 10-अंकों का मोबाइल नंबर डालें!");
+            if(!address) return alert("कृपया अपनी दुकान का नाम और पता डालें!");
+
+            if(user) {
+                let btn = document.getElementById('nc-submit-btn');
+                btn.innerText = "Saving...";
+                
+                const userRef = ref(db, 'AppUsers/' + user.uid);
+                
+                // सिर्फ फोन और एड्रेस अपडेट करेंगे
+                update(userRef, {
+                    phone: phone,
+                    address: address
+                }).then(() => {
+                    document.getElementById('new-customer-popup').style.display = 'none';
+                    alert("आपकी डिटेल्स सेव हो गई हैं! अब आप ऐप देख सकते हैं।");
+                }).catch(err => {
+                    console.error(err);
+                    alert("Error saving details.");
+                    btn.innerText = "Save & Continue";
+                });
+            }
+        }
+        // ===============================================================
     </script>
 </body>
 </html>

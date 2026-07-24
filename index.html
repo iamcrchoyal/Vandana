@@ -1019,6 +1019,13 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                             document.getElementById('new-customer-popup').style.display = 'flex';
                         }
                         // ================================================================
+                        // ================= CALL ROLE-BASED ACCESS (RBAC) =================
+                        // यूजर का रोल पास करके बटन छुपाने/दिखाने वाला फंक्शन चलाएं
+                        if(typeof window.applyRoleBasedAccess === 'function') {
+                            window.applyRoleBasedAccess(assignedRole);
+                        }
+                        // =================================================================
+                        
                     }).catch(err => console.error("Database Error:", err));
 
                 } else {

@@ -911,9 +911,9 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         try { history.pushState(null, null, location.href); window.onpopstate = function () { history.go(1); }; } catch(e) {}
 
         window.addEventListener('DOMContentLoaded', () => {
-            // --- NEW AUTH LOGIC STARTS ---
+           // --- NEW AUTH LOGIC STARTS ---
             const googleProvider = new GoogleAuthProvider();
-            const MASTER_ADMIN_EMAIL = "your-email@gmail.com"; // यहाँ अपनी ईमेल डालें
+            const MASTER_ADMIN_EMAIL = "c.r.choyal.crc@gmail.com"; // यहाँ अपनी मुख्य ईमेल डालें
 
             onAuthStateChanged(auth, (user) => {
                 if (user) {
@@ -921,26 +921,22 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     document.getElementById('login-overlay').style.display = 'none'; 
                     document.getElementById('user-profile-badge').style.display = 'flex';
                     
-                    // ================= UI UPDATE: वेबसाइट के डिज़ाइन में नाम और ईमेल बदलना =================
+                    // UI UPDATE: वेबसाइट के डिज़ाइन में नाम और ईमेल बदलना
                     let userName = user.displayName || "User";
                     let firstName = userName.split(' ')[0];
                     let userInitial = userName.charAt(0).toUpperCase();
 
-                    // ऊपर वाला बैज (Badge)
                     if (document.getElementById('user-name')) document.getElementById('user-name').innerText = userName;
                     if (document.getElementById('user-photo') && user.photoURL) document.getElementById('user-photo').src = user.photoURL;
 
-                    // ग्रीटिंग मैसेज (Good Morning/Afternoon)
                     const hour = new Date().getHours(); 
                     let greet = "Good morning";
                     if (hour >= 12 && hour < 17) greet = "Good afternoon"; else if (hour >= 17) greet = "Good evening";
                     if (document.getElementById('dynamic-greeting')) document.getElementById('dynamic-greeting').innerText = greet + ", " + firstName;
 
-                    // प्रोफाइल मोडल (Profile Modal)
                     if (document.getElementById('pm-email-display')) document.getElementById('pm-email-display').innerText = user.email;
                     if (document.getElementById('pm-name-display')) document.getElementById('pm-name-display').innerText = "Hi, " + firstName + "!";
                     
-                    // अवतार/फोटो (Top bar और Profile Modal दोनों जगह)
                     if (user.photoURL) {
                         if (document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').src = user.photoURL; document.getElementById('pm-avatar-img').style.display = 'block'; document.getElementById('pm-avatar-text').style.display = 'none'; }
                         if (document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').src = user.photoURL; document.getElementById('top-avatar-img').style.display = 'block'; document.getElementById('top-avatar-text').style.display = 'none'; }
@@ -948,15 +944,17 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                         if (document.getElementById('pm-avatar-text')) { document.getElementById('pm-avatar-text').innerText = userInitial; document.getElementById('pm-avatar-text').style.display = 'block'; document.getElementById('pm-avatar-img').style.display = 'none'; }
                         if (document.getElementById('top-avatar-text')) { document.getElementById('top-avatar-text').innerText = userInitial; document.getElementById('top-avatar-text').style.display = 'flex'; document.getElementById('top-avatar-img').style.display = 'none'; }
                     }
-                    // =========================================================================================
 
-                    // 2. डेटाबेस में यूजर का डेटा सेव या अपडेट करें
+                    // 2. डेटाबेस में यूजर का डेटा सेव/अपडेट करना
                     const userRef = ref(db, 'AppUsers/' + user.uid);
                     
                     get(userRef).then((snapshot) => {
                         let assignedRole = (user.email === MASTER_ADMIN_EMAIL) ? "admin" : "pending";
+                        let finalPhone = "";
+                        let finalAddress = "";
 
                         if (!snapshot.exists()) {
+                            // नया अकाउंट
                             set(userRef, {
                                 name: userName,
                                 email: user.email || "",
@@ -967,8 +965,13 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                                 createdAt: new Date().toISOString()
                             });
                         } else {
+                            // पुराना अकाउंट 
                             let userData = snapshot.val();
                             if (user.email !== MASTER_ADMIN_EMAIL) assignedRole = userData.role || "pending"; 
+                            
+                            // डेटाबेस से पुराना नंबर और पता निकाल लें
+                            finalPhone = userData.phone || "";
+                            finalAddress = userData.address || "";
 
                             update(userRef, {
                                 name: userName,
@@ -977,6 +980,14 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                                 role: assignedRole 
                             });
                         }
+                        
+                        // ================= AUTO-FILL BUSINESS PROFILE =================
+                        if (document.getElementById('ap-name')) document.getElementById('ap-name').value = userName;
+                        if (document.getElementById('ap-email')) document.getElementById('ap-email').value = user.email || "";
+                        if (document.getElementById('ap-phone') && finalPhone) document.getElementById('ap-phone').value = finalPhone;
+                        if (document.getElementById('ap-address') && finalAddress) document.getElementById('ap-address').value = finalAddress;
+                        // ================================================================
+
                     }).catch(err => console.error("Database Error:", err));
 
                 } else {
@@ -985,7 +996,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 }
             });
             // --- NEW AUTH LOGIC ENDS ---
-
             let todayStr = new Date().toISOString().split('T')[0];
             if(document.getElementById('dash-date-picker')) document.getElementById('dash-date-picker').value = todayStr;
             if(document.getElementById('calc-date')) document.getElementById('calc-date').value = todayStr;

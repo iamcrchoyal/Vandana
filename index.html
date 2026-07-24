@@ -913,9 +913,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.addEventListener('DOMContentLoaded', () => {
             // --- NEW AUTH LOGIC STARTS ---
             const googleProvider = new GoogleAuthProvider();
-
-            // यहाँ अपनी वह Gmail ID डालें जिससे आप पूरा सिस्टम कंट्रोल करना चाहते हैं
-            const MASTER_ADMIN_EMAIL = "c.r.choyal.crc@gmail.com"; 
+            const MASTER_ADMIN_EMAIL = "your-email@gmail.com"; // यहाँ अपनी ईमेल डालें
 
             onAuthStateChanged(auth, (user) => {
                 if (user) {
@@ -923,49 +921,62 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     document.getElementById('login-overlay').style.display = 'none'; 
                     document.getElementById('user-profile-badge').style.display = 'flex';
                     
-                    if (user.displayName) document.getElementById('user-name').innerText = user.displayName;
-                    if (user.photoURL) document.getElementById('user-photo').src = user.photoURL;
+                    // ================= UI UPDATE: वेबसाइट के डिज़ाइन में नाम और ईमेल बदलना =================
+                    let userName = user.displayName || "User";
+                    let firstName = userName.split(' ')[0];
+                    let userInitial = userName.charAt(0).toUpperCase();
+
+                    // ऊपर वाला बैज (Badge)
+                    if (document.getElementById('user-name')) document.getElementById('user-name').innerText = userName;
+                    if (document.getElementById('user-photo') && user.photoURL) document.getElementById('user-photo').src = user.photoURL;
+
+                    // ग्रीटिंग मैसेज (Good Morning/Afternoon)
+                    const hour = new Date().getHours(); 
+                    let greet = "Good morning";
+                    if (hour >= 12 && hour < 17) greet = "Good afternoon"; else if (hour >= 17) greet = "Good evening";
+                    if (document.getElementById('dynamic-greeting')) document.getElementById('dynamic-greeting').innerText = greet + ", " + firstName;
+
+                    // प्रोफाइल मोडल (Profile Modal)
+                    if (document.getElementById('pm-email-display')) document.getElementById('pm-email-display').innerText = user.email;
+                    if (document.getElementById('pm-name-display')) document.getElementById('pm-name-display').innerText = "Hi, " + firstName + "!";
+                    
+                    // अवतार/फोटो (Top bar और Profile Modal दोनों जगह)
+                    if (user.photoURL) {
+                        if (document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').src = user.photoURL; document.getElementById('pm-avatar-img').style.display = 'block'; document.getElementById('pm-avatar-text').style.display = 'none'; }
+                        if (document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').src = user.photoURL; document.getElementById('top-avatar-img').style.display = 'block'; document.getElementById('top-avatar-text').style.display = 'none'; }
+                    } else {
+                        if (document.getElementById('pm-avatar-text')) { document.getElementById('pm-avatar-text').innerText = userInitial; document.getElementById('pm-avatar-text').style.display = 'block'; document.getElementById('pm-avatar-img').style.display = 'none'; }
+                        if (document.getElementById('top-avatar-text')) { document.getElementById('top-avatar-text').innerText = userInitial; document.getElementById('top-avatar-text').style.display = 'flex'; document.getElementById('top-avatar-img').style.display = 'none'; }
+                    }
+                    // =========================================================================================
 
                     // 2. डेटाबेस में यूजर का डेटा सेव या अपडेट करें
                     const userRef = ref(db, 'AppUsers/' + user.uid);
                     
                     get(userRef).then((snapshot) => {
-                        // चेक करें कि क्या लॉगिन करने वाला मास्टर एडमिन (आप) है?
                         let assignedRole = (user.email === MASTER_ADMIN_EMAIL) ? "admin" : "pending";
 
                         if (!snapshot.exists()) {
-                            // नया अकाउंट (पहली बार)
                             set(userRef, {
-                                name: user.displayName || "Unknown",
+                                name: userName,
                                 email: user.email || "",
                                 photo: user.photoURL || "",
                                 phone: "",     
                                 address: "",    
-                                role: assignedRole, // यहाँ ईमेल के हिसाब से रोल मिलेगा
+                                role: assignedRole,
                                 createdAt: new Date().toISOString()
                             });
                         } else {
-                            // पुराना अकाउंट (ऑटो-अपडेट)
                             let userData = snapshot.val();
-                            
-                            // अगर आप (मालिक) हैं, तो हमेशा एडमिन ही रहेंगे
-                            if (user.email === MASTER_ADMIN_EMAIL) {
-                                assignedRole = "admin";
-                            } else {
-                                assignedRole = userData.role || "pending"; // कस्टमर का जो रोल है, वही रहेगा
-                            }
+                            if (user.email !== MASTER_ADMIN_EMAIL) assignedRole = userData.role || "pending"; 
 
                             update(userRef, {
-                                name: user.displayName || "Unknown",
+                                name: userName,
                                 email: user.email || "",
                                 photo: user.photoURL || "",
                                 role: assignedRole 
                             });
                         }
-                        
-                        // 3. रोल चेक करके बटन छुपाने वाला फंक्शन कॉल करें
-                        // applyRoleBasedAccess(assignedRole);
-                        
                     }).catch(err => console.error("Database Error:", err));
 
                 } else {

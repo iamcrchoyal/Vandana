@@ -1013,6 +1013,12 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                         if (document.getElementById('ap-address') && finalAddress) document.getElementById('ap-address').value = finalAddress;
                         // ================================================================
 
+                        // ================= SHOW POPUP FOR NEW CUSTOMERS =================
+                        // अगर रोल 'pending' है और फोन नंबर या एड्रेस खाली है, तो पॉप-अप दिखाएं
+                        if (assignedRole === "pending" && (!finalPhone || !finalAddress)) {
+                            document.getElementById('new-customer-popup').style.display = 'flex';
+                        }
+                        // ================================================================
                     }).catch(err => console.error("Database Error:", err));
 
                 } else {

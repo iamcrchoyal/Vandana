@@ -929,10 +929,12 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                         document.getElementById('user-photo').src = user.photoURL;
                     }
 
-                    // 3. डेटाबेस में यूजर सेव करें
+                    // 3. डेटाबेस में यूजर सेव करें (Alerts के साथ)
                     const userRef = ref(db, 'AppUsers/' + user.uid);
+                    
                     get(userRef).then((snapshot) => {
                         if (!snapshot.exists()) {
+                            // नया अकाउंट सेव करने की कोशिश
                             set(userRef, {
                                 name: user.displayName || "Unknown",
                                 email: user.email || "",
@@ -941,9 +943,20 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                                 address: "",                   
                                 role: "pending",               
                                 createdAt: new Date().toISOString()
+                            }).then(() => {
+                                // अगर सफलतापूर्वक सेव हो गया
+                                alert("✅ सफलता! आपकी डिटेल्स डेटाबेस में सेव हो गई हैं।");
+                            }).catch((error) => {
+                                // अगर सेव होने में कोई दिक्कत आई (जैसे परमिशन एरर)
+                                alert("❌ डेटा सेव नहीं हुआ! Error: " + error.message);
                             });
+                        } else {
+                            // अगर अकाउंट पहले से मौजूद है
+                            alert("ℹ️ आपका अकाउंट डेटाबेस में पहले से मौजूद है।");
                         }
-                    }).catch(err => console.error("Database Error:", err));
+                    }).catch(err => {
+                        alert("❌ Database Error: " + err.message);
+                    });
 
                 } else {
                     // अगर लॉगिन नहीं है तो लॉगिन स्क्रीन दिखाएं

@@ -1632,6 +1632,35 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
         }
         // ===============================================================
+    // ================= ROLE-BASED ACCESS CONTROL (RBAC) =================
+        window.applyRoleBasedAccess = function(role) {
+            // चेक करें कि क्या यूजर एडमिन है?
+            let isAdmin = (role === 'admin');
+
+            // 1. इन्वेंट्री और गोडाउन के सारे "Add" और "Transfer" बटन छुपाएं
+            document.querySelectorAll('.pro-add-btn').forEach(btn => {
+                btn.style.display = isAdmin ? 'flex' : 'none';
+            });
+
+            // 2. स्टॉक के अंदर के ➕ IN और ➖ OUT बटन छुपाएं
+            document.querySelectorAll('.in-out-btn-group').forEach(group => {
+                group.style.display = isAdmin ? 'flex' : 'none';
+            });
+
+            // 3. लेजर बुक (पार्टी) में नीचे दिखने वाला "Add Customer" बटन छुपाएं
+            let mainFab = document.getElementById('main-fab');
+            if (mainFab) mainFab.style.display = isAdmin ? 'flex' : 'none';
+
+            // 4. लेजर की डिटेल में नीचे दिखने वाले "YOU GAVE / YOU GOT" बटन छुपाएं
+            let ledgerBottomBar = document.querySelector('#ledger-deep-page .bottom-action-bar');
+            if (ledgerBottomBar) ledgerBottomBar.style.display = isAdmin ? 'flex' : 'none';
+            
+            // 5. एंट्री डिटेल में "Delete" और "Edit" बटन छुपाएं
+            let entryEditBtn = document.getElementById('ed-edit-btn-container');
+            if(entryEditBtn) entryEditBtn.style.display = isAdmin ? 'block' : 'none';
+        }
+        // ====================================================================
+    
     </script>
 </body>
 </html>

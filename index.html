@@ -1566,7 +1566,17 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         // पेज लोड होते ही टाइमर चालू कर दें
         resetInactivityTimer();
         // ==========================================================================
-    
+// ================= MANUAL LOGOUT =================
+        window.manualLogout = function() {
+            if(confirm("क्या आप सच में लॉगआउट करना चाहते हैं?")) {
+                signOut(auth).then(() => {
+                    // लॉगआउट होने के बाद पेज रीफ्रेश हो जाएगा और लॉगिन स्क्रीन आ जाएगी
+                    window.location.reload(); 
+                }).catch(err => console.error("Logout Error:", err));
+            }
+        }
+        // ==================================================
+        
     </script>
 </body>
 </html>

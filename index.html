@@ -1474,6 +1474,33 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
         window.downloadPDFFromEntry = function() { if(!currentEntryData) return; preparePDFData(); let elem = document.getElementById('pdf-invoice-template'); let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; alert("Generating PDF... Please wait a moment."); html2pdf().set(opt).from(elem).save(); }
         window.shareCurrentEntryPDF = async function() { if(!currentEntryData) return; preparePDFData(); let elem = document.getElementById('pdf-invoice-template'); let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; try { alert("Preparing PDF for direct sharing... this may take a few seconds."); let pdfBlob = await html2pdf().set(opt).from(elem).output('blob'); let file = new File([pdfBlob], opt.filename, { type: 'application/pdf' }); if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'Invoice from Vandana Enterprises', text: `Please find attached your invoice (Total: ₹${currentEntryData.amount}).` }); } else { alert("Your browser does not support direct PDF sharing. Downloading instead..."); html2pdf().set(opt).from(elem).save(); } } catch(e) { console.error(e); } }
+   // ================= AUTO-LOGOUT SYSTEM (30 MIN INACTIVITY) =================
+        let inactivityTimer;
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            // 30 मिनट = 1800000 मिलीसेकंड (टेस्टिंग के लिए इसे 5000 कर सकते हैं)
+            inactivityTimer = setTimeout(() => {
+                // यह चेक करेगा कि अगर यूज़र पहले से लॉगिन है, तभी लॉगआउट करे
+                if (auth.currentUser) {
+                    signOut(auth).then(() => {
+                        alert("सुरक्षा कारणों से आपको लॉगआउट कर दिया गया है (30 मिनट से कोई एक्टिविटी नहीं थी)।");
+                        window.location.reload(); 
+                    }).catch(err => console.error("Logout Error:", err));
+                }
+            }, 1800000); 
+        }
+
+        // जब भी स्क्रीन पर कोई हरकत हो (माउस, कीबोर्ड, टच, स्क्रॉल), टाइमर रीसेट हो जाए
+        window.addEventListener('mousemove', resetInactivityTimer);
+        window.addEventListener('keypress', resetInactivityTimer);
+        window.addEventListener('click', resetInactivityTimer);
+        window.addEventListener('scroll', resetInactivityTimer, true);
+        window.addEventListener('touchmove', resetInactivityTimer);
+
+        // पेज लोड होते ही टाइमर चालू कर दें
+        resetInactivityTimer();
+        // ==========================================================================
+    
     </script>
 </body>
 </html>

@@ -1013,6 +1013,16 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                         if (document.getElementById('ap-address') && finalAddress) document.getElementById('ap-address').value = finalAddress;
                         // ================================================================
 
+                        // ================= STORE GLOBAL USER DATA =================
+                        window.currentUserEmail = user.email;
+                        window.currentUserRole = assignedRole;
+                        window.currentUserPhone = finalPhone;
+                        window.currentUserName = userName;
+                        
+                        // डेटा छाँटने वाले फंक्शन को चालू करें
+                        if(typeof applyDataFiltering === 'function') applyDataFiltering();
+                        // ==========================================================
+                        
                         // ================= SHOW POPUP FOR NEW CUSTOMERS =================
                         // अगर रोल 'pending' है और फोन नंबर या एड्रेस खाली है, तो पॉप-अप दिखाएं
                         if (assignedRole === "pending" && (!finalPhone || !finalAddress)) {

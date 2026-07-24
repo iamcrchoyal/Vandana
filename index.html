@@ -1056,13 +1056,80 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 if(savedStack) window.pageStack = JSON.parse(savedStack);
             } catch(e){}
             
+            // ================= SMART DATA FILTERING ENGINE =================
+            window.rawCustomers = [];
+            window.rawLedger = [];
+
+            window.applyDataFiltering = function() {
+                if (!window.currentUserRole) return; // जब तक रोल चेक न हो, रुकें
+                let isAdmin = (window.currentUserRole === 'admin');
+
+                // 1. Customers Filter (एडमिन को सब दिखेंगे, कस्टमर को सिर्फ वो खुद दिखेगा)
+                if (isAdmin) {
+                    globalCustomers = [...window.rawCustomers];
+                } else {
+                    globalCustomers = window.rawCustomers.filter(c => 
+                        (window.currentUserPhone && c.phone === window.currentUserPhone) || 
+                        (window.currentUserEmail && c.email === window.currentUserEmail) || 
+                        (window.currentUserName && c.name === window.currentUserName)
+                    );
+                }
+
+                // 2. Ledger Book Filter (कस्टमर को सिर्फ अपनी उधारी और बिल दिखेंगे)
+                let myCustName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
+                if (isAdmin) {
+                    allLedgerData = [...window.rawLedger];
+                } else {
+                    allLedgerData = window.rawLedger.filter(e => e.name === myCustName);
+                }
+
+                // फिल्टर होने के बाद स्क्रीन को रीफ्रेश करें
+                renderCustomerList(globalCustomers);
+                calculateGrandTotals();
+                if (document.getElementById('ledger-deep-page').classList.contains('active')) {
+                    renderLedgerEntries(currentPartyName);
+                }
+            }
+
             try {
-                onValue(ref(db, 'Inventory'), (snapshot) => { smartInventory = snapshot.val() || {}; renderInventoryList(); updatePosShades(); checkRestore(); });
-                onValue(ref(db, 'Customers'), (snapshot) => { let data = snapshot.val() || {}; globalCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); renderCustomerList(globalCustomers); setupPOSAutocomplete(); checkRestore(); });
-                onValue(ref(db, 'GodownTransfers'), (snapshot) => { let data = snapshot.val() || {}; allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); renderGodownHistory(); renderInventoryList(); checkRestore(); });
-                onValue(ref(db, 'Ledger'), (snapshot) => { let data = snapshot.val() || {}; allLedgerData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); calculateGrandTotals(); if (document.getElementById('ledger-deep-page').classList.contains('active')) renderLedgerEntries(currentPartyName); renderInventoryList(); checkRestore(); });
-                onValue(ref(db, 'RecycleBin'), (snapshot) => { let data = snapshot.val() || {}; allRecycleData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); renderRecycleBin(); });
+                onValue(ref(db, 'Inventory'), (snapshot) => { 
+                    smartInventory = snapshot.val() || {}; 
+                    renderInventoryList(); 
+                    updatePosShades(); 
+                    checkRestore(); 
+                });
+                
+                onValue(ref(db, 'Customers'), (snapshot) => { 
+                    let data = snapshot.val() || {}; 
+                    window.rawCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); 
+                    if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
+                    setupPOSAutocomplete(); 
+                    checkRestore(); 
+                });
+                
+                onValue(ref(db, 'GodownTransfers'), (snapshot) => { 
+                    let data = snapshot.val() || {}; 
+                    allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
+                    renderGodownHistory(); 
+                    renderInventoryList(); 
+                    checkRestore(); 
+                });
+                
+                onValue(ref(db, 'Ledger'), (snapshot) => { 
+                    let data = snapshot.val() || {}; 
+                    window.rawLedger = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
+                    if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
+                    renderInventoryList(); 
+                    checkRestore(); 
+                });
+                
+                onValue(ref(db, 'RecycleBin'), (snapshot) => { 
+                    let data = snapshot.val() || {}; 
+                    allRecycleData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
+                    renderRecycleBin(); 
+                });
             } catch (error) {}
+            // ===============================================================
 
             document.getElementById('inv-party').addEventListener('input', function(e) { let val = e.target.value; let cust = globalCustomers.find(c => c.name.toLowerCase() === val.toLowerCase()); if(cust && cust.phone) { document.getElementById('inv-phone').value = cust.phone; } });
 
@@ -1641,6 +1708,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     // नया नंबर ग्लोबली सेव करें और डेटा तुरंत फिल्टर कर दें
                     window.currentUserPhone = phone;
                     if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
+                    
                     document.getElementById('new-customer-popup').style.display = 'none';
                     alert("आपकी डिटेल्स सेव हो गई हैं! अब आप ऐप देख सकते हैं।");
                 }).catch(err => {

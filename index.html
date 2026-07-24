@@ -919,7 +919,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     // 1. लॉगिन स्क्रीन छुपाएं
                     document.getElementById('login-overlay').style.display = 'none'; 
                     
-                    // 2. यूजर की फोटो और नाम गूगल से निकालकर स्क्रीन पर लगाएं
+                    // 2. यूजर की फोटो और नाम स्क्रीन पर लगाएं
                     document.getElementById('user-profile-badge').style.display = 'flex';
                     
                     if (user.displayName) {
@@ -929,36 +929,24 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                         document.getElementById('user-photo').src = user.photoURL;
                     }
 
-                    // ================= नया कोड: गूगल से मिली जानकारी को डेटाबेस में सेव करना =================
-                    const userRef = ref(db, 'AppUsers/' + user.uid); // यूजर की यूनीक आईडी से फोल्डर बनेगा
+                    // 3. डेटाबेस में यूजर सेव करें
+                    const userRef = ref(db, 'AppUsers/' + user.uid);
                     get(userRef).then((snapshot) => {
                         if (!snapshot.exists()) {
-                            // अगर यूजर पहली बार आया है, तो उसकी जानकारी सेव करें
                             set(userRef, {
                                 name: user.displayName || "Unknown",
                                 email: user.email || "",
                                 photo: user.photoURL || "",
-                                phone: user.phoneNumber || "", // गूगल से नहीं मिलेगा, इसलिए खाली रहेगा
-                                address: "",                   // इसे भी हम बाद में भरवाएंगे
-                                role: "pending",               // शुरुआत में रोल 'pending' रहेगा
+                                phone: user.phoneNumber || "", 
+                                address: "",                   
+                                role: "pending",               
                                 createdAt: new Date().toISOString()
                             });
-                            console.log("नया अकाउंट डेटाबेस में सेव हो गया!");
-                        } else {
-                            // अगर यूजर पहले से है, तो हम सिर्फ उसका डेटा पढ़ लेंगे
-                            let userData = snapshot.val();
-                            console.log("पुराना यूजर वापस आ गया। इसका रोल है:", userData.role);
                         }
                     }).catch(err => console.error("Database Error:", err));
-                    // =========================================================================================
 
                 } else {
-                    // अगर लॉगिन नहीं है तो लॉगिन स्क्रीन दिखाएं और प्रोफाइल छुपाएं
-                    document.getElementById('login-overlay').style.display = 'flex'; 
-                    document.getElementById('user-profile-badge').style.display = 'none';
-                }
-            });
-                    // अगर लॉगिन नहीं है तो लॉगिन स्क्रीन दिखाएं और प्रोफाइल छुपाएं
+                    // अगर लॉगिन नहीं है तो लॉगिन स्क्रीन दिखाएं
                     document.getElementById('login-overlay').style.display = 'flex'; 
                     document.getElementById('user-profile-badge').style.display = 'none';
                 }

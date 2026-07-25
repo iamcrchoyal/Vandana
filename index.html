@@ -1270,6 +1270,11 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             if(id === 'home') document.getElementById('nav-btn-home')?.classList.add('active');
             if(id === 'items-page') document.getElementById('nav-btn-inventory')?.classList.add('active');
             if(id === 'parties-page') document.getElementById('nav-btn-ledger')?.classList.add('active');
+            if(id === 'mybills-page') { 
+                document.getElementById('nav-btn-mybills')?.classList.add('active'); 
+                if(typeof renderMyBillsList === 'function') renderMyBillsList(); 
+            }
+            
         }
 
         window.navTo = function(pageId, element) {

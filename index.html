@@ -289,13 +289,17 @@
         <img id="dp-viewer-img" class="dp-modal-img" src="" onclick="event.stopPropagation()">
     </div>
 
-    <!-- 🏆 CELEBRATION MODAL -->
-    <div class="celebration-modal" id="celebration-modal" onclick="this.style.display='none'">
+    <!-- 🎯 TARGET ACHIEVED MODAL (NEW) -->
+    <div class="celebration-modal" id="target-modal" onclick="this.style.display='none'" style="z-index: 99999;">
         <div class="celeb-box" onclick="event.stopPropagation()">
-            <div style="font-size:40px; margin-bottom:10px;">🏆</div>
-            <h3 style="font-family:'Product Sans', sans-serif; font-size:22px; color:var(--primary); margin-bottom:8px;" id="celeb-name">Customer Name</h3>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Top Customer Achiever! Special 2% Discount Unlocked 🎉</p>
-            <button class="btn-submit" onclick="document.getElementById('celebration-modal').style.display='none'">Awesome!</button>
+            <div style="font-size:50px; margin-bottom:10px;">🎊</div>
+            <h3 style="font-family:'Product Sans', sans-serif; font-size:24px; color:var(--success); margin-bottom:8px;">Target Achieved!</h3>
+            <p style="font-size:14px; color:var(--text-muted); margin-bottom:20px; line-height: 1.5;">
+                बधाई हो! आपने अपनी खरीद का टारगेट पूरा कर लिया है। <br><br>
+                अपने मुख्य बिल में <b style="color:var(--danger);">Additional 2% Discount</b> लगवाने के लिए कृपया <b>Vandana Enterprises गोडाउन</b> पर संपर्क करें।
+            </p>
+            <a href="tel:+919999999999" class="btn-submit" style="display:block; text-decoration:none; margin-bottom:10px; background:var(--primary);">📞 Contact Godown</a>
+            <button class="btn-outline" onclick="document.getElementById('target-modal').style.display='none'" style="width:100%;">Close</button>
         </div>
     </div>
 

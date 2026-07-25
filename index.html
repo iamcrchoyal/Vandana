@@ -1724,7 +1724,12 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.applyRoleBasedAccess = function(role) {
             // चेक करें कि क्या यूजर एडमिन है?
             let isAdmin = (role === 'admin');
-
+// डैशबोर्ड का नाम एडमिन और कस्टमर के हिसाब से बदलें
+    let salesLabel = document.getElementById('dash-sales-label');
+    if (salesLabel) {
+        salesLabel.innerText = isAdmin ? "Total Sales (Today)" : "Today's Purchase";
+    }
+            
             // 1. इन्वेंट्री और गोडाउन के सारे "Add" और "Transfer" बटन छुपाएं
             document.querySelectorAll('.pro-add-btn').forEach(btn => {
                 btn.style.display = isAdmin ? 'flex' : 'none';

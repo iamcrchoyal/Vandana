@@ -540,6 +540,29 @@
         </div>
     </div>
 
+<!-- 📄 MY BILLS PAGE (CUSTOMER PORTAL) -->
+    <div class="page flex-page" id="mybills-page">
+        <div class="sub-header">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('mybills-page')">arrow_back</button>
+            <h2 class="page-title">My Bills</h2>
+        </div>
+        
+        <div class="fixed-top-section" style="padding-top:10px;">
+            <div style="background:#f8fafd; border: 1px solid #c2e7ff; padding:12px; border-radius:12px; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                <span class="material-symbols-rounded" style="color:var(--primary); font-size:20px;">filter_alt</span>
+                <input type="month" id="mybills-month-filter" class="form-control" style="border:none; background:transparent; padding:0; flex:1;" onchange="renderMyBillsList()">
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:600; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">
+                <span>Total Bills: <span id="mybills-count" style="color:var(--primary);">0</span></span>
+                <span>Value: <span id="mybills-value" style="color:var(--success);">₹ 0</span></span>
+            </div>
+        </div>
+        
+        <div class="scroll-content" id="mybills-list-container" style="padding-top:0;">
+            <!-- यहाँ बिल अपने आप आएंगे -->
+        </div>
+    </div>
+    
     <!-- 📄 REPORT PREVIEW PAGE -->
     <div class="page flex-page" id="report-preview-page" style="z-index:5100;">
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('report-preview-page')">arrow_back</button><h2 class="page-title">Report Preview</h2></div>
@@ -552,6 +575,8 @@
         </div>
     </div>
 
+
+    
     <!-- 🚫 ABSENT CUSTOMERS PAGE -->
     <div class="page flex-page" id="absent-page">
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('absent-page')">arrow_back</button><h2 class="page-title">Absent Today</h2></div>
@@ -1862,6 +1887,61 @@ window.showTargetCelebration = function() {
                 var particleCount = 50 * (timeLeft / duration);
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
             }, 250);
+        }
+// ================= MY BILLS LOGIC (CUSTOMER PORTAL) =================
+        window.renderMyBillsList = function() {
+            let listContainer = document.getElementById('mybills-list-container');
+            let monthFilter = document.getElementById('mybills-month-filter').value;
+            
+            if (!monthFilter) {
+                let today = new Date();
+                monthFilter = today.toISOString().slice(0, 7);
+                document.getElementById('mybills-month-filter').value = monthFilter;
+            }
+
+            listContainer.innerHTML = '';
+            let totalBillValue = 0;
+            let billCount = 0;
+
+            let myCustName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
+            
+            let myBills = window.rawLedger.filter(entry => {
+                let entryMonthString = "";
+                try {
+                    let d = new Date(entry.date);
+                    if (!isNaN(d)) entryMonthString = d.toISOString().slice(0, 7);
+                } catch(e) {}
+                
+                return entry.name === myCustName && 
+                       entryMonthString === monthFilter && 
+                       entry.details && entry.details.includes("Invoice");
+            });
+
+            if (myBills.length === 0) {
+                listContainer.innerHTML = `<div style="text-align:center; padding:40px; color:gray;">इस महीने का कोई बिल नहीं मिला।</div>`;
+            } else {
+                myBills.forEach(entry => {
+                    let amt = parseFloat(entry.amount) || 0;
+                    totalBillValue += amt;
+                    billCount++;
+                    let d = new Date(entry.date);
+                    let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+
+                    listContainer.innerHTML += `
+                        <div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; cursor:pointer;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
+                                <div style="font-weight:700; font-size: 15px;">${dateStr}</div>
+                                <div style="color:var(--success); font-weight:800; font-size: 16px;">₹${amt.toLocaleString('en-IN')}</div>
+                            </div>
+                            <div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;">
+                                <span>${entry.details}</span>
+                                <span style="color:var(--primary); font-weight:600;"><span class="material-symbols-rounded" style="font-size:16px;">picture_as_pdf</span> View PDF</span>
+                            </div>
+                        </div>`;
+                });
+            }
+            document.getElementById('mybills-count').innerText = billCount;
+            document.getElementById('mybills-value').innerText = `₹ ${totalBillValue.toLocaleString('en-IN')}`;
         }
         
     </script>

@@ -1775,6 +1775,17 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
     if (hamburgerBtn) {
         hamburgerBtn.style.display = isAdmin ? 'block' : 'none';
     }
+            // कस्टमर के लिए Inventory (स्टॉक) छुपाएं
+    let invNav = document.getElementById('nav-btn-inventory');
+    if (invNav) {
+        invNav.style.display = isAdmin ? 'flex' : 'none';
+    }
+
+    // कस्टमर के लिए Ledger का नाम बदलकर 'My Khata' करें
+    let ledgerNavSpan = document.querySelector('#nav-btn-ledger span');
+    if (ledgerNavSpan) {
+        ledgerNavSpan.innerText = isAdmin ? 'Ledger' : 'My Khata';
+    }
             
           // डैशबोर्ड का नाम एडमिन और कस्टमर के हिसाब से बदलें
     let salesLabel = document.getElementById('dash-sales-label');

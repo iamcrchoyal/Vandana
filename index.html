@@ -1385,7 +1385,49 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
             window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet }; updateLedgerTotalsUI(); if(document.getElementById('parties-page').classList.contains('active')) { renderCustomerList(globalCustomers); }
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
-            let activeSalesData = window.currentTopCustTab === 'current' ? currMonthSales : lastMonthSales; let topCustHtml = ""; let sortedCustomers = Object.entries(activeSalesData).sort((a, b) => b[1] - a[1]).slice(0, 5); if(sortedCustomers.length === 0) { topCustHtml = '<div style="text-align:center; padding:10px; color:gray; font-size:12px;">No sales data available.</div>'; } else { sortedCustomers.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-name scroll-text">${cust[0]}</div><div class="ua-item-count scroll-text">₹${cust[1].toLocaleString('en-IN')} <span style="color:var(--text-muted); font-size:16px; vertical-align:middle;" class="material-symbols-rounded">chevron_right</span></div></div>`; }); } document.getElementById('top-customers-list').innerHTML = topCustHtml;
+            // ============== TARGET AND PROGRESS BAR LOGIC ==============
+            let TARGET_AMOUNT = 50000; // 🎯 आप यहाँ अपना टारगेट सेट कर सकते हैं (जैसे 50,000 या 1,00,000)
+            let activeSalesData = window.currentTopCustTab === 'current' ? currMonthSales : lastMonthSales; 
+            let topCustHtml = ""; 
+            let allSortedCustomers = Object.entries(activeSalesData).sort((a, b) => b[1] - a[1]); 
+
+            if (window.currentUserRole === 'admin') {
+                let top5 = allSortedCustomers.slice(0, 5);
+                if(top5.length === 0) { 
+                    topCustHtml = '<div style="text-align:center; padding:10px; color:gray; font-size:12px;">No sales data available.</div>'; 
+                } else { 
+                    top5.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-name scroll-text">${cust[0]}</div><div class="ua-item-count scroll-text">₹${cust[1].toLocaleString('en-IN')} <span style="color:var(--text-muted); font-size:16px; vertical-align:middle;" class="material-symbols-rounded">chevron_right</span></div></div>`; }); 
+                }
+            } else {
+                // Customer View: Progress Bar
+                let myName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
+                let myIndex = allSortedCustomers.findIndex(c => c[0] === myName);
+                let myTotal = activeSalesData[myName] || 0;
+                let myRank = myIndex !== -1 ? (myIndex + 1) : "-";
+                let percent = Math.min((myTotal / TARGET_AMOUNT) * 100, 100).toFixed(0);
+
+                topCustHtml = `
+                <div style="background:#f8fafd; padding:16px; border-radius:12px; border:1px solid #c2e7ff; margin-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:12px; font-weight:600; color:var(--text-dark);">
+                        <span>Position: #${myRank}</span>
+                        <span style="color:var(--primary);">₹${myTotal.toLocaleString('en-IN')} / ₹${TARGET_AMOUNT.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div style="background:rgba(225, 227, 225, 0.5); height:10px; border-radius:5px; overflow:hidden;">
+                        <div style="background:${percent >= 100 ? 'var(--success)' : 'var(--primary)'}; height:100%; border-radius:5px; width:${percent}%; transition:width 1s ease-in-out;"></div>
+                    </div>
+                    <div style="text-align:center; font-size:12px; margin-top:12px; color:var(--text-muted); font-weight:500;">
+                        ${percent >= 100 ? '🎉 You unlocked 2% Additional Off!' : `Shop for ₹${(TARGET_AMOUNT - myTotal).toLocaleString('en-IN')} more to unlock 2% OFF`}
+                    </div>
+                </div>`;
+
+                // Firework logic (Session में एक बार ही चलेगा ताकि बार-बार इरिटेट न करे)
+                if (myTotal >= TARGET_AMOUNT && !sessionStorage.getItem('target_celebrated')) {
+                    setTimeout(() => { showTargetCelebration(); }, 1000);
+                    sessionStorage.setItem('target_celebrated', 'true');
+                }
+            }
+            document.getElementById('top-customers-list').innerHTML = topCustHtml;
+            // ==========================================================
         }
         
         window.openLedgerDetail = function(name, phone) { currentPartyName = name; currentPartyPhone = phone || ""; sessionStorage.setItem('v_currentPartyName', name); sessionStorage.setItem('v_currentPartyPhone', phone || ""); document.getElementById('l-deep-name').innerText = name; document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#"; document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); let customer = globalCustomers.find(c => c.name === name); let initial = name ? name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = customer && customer.pic ? customer.pic : adminPic; if(custPic) { document.getElementById('l-deep-avatar-text').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; } else { document.getElementById('l-deep-avatar-text').innerHTML = initial; } renderLedgerEntries(name); openPage('ledger-deep-page'); }
@@ -1783,7 +1825,19 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             });
         }
         // ====================================================================
-    
+window.showTargetCelebration = function() {
+            document.getElementById('target-modal').style.display = 'flex';
+            var duration = 5000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100000 };
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+        
     </script>
 </body>
 </html>

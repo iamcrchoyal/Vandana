@@ -1784,6 +1784,11 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
     if (invNav) {
         invNav.style.display = isAdmin ? 'flex' : 'none';
     }
+            // कस्टमर के लिए My Bills बटन दिखाएं और एडमिन से छुपाएं
+    let myBillsNav = document.getElementById('nav-btn-mybills');
+    if (myBillsNav) {
+        myBillsNav.style.display = isAdmin ? 'none' : 'flex';
+    }
 
     // कस्टमर के लिए Ledger का नाम बदलकर 'My Khata' करें
     let ledgerNavSpan = document.querySelector('#nav-btn-ledger span');

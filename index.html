@@ -548,9 +548,20 @@
         </div>
         
         <div class="fixed-top-section" style="padding-top:10px;">
-            <div style="background:#f8fafd; border: 1px solid #c2e7ff; padding:12px; border-radius:12px; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
-                <span class="material-symbols-rounded" style="color:var(--primary); font-size:20px;">filter_alt</span>
-                <input type="month" id="mybills-month-filter" class="form-control" style="border:none; background:transparent; padding:0; flex:1;" onchange="renderMyBillsList()">
+            <div style="background:#f8fafd; border: 1px solid #c2e7ff; padding:12px; border-radius:12px; margin-bottom:12px;">
+                <div style="display:flex; gap:10px; margin-bottom:12px;">
+                    <div style="flex:1;">
+                        <label style="font-size:11px; color:var(--text-muted); font-weight:600;">From Date (कब से)</label>
+                        <input type="date" id="mb-from" class="form-control" style="padding:8px;" onchange="renderMyBillsList()">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="font-size:11px; color:var(--text-muted); font-weight:600;">To Date (कब तक)</label>
+                        <input type="date" id="mb-to" class="form-control" style="padding:8px;" onchange="renderMyBillsList()">
+                    </div>
+                </div>
+                <button class="btn-submit" style="width:100%; font-size:13px; padding:12px; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="previewBulkPDF()">
+                    <span class="material-symbols-rounded" style="font-size:18px;">picture_as_pdf</span> View & Download All (1 PDF)
+                </button>
             </div>
             <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:600; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">
                 <span>Total Bills: <span id="mybills-count" style="color:var(--primary);">0</span></span>
@@ -558,9 +569,7 @@
             </div>
         </div>
         
-        <div class="scroll-content" id="mybills-list-container" style="padding-top:0;">
-            <!-- यहाँ बिल अपने आप आएंगे -->
-        </div>
+        <div class="scroll-content" id="mybills-list-container" style="padding-top:0;"></div>
     </div>
     
     <!-- 📄 REPORT PREVIEW PAGE -->

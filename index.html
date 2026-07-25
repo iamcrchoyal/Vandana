@@ -492,7 +492,7 @@
                 <div class="progress-bar-bg"><div class="progress-bar-fill"></div></div>
                 <div class="card-subtext">Tap to view today's generated bills</div>
             </div>
-            <div class="dash-card-grid">
+            <div class="dash-card-grid" id="admin-action-cards">
                 <div class="dash-card" onclick="navTo('pos-page', null)">
                     <div class="card-header" style="margin-bottom:0; font-size:16px;">Sale Invoice</div>
                     <div style="font-size:40px; margin:8px 0;" class="material-symbols-rounded">receipt_long</div>
@@ -1724,10 +1724,15 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.applyRoleBasedAccess = function(role) {
             // चेक करें कि क्या यूजर एडमिन है?
             let isAdmin = (role === 'admin');
-// डैशबोर्ड का नाम एडमिन और कस्टमर के हिसाब से बदलें
+          // डैशबोर्ड का नाम एडमिन और कस्टमर के हिसाब से बदलें
     let salesLabel = document.getElementById('dash-sales-label');
     if (salesLabel) {
         salesLabel.innerText = isAdmin ? "Total Sales (Today)" : "Today's Purchase";
+    }
+              // सेल इनवॉइस और गोडाउन ट्रांसफर वाले बॉक्स को कस्टमर से छुपाएं
+    let adminCards = document.getElementById('admin-action-cards');
+    if (adminCards) {
+        adminCards.style.display = isAdmin ? 'grid' : 'none';
     }
             
             // 1. इन्वेंट्री और गोडाउन के सारे "Add" और "Transfer" बटन छुपाएं

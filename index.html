@@ -2072,6 +2072,16 @@ window.showTargetCelebration = function() {
             
             openPage('report-preview-page');
         }
+
+           // ================= TOGGLE DATE FILTER BOX =================
+        window.toggleDateFilter = function() {
+            let filterBox = document.getElementById('date-filter-box');
+            if (filterBox.style.display === 'none') {
+                filterBox.style.display = 'block'; 
+            } else {
+                filterBox.style.display = 'none';  
+            }
+        }
         
     </script>
 </body>

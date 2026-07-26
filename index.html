@@ -542,33 +542,43 @@
 
 <!-- 📄 MY BILLS PAGE (CUSTOMER PORTAL) -->
     <div class="page flex-page" id="mybills-page">
-        <div class="sub-header">
-            <button class="back-btn material-symbols-rounded" onclick="closePage('mybills-page')">arrow_back</button>
-            <h2 class="page-title">My Bills</h2>
+        
+        <!-- Header Section -->
+        <div class="sub-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center;">
+                <button class="back-btn material-symbols-rounded" onclick="closePage('mybills-page')">arrow_back</button>
+                <h2 class="page-title">My Bills</h2>
+            </div>
+            <!-- 📅 Date Filter Icon Button -->
+            <button class="material-symbols-rounded" style="background:none; border:none; color:var(--primary); font-size:24px; cursor:pointer; padding-right:16px;" onclick="toggleDateFilter()">calendar_month</button>
         </div>
         
         <div class="fixed-top-section" style="padding-top:10px;">
-            <div style="background:#f8fafd; border: 1px solid #c2e7ff; padding:12px; border-radius:12px; margin-bottom:12px;">
+            <!-- Date Filter Box (यह बॉक्स अब छुपा रहेगा) -->
+            <div id="date-filter-box" style="display:none; background:#f8fafd; border: 1px solid #c2e7ff; padding:12px; border-radius:12px; margin-bottom:12px;">
                 <div style="display:flex; gap:10px; margin-bottom:12px;">
                     <div style="flex:1;">
-                        <label style="font-size:11px; color:var(--text-muted); font-weight:600;">From Date (कब से)</label>
+                        <label style="font-size:11px; color:var(--text-muted); font-weight:600;">From Date</label>
                         <input type="date" id="mb-from" class="form-control" style="padding:8px;" onchange="renderMyBillsList()">
                     </div>
                     <div style="flex:1;">
-                        <label style="font-size:11px; color:var(--text-muted); font-weight:600;">To Date (कब तक)</label>
+                        <label style="font-size:11px; color:var(--text-muted); font-weight:600;">To Date</label>
                         <input type="date" id="mb-to" class="form-control" style="padding:8px;" onchange="renderMyBillsList()">
                     </div>
                 </div>
                 <button class="btn-submit" style="width:100%; font-size:13px; padding:12px; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="previewBulkPDF()">
-                    <span class="material-symbols-rounded" style="font-size:18px;">picture_as_pdf</span> View & Download All (1 PDF)
+                    <span class="material-symbols-rounded" style="font-size:18px;">picture_as_pdf</span> View & Download (1 PDF)
                 </button>
             </div>
+            
+            <!-- Count and Value -->
             <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:600; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">
                 <span>Total Bills: <span id="mybills-count" style="color:var(--primary);">0</span></span>
                 <span>Value: <span id="mybills-value" style="color:var(--success);">₹ 0</span></span>
             </div>
         </div>
         
+        <!-- Bills List -->
         <div class="scroll-content" id="mybills-list-container" style="padding-top:0;"></div>
     </div>
     

@@ -2004,70 +2004,90 @@ window.showTargetCelebration = function() {
             area.style.zoom = window.currentZoom;
         }
 
-        // ================= BULK PDF DOWNLOAD (1 BILL = 1 A4 PAGE + PAY NOW LINK) =================
+       // ================= BULK PDF DOWNLOAD (SAFE VERSION) =================
         window.previewBulkPDF = function() {
-            let fromDate = document.getElementById('mb-from').value;
-            let toDate = document.getElementById('mb-to').value;
-            
-            let myCustName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
-            let myBills = globalLedger.filter(txn => txn.party === myCustName && txn.type === 'bill');
-            
-            if (fromDate) myBills = myBills.filter(txn => new Date(txn.date) >= new Date(fromDate));
-            if (toDate) myBills = myBills.filter(txn => new Date(txn.date) <= new Date(toDate));
-
-            if (myBills.length === 0) {
-                alert("इस तारीख के बीच कोई बिल नहीं है!");
-                return;
-            }
-
-            const { jsPDF } = window.jspdf;
-            let doc = new jsPDF('p', 'mm', 'a4'); 
-            let upiId = localStorage.getItem('v_adminUpi'); 
-
-            for (let i = 0; i < myBills.length; i++) {
-                let bill = myBills[i];
+            try { // यह सेफ्टी सिस्टम है जो गलती पकड़ेगा
                 
-                if (i > 0) {
-                    doc.addPage();
+                // 1. क्या PDF लाइब्रेरी लोड हुई?
+                if (!window.jspdf) {
+                    alert("PDF सिस्टम लोड नहीं हुआ! कृपया jsPDF वाला लिंक HTML में डालें।");
+                    return;
                 }
 
-                doc.setFontSize(22);
-                doc.setTextColor(0, 0, 0);
-                doc.text("VANDANA ENTERPRISES", 105, 30, { align: "center" });
+                let fromDate = document.getElementById('mb-from').value;
+                let toDate = document.getElementById('mb-to').value;
                 
-                doc.setFontSize(14);
-                doc.text("INVOICE", 105, 40, { align: "center" });
-
-                doc.setFontSize(12);
-                doc.text(`Bill Date: ${bill.date}`, 20, 60);
-                doc.text(`Customer Name: ${bill.party}`, 20, 70);
-                doc.text(`Details: ${bill.details || 'Goods'}`, 20, 80);
+                // 2. कस्टमर का नाम सुरक्षित तरीके से लेना
+                let myCustName = window.currentUserName || "Customer";
+                if (typeof globalCustomers !== 'undefined' && globalCustomers.length > 0) {
+                    myCustName = globalCustomers[0].name;
+                }
                 
-                doc.setFontSize(16);
-                doc.text(`Total Bill Amount: Rs. ${bill.amount.toLocaleString('en-IN')}`, 20, 100);
+                // 3. बिल सुरक्षित तरीके से निकालना
+                let myBills = [];
+                if (typeof globalLedger !== 'undefined') {
+                    myBills = globalLedger.filter(txn => txn.party === myCustName && txn.type === 'bill');
+                }
 
-                if (upiId) {
-                    let upiLink = `upi://pay?pa=${upiId}&pn=Vandana%20Enterprises&am=${bill.amount}&cu=INR`;
+                if (fromDate) myBills = myBills.filter(txn => new Date(txn.date) >= new Date(fromDate));
+                if (toDate) myBills = myBills.filter(txn => new Date(txn.date) <= new Date(toDate));
+
+                if (myBills.length === 0) {
+                    alert("इस तारीख के बीच आपका कोई बिल नहीं है!");
+                    return;
+                }
+
+                const { jsPDF } = window.jspdf;
+                let doc = new jsPDF('p', 'mm', 'a4'); 
+                let upiId = localStorage.getItem('v_adminUpi'); 
+
+                for (let i = 0; i < myBills.length; i++) {
+                    let bill = myBills[i];
+                    
+                    if (i > 0) doc.addPage();
+
+                    doc.setFontSize(22);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text("VANDANA ENTERPRISES", 105, 30, { align: "center" });
+                    
+                    doc.setFontSize(14);
+                    doc.text("INVOICE", 105, 40, { align: "center" });
+
+                    doc.setFontSize(12);
+                    doc.text(`Bill Date: ${bill.date}`, 20, 60);
+                    doc.text(`Customer Name: ${bill.party}`, 20, 70);
+                    doc.text(`Details: ${bill.details || 'Goods'}`, 20, 80);
                     
                     doc.setFontSize(16);
-                    doc.setTextColor(255, 0, 0); 
-                    doc.textWithLink("👉 CLICK HERE TO PAY VIA PHONEPE / GPAY", 105, 140, { url: upiLink, align: "center" });
+                    doc.text(`Total Bill Amount: Rs. ${bill.amount.toLocaleString('en-IN')}`, 20, 100);
+
+                    if (upiId) {
+                        let upiLink = `upi://pay?pa=${upiId}&pn=Vandana%20Enterprises&am=${bill.amount}&cu=INR`;
+                        doc.setFontSize(16);
+                        doc.setTextColor(255, 0, 0); 
+                        doc.textWithLink("👉 CLICK HERE TO PAY VIA PHONEPE / GPAY", 105, 140, { url: upiLink, align: "center" });
+                        
+                        doc.setFontSize(10);
+                        doc.setTextColor(100, 100, 100); 
+                        doc.text("(Or click this text directly from your phone to pay)", 105, 148, { align: "center" });
+                    }
                     
                     doc.setFontSize(10);
-                    doc.setTextColor(100, 100, 100); 
-                    doc.text("(Or click this text directly from your phone to pay)", 105, 148, { align: "center" });
+                    doc.setTextColor(0, 0, 0);
+                    doc.text(`Page ${i + 1} of ${myBills.length}`, 105, 280, { align: "center" });
                 }
-                
-                doc.setFontSize(10);
-                doc.setTextColor(0, 0, 0);
-                doc.text(`Page ${i + 1} of ${myBills.length}`, 105, 280, { align: "center" });
-            }
 
-            doc.save(`Vandana_Bills_${myCustName}.pdf`);
-            
-            let filterBox = document.getElementById('date-filter-box');
-            if(filterBox) filterBox.style.display = 'none';
-        }   
+                doc.save(`Vandana_Bills_${myCustName}.pdf`);
+                
+                let filterBox = document.getElementById('date-filter-box');
+                if(filterBox) filterBox.style.display = 'none';
+
+            } catch (error) {
+                // अगर कोई भी गलती होगी, तो स्क्रीन पर मैसेज आ जाएगा
+                alert("कुछ तकनीकी गलती हुई है: " + error.message);
+                console.error(error);
+            }
+        }
 // ================= TOGGLE DATE FILTER BOX =================
         window.toggleDateFilter = function() {
             let filterBox = document.getElementById('date-filter-box');

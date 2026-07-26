@@ -2004,85 +2004,70 @@ window.showTargetCelebration = function() {
             area.style.zoom = window.currentZoom;
         }
 
-        // ================= BULK PDF GENERATION (ALL IN ONE) =================
+        // ================= BULK PDF DOWNLOAD (1 BILL = 1 A4 PAGE + PAY NOW LINK) =================
         window.previewBulkPDF = function() {
-            if (window.currentBulkBills.length === 0) {
-                return alert("कोई बिल नहीं मिला! पहले तारीख सही सेलेक्ट करें।");
-            }
+            let fromDate = document.getElementById('mb-from').value;
+            let toDate = document.getElementById('mb-to').value;
             
-            let bulkHtml = "";
-            let bName = localStorage.getItem('v_adminName') || "Vandana Enterprises"; 
-            let bPhone = "+91 " + (localStorage.getItem('v_adminPhone') || "----------");
-            let bAddr = localStorage.getItem('v_adminAddr') || "Not Added";
-            let bGst = localStorage.getItem('v_adminGst') || "Not Added";
+            let myCustName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
+            let myBills = globalLedger.filter(txn => txn.party === myCustName && txn.type === 'bill');
+            
+            if (fromDate) myBills = myBills.filter(txn => new Date(txn.date) >= new Date(fromDate));
+            if (toDate) myBills = myBills.filter(txn => new Date(txn.date) <= new Date(toDate));
 
-            // सभी बिलों को लूप करके एक बड़ी HTML बना रहे हैं
-            window.currentBulkBills.forEach((entry, index) => {
-                let d = new Date(entry.date);
-                let dateStr = isNaN(d) ? entry.date : d.toLocaleDateString('en-GB');
+            if (myBills.length === 0) {
+                alert("इस तारीख के बीच कोई बिल नहीं है!");
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            let doc = new jsPDF('p', 'mm', 'a4'); 
+            let upiId = localStorage.getItem('v_adminUpi'); 
+
+            for (let i = 0; i < myBills.length; i++) {
+                let bill = myBills[i];
                 
-                let cartRows = "";
-                if(entry.cart && entry.cart.length > 0) {
-                    entry.cart.forEach(item => {
-                        cartRows += `<tr><td style="padding:10px; border:1px solid #e0e2e0;"><strong>${item.cat}</strong><br><span style="font-size:12px; color:#444746;">${item.shade}</span></td><td style="padding:10px; border:1px solid #e0e2e0; text-align:center;">${item.qty} Box</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">₹${item.rate}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right; font-weight:bold;">₹${item.itemTotal.toLocaleString('en-IN')}</td></tr>`;
-                    });
+                if (i > 0) {
+                    doc.addPage();
                 }
 
-                // Page Break लॉजिक (हर बिल नए पन्ने पर आएगा, सिवाय आखिरी वाले के)
-                let pageBreak = (index === window.currentBulkBills.length - 1) ? "" : "page-break-after: always;";
+                doc.setFontSize(22);
+                doc.setTextColor(0, 0, 0);
+                doc.text("VANDANA ENTERPRISES", 105, 30, { align: "center" });
+                
+                doc.setFontSize(14);
+                doc.text("INVOICE", 105, 40, { align: "center" });
 
-                bulkHtml += `
-                <div style="background:white; padding:30px; font-family:Arial, sans-serif; color:black; width:100%; max-width:700px; box-sizing:border-box; margin-bottom:20px; ${pageBreak}">
-                    <div style="display:flex; justify-content:space-between; border-bottom:2px solid #0a56d0; padding-bottom:15px; margin-bottom:15px;">
-                        <div>
-                            <h1 style="color:#0a56d0; margin:0; font-size:28px;">${bName}</h1>
-                            <p style="margin:5px 0; font-size:14px;">Phone: ${bPhone}</p>
-                            <p style="margin:5px 0; font-size:14px;">Address: ${bAddr}</p>
-                            <p style="margin:5px 0; font-size:14px; font-weight:bold;">GSTIN: ${bGst}</p>
-                        </div>
-                        <div style="text-align:right;">
-                            <h2 style="margin:0; font-size:32px; color:#444746;">INVOICE</h2>
-                            <p style="margin:5px 0; font-size:14px;">Date: ${dateStr}</p>
-                            <p style="margin:5px 0; font-size:14px;">Bill No: ${entry.billNo || entry.key.substring(1, 8).toUpperCase()}</p>
-                        </div>
-                    </div>
-                    <div style="margin-bottom:20px;">
-                        <h3 style="margin:0 0 5px 0; font-size:16px; color:#444746;">BILLED TO:</h3>
-                        <p style="margin:0; font-size:18px; font-weight:bold;">${entry.name}</p>
-                    </div>
-                    <table style="width:100%; border-collapse:collapse; margin-bottom:20px;">
-                        <thead style="background:#0a56d0; color:white;">
-                            <tr><th style="padding:10px; text-align:left; border:1px solid #e0e2e0;">Product Details</th><th style="padding:10px; text-align:center; border:1px solid #e0e2e0;">Qty</th><th style="padding:10px; text-align:right; border:1px solid #e0e2e0;">Rate</th><th style="padding:10px; text-align:right; border:1px solid #e0e2e0;">Total</th></tr>
-                        </thead>
-                        <tbody>${cartRows}</tbody>
-                    </table>
-                    <div style="display:flex; justify-content:flex-end;">
-                        <div style="width:300px;"><div style="display:flex; justify-content:space-between; padding:12px; background:#f0f4f9; font-weight:bold; font-size:20px; border:1px solid #e0e2e0;"><span>Grand Total:</span><span>₹ ${parseFloat(entry.amount).toLocaleString('en-IN')}</span></div></div>
-                    </div>
-                </div>`;
-            });
+                doc.setFontSize(12);
+                doc.text(`Bill Date: ${bill.date}`, 20, 60);
+                doc.text(`Customer Name: ${bill.party}`, 20, 70);
+                doc.text(`Details: ${bill.details || 'Goods'}`, 20, 80);
+                
+                doc.setFontSize(16);
+                doc.text(`Total Bill Amount: Rs. ${bill.amount.toLocaleString('en-IN')}`, 20, 100);
 
-            // HTML सेट करना और Preview पेज खोलना
-            document.getElementById('preview-render-area').innerHTML = bulkHtml;
-            window.currentReportElemId = 'preview-render-area'; // डाउनलोड फंक्शन के लिए
-            window.currentReportFilename = `Combined_Bills_${window.currentUserName}_${document.getElementById('mb-from').value}.pdf`;
-            
-            window.currentZoom = 0.52; // रिसेट ज़ूम
-            document.getElementById('preview-render-area').style.zoom = window.currentZoom;
-            
-            openPage('report-preview-page');
-        }
-
-           // ================= TOGGLE DATE FILTER BOX =================
-        window.toggleDateFilter = function() {
-            let filterBox = document.getElementById('date-filter-box');
-            if (filterBox.style.display === 'none') {
-                filterBox.style.display = 'block'; 
-            } else {
-                filterBox.style.display = 'none';  
+                if (upiId) {
+                    let upiLink = `upi://pay?pa=${upiId}&pn=Vandana%20Enterprises&am=${bill.amount}&cu=INR`;
+                    
+                    doc.setFontSize(16);
+                    doc.setTextColor(255, 0, 0); 
+                    doc.textWithLink("👉 CLICK HERE TO PAY VIA PHONEPE / GPAY", 105, 140, { url: upiLink, align: "center" });
+                    
+                    doc.setFontSize(10);
+                    doc.setTextColor(100, 100, 100); 
+                    doc.text("(Or click this text directly from your phone to pay)", 105, 148, { align: "center" });
+                }
+                
+                doc.setFontSize(10);
+                doc.setTextColor(0, 0, 0);
+                doc.text(`Page ${i + 1} of ${myBills.length}`, 105, 280, { align: "center" });
             }
-        }
-        
+
+            doc.save(`Vandana_Bills_${myCustName}.pdf`);
+            
+            let filterBox = document.getElementById('date-filter-box');
+            if(filterBox) filterBox.style.display = 'none';
+        }   
     </script>
 </body>
 </html>

@@ -1963,7 +1963,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let elem = document.getElementById('pdf-invoice-template'); 
             let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
             alert("Generating PDF... Please wait a moment."); 
-            setTimeout(() => { html2pdf().set(opt).from(elem).save(); }, 300); 
+            setTimeout(() => { html2pdf().set(opt).from(elem).save(); }, 200); 
         }
         
         window.shareCurrentEntryPDF = async function() { 
@@ -1983,7 +1983,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                         html2pdf().set(opt).from(elem).save(); 
                     } 
                 } catch(e) { console.error(e); } 
-            }, 300);
+            }, 200);
         }
    // ================= AUTO-LOGOUT SYSTEM (30 MIN INACTIVITY) =================
         let inactivityTimer;

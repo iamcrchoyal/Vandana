@@ -1808,16 +1808,68 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.openPhonebook = async function(nameId, phoneId) { if ('contacts' in navigator) { try { const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false }); if (contacts.length > 0) { if (contacts[0].name) document.getElementById(nameId).value = contacts[0].name[0]; if (contacts[0].tel) document.getElementById(phoneId).value = String(contacts[0].tel[0]).replace(/\D/g, '').slice(-10); } } catch(e) {} } }
         
         function preparePDFData() {
-            document.getElementById('pdf-biz-name').innerText = localStorage.getItem('v_adminName') || "Vandana Enterprises"; document.getElementById('pdf-biz-phone').innerText = "Phone: +91 " + (localStorage.getItem('v_adminPhone') || "----------"); document.getElementById('pdf-biz-address').innerText = "Address: " + (localStorage.getItem('v_adminAddr') || "Not Added"); document.getElementById('pdf-biz-gst').innerText = "GSTIN: " + (localStorage.getItem('v_adminGst') || "Not Added");
-            let d = new Date(currentEntryData.date); document.getElementById('pdf-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleDateString('en-GB'); 
+            // एडमिन की डिटेल्स भरें
+            document.getElementById('pdf-biz-name').innerText = localStorage.getItem('v_adminName') || "Vandana Enterprises"; 
+            document.getElementById('pdf-biz-phone').innerText = "Phone: +91 " + (localStorage.getItem('v_adminPhone') || "----------"); 
+            
+            let gst = localStorage.getItem('v_adminGst');
+            document.getElementById('pdf-biz-gst').innerText = gst ? "GSTIN: " + gst : "";
+            
+            // कस्टमर और बिल की डिटेल्स
+            let d = new Date(currentEntryData.date); 
+            document.getElementById('pdf-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleDateString('en-GB'); 
             document.getElementById('pdf-bill-no').innerText = currentEntryData.billNo || currentEntryData.key.substring(1, 8).toUpperCase(); 
             document.getElementById('pdf-cust-name').innerText = currentEntryData.name;
+            
+            // टेबल लॉजिक
             if(currentEntryData.cart && currentEntryData.cart.length > 0) {
-                let html = ""; currentEntryData.cart.forEach(item => { html += `<tr><td style="padding:12px; border:1px solid #e0e2e0;"><strong>${item.cat} (Category)</strong><br><span style="font-size:12px; color:#444746;">Color / Shade: ${item.shade}</span></td><td style="padding:12px; border:1px solid #e0e2e0; text-align:center;">${item.qty} Box</td><td style="padding:12px; border:1px solid #e0e2e0; text-align:right;">₹${item.rate}</td><td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:bold;">₹${item.itemTotal.toLocaleString('en-IN')}</td></tr>`; }); document.getElementById('pdf-cart-body').innerHTML = html;
-                document.getElementById('pdf-table-header').innerHTML = `<tr style="background:#0a56d0; color:white;"><th style="padding:12px; text-align:left; border:1px solid #e0e2e0;">Product Details (माल का विवरण)</th><th style="padding:12px; text-align:center; border:1px solid #e0e2e0;">Qty (क्वांटिटी)</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Rate (रेट)</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Total Amount</th></tr>`;
+                let html = ""; 
+                currentEntryData.cart.forEach(item => { 
+                    html += `
+                        <tr>
+                            <td style="padding:12px; border:1px solid #e0e2e0;">
+                                <strong style="font-size:14px; color:#1f1f1f;">${item.cat}</strong><br>
+                                <span style="font-size:12px; color:#718096;">Shade / Color: ${item.shade}</span>
+                            </td>
+                            <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:14px; color:#1f1f1f;">
+                                ${item.qty} Box
+                            </td>
+                            <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-size:14px; color:#1f1f1f;">
+                                ₹${item.rate}
+                            </td>
+                            <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:700; font-size:14px; color:#1f1f1f;">
+                                ₹${item.itemTotal.toLocaleString('en-IN')}
+                            </td>
+                        </tr>
+                    `; 
+                }); 
+                document.getElementById('pdf-cart-body').innerHTML = html;
+                
+                // 4-COLUMN HEADER (बिना हिंदी के)
+                document.getElementById('pdf-table-header').innerHTML = `
+                    <tr style="background:#0a56d0; color:white;">
+                        <th style="padding:12px; text-align:left; font-size:14px; border:1px solid #0a56d0;">Product Details</th>
+                        <th style="padding:12px; text-align:center; font-size:14px; border:1px solid #0a56d0;">Qty</th>
+                        <th style="padding:12px; text-align:right; font-size:14px; border:1px solid #0a56d0;">Rate</th>
+                        <th style="padding:12px; text-align:right; font-size:14px; border:1px solid #0a56d0;">Total Amount</th>
+                    </tr>
+                `;
             } else {
-                document.getElementById('pdf-table-header').innerHTML = `<tr style="background:#0a56d0; color:white;"><th style="padding:12px; text-align:left; border:1px solid #e0e2e0;">Description / Details</th><th style="padding:12px; text-align:right; border:1px solid #e0e2e0;">Amount</th></tr>`; document.getElementById('pdf-cart-body').innerHTML = `<tr><td style="padding:16px 12px; border:1px solid #e0e2e0; font-size:16px;">${currentEntryData.details || 'Ledger Entry'}</td><td style="padding:16px 12px; text-align:right; border:1px solid #e0e2e0; font-size:16px; font-weight:bold;">₹${parseFloat(currentEntryData.amount).toLocaleString('en-IN')}</td></tr>`;
+                // अगर आइटम नहीं हैं (सिर्फ़ लेजर एंट्री है)
+                document.getElementById('pdf-table-header').innerHTML = `
+                    <tr style="background:#0a56d0; color:white;">
+                        <th style="padding:12px; text-align:left; font-size:14px; border:1px solid #0a56d0;" colspan="3">Description / Details</th>
+                        <th style="padding:12px; text-align:right; font-size:14px; border:1px solid #0a56d0;">Total Amount</th>
+                    </tr>
+                `; 
+                document.getElementById('pdf-cart-body').innerHTML = `
+                    <tr>
+                        <td colspan="3" style="padding:16px 12px; border:1px solid #e0e2e0; font-size:14px; color:#1f1f1f;">${currentEntryData.details || 'Ledger Entry'}</td>
+                        <td style="padding:16px 12px; text-align:right; border:1px solid #e0e2e0; font-size:14px; font-weight:bold; color:#1f1f1f;">₹${parseFloat(currentEntryData.amount).toLocaleString('en-IN')}</td>
+                    </tr>
+                `;
             }
+            // टोटल अमाउंट भरें
             document.getElementById('pdf-total').innerText = "₹ " + parseFloat(currentEntryData.amount).toLocaleString('en-IN');
         }
 

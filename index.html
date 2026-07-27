@@ -2054,47 +2054,53 @@ window.showTargetCelebration = function() {
                 return;
             }
 
-            // 1. एडमिन की डिटेल्स (ताकि बिल असली और प्रोफेशनल लगे)
+            // 1. एडमिन की डिटेल्स (ताकि बिल असली लगे)
             let adminName = localStorage.getItem('v_adminName') || "Vandana Enterprises";
             let adminPhone = localStorage.getItem('v_adminPhone') || "----------";
             let adminGst = localStorage.getItem('v_adminGst') || "";
 
-            let allBillsHtml = ""; // इसमें हम सारे A4 बिल्स जोड़ेंगे
+            let allBillsHtml = ""; 
 
             myBills.forEach((bill, index) => {
                 let amt = parseFloat(bill.amount) || 0;
                 let d = new Date(bill.date);
                 let dateStr = isNaN(d) ? bill.date : d.toLocaleDateString('en-GB');
                 
-                // अगर बिल के अंदर अलग-अलग माल (Items) हैं तो उनकी लिस्ट, नहीं तो सीधा details
+                // --- 4-COLUMN TABLE LOGIC (Product Details, Qty, Rate, Total Amount) ---
                 let cartHtml = "";
                 if(bill.cart && bill.cart.length > 0) {
                     bill.cart.forEach(item => {
                         cartHtml += `
                             <tr>
-                                <td style="padding:15px; border-bottom:1px solid #e0e2e0;">
-                                    <strong style="font-size:15px; color:#1f1f1f;">${item.cat}</strong><br>
-                                    <span style="font-size:12px; color:#718096;">Shade / Color: ${item.shade} | Qty: ${item.qty} Box</span>
+                                <td style="padding:12px; border:1px solid #e0e2e0;">
+                                    <strong style="font-size:14px; color:#1f1f1f;">${item.cat}</strong><br>
+                                    <span style="font-size:12px; color:#718096;">Shade / Color: ${item.shade}</span>
                                 </td>
-                                <td style="padding:15px; border-bottom:1px solid #e0e2e0; text-align:right; font-weight:700; font-size:15px; color:#1f1f1f;">
+                                <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:14px; color:#1f1f1f;">
+                                    ${item.qty} Box
+                                </td>
+                                <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-size:14px; color:#1f1f1f;">
+                                    ₹${item.rate}
+                                </td>
+                                <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:700; font-size:14px; color:#1f1f1f;">
                                     ₹${item.itemTotal.toLocaleString('en-IN')}
                                 </td>
                             </tr>
                         `;
                     });
                 } else {
+                    // अगर बिना आइटम का सीधा अमाउंट जोड़ा गया है (Ledger Entry)
                     cartHtml = `
                         <tr>
-                            <td style="padding:15px; border-bottom:1px solid #e0e2e0; font-size:15px; color:#1f1f1f;">${bill.details || 'Ledger Entry / Goods'}</td>
-                            <td style="padding:15px; border-bottom:1px solid #e0e2e0; text-align:right; font-weight:700; font-size:15px; color:#1f1f1f;">₹${amt.toLocaleString('en-IN')}</td>
+                            <td colspan="3" style="padding:12px; border:1px solid #e0e2e0; font-size:14px; color:#1f1f1f;">${bill.details || 'Ledger Entry / Goods'}</td>
+                            <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:700; font-size:14px; color:#1f1f1f;">₹${amt.toLocaleString('en-IN')}</td>
                         </tr>
                     `;
                 }
 
-                // Page Break: यह कोड हर बिल को एक अलग A4 पन्ने (Page) पर धकेल देगा!
+                // Page Break
                 let pageBreak = index < myBills.length - 1 ? 'page-break-after: always; break-after: page;' : '';
 
-                // एक सिंगल अल्ट्रा-प्रीमियम A4 बिल का डिज़ाइन
                 allBillsHtml += `
                     <div style="background:white; padding:40px; font-family:'Product Sans', 'Inter', sans-serif; color:black; width:100%; max-width:720px; min-height:1020px; margin: 0 auto; box-sizing:border-box; border:1px solid #e0e2e0; margin-bottom: 20px; position:relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); ${pageBreak}">
                         
@@ -2118,12 +2124,14 @@ window.showTargetCelebration = function() {
                             <p style="margin:0; font-size:22px; font-weight:700; color:#1f1f1f;">${bill.name}</p>
                         </div>
 
-                        <!-- Items Table -->
+                        <!-- 4-COLUMN ITEMS TABLE -->
                         <table style="width:100%; border-collapse:collapse; margin-bottom:40px;">
                             <thead>
                                 <tr style="background:#0a56d0; color:white;">
-                                    <th style="padding:14px 15px; text-align:left; font-size:14px; border-radius:8px 0 0 0;">Description / Items</th>
-                                    <th style="padding:14px 15px; text-align:right; font-size:14px; border-radius:0 8px 0 0;">Total Amount</th>
+                                    <th style="padding:12px; text-align:left; font-size:14px; border:1px solid #0a56d0;">Product Details</th>
+                                    <th style="padding:12px; text-align:center; font-size:14px; border:1px solid #0a56d0;">Qty</th>
+                                    <th style="padding:12px; text-align:right; font-size:14px; border:1px solid #0a56d0;">Rate</th>
+                                    <th style="padding:12px; text-align:right; font-size:14px; border:1px solid #0a56d0;">Total Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -2154,26 +2162,22 @@ window.showTargetCelebration = function() {
                 `;
             });
 
-            // 2. प्रीव्यू एरिया में सारे A4 बिल्स डाल दें
             let renderArea = document.getElementById('preview-render-area');
             renderArea.innerHTML = `<div id="all-a4-bills-container" style="background:#e0e2e0; padding:20px 0;">${allBillsHtml}</div>`; 
             
-            // 3. डाउनलोड और शेयर के लिए सेटिंग सेट करें
             window.currentReportElemId = 'all-a4-bills-container'; 
             window.currentReportFilename = `Invoices_${new Date().getTime()}.pdf`; 
             
-            // 4. डेट वाला डब्बा छुपाएं 
             let filterBox = document.getElementById('date-filter-box');
             if(filterBox) filterBox.style.display = 'none';
             
-            // 5. Zoom थोड़ा कम कर देते हैं ताकि A4 पेज मोबाइल स्क्रीन पर एकदम फिट और सुंदर दिखे
             window.currentZoom = 0.45;
             renderArea.style.zoom = window.currentZoom;
 
-            // 6. सीधा Preview Page खोलें! (जिसके नीचे Share/Download बटन पहले से लगे हुए हैं)
             openPage('report-preview-page');
         }
-               // ================= TOGGLE DATE FILTER BOX =================
+        
+        // ================= TOGGLE DATE FILTER BOX =================
         window.toggleDateFilter = function() {
             let filterBox = document.getElementById('date-filter-box');
             if (filterBox.style.display === 'none') {

@@ -1943,29 +1943,21 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             document.getElementById('pdf-total').innerText = "₹ " + parseFloat(currentEntryData.amount).toLocaleString('en-IN');
 
             // 4. ✨ SMART QR CODE LOGIC ✨
+            // अगर एडमिन ने Settings में अपना UPI ID सेट किया हुआ है, तो ही QR Code दिखेगा
             let qrContainer = document.getElementById('pdf-qr-container');
             let upiId = localStorage.getItem('v_adminUpi'); 
             
             if(upiId && currentEntryData.amount > 0) {
-                // 1. UPI ID को एकदम शुद्ध करना (ताकि गलती से स्पेस न रहे)
-                let cleanUpiId = upiId.trim().replace(/\s/g, '');
-                
-                // 2. Amount को शुद्ध नंबर में बदलना (PhonePe/GPay को बिना कॉमा वाला .00 फॉर्मेट चाहिए)
-                let cleanAmount = parseFloat(currentEntryData.amount).toFixed(2);
-                
-                // 3. बिज़नेस का नाम (स्पेस को %20 में बदलने के लिए)
-                let bizName = encodeURIComponent(localStorage.getItem('v_adminName') || "Vandana Enterprises");
-
-                // 4. एकदम सटीक UPI फॉर्मेट स्ट्रिंग
-                let upiString = `upi://pay?pa=${cleanUpiId}&pn=${bizName}&am=${cleanAmount}&cu=INR`;
-                
-                // 5. QR Code जनरेट करना
+                let upiString = `upi://pay?pa=${upiId}&pn=Vandana%20Enterprises&am=${currentEntryData.amount}&cu=INR`;
+                // फ्री और फ़ास्ट API जो तुरंत QR Code की इमेज बना देगी
                 document.getElementById('pdf-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(upiString)}&margin=0`;
-                
                 qrContainer.style.display = 'block';
             } else {
+                // अगर UPI नहीं डाला है, तो QR Code का डब्बा गायब हो जाएगा
                 qrContainer.style.display = 'none';
-            }        
+            }
+        }
+        
         window.downloadPDFFromEntry = function() { if(!currentEntryData) return; preparePDFData(); let elem = document.getElementById('pdf-invoice-template'); let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; alert("Generating PDF... Please wait a moment."); html2pdf().set(opt).from(elem).save(); }
         window.shareCurrentEntryPDF = async function() { if(!currentEntryData) return; preparePDFData(); let elem = document.getElementById('pdf-invoice-template'); let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; try { alert("Preparing PDF for direct sharing... this may take a few seconds."); let pdfBlob = await html2pdf().set(opt).from(elem).output('blob'); let file = new File([pdfBlob], opt.filename, { type: 'application/pdf' }); if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'Invoice from Vandana Enterprises', text: `Please find attached your invoice (Total: ₹${currentEntryData.amount}).` }); } else { alert("Your browser does not support direct PDF sharing. Downloading instead..."); html2pdf().set(opt).from(elem).save(); } } catch(e) { console.error(e); } }
    // ================= AUTO-LOGOUT SYSTEM (30 MIN INACTIVITY) =================

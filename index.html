@@ -1815,30 +1815,35 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.openPhonebook = async function(nameId, phoneId) { if ('contacts' in navigator) { try { const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false }); if (contacts.length > 0) { if (contacts[0].name) document.getElementById(nameId).value = contacts[0].name[0]; if (contacts[0].tel) document.getElementById(phoneId).value = String(contacts[0].tel[0]).replace(/\D/g, '').slice(-10); } } catch(e) {} } }
         
         function preparePDFData() {
-            // एडमिन की डिटेल्स भरें
+            // 1. एडमिन और कस्टमर की डिटेल्स
             document.getElementById('pdf-biz-name').innerText = localStorage.getItem('v_adminName') || "Vandana Enterprises"; 
             document.getElementById('pdf-biz-phone').innerText = "Phone: +91 " + (localStorage.getItem('v_adminPhone') || "----------"); 
-            
             let gst = localStorage.getItem('v_adminGst');
             document.getElementById('pdf-biz-gst').innerText = gst ? "GSTIN: " + gst : "";
             
-            // कस्टमर और बिल की डिटेल्स
             let d = new Date(currentEntryData.date); 
             document.getElementById('pdf-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleDateString('en-GB'); 
             document.getElementById('pdf-bill-no').innerText = currentEntryData.billNo || currentEntryData.key.substring(1, 8).toUpperCase(); 
             document.getElementById('pdf-cust-name').innerText = currentEntryData.name;
             
-            // टेबल लॉजिक
+            // 2. टेबल लॉजिक (With Sr. No. & Total Qty)
+            let totalBoxQty = 0;
+            
             if(currentEntryData.cart && currentEntryData.cart.length > 0) {
                 let html = ""; 
-                currentEntryData.cart.forEach(item => { 
+                currentEntryData.cart.forEach((item, index) => { 
+                    totalBoxQty += parseInt(item.qty) || 0; // टोटल बॉक्स गिनना
+                    
                     html += `
                         <tr>
+                            <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:14px; color:#1f1f1f; font-weight:600;">
+                                ${index + 1}
+                            </td>
                             <td style="padding:12px; border:1px solid #e0e2e0;">
                                 <strong style="font-size:14px; color:#1f1f1f;">${item.cat}</strong><br>
                                 <span style="font-size:12px; color:#718096;">Shade / Color: ${item.shade}</span>
                             </td>
-                            <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:14px; color:#1f1f1f;">
+                            <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:14px; color:#1f1f1f; font-weight:600;">
                                 ${item.qty} Box
                             </td>
                             <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-size:14px; color:#1f1f1f;">
@@ -1850,11 +1855,22 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                         </tr>
                     `; 
                 }); 
+                
+                // एकदम नीचे Total Qty का बॉक्स
+                html += `
+                    <tr style="background:#f8fafd; font-weight:bold;">
+                        <td colspan="2" style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-size:14px; color:#0a56d0;">Total Quantity:</td>
+                        <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:15px; color:#0a56d0; font-weight:800;">${totalBoxQty} Box</td>
+                        <td colspan="2" style="padding:12px; border:1px solid #e0e2e0;"></td>
+                    </tr>
+                `;
+
                 document.getElementById('pdf-cart-body').innerHTML = html;
                 
-                // 4-COLUMN HEADER (बिना हिंदी के)
+                // 5-COLUMN HEADER
                 document.getElementById('pdf-table-header').innerHTML = `
                     <tr style="background:#0a56d0; color:white;">
+                        <th style="padding:12px; text-align:center; font-size:14px; border:1px solid #0a56d0; width:60px;">Sr. No.</th>
                         <th style="padding:12px; text-align:left; font-size:14px; border:1px solid #0a56d0;">Product Details</th>
                         <th style="padding:12px; text-align:center; font-size:14px; border:1px solid #0a56d0;">Qty</th>
                         <th style="padding:12px; text-align:right; font-size:14px; border:1px solid #0a56d0;">Rate</th>
@@ -1862,24 +1878,42 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     </tr>
                 `;
             } else {
-                // अगर आइटम नहीं हैं (सिर्फ़ लेजर एंट्री है)
+                // लेजर एंट्री
                 document.getElementById('pdf-table-header').innerHTML = `
                     <tr style="background:#0a56d0; color:white;">
+                        <th style="padding:12px; text-align:center; font-size:14px; border:1px solid #0a56d0; width:60px;">Sr. No.</th>
                         <th style="padding:12px; text-align:left; font-size:14px; border:1px solid #0a56d0;" colspan="3">Description / Details</th>
                         <th style="padding:12px; text-align:right; font-size:14px; border:1px solid #0a56d0;">Total Amount</th>
                     </tr>
                 `; 
                 document.getElementById('pdf-cart-body').innerHTML = `
                     <tr>
+                        <td style="padding:16px 12px; border:1px solid #e0e2e0; text-align:center; font-weight:bold;">1</td>
                         <td colspan="3" style="padding:16px 12px; border:1px solid #e0e2e0; font-size:14px; color:#1f1f1f;">${currentEntryData.details || 'Ledger Entry'}</td>
                         <td style="padding:16px 12px; text-align:right; border:1px solid #e0e2e0; font-size:14px; font-weight:bold; color:#1f1f1f;">₹${parseFloat(currentEntryData.amount).toLocaleString('en-IN')}</td>
                     </tr>
                 `;
             }
-            // टोटल अमाउंट भरें
+            
+            // 3. ग्रैंड टोटल अमाउंट
             document.getElementById('pdf-total').innerText = "₹ " + parseFloat(currentEntryData.amount).toLocaleString('en-IN');
-        }
 
+            // 4. ✨ SMART QR CODE LOGIC ✨
+            // अगर एडमिन ने Settings में अपना UPI ID सेट किया हुआ है, तो ही QR Code दिखेगा
+            let qrContainer = document.getElementById('pdf-qr-container');
+            let upiId = localStorage.getItem('v_adminUpi'); 
+            
+            if(upiId && currentEntryData.amount > 0) {
+                let upiString = `upi://pay?pa=${upiId}&pn=Vandana%20Enterprises&am=${currentEntryData.amount}&cu=INR`;
+                // फ्री और फ़ास्ट API जो तुरंत QR Code की इमेज बना देगी
+                document.getElementById('pdf-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(upiString)}&margin=0`;
+                qrContainer.style.display = 'block';
+            } else {
+                // अगर UPI नहीं डाला है, तो QR Code का डब्बा गायब हो जाएगा
+                qrContainer.style.display = 'none';
+            }
+        }
+        
         window.downloadPDFFromEntry = function() { if(!currentEntryData) return; preparePDFData(); let elem = document.getElementById('pdf-invoice-template'); let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; alert("Generating PDF... Please wait a moment."); html2pdf().set(opt).from(elem).save(); }
         window.shareCurrentEntryPDF = async function() { if(!currentEntryData) return; preparePDFData(); let elem = document.getElementById('pdf-invoice-template'); let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; try { alert("Preparing PDF for direct sharing... this may take a few seconds."); let pdfBlob = await html2pdf().set(opt).from(elem).output('blob'); let file = new File([pdfBlob], opt.filename, { type: 'application/pdf' }); if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'Invoice from Vandana Enterprises', text: `Please find attached your invoice (Total: ₹${currentEntryData.amount}).` }); } else { alert("Your browser does not support direct PDF sharing. Downloading instead..."); html2pdf().set(opt).from(elem).save(); } } catch(e) { console.error(e); } }
    // ================= AUTO-LOGOUT SYSTEM (30 MIN INACTIVITY) =================

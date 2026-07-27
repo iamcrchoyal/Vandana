@@ -1943,26 +1943,19 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             document.getElementById('pdf-total').innerText = "₹ " + parseFloat(currentEntryData.amount).toLocaleString('en-IN');
 
             // 4. ✨ SMART QR CODE LOGIC ✨
-            // अगर एडमिन ने Settings में अपना UPI ID सेट किया हुआ है, तो ही QR Code दिखेगा
             let qrContainer = document.getElementById('pdf-qr-container');
             let upiId = localStorage.getItem('v_adminUpi'); 
             
             if(upiId && currentEntryData.amount > 0) {
-                // Amount ko bina comma ke proper number banaya hai
                 let safeAmount = parseFloat(currentEntryData.amount).toFixed(2);
                 let safeName = encodeURIComponent("Vandana Enterprises");
-                
-                // Proper UPI URL banaya
                 let upiString = `upi://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
-                
-                // &ecc=H add kiya taaki VE logo hone par bhi 100% scan ho, aur size 200x200 kiya
                 document.getElementById('pdf-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=H&margin=0&data=${encodeURIComponent(upiString)}`;
-                
                 qrContainer.style.display = 'block';
             } else {
-                // अगर UPI नहीं डाला है, तो QR Code का डब्बा गायब हो जाएगा
                 qrContainer.style.display = 'none';
             }
+        }
         
         window.downloadPDFFromEntry = function() { 
             if(!currentEntryData) return; 
@@ -1970,21 +1963,15 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let elem = document.getElementById('pdf-invoice-template'); 
             let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
             alert("Generating PDF... Please wait a moment."); 
-            
-            // QR image load hone ka time dene ke liye 1.5 second ka delay
-            setTimeout(() => {
-                html2pdf().set(opt).from(elem).save(); 
-            }, 1500); 
+            setTimeout(() => { html2pdf().set(opt).from(elem).save(); }, 1500); 
         }
+        
         window.shareCurrentEntryPDF = async function() { 
             if(!currentEntryData) return; 
             preparePDFData(); 
             let elem = document.getElementById('pdf-invoice-template'); 
             let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
-            
             alert("Preparing PDF for direct sharing... Please wait 2 seconds."); 
-            
-            // QR image load hone ka time dene ke liye 1.5 second ka delay
             setTimeout(async () => {
                 try { 
                     let pdfBlob = await html2pdf().set(opt).from(elem).output('blob'); 

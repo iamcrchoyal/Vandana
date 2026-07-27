@@ -873,6 +873,13 @@
                 <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="ap-phone"></div>
                 <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-control" id="ap-email"></div>
                 <div class="form-group"><label class="form-label">GST Number</label><input type="text" class="form-control" id="ap-gst" style="text-transform:uppercase;"></div>
+
+                  <!-- UPI ID BOX FOR QR CODE -->
+                <div class="form-group">
+                    <label class="form-label">UPI ID (For QR Code in Bills)</label>
+                    <input type="text" class="form-control" id="ap-upi" placeholder="6378481623-7@ybl">
+                </div>
+                
                 <div class="form-group"><label class="form-label">Full Address</label><textarea class="form-control" id="ap-address" rows="3"></textarea></div>
                 <button class="btn-submit" onclick="saveAdminProfile()" style="border-radius:20px;">💾 Save Changes</button>
             </div>
@@ -1473,9 +1480,46 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
         window.openAbsentCustomers = function() { let today = document.getElementById('dash-date-picker').value; let activeToday = new Set(); allLedgerData.forEach(entry => { try { let d = new Date(entry.date).toISOString().split('T')[0]; if(d === today) activeToday.add(entry.name); }catch(e){} }); let absentList = globalCustomers.filter(c => !activeToday.has(c.name) && (c.type === 'Customer' || !c.type)); let html = ""; if(absentList.length === 0) { html = "<div style='padding:40px 20px; text-align:center; color:var(--text-muted); font-size:14px;'>Wow! Every customer has an entry today. 🎉</div>"; } else { absentList.forEach(c => { let initial = c.name ? c.name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = c.pic || adminPic; let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; let msg = encodeURIComponent(`नमस्ते ${c.name} जी, वंदना एंटरप्राइजेज से। आज आप शॉप पर नहीं आए, अगर कोई आर्डर या रिक्वायरमेंट हो तो जरूर बताएं।`); html += `<div class="kb-list-item"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${c.name}</div><div class="kb-time">📱 ${c.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:0 16px; flex-direction:row; align-items:center; gap:10px; border-left:none; background:transparent;"><a href="tel:${c.phone}" style="text-decoration:none; background:#e8f0fe; color:var(--primary); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">call</span></a><a href="#" onclick="window.open('https://wa.me/91${c.phone}?text=${msg}', '_blank')" style="text-decoration:none; background:#e6f4ea; color:var(--success); padding:8px; border-radius:50%; display:flex; justify-content:center; align-items:center;"><span class="material-symbols-rounded" style="font-size:18px;">chat</span></a></div></div>`; }); } document.getElementById('absent-list-container').innerHTML = html; openPage('absent-page'); }
 
-        function loadAdminProfile() { let pName = localStorage.getItem('v_adminName') || "Admin"; let pPhone = localStorage.getItem('v_adminPhone') || ""; let pEmail = localStorage.getItem('v_adminEmail') || "admin@vandana.com"; let pGst = localStorage.getItem('v_adminGst') || ""; let pAddr = localStorage.getItem('v_adminAddr') || ""; let pPic = localStorage.getItem('v_adminPic'); if(document.getElementById('ap-name')) document.getElementById('ap-name').value = pName; if(document.getElementById('ap-phone')) document.getElementById('ap-phone').value = pPhone; if(document.getElementById('ap-email')) document.getElementById('ap-email').value = pEmail; if(document.getElementById('ap-gst')) document.getElementById('ap-gst').value = pGst; if(document.getElementById('ap-address')) document.getElementById('ap-address').value = pAddr; if(document.getElementById('pm-email-display')) document.getElementById('pm-email-display').innerText = pEmail; if(pPic) { if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').src = pPic; document.getElementById('pm-avatar-img').style.display = 'block'; document.getElementById('pm-avatar-text').style.display = 'none'; } if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').src = pPic; document.getElementById('top-avatar-img').style.display = 'block'; document.getElementById('top-avatar-text').style.display = 'none'; } } else { let initial = pName.charAt(0).toUpperCase(); if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').style.display = 'none'; document.getElementById('pm-avatar-text').innerText = initial; document.getElementById('pm-avatar-text').style.display = 'block'; } if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').style.display = 'none'; document.getElementById('top-avatar-text').innerText = initial; document.getElementById('top-avatar-text').style.display = 'flex'; } } updateGreeting(); }
-        window.saveAdminProfile = function() { localStorage.setItem('v_adminName', document.getElementById('ap-name').value); localStorage.setItem('v_adminPhone', document.getElementById('ap-phone').value); localStorage.setItem('v_adminEmail', document.getElementById('ap-email').value); localStorage.setItem('v_adminGst', document.getElementById('ap-gst').value.toUpperCase()); localStorage.setItem('v_adminAddr', document.getElementById('ap-address').value); loadAdminProfile(); alert("Profile Saved Successfully!"); }
+        function loadAdminProfile() { 
+            let pName = localStorage.getItem('v_adminName') || "Admin"; 
+            let pPhone = localStorage.getItem('v_adminPhone') || ""; 
+            let pEmail = localStorage.getItem('v_adminEmail') || "admin@vandana.com"; 
+            let pGst = localStorage.getItem('v_adminGst') || ""; 
+            let pAddr = localStorage.getItem('v_adminAddr') || ""; 
+            let pUpi = localStorage.getItem('v_adminUpi') || ""; // ✨ UPI ID LOAD
+            let pPic = localStorage.getItem('v_adminPic'); 
 
+            if(document.getElementById('ap-name')) document.getElementById('ap-name').value = pName; 
+            if(document.getElementById('ap-phone')) document.getElementById('ap-phone').value = pPhone; 
+            if(document.getElementById('ap-email')) document.getElementById('ap-email').value = pEmail; 
+            if(document.getElementById('ap-gst')) document.getElementById('ap-gst').value = pGst; 
+            if(document.getElementById('ap-address')) document.getElementById('ap-address').value = pAddr; 
+            if(document.getElementById('ap-upi')) document.getElementById('ap-upi').value = pUpi; // ✨ UPI ID SET
+
+            if(document.getElementById('pm-email-display')) document.getElementById('pm-email-display').innerText = pEmail; 
+            
+            if(pPic) { 
+                if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').src = pPic; document.getElementById('pm-avatar-img').style.display = 'block'; document.getElementById('pm-avatar-text').style.display = 'none'; } 
+                if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').src = pPic; document.getElementById('top-avatar-img').style.display = 'block'; document.getElementById('top-avatar-text').style.display = 'none'; } 
+            } else { 
+                let initial = pName.charAt(0).toUpperCase(); 
+                if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').style.display = 'none'; document.getElementById('pm-avatar-text').innerText = initial; document.getElementById('pm-avatar-text').style.display = 'block'; } 
+                if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').style.display = 'none'; document.getElementById('top-avatar-text').innerText = initial; document.getElementById('top-avatar-text').style.display = 'flex'; } 
+            } 
+            updateGreeting(); 
+        }
+
+        window.saveAdminProfile = function() { 
+            localStorage.setItem('v_adminName', document.getElementById('ap-name').value); 
+            localStorage.setItem('v_adminPhone', document.getElementById('ap-phone').value); 
+            localStorage.setItem('v_adminEmail', document.getElementById('ap-email').value); 
+            localStorage.setItem('v_adminGst', document.getElementById('ap-gst').value.toUpperCase()); 
+            localStorage.setItem('v_adminAddr', document.getElementById('ap-address').value); 
+            localStorage.setItem('v_adminUpi', document.getElementById('ap-upi').value.trim()); // ✨ UPI ID SAVE
+            
+            loadAdminProfile(); 
+            alert("Profile Saved Successfully!"); 
+        }
         window.handleAdminPic = function(event) { let file = event.target.files[0]; if(file) { let reader = new FileReader(); reader.onload = function(e) { document.getElementById('crop-modal').style.display = 'flex'; let img = document.getElementById('crop-image'); img.src = e.target.result; if(cropper) cropper.destroy(); setTimeout(() => { cropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, background: false }); }, 200); }; reader.readAsDataURL(file); } }
         window.cancelCrop = function() { document.getElementById('crop-modal').style.display = 'none'; }
         window.applyCrop = function() { if(!cropper) return; let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 }); localStorage.setItem('v_adminPic', canvas.toDataURL('image/jpeg', 0.8)); loadAdminProfile(); document.getElementById('crop-modal').style.display = 'none'; }

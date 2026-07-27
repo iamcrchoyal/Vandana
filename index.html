@@ -1622,7 +1622,67 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             // ==========================================================
         }
         
-        window.openLedgerDetail = function(name, phone) { currentPartyName = name; currentPartyPhone = phone || ""; sessionStorage.setItem('v_currentPartyName', name); sessionStorage.setItem('v_currentPartyPhone', phone || ""); document.getElementById('l-deep-name').innerText = name; document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#"; document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); let customer = globalCustomers.find(c => c.name === name); let initial = name ? name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = customer && customer.pic ? customer.pic : adminPic; if(custPic) { document.getElementById('l-deep-avatar-text').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; } else { document.getElementById('l-deep-avatar-text').innerHTML = initial; } renderLedgerEntries(name); openPage('ledger-deep-page'); }
+        window.openLedgerDetail = function(name, phone) { 
+            currentPartyName = name; 
+            currentPartyPhone = phone || ""; 
+            sessionStorage.setItem('v_currentPartyName', name); 
+            sessionStorage.setItem('v_currentPartyPhone', phone || ""); 
+            
+            document.getElementById('l-deep-name').innerText = name; 
+            document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#"; 
+            
+            // SMART BUTTON LOGIC: Admin sees Reminder, Customer sees Pay Now (PhonePe)
+            let waBtn = document.getElementById('l-wa-btn');
+            let isAdmin = (window.currentUserRole === 'admin');
+            
+            if (isAdmin) {
+                // एडमिन के लिए Reminder बटन
+                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;">chat</span> Reminder`;
+                waBtn.style.color = '#146c2e';
+                waBtn.style.backgroundColor = 'white';
+                waBtn.style.borderColor = '#e0e2e0';
+                waBtn.onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); 
+            } else {
+                // कस्टमर के लिए PhonePe "Pay Now" बटन
+                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;">payments</span> Pay Now`;
+                waBtn.style.color = 'white';
+                waBtn.style.backgroundColor = '#5f259f'; // PhonePe Purple Color
+                waBtn.style.borderColor = '#5f259f';
+                
+                waBtn.onclick = () => {
+                    let upiId = localStorage.getItem('v_adminUpi');
+                    if (!upiId) return alert("दुकानदार ने अभी तक अपना UPI सेट नहीं किया है।");
+                    
+                    let netBal = window.globalBalances[name] || 0;
+                    if (netBal <= 0) return alert("आपकी कोई उधारी नहीं है! (No Due Payment)");
+                    
+                    let safeAmount = parseFloat(netBal).toFixed(2);
+                    let safeName = encodeURIComponent("Vandana Enterprises");
+                    
+                    // 1st Priority: सीधा PhonePe ऐप खोलना
+                    window.location.href = `phonepe://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
+                    
+                    // 2nd Priority: अगर फ़ोन में PhonePe नहीं है, तो GPay या Paytm का ऑप्शन खोलना
+                    setTimeout(() => {
+                        window.location.href = `upi://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
+                    }, 500);
+                };
+            }
+
+            let customer = globalCustomers.find(c => c.name === name); 
+            let initial = name ? name.substring(0,2).toUpperCase() : "CU"; 
+            let adminPic = localStorage.getItem('v_adminPic'); 
+            let custPic = customer && customer.pic ? customer.pic : adminPic; 
+            
+            if(custPic) { 
+                document.getElementById('l-deep-avatar-text').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; 
+            } else { 
+                document.getElementById('l-deep-avatar-text').innerHTML = initial; 
+            } 
+            renderLedgerEntries(name); 
+            openPage('ledger-deep-page'); 
+        }
+        
         window.saveCalculatorEntry = function() { let amount = eval(window.calcValue) || 0; if(amount <= 0) return alert("Enter valid amount!"); let dateVal = document.getElementById('calc-date').value; if(!dateVal) dateVal = new Date().toISOString().split('T')[0]; if(window.isEditingEntry && currentEntryData) { update(ref(db, 'Ledger/' + currentEntryData.key), { amount: amount, details: document.getElementById('calc-details').value || "App Entry", type: window.calcType, date: new Date(dateVal).toISOString() }); window.isEditingEntry = false; currentEntryData = null; } else { push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: window.calcType, amount: amount, details: document.getElementById('calc-details').value || "App Entry" }); } closePage('calculator-page'); }
 
         window.openEntryDetails = function(key) { 

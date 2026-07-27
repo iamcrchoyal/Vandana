@@ -343,8 +343,8 @@
 
     <!-- HIDDEN PDF TEMPLATES FOR REPORTS & INVOICE -->
     <div id="pdf-report-container" style="position:fixed; left:-9999px; top:0;">
-        <!-- ====== 📄 NEW SAAS STYLE SINGLE INVOICE TEMPLATE ====== -->
-        <div id="pdf-invoice-template" style="background:white; padding:40px; font-family:'Product Sans', 'Inter', sans-serif; color:black; width:100%; max-width:720px; min-height:1020px; margin: 0 auto; box-sizing:border-box; border:1px solid #e0e2e0; position:relative;">
+        <!-- ====== 📄 NEW SAAS STYLE SINGLE INVOICE TEMPLATE (WITH QR & NO OVERLAP) ====== -->
+        <div id="pdf-invoice-template" style="background:white; padding:40px; font-family:'Product Sans', 'Inter', sans-serif; color:black; width:100%; max-width:720px; min-height:1020px; margin: 0 auto; box-sizing:border-box; border:1px solid #e0e2e0; display:flex; flex-direction:column;">
             
             <!-- Header Section -->
             <div style="display:flex; justify-content:space-between; border-bottom:3px solid #0a56d0; padding-bottom:20px; margin-bottom:30px;">
@@ -366,8 +366,8 @@
                 <p style="margin:0; font-size:22px; font-weight:700; color:#1f1f1f;" id="pdf-cust-name">Customer Name</p>
             </div>
 
-            <!-- Items Table -->
-            <table style="width:100%; border-collapse:collapse; margin-bottom:40px;">
+            <!-- Items Table (With Sr. No) -->
+            <table style="width:100%; border-collapse:collapse; margin-bottom:30px;">
                 <thead id="pdf-table-header">
                     <!-- Dynamic Headers will come here via JS -->
                 </thead>
@@ -376,17 +376,25 @@
                 </tbody>
             </table>
 
-            <!-- Grand Total Section -->
-            <div style="display:flex; justify-content:flex-end; margin-bottom:40px;">
-                <div style="width:350px;">
-                    <div style="display:flex; justify-content:space-between; padding:18px 20px; background:#f0f4f9; font-weight:800; font-size:24px; border-radius:12px; border:1px solid #c2e7ff; color:#0a56d0;">
-                        <span>Grand Total:</span><span id="pdf-total">₹ 0</span>
-                    </div>
+            <!-- Grand Total & QR Code Professional Box -->
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#f0f4f9; border:1px solid #c2e7ff; border-radius:16px; padding:25px; margin-bottom:40px;">
+                
+                <!-- Left Side: QR Code -->
+                <div id="pdf-qr-container" style="text-align:center; position:relative; width:110px; height:110px; background:white; padding:8px; border-radius:12px; border:1px solid #e0e2e0; box-shadow:0 4px 10px rgba(0,0,0,0.05); display:none;">
+                    <img id="pdf-qr-img" src="" style="width:100%; height:100%; display:block;">
+                    <!-- 'VE' Center Badge -->
+                    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:3px 6px; font-weight:900; color:#0a56d0; border-radius:6px; font-size:15px; box-shadow:0 0 8px rgba(0,0,0,0.2);">VE</div>
+                </div>
+                
+                <!-- Right Side: Grand Total -->
+                <div style="text-align:right; flex:1;">
+                    <div style="font-size:14px; color:#444746; font-weight:600; text-transform:uppercase; margin-bottom:8px; letter-spacing:1px;">Grand Total Amount</div>
+                    <div style="font-size:42px; font-weight:800; color:#0a56d0; letter-spacing:-1px;" id="pdf-total">₹ 0</div>
                 </div>
             </div>
 
-            <!-- Footer Section -->
-            <div style="position:absolute; bottom:40px; left:40px; right:40px; border-top:2px dashed #e0e2e0; padding-top:20px; display:flex; justify-content:space-between; align-items:flex-end;">
+            <!-- Footer Section (margin-top:auto prevents overlapping forever!) -->
+            <div style="margin-top:auto; border-top:2px dashed #e0e2e0; padding-top:20px; display:flex; justify-content:space-between; align-items:flex-end;">
                 <div style="color:#718096; font-size:13px; font-weight:500;">
                     <p style="margin:0 0 4px 0; color:#1f1f1f; font-weight:600; font-size:15px;">Thank you for your business!</p>
                     <p style="margin:0;">Report generated via Vandana ERP Software</p>
@@ -396,7 +404,6 @@
                 </div>
             </div>
         </div>
-
         <div id="pdf-statement-template" style="background:white; padding:30px; font-family:Arial, sans-serif; color:black; width:100%; max-width:700px; box-sizing:border-box;">
             <div style="text-align:center; border-bottom:2px solid #0a56d0; padding-bottom:15px; margin-bottom:20px;">
                 <h1 style="color:#0a56d0; margin:0; font-size:26px;">Vandana Enterprises</h1>

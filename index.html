@@ -2045,89 +2045,65 @@ window.showTargetCelebration = function() {
             area.style.zoom = window.currentZoom;
         }
 
-      // ================= BULK PDF DOWNLOAD (100% WORKING VERSION) =================
+      // ================= BULK PDF DOWNLOAD (SAAS LEVEL PREVIEW) =================
         window.previewBulkPDF = function() {
-            try { 
-                if (!window.jspdf) {
-                    alert("PDF सिस्टम लोड नहीं हुआ! कृपया पेज को एक बार रिफ्रेश करें।");
-                    return;
-                }
-
-                // जादुई ट्रिक: हम वही बिल उठाएंगे जो कस्टमर को स्क्रीन पर दिख रहे हैं
-                let myBills = window.currentBulkBills || [];
-
-                if (myBills.length === 0) {
-                    alert("इस तारीख के बीच आपका कोई बिल नहीं है!");
-                    return;
-                }
-
-                const { jsPDF } = window.jspdf;
-                let doc = new jsPDF('p', 'mm', 'a4'); 
-                let upiId = localStorage.getItem('v_adminUpi'); 
-                
-                // कस्टमर का नाम निकालना
-                let myCustName = window.currentUserName || "Customer";
-                if (globalCustomers && globalCustomers.length > 0) {
-                    myCustName = globalCustomers[0].name;
-                }
-
-                for (let i = 0; i < myBills.length; i++) {
-                    let bill = myBills[i];
-                    
-                    if (i > 0) doc.addPage();
-
-                    // --- Header ---
-                    doc.setFontSize(22);
-                    doc.setTextColor(0, 0, 0);
-                    doc.text("VANDANA ENTERPRISES", 105, 30, { align: "center" });
-                    
-                    doc.setFontSize(14);
-                    doc.text("INVOICE", 105, 40, { align: "center" });
-
-                    // --- Bill Details ---
-                    let d = new Date(bill.date);
-                    let dateStr = isNaN(d) ? bill.date : d.toLocaleDateString('en-GB');
-
-                    doc.setFontSize(12);
-                    doc.text(`Bill Date: ${dateStr}`, 20, 60);
-                    doc.text(`Bill No: ${bill.billNo || '-'}`, 140, 60);
-                    doc.text(`Customer Name: ${bill.name}`, 20, 70);
-                    doc.text(`Details: ${bill.details || 'Goods'}`, 20, 80);
-                    
-                    // --- Amount ---
-                    doc.setFontSize(16);
-                    doc.text(`Total Bill Amount: Rs. ${parseFloat(bill.amount).toLocaleString('en-IN')}`, 20, 100);
-
-                    // --- Payment Link ---
-                    if (upiId) {
-                        let upiLink = `upi://pay?pa=${upiId}&pn=Vandana%20Enterprises&am=${bill.amount}&cu=INR`;
-                        doc.setFontSize(16);
-                        doc.setTextColor(255, 0, 0); 
-                        doc.textWithLink("👉 CLICK HERE TO PAY VIA PHONEPE / GPAY", 105, 140, { url: upiLink, align: "center" });
-                        
-                        doc.setFontSize(10);
-                        doc.setTextColor(100, 100, 100); 
-                        doc.text("(Or click this text directly from your phone to pay)", 105, 148, { align: "center" });
-                    }
-                    
-                    // --- Footer ---
-                    doc.setFontSize(10);
-                    doc.setTextColor(0, 0, 0);
-                    doc.text(`Page ${i + 1} of ${myBills.length}`, 105, 280, { align: "center" });
-                }
-
-                doc.save(`Vandana_Bills_${myCustName}.pdf`);
-                
-                // डाउनलोड होने के बाद डब्बा वापस छुपा दें
-                let filterBox = document.getElementById('date-filter-box');
-                if(filterBox) filterBox.style.display = 'none';
-
-            } catch (error) {
-                alert("कुछ तकनीकी गलती हुई है: " + error.message);
-                console.error(error);
+            let myBills = window.currentBulkBills || [];
+            
+            if (myBills.length === 0) {
+                alert("इस तारीख के बीच आपका कोई बिल नहीं है!");
+                return;
             }
+
+            let fromDate = document.getElementById('mb-from').value;
+            let toDate = document.getElementById('mb-to').value;
+            
+            // 1. डेट रेंज सेट करें
+            let dRangeStr = "";
+            if(fromDate && toDate) {
+                dRangeStr = `${new Date(fromDate).toLocaleDateString('en-GB')}  To  ${new Date(toDate).toLocaleDateString('en-GB')}`;
+            } else {
+                dRangeStr = `Till ${new Date().toLocaleDateString('en-GB')}`;
+            }
+            document.getElementById('pbb-date-range').innerText = dRangeStr;
+
+            // 2. टोटल अमाउंट और गिनती
+            let totalAmount = 0;
+            let tableHtml = "";
+            
+            myBills.forEach(bill => {
+                let amt = parseFloat(bill.amount) || 0;
+                totalAmount += amt;
+                let d = new Date(bill.date);
+                let dateStr = isNaN(d) ? bill.date : d.toLocaleDateString('en-GB');
+                
+                tableHtml += `
+                    <tr>
+                        <td style="padding:12px; border:1px solid #e0e2e0;">${dateStr}</td>
+                        <td style="padding:12px; border:1px solid #e0e2e0; font-weight:bold;">${bill.billNo || '-'}</td>
+                        <td style="padding:12px; border:1px solid #e0e2e0;"><span style="font-size:11px; color:#444746;">${bill.details || 'Goods'}</span></td>
+                        <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:bold; color:#146c2e;">₹${amt.toLocaleString('en-IN')}</td>
+                    </tr>
+                `;
+            });
+
+            // 3. HTML टेम्पलेट में डेटा भरें
+            document.getElementById('pbb-table-body').innerHTML = tableHtml;
+            document.getElementById('pbb-count').innerText = myBills.length;
+            document.getElementById('pbb-value').innerText = `₹ ${totalAmount.toLocaleString('en-IN')}`;
+
+            // 4. प्रीव्यू पेज पर भेजें (SaaS Style)
+            let previewHtml = document.getElementById('pdf-bulk-bills-template').innerHTML; 
+            document.getElementById('preview-render-area').innerHTML = previewHtml; 
+            
+            window.currentReportElemId = 'pdf-bulk-bills-template'; 
+            window.currentReportFilename = `MyBills_Report_${new Date().getTime()}.pdf`; 
+            
+            let filterBox = document.getElementById('date-filter-box');
+            if(filterBox) filterBox.style.display = 'none';
+            
+            openPage('report-preview-page');
         }
-       // ================= TOGGLE DATE FILTER BOX =================
+               // ================= TOGGLE DATE FILTER BOX =================
         window.toggleDateFilter = function() {
             let filterBox = document.getElementById('date-filter-box');
             if (filterBox.style.display === 'none') {

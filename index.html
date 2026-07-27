@@ -1377,16 +1377,29 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             if(id === 'home') document.getElementById('nav-btn-home')?.classList.add('active');
             if(id === 'items-page') document.getElementById('nav-btn-inventory')?.classList.add('active');
-            if(id === 'parties-page') document.getElementById('nav-btn-ledger')?.classList.add('active');
+            
+            // UPDATE: कस्टमर जब सीधे लेजर के अंदर जाएगा, तब भी नीचे वाला बटन नीला (Active) रहना चाहिए
+            if(id === 'parties-page' || id === 'ledger-deep-page') document.getElementById('nav-btn-ledger')?.classList.add('active');
+            
             if(id === 'mybills-page') { 
                 document.getElementById('nav-btn-mybills')?.classList.add('active'); 
                 if(typeof renderMyBillsList === 'function') renderMyBillsList(); 
             }
-            
         }
 
         window.navTo = function(pageId, element) {
             window.pageStack = ['home'];
+            
+            // SMART UPDATE: अगर कस्टमर "My Khata" पर क्लिक करता है, तो फालतू लिस्ट ना दिखाकर सीधे अंदर ले जाएँ
+            if(pageId === 'parties-page' && window.currentUserRole !== 'admin') {
+                let myName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
+                let myPhone = window.currentUserPhone || "";
+                
+                window.pageStack.push('ledger-deep-page');
+                openLedgerDetail(myName, myPhone);
+                return;
+            }
+
             if(pageId !== 'home') window.pageStack.push(pageId);
             openPage(pageId, true);
         }

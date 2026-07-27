@@ -1625,7 +1625,33 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.openLedgerDetail = function(name, phone) { currentPartyName = name; currentPartyPhone = phone || ""; sessionStorage.setItem('v_currentPartyName', name); sessionStorage.setItem('v_currentPartyPhone', phone || ""); document.getElementById('l-deep-name').innerText = name; document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#"; document.getElementById('l-wa-btn').onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); let customer = globalCustomers.find(c => c.name === name); let initial = name ? name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = customer && customer.pic ? customer.pic : adminPic; if(custPic) { document.getElementById('l-deep-avatar-text').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; } else { document.getElementById('l-deep-avatar-text').innerHTML = initial; } renderLedgerEntries(name); openPage('ledger-deep-page'); }
         window.saveCalculatorEntry = function() { let amount = eval(window.calcValue) || 0; if(amount <= 0) return alert("Enter valid amount!"); let dateVal = document.getElementById('calc-date').value; if(!dateVal) dateVal = new Date().toISOString().split('T')[0]; if(window.isEditingEntry && currentEntryData) { update(ref(db, 'Ledger/' + currentEntryData.key), { amount: amount, details: document.getElementById('calc-details').value || "App Entry", type: window.calcType, date: new Date(dateVal).toISOString() }); window.isEditingEntry = false; currentEntryData = null; } else { push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: window.calcType, amount: amount, details: document.getElementById('calc-details').value || "App Entry" }); } closePage('calculator-page'); }
 
-        window.openEntryDetails = function(key) { sessionStorage.setItem('v_currentEntryKey', key); currentEntryData = allLedgerData.find(e => e.key === key); if(!currentEntryData) return; document.getElementById('ed-party-name').innerText = currentEntryData.name; let d = new Date(currentEntryData.date); document.getElementById('ed-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}); let color = currentEntryData.type === 'Gave' ? 'var(--danger)' : 'var(--success)'; document.getElementById('ed-amount').innerText = `₹ ${parseFloat(currentEntryData.amount).toLocaleString()}`; document.getElementById('ed-amount').style.color = color; document.getElementById('ed-type').innerText = `You ${currentEntryData.type}`; document.getElementById('ed-type').style.color = color; document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry"; if(currentEntryData.cart && currentEntryData.cart.length > 0) { document.getElementById('ed-edit-btn-container').innerHTML = `<button class="btn-outline" onclick="editCurrentInvoice()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:18px;">edit_document</span> Edit Invoice</button>`; } else { document.getElementById('ed-edit-btn-container').innerHTML = `<button class="btn-outline" onclick="editCurrentEntryAmount()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:18px;">edit</span> Edit Amount & Details</button>`; } openPage('entry-details-page'); }
+        window.openEntryDetails = function(key) { 
+            sessionStorage.setItem('v_currentEntryKey', key); 
+            currentEntryData = allLedgerData.find(e => e.key === key); 
+            if(!currentEntryData) return; 
+            document.getElementById('ed-party-name').innerText = currentEntryData.name; 
+            let d = new Date(currentEntryData.date); 
+            document.getElementById('ed-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}); 
+            
+            let isAdmin = (window.currentUserRole === 'admin');
+            
+            let color = currentEntryData.type === 'Gave' ? 'var(--danger)' : 'var(--success)'; 
+            let typeText = isAdmin ? `You ${currentEntryData.type}` : (currentEntryData.type === 'Gave' ? "Bill Amount" : "Payment Given");
+
+            document.getElementById('ed-amount').innerText = `₹ ${parseFloat(currentEntryData.amount).toLocaleString()}`; 
+            document.getElementById('ed-amount').style.color = color; 
+            document.getElementById('ed-type').innerText = typeText; 
+            document.getElementById('ed-type').style.color = color; 
+            document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry"; 
+            
+            if(currentEntryData.cart && currentEntryData.cart.length > 0) { 
+                document.getElementById('ed-edit-btn-container').innerHTML = `<button class="btn-outline" onclick="editCurrentInvoice()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:18px;">edit_document</span> Edit Invoice</button>`; 
+            } else { 
+                document.getElementById('ed-edit-btn-container').innerHTML = `<button class="btn-outline" onclick="editCurrentEntryAmount()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:18px;">edit</span> Edit Amount & Details</button>`; 
+            } 
+            openPage('entry-details-page'); 
+        }
+        
         
         window.editCurrentInvoice = function() { 
             if(!confirm("Are you sure you want to edit this invoice?")) return; 
@@ -1661,8 +1687,78 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.restoreRecycle = function(key) { let entry = allRecycleData.find(e => e.key === key); if(entry) { let dbEntry = {...entry}; delete dbEntry.key; set(ref(db, 'Ledger/' + key), dbEntry); remove(ref(db, 'RecycleBin/' + key)); } }
         window.permanentlyDeleteRecycle = function(key) { if(confirm("Permanently delete this invoice? It cannot be recovered.")) { remove(ref(db, 'RecycleBin/' + key)); } }
 
-        window.renderLedgerEntries = function(name) { let entryList = document.getElementById('ledger-entries-list'); entryList.innerHTML = ''; let totalGave = 0; let totalGot = 0; let customerEntries = allLedgerData.filter(e => e.name === name); if(customerEntries.length === 0) { entryList.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No entries yet.</div>`; } else { customerEntries.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let gaveHtml = entry.type === 'Gave' ? `₹ ${amt}` : ''; let gotHtml = entry.type === 'Got' ? `₹ ${amt}` : ''; if(entry.type === 'Gave') totalGave += amt; if(entry.type === 'Got') totalGot += amt; let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short'}); entryList.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')"><div class="ec-left"><div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${dateStr}</div><div style="font-size:13px; color:var(--text-dark); font-weight:500;">${entry.details || 'App Entry'}</div></div><div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div></div>`; }); } let balEl = document.getElementById('l-deep-bal-amt'); let txtEl = document.getElementById('l-deep-bal-text'); let finalBal = totalGave - totalGot; if(finalBal > 0) { balEl.innerText = "₹ " + finalBal.toLocaleString(); balEl.style.color = "var(--success)"; txtEl.innerText = "You will get"; } else if (finalBal < 0) { balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); balEl.style.color = "var(--danger)"; txtEl.innerText = "You will give"; } else { balEl.innerText = "₹ 0"; balEl.style.color = "var(--text-dark)"; txtEl.innerText = "Settled"; } }
-        window.renderCustomerList = function(list) { let filteredList = list.filter(c => (c.type || 'Customer') === currentTabType); let html = ""; filteredList.forEach(cust => { let initial = cust.name ? cust.name.substring(0,2).toUpperCase() : "CU"; let adminPic = localStorage.getItem('v_adminPic'); let custPic = cust.pic || adminPic; let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; let netBal = window.globalBalances[cust.name] || 0; let balText = ""; let balColor = ""; if(netBal > 0) { balText = `₹${netBal.toLocaleString()} <span style="font-size:10px; color:var(--text-muted); font-weight:500;">(Get)</span>`; balColor = "var(--success)"; } else if(netBal < 0) { balText = `₹${Math.abs(netBal).toLocaleString()} <span style="font-size:10px; color:var(--text-muted); font-weight:500;">(Give)</span>`; balColor = "var(--danger)"; } else { balText = "₹0"; balColor = "var(--text-muted)"; } html += `<div class="kb-list-item" onclick="openLedgerDetail('${cust.name}', '${cust.phone}')"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${cust.name}</div><div class="kb-time">📱 ${cust.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:16px 16px 16px 8px;"><div style="font-size:14px; font-weight:700; color:${balColor}; font-family:'Product Sans', sans-serif;">${balText}</div></div></div>`; }); document.getElementById('kb-customer-list').innerHTML = html || `<div style="padding:40px; text-align:center; color:gray;">No ${currentTabType}s found</div>`; }
+        window.renderLedgerEntries = function(name) { 
+            let entryList = document.getElementById('ledger-entries-list'); 
+            entryList.innerHTML = ''; 
+            let totalGave = 0; 
+            let totalGot = 0; 
+            let customerEntries = allLedgerData.filter(e => e.name === name); 
+            if(customerEntries.length === 0) { 
+                entryList.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No entries yet.</div>`; 
+            } else { 
+                customerEntries.forEach(entry => { 
+                    let amt = parseFloat(entry.amount) || 0; 
+                    let gaveHtml = entry.type === 'Gave' ? `₹ ${amt}` : ''; 
+                    let gotHtml = entry.type === 'Got' ? `₹ ${amt}` : ''; 
+                    if(entry.type === 'Gave') totalGave += amt; 
+                    if(entry.type === 'Got') totalGot += amt; 
+                    let d = new Date(entry.date); 
+                    let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short'}); 
+                    entryList.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')"><div class="ec-left"><div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${dateStr}</div><div style="font-size:13px; color:var(--text-dark); font-weight:500;">${entry.details || 'App Entry'}</div></div><div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div></div>`; 
+                }); 
+            } 
+            
+            let balEl = document.getElementById('l-deep-bal-amt'); 
+            let txtEl = document.getElementById('l-deep-bal-text'); 
+            let finalBal = totalGave - totalGot; 
+            
+            // SMART LOGIC: Admin vs Customer
+            let isAdmin = (window.currentUserRole === 'admin');
+
+            if(finalBal > 0) { 
+                balEl.innerText = "₹ " + finalBal.toLocaleString(); 
+                balEl.style.color = isAdmin ? "var(--success)" : "var(--danger)"; 
+                txtEl.innerText = isAdmin ? "You will get" : "Due Payment"; 
+            } else if (finalBal < 0) { 
+                balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); 
+                balEl.style.color = isAdmin ? "var(--danger)" : "var(--success)"; 
+                txtEl.innerText = isAdmin ? "You will give" : "Advance Amount"; 
+            } else { 
+                balEl.innerText = "₹ 0"; 
+                balEl.style.color = "var(--text-dark)"; 
+                txtEl.innerText = "Settled"; 
+            } 
+        }
+        window.renderCustomerList = function(list) { 
+            let isAdmin = (window.currentUserRole === 'admin');
+            let filteredList = list.filter(c => (c.type || 'Customer') === currentTabType); 
+            let html = ""; 
+            filteredList.forEach(cust => { 
+                let initial = cust.name ? cust.name.substring(0,2).toUpperCase() : "CU"; 
+                let adminPic = localStorage.getItem('v_adminPic'); 
+                let custPic = cust.pic || adminPic; 
+                let avatarHtml = custPic ? `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : initial; 
+                let netBal = window.globalBalances[cust.name] || 0; 
+                let balText = ""; 
+                let balColor = ""; 
+                
+                // SMART LOGIC FOR LIST BADGES
+                if(netBal > 0) { 
+                    balText = isAdmin ? `₹${netBal.toLocaleString()} <span style="font-size:10px; color:var(--text-muted); font-weight:500;">(Get)</span>` : `₹${netBal.toLocaleString()} <span style="font-size:10px; color:var(--danger); font-weight:500;">(Due)</span>`; 
+                    balColor = isAdmin ? "var(--success)" : "var(--danger)"; 
+                } else if(netBal < 0) { 
+                    balText = isAdmin ? `₹${Math.abs(netBal).toLocaleString()} <span style="font-size:10px; color:var(--text-muted); font-weight:500;">(Give)</span>` : `₹${Math.abs(netBal).toLocaleString()} <span style="font-size:10px; color:var(--success); font-weight:500;">(Advance)</span>`; 
+                    balColor = isAdmin ? "var(--danger)" : "var(--success)"; 
+                } else { 
+                    balText = "₹0"; 
+                    balColor = "var(--text-muted)"; 
+                } 
+                
+                html += `<div class="kb-list-item" onclick="openLedgerDetail('${cust.name}', '${cust.phone}')"><div class="kb-list-left"><div class="kb-avatar">${avatarHtml}</div><div><div class="kb-name">${cust.name}</div><div class="kb-time">📱 ${cust.phone || 'N/A'}</div></div></div><div class="kb-list-right" style="padding:16px 16px 16px 8px;"><div style="font-size:14px; font-weight:700; color:${balColor}; font-family:'Product Sans', sans-serif;">${balText}</div></div></div>`; 
+            }); 
+            document.getElementById('kb-customer-list').innerHTML = html || `<div style="padding:40px; text-align:center; color:gray;">No ${currentTabType}s found</div>`; 
+        }
+            
         window.openInvoicesPage = function() { let listContainer = document.getElementById('invoices-list-container'); listContainer.innerHTML = ''; let selectedDateString = document.getElementById('dash-date-picker').value; let todayInvoices = allLedgerData.filter(entry => { let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){} return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice"); }); if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } else { todayInvoices.forEach(entry => { listContainer.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; cursor:pointer;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--success); font-weight:800; font-size: 16px; font-family:'Product Sans', sans-serif;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;"><span>${entry.details}</span><span style="color:var(--primary); font-weight:600; display:flex; align-items:center;"><span class="material-symbols-rounded" style="font-size:16px;">visibility</span> View</span></div></div>`; }); } navTo('invoices-page', null); }
 
         window.addSpecificStock = function(category, shadeId, qtyId, isOut = false) { let shade = document.getElementById(shadeId).value; let qty = parseInt(document.getElementById(qtyId).value); if(!shade || isNaN(qty)) return alert("Please enter Detail and Box Quantity!"); let key = category + "_" + shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then((snap) => { let currentQty = snap.val() || 0; let newQty = isOut ? currentQty - qty : currentQty + qty; if(newQty < 0) newQty = 0; set(itemRef, newQty); }); if(document.getElementById(shadeId).tagName !== 'SELECT') { document.getElementById(shadeId).value = ''; } document.getElementById(qtyId).value = ''; alert(isOut ? "Stock Reduced (OUT) Successfully!" : "Stock Added (IN) Successfully!"); document.getElementById(category.toLowerCase() + '-anim-form').classList.add('form-hidden'); }

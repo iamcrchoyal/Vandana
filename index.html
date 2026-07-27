@@ -419,7 +419,48 @@
             </table>
         </div>
     </div>
+<!-- ====== 📄 NEW SAAS STYLE BULK BILLS TEMPLATE ====== -->
+        <div id="pdf-bulk-bills-template" style="background:white; padding:30px; font-family:Arial, sans-serif; color:black; width:100%; max-width:700px; box-sizing:border-box;">
+            <div style="display:flex; justify-content:space-between; border-bottom:2px solid #0a56d0; padding-bottom:15px; margin-bottom:20px;">
+                <div>
+                    <h1 style="color:#0a56d0; margin:0; font-size:26px;">Vandana Enterprises</h1>
+                    <p style="margin:5px 0 0 0; font-size:14px; color:#444746;"><strong>BILLS & INVOICES REPORT</strong></p>
+                </div>
+                <div style="text-align:right;">
+                    <p style="margin:0; font-size:14px; font-weight:bold;">Date Range:</p>
+                    <p style="margin:5px 0 0 0; font-size:13px;" id="pbb-date-range">From: -- To: --</p>
+                </div>
+            </div>
+            
+            <div style="display:flex; justify-content:space-between; background:#f8fafd; padding:15px; border-radius:8px; border:1px solid #e0e2e0; margin-bottom:20px;">
+                <div style="text-align:center; flex:1; border-right:1px solid #e0e2e0;">
+                    <div style="font-size:12px; color:#444746; font-weight:bold;">TOTAL BILLS</div>
+                    <div style="font-size:22px; font-weight:bold; color:#0a56d0;" id="pbb-count">0</div>
+                </div>
+                <div style="text-align:center; flex:1;">
+                    <div style="font-size:12px; color:#444746; font-weight:bold;">TOTAL AMOUNT</div>
+                    <div style="font-size:22px; font-weight:bold; color:#146c2e;" id="pbb-value">₹ 0</div>
+                </div>
+            </div>
 
+            <table style="width:100%; border-collapse:collapse; margin-bottom:30px; font-size:13px;">
+                <thead>
+                    <tr style="background:#0a56d0; color:white;">
+                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Date</th>
+                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Bill No.</th>
+                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Details</th>
+                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:right;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="pbb-table-body">
+                </tbody>
+            </table>
+            
+            <div style="text-align:center; color:#718096; font-size:11px; margin-top:30px; border-top:1px dashed #e0e2e0; padding-top:15px;">
+                Report safely generated via Vandana ERP System
+            </div>
+        </div>
+    
     <datalist id="pos-customers-dl"></datalist>
 
     <!-- 📱 GOOGLE STYLE SIDEBAR MENU -->

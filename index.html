@@ -1749,7 +1749,24 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
         window.handleCustPic = function(event) { let file = event.target.files[0]; if(file) { let reader = new FileReader(); reader.onload = function(e) { document.getElementById('cust-crop-modal').style.display = 'flex'; let img = document.getElementById('cust-crop-image'); img.src = e.target.result; if(custCropper) custCropper.destroy(); setTimeout(() => { custCropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, background: false }); }, 200); }; reader.readAsDataURL(file); } }
         window.cancelCustCrop = function() { document.getElementById('cust-crop-modal').style.display = 'none'; }
-        window.applyCustCrop = function() { if(!custCropper) return; let dataUrl = custCropper.getCroppedCanvas({ width: 300, height: 300 }).toDataURL('image/jpeg', 0.8); update(ref(db, 'Customers/' + currentPartyKey), { pic: dataUrl }); document.getElementById('cp-avatar').innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; document.getElementById('cp-mini-avatar').innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; document.getElementById('cust-crop-modal').style.display = 'none'; }
+        window.applyCustCrop = function() { 
+            if(!custCropper) return; 
+            let dataUrl = custCropper.getCroppedCanvas({ width: 300, height: 300 }).toDataURL('image/jpeg', 0.8); 
+            
+            // 1. लेजर (Customers) टेबल में फोटो सेव करें ताकि Admin को दिखे
+            update(ref(db, 'Customers/' + currentPartyKey), { pic: dataUrl }); 
+            
+            // 2. अगर कस्टमर खुद अपनी फोटो बदल रहा है, तो AppUsers (प्रोफाइल) में भी सेव करें 
+            // ताकि अगले लॉगिन पर Google वाली फोटो वापस ना आए!
+            let user = auth.currentUser;
+            if(user && window.currentUserRole !== 'admin') {
+                update(ref(db, 'AppUsers/' + user.uid), { photo: dataUrl });
+            }
+
+            document.getElementById('cp-avatar').innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; 
+            document.getElementById('cp-mini-avatar').innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; 
+            document.getElementById('cust-crop-modal').style.display = 'none'; 
+        }
 
         window.processGodown = function(type) { let cat = document.getElementById('gd-cat').value; let item = document.getElementById('gd-item').value; let qty = parseInt(document.getElementById('gd-qty').value); if(!item || isNaN(qty) || qty <= 0) return alert("Please enter Item Name and Valid Quantity!"); let key = cat + "_" + item; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then((snap) => { let currentQty = snap.val() || 0; let newQty = type === 'OUT' ? currentQty - qty : currentQty + qty; if(newQty < 0) newQty = 0; set(itemRef, newQty); }); push(ref(db, 'GodownTransfers'), { date: new Date().toISOString(), cat: cat, item: item, qty: qty, type: type }); document.getElementById('gd-item').value = ''; document.getElementById('gd-qty').value = ''; alert(type === 'IN' ? `Stock Received!` : `Stock Returned!`); document.getElementById('gd-form-panel').classList.add('form-hidden'); }
         window.renderGodownHistory = function() { let filterDate = document.getElementById('godown-date-picker').value; let filteredTransfers = allGodownTransfers.filter(t => { let tDate = ""; try { tDate = new Date(t.date).toISOString().split('T')[0]; } catch(e){} return tDate === filterDate; }); let html = ""; if(filteredTransfers.length === 0) { html = '<tr><td colspan="2" style="text-align:center; padding:16px;">No transfers on this date.</td></tr>'; } else { filteredTransfers.forEach(t => { let d = new Date(t.date); let timeStr = isNaN(d) ? t.date : t.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}); let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)'; let icon = t.type === 'IN' ? '🟢 IN' : '🔴 OUT'; html += `<tr><td><div style="font-weight:600; color:var(--text-dark);">${t.item} <span style="font-size:10px; color:var(--text-muted);">(${t.cat})</span></div><div style="font-size:11px; color:var(--text-muted);">${timeStr}</div></td><td style="color:${color}; font-weight:700;">${icon} <br>${t.qty} BOX</td></tr>`; }); } document.getElementById('godown-history-list').innerHTML = html; }

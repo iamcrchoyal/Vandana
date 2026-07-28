@@ -2306,25 +2306,38 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.openPhonebook = async function(nameId, phoneId) { if ('contacts' in navigator) { try { const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false }); if (contacts.length > 0) { if (contacts[0].name) document.getElementById(nameId).value = contacts[0].name[0]; if (contacts[0].tel) document.getElementById(phoneId).value = String(contacts[0].tel[0]).replace(/\D/g, '').slice(-10); } } catch(e) {} } }
         
         function preparePDFData() {
-            // 1. एडमिन और कस्टमर की डिटेल्स
-            document.getElementById('pdf-biz-name').innerText = localStorage.getItem('v_adminName') || "Vandana Enterprises"; 
+            // 1. एडमिन की डिटेल्स
+            // हमेशा VANDANA ENTERPRISES आएगा
+            document.getElementById('pdf-biz-name').innerText = "VANDANA ENTERPRISES"; 
             document.getElementById('pdf-biz-phone').innerText = "Phone: +91 " + (localStorage.getItem('v_adminPhone') || "----------"); 
             let gst = localStorage.getItem('v_adminGst');
             document.getElementById('pdf-biz-gst').innerText = gst ? "GSTIN: " + gst : "";
             
+            // एड्रेस सेट करना
+            let addr = localStorage.getItem('v_adminAddr');
+            if(document.getElementById('pdf-biz-address')) {
+                document.getElementById('pdf-biz-address').innerText = addr ? "Address: " + addr : "";
+            }
+            
+            // 2. बिल और डेट
             let d = new Date(currentEntryData.date); 
             document.getElementById('pdf-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleDateString('en-GB'); 
-            document.getElementById('pdf-bill-no').innerText = currentEntryData.billNo || currentEntryData.key.substring(1, 8).toUpperCase(); 
+            
+            // VE 01 को VE/01 बनाना
+            let rawBillNo = currentEntryData.billNo || currentEntryData.key.substring(1, 8).toUpperCase();
+            document.getElementById('pdf-bill-no').innerText = rawBillNo.replace('VE ', 'VE/'); 
+            
+            // 3. कस्टमर की डिटेल्स (नाम और नंबर)
             document.getElementById('pdf-cust-name').innerText = currentEntryData.name;
+            let custObj = globalCustomers.find(c => c.name === currentEntryData.name);
+            if(document.getElementById('pdf-cust-phone')) {
+                document.getElementById('pdf-cust-phone').innerText = (custObj && custObj.phone) ? "Phone: +91 " + custObj.phone : "";
+            }
             
-            // 2. टेबल लॉजिक (With Sr. No. & Total Qty)
-            let totalBoxQty = 0;
-            
+            // 4. टेबल लॉजिक (Total Quantity हटा दिया गया है)
             if(currentEntryData.cart && currentEntryData.cart.length > 0) {
                 let html = ""; 
                 currentEntryData.cart.forEach((item, index) => { 
-                    totalBoxQty += parseInt(item.qty) || 0; // टोटल बॉक्स गिनना
-                    
                     html += `
                         <tr>
                             <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:14px; color:#1f1f1f; font-weight:600;">
@@ -2346,15 +2359,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                         </tr>
                     `; 
                 }); 
-                
-                // एकदम नीचे Total Qty का बॉक्स
-                html += `
-                    <tr style="background:#f8fafd; font-weight:bold;">
-                        <td colspan="2" style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-size:14px; color:#0a56d0;">Total Quantity:</td>
-                        <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:15px; color:#0a56d0; font-weight:800;">${totalBoxQty} Box</td>
-                        <td colspan="2" style="padding:12px; border:1px solid #e0e2e0;"></td>
-                    </tr>
-                `;
 
                 document.getElementById('pdf-cart-body').innerHTML = html;
                 
@@ -2386,10 +2390,10 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 `;
             }
             
-            // 3. ग्रैंड टोटल अमाउंट
+            // 5. ग्रैंड टोटल अमाउंट
             document.getElementById('pdf-total').innerText = "₹ " + parseFloat(currentEntryData.amount).toLocaleString('en-IN');
 
-            // 4. ✨ SMART QR CODE LOGIC ✨
+            // 6. ✨ SMART QR CODE LOGIC ✨
             let qrContainer = document.getElementById('pdf-qr-container');
             let upiId = localStorage.getItem('v_adminUpi'); 
             

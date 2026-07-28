@@ -549,15 +549,19 @@
     <div class="profile-modal" id="profile-modal">
         <span class="pm-close" onclick="closeProfileModal()">✕</span>
         <div class="pm-email" id="pm-email-display">admin@vandana.com</div>
-        <div class="pm-avatar-wrap">
+        <div class="pm-avatar-wrap" style="margin-bottom:12px;">
             <div class="pm-avatar" id="pm-avatar-container" onclick="let img=document.getElementById('pm-avatar-img'); if(img.style.display!=='none') openDpViewer(img.src);">
                 <img src="" id="pm-avatar-img" style="display:none;">
                 <span id="pm-avatar-text">A</span>
             </div>
-            <div class="pm-cam" onclick="document.getElementById('admin-upload-hidden').click()">📷</div>
-            <input type="file" id="admin-upload-hidden" accept="image/*" style="display:none;" onchange="handleAdminPic(event)">
+            <!-- 🔥 FIX: Camera Yahan Se Hata Diya Gaya Hai -->
         </div>
-        <div class="pm-name" id="pm-name-display">Hi, Admin!</div>
+        <div class="pm-name" id="pm-name-display" style="margin-bottom: 20px;">Hi, Admin!</div>
+        
+        <!-- 🔥 FIX: Manage Account Button Add Kiya -->
+        <button class="btn-outline" style="border-radius: 20px; font-size: 14px; font-weight: 600; font-family: 'Product Sans', sans-serif; padding: 10px 20px; border: 1px solid var(--border); width: 100%;" onclick="openMyAccount()">
+            Manage Your Account
+        </button>
     </div>
 
     <!-- 📱 PERMANENT GLOBAL APP BAR -->

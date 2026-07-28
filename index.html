@@ -1758,21 +1758,32 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
         function setupPOSAutocomplete() { let dlHtml = ""; globalCustomers.forEach(c => dlHtml += `<option value="${c.name}">`); document.getElementById('pos-customers-dl').innerHTML = dlHtml; }
 
-        window.openCustomerProfile = function() { let customer = globalCustomers.find(c => c.name === currentPartyName); if(!customer) return; currentPartyKey = customer.key; sessionStorage.setItem('v_currentPartyName', currentPartyName); let adminPic = localStorage.getItem('v_adminPic'); let custPic = customer.pic || adminPic; if(custPic) { document.getElementById('cp-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; document.getElementById('cp-mini-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; } else { document.getElementById('cp-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); document.getElementById('cp-mini-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); } let nameInput = document.getElementById('cp-edit-name');
+        window.openCustomerProfile = function() { let customer = globalCustomers.find(c => c.name === currentPartyName); if(!customer) return; currentPartyKey = customer.key; sessionStorage.setItem('v_currentPartyName', currentPartyName); let adminPic = localStorage.getItem('v_adminPic'); let custPic = customer.pic || adminPic; if(custPic) { document.getElementById('cp-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; document.getElementById('cp-mini-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; } else { document.getElementById('cp-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); document.getElementById('cp-mini-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); } 
+            let nameInput = document.getElementById('cp-edit-name');
             let phoneInput = document.getElementById('cp-edit-phone');
+            let emailInput = document.getElementById('cp-edit-email');
             
             nameInput.value = customer.name; 
             phoneInput.value = customer.phone || ""; 
+            emailInput.value = customer.email || ""; 
             
-            // 🔥 FIX: कस्टमर अपना नाम और नंबर खुद नहीं बदल सकता
+            // 🔥 FIX: कस्टमर अपना नाम, नंबर और ईमेल खुद नहीं बदल सकता
             if (window.currentUserRole !== 'admin') {
                 phoneInput.setAttribute('readonly', 'true');
                 phoneInput.style.backgroundColor = '#f0f4f9';
-                phoneInput.onclick = () => alert("सुरक्षा कारणों से आप मोबाइल नंबर नहीं बदल सकते। कृपया नंबर बदलवाने के लिए दुकानदार (Admin) से संपर्क करें।");
+                phoneInput.onclick = () => alert("सुरक्षा कारणों से आप मोबाइल नंबर नहीं बदल सकते। कृपया दुकानदार (Admin) से संपर्क करें।");
                 
                 nameInput.setAttribute('readonly', 'true');
                 nameInput.style.backgroundColor = '#f0f4f9';
                 nameInput.onclick = () => alert("अपना नाम बदलवाने के लिए कृपया दुकानदार (Admin) से संपर्क करें।");
+                
+                emailInput.setAttribute('readonly', 'true');
+                emailInput.style.backgroundColor = '#f0f4f9';
+                emailInput.onclick = () => alert("अपना ईमेल बदलवाने के लिए कृपया दुकानदार (Admin) से संपर्क करें।");
+                
+                // कस्टमर को Logout दिखाएं, Delete छुपाएं
+                document.getElementById('cp-logout-btn').style.display = 'flex';
+                document.getElementById('cp-delete-btn').style.display = 'none';
             } else {
                 phoneInput.removeAttribute('readonly');
                 phoneInput.style.backgroundColor = 'white';
@@ -1781,9 +1792,17 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 nameInput.removeAttribute('readonly');
                 nameInput.style.backgroundColor = 'white';
                 nameInput.onclick = null;
+                
+                emailInput.removeAttribute('readonly');
+                emailInput.style.backgroundColor = 'white';
+                emailInput.onclick = null;
+                
+                // एडमिन को Delete दिखाएं, Logout छुपाएं
+                document.getElementById('cp-logout-btn').style.display = 'none';
+                document.getElementById('cp-delete-btn').style.display = 'flex';
             }
-
-            document.getElementById('cp-edit-email').value = customer.email || ""; document.getElementById('cp-edit-address').value = customer.address || ""; document.getElementById('cp-header-name').innerText = customer.name; document.getElementById('cp-scroll-content').scrollTop = 0; document.getElementById('cp-header-group').style.opacity = '0'; document.getElementById('cp-header-group').style.transform = 'translateY(10px)'; document.getElementById('cp-main-title').style.opacity = '1'; let bWrap = document.getElementById('cp-big-avatar-wrap'); if(bWrap) { bWrap.style.opacity = '1'; bWrap.style.transform = 'scale(1)'; bWrap.style.pointerEvents = 'auto'; } openPage('customer-profile-page'); }
+                                                 
+            document.getElementById('cp-edit-address').value = customer.address || ""; document.getElementById('cp-header-name').innerText = customer.name; document.getElementById('cp-scroll-content').scrollTop = 0; document.getElementById('cp-header-group').style.opacity = '0'; document.getElementById('cp-header-group').style.transform = 'translateY(10px)'; document.getElementById('cp-main-title').style.opacity = '1'; let bWrap = document.getElementById('cp-big-avatar-wrap'); if(bWrap) { bWrap.style.opacity = '1'; bWrap.style.transform = 'scale(1)'; bWrap.style.pointerEvents = 'auto'; } openPage('customer-profile-page'); }
         window.saveCustomerProfile = function() { 
             let nName = document.getElementById('cp-edit-name').value.trim(); 
             let nPhone = document.getElementById('cp-edit-phone').value; 

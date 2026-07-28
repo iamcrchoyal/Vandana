@@ -1566,11 +1566,77 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             localStorage.setItem('v_adminEmail', document.getElementById('ap-email').value); 
             localStorage.setItem('v_adminGst', document.getElementById('ap-gst').value.toUpperCase()); 
             localStorage.setItem('v_adminAddr', document.getElementById('ap-address').value); 
-            localStorage.setItem('v_adminUpi', document.getElementById('ap-upi').value.trim()); // ✨ UPI ID SAVE
+            let upiIdStr = document.getElementById('ap-upi').value.trim();
+            localStorage.setItem('v_adminUpi', upiIdStr); 
+            
+            // 🔥 NEW: SAVE TO FIREBASE SO CUSTOMERS CAN SEE IT
+            set(ref(db, 'Settings/AdminProfile'), { upiId: upiIdStr });
             
             loadAdminProfile(); 
             alert("Profile Saved Successfully!"); 
         }
+
+        // 💸 NEW PAYMENT LOGIC (Customer Request -> Admin Approve)
+        window.submitPaymentRequest = function() {
+            let amt = parseFloat(document.getElementById('cust-paid-amount').value);
+            if(!amt || amt <= 0) return alert("कृपया सही अमाउंट डालें!");
+            
+            let reqData = {
+                custName: window.currentUserName || currentPartyName,
+                custPhone: window.currentUserPhone || "",
+                amount: amt,
+                date: new Date().toISOString(),
+                status: "Pending"
+            };
+            push(ref(db, 'PaymentRequests'), reqData);
+            document.getElementById('payment-confirm-modal').style.display = 'none';
+            alert("आपकी रिक्वेस्ट भेज दी गई है! दुकानदार के वेरीफाई करते ही आपके खाते में एंट्री जुड़ जाएगी।");
+        }
+
+        window.renderPaymentRequests = function() {
+            let reqBox = document.getElementById('admin-payment-requests');
+            let listDiv = document.getElementById('pending-requests-list');
+            if(!reqBox) return;
+            
+            if(window.currentUserRole !== 'admin' || window.pendingPaymentsList.length === 0) {
+                reqBox.style.display = 'none';
+                return;
+            }
+            
+            reqBox.style.display = 'block';
+            let html = "";
+            window.pendingPaymentsList.forEach(req => {
+                let d = new Date(req.date).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+                html += `<div style="background:white; padding:12px; border-radius:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; border:1px solid #ffe69c;">
+                            <div>
+                                <div style="font-weight:700; color:#1f1f1f; font-size:14px;">${req.custName}</div>
+                                <div style="font-size:12px; color:gray;">${d} • Paid via PhonePe</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-weight:800; color:var(--success); font-size:16px;">₹${req.amount}</div>
+                                <button onclick="approvePayment('${req.key}', '${req.custName}', ${req.amount})" style="background:var(--success); color:white; border:none; padding:4px 12px; border-radius:8px; font-weight:600; font-size:11px; cursor:pointer; margin-top:4px;">VERIFY & ADD</button>
+                            </div>
+                         </div>`;
+            });
+            listDiv.innerHTML = html;
+        }
+
+        window.approvePayment = function(key, name, amount) {
+            if(confirm(`क्या आपने PhonePe में ₹${amount} चेक कर लिए हैं? OK करते ही ${name} के खाते में ये पैसे जमा हो जाएंगे।`)) {
+                // लेजर में एंट्री डालें (Got)
+                push(ref(db, 'Ledger'), { 
+                    date: new Date().toISOString(), 
+                    name: name, 
+                    type: "Got", 
+                    amount: amount, 
+                    details: "Payment via PhonePe (Verified)" 
+                });
+                // रिक्वेस्ट को डिलीट करें
+                remove(ref(db, 'PaymentRequests/' + key));
+                alert("पेमेंट वेरीफाई हो गया और खाते में जुड़ गया!");
+            }
+        }
+        
         window.handleAdminPic = function(event) { let file = event.target.files[0]; if(file) { let reader = new FileReader(); reader.onload = function(e) { document.getElementById('crop-modal').style.display = 'flex'; let img = document.getElementById('crop-image'); img.src = e.target.result; if(cropper) cropper.destroy(); setTimeout(() => { cropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, background: false }); }, 200); }; reader.readAsDataURL(file); } }
         window.cancelCrop = function() { document.getElementById('crop-modal').style.display = 'none'; }
         window.applyCrop = function() { if(!cropper) return; let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 }); localStorage.setItem('v_adminPic', canvas.toDataURL('image/jpeg', 0.8)); loadAdminProfile(); document.getElementById('crop-modal').style.display = 'none'; }

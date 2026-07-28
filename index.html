@@ -1258,6 +1258,20 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
 
             try {
+                // 🔔 Fetch Global Admin UPI for Customers
+                window.globalAdminUpi = "";
+                onValue(ref(db, 'Settings/AdminProfile'), (snapshot) => {
+                    if(snapshot.exists()) window.globalAdminUpi = snapshot.val().upiId || "";
+                });
+
+                // 🔔 Listen for Payment Requests (For Admin Dashboard)
+                window.pendingPaymentsList = [];
+                onValue(ref(db, 'PaymentRequests'), (snapshot) => {
+                    let data = snapshot.val() || {};
+                    window.pendingPaymentsList = Object.keys(data).map(key => ({ key: key, ...data[key] }));
+                    if(typeof renderPaymentRequests === 'function') renderPaymentRequests();
+                });
+
                 onValue(ref(db, 'Inventory'), (snapshot) => { 
                     smartInventory = snapshot.val() || {}; 
                     renderInventoryList(); 

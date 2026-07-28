@@ -564,6 +564,14 @@
                     <input type="date" id="dash-date-picker">
                 </div>
             </div>
+            
+            <!-- 🔔 PENDING PAYMENT REQUESTS (Admin Only) -->
+            <div id="admin-payment-requests" style="display:none; background: #fff3cd; border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 1px solid #ffe69c; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <div style="font-size:14px; font-weight:700; color:#856404; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-rounded" style="font-size:18px;">notifications_active</span> Pending Payments
+                </div>
+                <div id="pending-requests-list"></div>
+            </div>
             <div class="google-card" onclick="openInvoicesPage()">
                 <div class="card-header" id="dash-sales-label">Total Sales (Today)</div>
                 <div class="card-value" id="dash-card-sale-value">₹0</div>

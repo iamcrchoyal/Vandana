@@ -800,14 +800,21 @@
                 </div>
 
                 <div class="form-panel" style="margin-bottom: 16px;">
-                    <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Payment Status (भुगतान की स्थिति)</label>
+                    <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Payment Mode (भुगतान)</label>
                     <div style="display:flex; gap:10px; margin-bottom:8px;">
-                        <button id="pm-credit" class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger); background:#fdf2f2; padding:10px 4px; font-size:13px;" onclick="setPaymentMode('credit')">🧾 पूरी उधारी</button>
-                        <button id="pm-cash" class="btn-outline" style="flex:1; padding:10px 4px; font-size:13px;" onclick="setPaymentMode('cash')">💵 पूरा नकद</button>
-                        <button id="pm-partial" class="btn-outline" style="flex:1; padding:10px 4px; font-size:13px;" onclick="setPaymentMode('partial')">🌗 आधा जमा</button>
+                        <button id="pm-credit" class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger); background:#fdf2f2; padding:10px 4px; font-size:13px;" onclick="setPaymentMode('credit')">🧾 Pending</button>
+                        <button id="pm-cash" class="btn-outline" style="flex:1; padding:10px 4px; font-size:13px;" onclick="setPaymentMode('cash')">💵 Cash</button>
+                        <button id="pm-online" class="btn-outline" style="flex:1; padding:10px 4px; font-size:13px;" onclick="setPaymentMode('online')">📱 Online</button>
                     </div>
-                    <div id="partial-amount-container" style="display:none; margin-top:12px;">
-                        <input type="number" class="form-control" id="inv-received-amt" placeholder="Advance / Received Amount (₹)">
+                    
+                    <!-- 🔥 NEW: Online QR Container -->
+                    <div id="online-qr-container" style="display:none; margin-top:12px; text-align:center; padding: 15px; background: #f8fafd; border: 1px dashed var(--primary); border-radius: 12px;">
+                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">Scan to Pay <strong id="qr-pay-amount" style="color:var(--primary); font-size:16px;">₹ 0</strong></p>
+                        <img id="pos-qr-img" src="" style="width:180px; height:180px; display:inline-block; border-radius:10px; border:1px solid #c2e7ff; margin-bottom:12px; background:white; padding:8px; box-shadow:0 4px 10px rgba(0,0,0,0.05);">
+                        
+                        <button id="btn-payment-received" class="btn-submit" style="background:var(--success); width:100%; display:flex; align-items:center; justify-content:center; gap:6px; font-size:14px;" onclick="triggerSaveAndShare()">
+                            <span class="material-symbols-rounded" style="font-size:18px;">check_circle</span> Payment Received & Save
+                        </button>
                     </div>
                 </div>
 
@@ -2138,45 +2145,88 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             window.currentPaymentMode = mode;
             let btnCredit = document.getElementById('pm-credit');
             let btnCash = document.getElementById('pm-cash');
-            let btnPartial = document.getElementById('pm-partial');
+            let btnOnline = document.getElementById('pm-online');
+            let mainSaveBtn = document.getElementById('save-bill-btn');
             
-            [btnCredit, btnCash, btnPartial].forEach(btn => {
-                btn.style.background = 'white';
-                btn.style.color = 'var(--text-dark)';
-                btn.style.borderColor = 'var(--border)';
-            });
+            if(btnCredit) { btnCredit.style.background = 'white'; btnCredit.style.color = 'var(--text-dark)'; btnCredit.style.borderColor = 'var(--border)'; }
+            if(btnCash) { btnCash.style.background = 'white'; btnCash.style.color = 'var(--text-dark)'; btnCash.style.borderColor = 'var(--border)'; }
+            if(btnOnline) { btnOnline.style.background = 'white'; btnOnline.style.color = 'var(--text-dark)'; btnOnline.style.borderColor = 'var(--border)'; }
 
             if(mode === 'credit') {
-                btnCredit.style.background = '#fdf2f2';
-                btnCredit.style.color = 'var(--danger)';
-                btnCredit.style.borderColor = 'var(--danger)';
-                document.getElementById('partial-amount-container').style.display = 'none';
+                btnCredit.style.background = '#fdf2f2'; btnCredit.style.color = 'var(--danger)'; btnCredit.style.borderColor = 'var(--danger)';
+                document.getElementById('online-qr-container').style.display = 'none';
+                mainSaveBtn.style.display = 'block'; mainSaveBtn.innerText = "💾 Save Bill (Pending)";
             } else if(mode === 'cash') {
-                btnCash.style.background = '#e6f4ea';
-                btnCash.style.color = 'var(--success)';
-                btnCash.style.borderColor = 'var(--success)';
-                document.getElementById('partial-amount-container').style.display = 'none';
-            } else if(mode === 'partial') {
-                btnPartial.style.background = '#e8f0fe';
-                btnPartial.style.color = 'var(--primary)';
-                btnPartial.style.borderColor = 'var(--primary)';
-                document.getElementById('partial-amount-container').style.display = 'block';
+                btnCash.style.background = '#e6f4ea'; btnCash.style.color = 'var(--success)'; btnCash.style.borderColor = 'var(--success)';
+                document.getElementById('online-qr-container').style.display = 'none';
+                mainSaveBtn.style.display = 'block'; mainSaveBtn.innerText = "💾 Save Bill (Cash)";
+            } else if(mode === 'online') {
+                btnOnline.style.background = '#e8f0fe'; btnOnline.style.color = 'var(--primary)'; btnOnline.style.borderColor = 'var(--primary)';
+                mainSaveBtn.style.display = 'none'; // नॉर्मल बटन छुपाएं, QR वाला दिखाएं
+                
+                let upiId = window.globalAdminUpi || localStorage.getItem('v_adminUpi');
+                if(!upiId) {
+                    alert("दुकानदार ने अभी तक अपना UPI सेट नहीं किया है।");
+                    setPaymentMode('credit');
+                    return;
+                }
+                
+                if(grandInvoiceTotal <= 0) {
+                    alert("पहले कार्ट में कोई आइटम ऐड करें!");
+                    setPaymentMode('credit');
+                    return;
+                }
+                
+                let safeAmount = parseFloat(grandInvoiceTotal).toFixed(2);
+                let safeName = encodeURIComponent("Vandana Enterprises");
+                let upiString = `upi://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
+                
+                document.getElementById('pos-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=H&margin=0&data=${encodeURIComponent(upiString)}`;
+                document.getElementById('qr-pay-amount').innerText = `₹ ${safeAmount}`;
+                document.getElementById('online-qr-container').style.display = 'block';
             }
         }
 
         window.updatePosShades = function() { let cat = document.getElementById('inv-cat').value; let shadeSelect = document.getElementById('inv-shade'); shadeSelect.innerHTML = '<option value="">Select Shade/Item</option>'; if(!cat) return; for (let key in smartInventory) { let parts = key.split("_"); if(parts[0] === cat && smartInventory[key] > 0) { shadeSelect.innerHTML += `<option value="${parts[1]}">${parts[1]} (${smartInventory[key]} Box Left)</option>`; } } }
         window.addCartItem = function() { const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value; const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0; if (!cat || !shade) return alert("Select Category and Item first!"); if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!"); let key = cat + "_" + shade; let currentStock = smartInventory[key] || 0; if(qty > currentStock) { alert(`OUT OF STOCK! You only have ${currentStock} Box of ${shade} left.`); return; } currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty, rate, itemTotal: qty * rate }); renderCartUi(); }
-        function renderCartUi() { let tbody = document.getElementById('cart-rows'); tbody.innerHTML = ''; grandInvoiceTotal = 0; invoiceBoxCount = 0; currentCart.forEach(item => { grandInvoiceTotal += item.itemTotal; invoiceBoxCount += item.qty; tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.qty}</td><td>₹${item.rate}</td><td><strong>₹${item.itemTotal.toLocaleString()}</strong></td></tr>`; }); document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`; document.getElementById('inv-qty').value=''; document.getElementById('inv-rate').value=''; let btn = document.getElementById('save-bill-btn'); if(btn) { btn.innerText = window.editingBillNo ? "💾 Update Bill" : "💾 Generate Bill"; btn.style.background = window.editingBillNo ? "var(--warning)" : "var(--primary)"; } }
+        function renderCartUi() { 
+            let tbody = document.getElementById('cart-rows'); 
+            tbody.innerHTML = ''; 
+            grandInvoiceTotal = 0; 
+            invoiceBoxCount = 0; 
+            currentCart.forEach(item => { 
+                grandInvoiceTotal += item.itemTotal; 
+                invoiceBoxCount += item.qty; 
+                tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.qty}</td><td>₹${item.rate}</td><td><strong>₹${item.itemTotal.toLocaleString()}</strong></td></tr>`; 
+            }); 
+            document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`; 
+            document.getElementById('inv-qty').value=''; 
+            document.getElementById('inv-rate').value=''; 
+            
+            let btn = document.getElementById('save-bill-btn'); 
+            if(btn) { 
+                btn.innerText = window.editingBillNo ? "💾 Update Bill" : "💾 Generate Bill"; 
+                btn.style.background = window.editingBillNo ? "var(--warning)" : "var(--primary)"; 
+            }
+            
+            // 🔥 NEW: अगर ऑनलाइन सेलेक्टेड है और आइटम ऐड किया, तो QR अपने आप बदल जाएगा
+            if(window.currentPaymentMode === 'online') {
+                setPaymentMode('online');
+            }
+        }
         
         window.triggerSaveAndShare = function() { 
             if (currentCart.length === 0) return alert("Cart is empty!"); 
             
             let receivedAmt = 0;
+            let paymentDetailsText = "";
+            
             if(window.currentPaymentMode === 'cash') {
                 receivedAmt = grandInvoiceTotal;
-            } else if (window.currentPaymentMode === 'partial') {
-                receivedAmt = parseFloat(document.getElementById('inv-received-amt').value) || 0;
-                if(receivedAmt > grandInvoiceTotal) return alert("Received amount cannot be greater than Total Bill!");
+                paymentDetailsText = "Payment Received in Cash";
+            } else if (window.currentPaymentMode === 'online') {
+                receivedAmt = grandInvoiceTotal;
+                paymentDetailsText = "Payment Received via Online (QR)";
             }
 
             let partyName = document.getElementById('inv-party').value.trim() || "Cash Sale"; let partyPhone = document.getElementById('inv-phone').value.trim(); 
@@ -2212,7 +2262,13 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
 
             if(receivedAmt > 0) {
-                let paymentEntry = { date: finalDateTime, name: partyName, type: "Got", amount: receivedAmt, details: `Payment against #${newBillNo}` };
+                let paymentEntry = { 
+                    date: finalDateTime, 
+                    name: partyName, 
+                    type: "Got", 
+                    amount: receivedAmt, 
+                    details: `${paymentDetailsText} against #${newBillNo}` 
+                };
                 push(ref(db, 'Ledger'), paymentEntry);
             }
 

@@ -1715,7 +1715,63 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
 
             document.getElementById('cp-edit-email').value = customer.email || ""; document.getElementById('cp-edit-address').value = customer.address || ""; document.getElementById('cp-header-name').innerText = customer.name; document.getElementById('cp-scroll-content').scrollTop = 0; document.getElementById('cp-header-group').style.opacity = '0'; document.getElementById('cp-header-group').style.transform = 'translateY(10px)'; document.getElementById('cp-main-title').style.opacity = '1'; let bWrap = document.getElementById('cp-big-avatar-wrap'); if(bWrap) { bWrap.style.opacity = '1'; bWrap.style.transform = 'scale(1)'; bWrap.style.pointerEvents = 'auto'; } openPage('customer-profile-page'); }
-        window.saveCustomerProfile = function() { let nName = document.getElementById('cp-edit-name').value.trim(); let nPhone = document.getElementById('cp-edit-phone').value; let nEmail = document.getElementById('cp-edit-email').value.trim(); let nAddr = document.getElementById('cp-edit-address').value; if(!nName) return alert("Name is required!"); update(ref(db, 'Customers/' + currentPartyKey), { name: nName, phone: nPhone, email: nEmail, address: nAddr }); currentPartyName = nName; currentPartyPhone = nPhone; sessionStorage.setItem('v_currentPartyName', nName); document.getElementById('l-deep-name').innerText = nName; document.getElementById('cp-header-name').innerText = nName; alert("Updated!"); closePage('customer-profile-page'); }
+        window.saveCustomerProfile = function() { 
+            let nName = document.getElementById('cp-edit-name').value.trim(); 
+            let nPhone = document.getElementById('cp-edit-phone').value; 
+            let nEmail = document.getElementById('cp-edit-email').value.trim(); 
+            let nAddr = document.getElementById('cp-edit-address').value; 
+            if(!nName) return alert("Name is required!"); 
+            
+            let oldName = currentPartyName;
+            
+            // 🔥 SMART MULTI-PATH UPDATE: एक साथ कस्टमर प्रोफाइल और उसके सारे पुराने बिल/लेजर का नाम बदलना
+            let updates = {};
+            
+            // 1. कस्टमर की मेन प्रोफाइल अपडेट करें
+            updates['Customers/' + currentPartyKey + '/name'] = nName;
+            updates['Customers/' + currentPartyKey + '/phone'] = nPhone;
+            updates['Customers/' + currentPartyKey + '/email'] = nEmail;
+            updates['Customers/' + currentPartyKey + '/address'] = nAddr;
+            
+            // 2. अगर एडमिन ने नाम बदला है, तो लेजर और पुराने बिल्स में भी नाम ऑटोमैटिक अपडेट करें
+            if(nName !== oldName) {
+                // लेजर और बिल्स अपडेट करें
+                allLedgerData.forEach(e => {
+                    if(e.name === oldName) {
+                        updates['Ledger/' + e.key + '/name'] = nName;
+                    }
+                });
+                
+                // पेंडिंग पेमेंट रिक्वेस्ट अपडेट करें (अगर कोई हो)
+                if(window.pendingPaymentsList) {
+                    window.pendingPaymentsList.forEach(req => {
+                        if(req.custName === oldName) {
+                            updates['PaymentRequests/' + req.key + '/custName'] = nName;
+                        }
+                    });
+                }
+            }
+            
+            // 3. सारा डेटा एक साथ डेटाबेस में सेव करें (Fast Transaction)
+            update(ref(db), updates).then(() => {
+                currentPartyName = nName; 
+                currentPartyPhone = nPhone; 
+                sessionStorage.setItem('v_currentPartyName', nName); 
+                document.getElementById('l-deep-name').innerText = nName; 
+                document.getElementById('cp-header-name').innerText = nName; 
+                
+                if(nName !== oldName) {
+                    alert("प्रोफाइल और पुराने सभी बिल/खाते सफलता-पूर्वक नए नाम पर अपडेट हो गए!"); 
+                } else {
+                    alert("प्रोफाइल अपडेट हो गई!");
+                }
+                
+                closePage('customer-profile-page'); 
+            }).catch(err => {
+                console.error("Update Error: ", err);
+                alert("डेटा अपडेट करने में कोई तकनीकी खराबी आई है।");
+            });
+        }
         window.addCustomerToCloud = function() { let name = document.getElementById('new-party-name').value.trim(); let phone = document.getElementById('new-party-phone').value; let address = document.getElementById('new-party-address').value; if(!name) return alert("Please enter Name!"); push(ref(db, 'Customers'), { name, phone, address, date: new Date().toISOString(), status: "Active", type: currentTabType }); closePage('add-party-page'); document.getElementById('new-party-name').value = ''; document.getElementById('new-party-phone').value = ''; document.getElementById('new-party-address').value = ''; }
         window.deleteCurrentCustomer = function() { if(confirm(`WARNING: Are you sure you want to permanently delete ${currentPartyName}?`)) { remove(ref(db, 'Customers/' + currentPartyKey)); closePage('customer-profile-page'); closePage('ledger-deep-page'); alert("Deleted!"); } }
 

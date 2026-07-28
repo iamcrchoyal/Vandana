@@ -1186,7 +1186,10 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                         window.currentUserName = userName;
                         
                         // डेटा छाँटने वाले फंक्शन को चालू करें
-                        if(typeof applyDataFiltering === 'function') applyDataFiltering();
+                        if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
+                        
+                        // 🔥 FIX: पेज रीफ्रेश होने पर पेमेंट रिक्वेस्ट बॉक्स वापस दिखाएं (Lifetime save)
+                        if(typeof window.renderPaymentRequests === 'function') window.renderPaymentRequests();
                         // ==========================================================
                         // ================= SHOW POPUP FOR NEW CUSTOMERS =================
                         // अगर रोल 'pending' है और फोन नंबर या एड्रेस खाली है, तो पॉप-अप दिखाएं
@@ -1622,18 +1625,24 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         }
 
         window.approvePayment = function(key, name, amount) {
-            if(confirm(`क्या आपने PhonePe में ₹${amount} चेक कर लिए हैं? OK करते ही ${name} के खाते में ये पैसे जमा हो जाएंगे।`)) {
-                // लेजर में एंट्री डालें (Got)
+            if(confirm(`क्या आपने PhonePe में ₹${amount} चेक कर लिए हैं?\n\nOK करते ही यह रिक्वेस्ट हट जाएगी और ${name} के खाते में ऑटोमैटिक ₹${amount} जमा (Got) हो जाएंगे।`)) {
+                
+                // 1. लेजर में ऑटोमैटिक एंट्री (Got - जमा)
                 push(ref(db, 'Ledger'), { 
                     date: new Date().toISOString(), 
                     name: name, 
                     type: "Got", 
-                    amount: amount, 
-                    details: "Payment via PhonePe (Verified)" 
+                    amount: parseFloat(amount), 
+                    details: "Payment via PhonePe (Verified by Admin)" 
                 });
-                // रिक्वेस्ट को डिलीट करें
+                
+                // 2. रिक्वेस्ट को डैशबोर्ड से हमेशा के लिए डिलीट करें
                 remove(ref(db, 'PaymentRequests/' + key));
-                alert("पेमेंट वेरीफाई हो गया और खाते में जुड़ गया!");
+                
+                // 3. UI को रिफ्रेश करें ताकि बैलेंस तुरंत अपडेट हो जाए
+                if(typeof window.calculateGrandTotals === 'function') window.calculateGrandTotals();
+                
+                alert("✅ डन! पेमेंट वेरीफाई हो गया और ग्राहक के खाते में सफलता-पूर्वक जुड़ गया।");
             }
         }
         

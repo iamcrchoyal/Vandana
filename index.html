@@ -1530,16 +1530,68 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.downloadReport = function() { let fromD = document.getElementById('rep-from').value; let toD = document.getElementById('rep-to').value; let type = document.getElementById('report-modal-type').value; if(!fromD || !toD) return alert("Please select both dates!"); document.getElementById('report-modal').style.display = 'none'; if(type === 'ledger') generateAccountStatement(fromD, toD); else generateStockReport(fromD, toD); }
 
         function generateAccountStatement(fromD, toD) {
-            let fromTime = new Date(fromD).getTime(); let toTime = new Date(toD + "T23:59:59").getTime();
-            let custEntries = allLedgerData.filter(e => e.name === currentPartyName).sort((a,b) => new Date(a.date) - new Date(b.date));
+            let fromTime = new Date(fromD).getTime(); 
+            let toTime = new Date(toD + "T23:59:59").getTime();
+            
+            // 🔥 SMART SORTING: Bank Statement Style (Oldest First -> Latest Last)
+            let custEntries = allLedgerData
+                .filter(e => e.name === currentPartyName)
+                .sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()); 
+                
             let openingBal = 0; let statementHtml = ""; let currentBal = 0;
-            custEntries.forEach(entry => { let eTime = new Date(entry.date).getTime(); let amt = parseFloat(entry.amount) || 0; if(eTime < fromTime) { if(entry.type === 'Gave') openingBal += amt; else openingBal -= amt; } });
+            
+            custEntries.forEach(entry => { 
+                let eTime = new Date(entry.date).getTime(); 
+                let amt = parseFloat(entry.amount) || 0; 
+                if(eTime < fromTime) { 
+                    if(entry.type === 'Gave') openingBal += amt; else openingBal -= amt; 
+                } 
+            });
+            
             currentBal = openingBal;
-            let opBalStr = openingBal > 0 ? `₹${openingBal} Dr` : (openingBal < 0 ? `₹${Math.abs(openingBal)} Cr` : `₹0`);
-            statementHtml += `<tr><td colspan="4" style="padding:10px; border:1px solid #e0e2e0; text-align:right; font-weight:bold;">Opening Balance:</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right; font-weight:bold;">${opBalStr}</td></tr>`;
-            custEntries.forEach(entry => { let eTime = new Date(entry.date).getTime(); if(eTime >= fromTime && eTime <= toTime) { let amt = parseFloat(entry.amount) || 0; let gave = entry.type === 'Gave' ? amt : 0; let got = entry.type === 'Got' ? amt : 0; currentBal += (gave - got); let dStr = new Date(entry.date).toLocaleDateString('en-GB'); let curBalStr = currentBal > 0 ? `₹${currentBal} Dr` : (currentBal < 0 ? `₹${Math.abs(currentBal)} Cr` : `₹0`); statementHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">${entry.details || 'App Entry'}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${gave ? '₹'+gave : '-'}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${got ? '₹'+got : '-'}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right; font-weight:bold;">${curBalStr}</td></tr>`; } });
-            document.getElementById('ps-date-range').innerText = `From: ${new Date(fromD).toLocaleDateString('en-GB')} To: ${new Date(toD).toLocaleDateString('en-GB')}`; document.getElementById('ps-party-name').innerText = currentPartyName; document.getElementById('ps-table-body').innerHTML = statementHtml; let finalBalStr = currentBal > 0 ? `₹${currentBal} Dr` : (currentBal < 0 ? `₹${Math.abs(currentBal)} Cr` : `₹0`); document.getElementById('ps-closing-bal').innerText = finalBalStr;
-            let previewHtml = document.getElementById('pdf-statement-template').innerHTML; document.getElementById('preview-render-area').innerHTML = previewHtml; window.currentReportElemId = 'pdf-statement-template'; window.currentReportFilename = `Statement_${currentPartyName}_${fromD}.pdf`; openPage('report-preview-page');
+            let opBalStr = openingBal > 0 ? `₹${openingBal.toLocaleString('en-IN')} Dr` : (openingBal < 0 ? `₹${Math.abs(openingBal).toLocaleString('en-IN')} Cr` : `₹0`);
+            
+            statementHtml += `<tr><td colspan="4" style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:bold;">Opening Balance:</td><td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:bold; color:#0a56d0; font-size:15px;">${opBalStr}</td></tr>`;
+            
+            custEntries.forEach(entry => { 
+                let eTime = new Date(entry.date).getTime(); 
+                if(eTime >= fromTime && eTime <= toTime) { 
+                    let amt = parseFloat(entry.amount) || 0; 
+                    let gave = entry.type === 'Gave' ? amt : 0; 
+                    let got = entry.type === 'Got' ? amt : 0; 
+                    currentBal += (gave - got); 
+                    
+                    let dStr = new Date(entry.date).toLocaleDateString('en-GB'); 
+                    let curBalStr = currentBal > 0 ? `₹${currentBal.toLocaleString('en-IN')} Dr` : (currentBal < 0 ? `₹${Math.abs(currentBal).toLocaleString('en-IN')} Cr` : `₹0`); 
+                    
+                    let gaveText = gave ? `₹${gave.toLocaleString('en-IN')}` : '-';
+                    let gotText = got ? `₹${got.toLocaleString('en-IN')}` : '-';
+                    
+                    // नई एंट्रीज अपने आप नीचे ऐड होती जाएंगी
+                    statementHtml += `
+                        <tr>
+                            <td style="padding:10px; border:1px solid #e0e2e0; text-align:center;">${dStr}</td>
+                            <td style="padding:10px; border:1px solid #e0e2e0; font-size:13px;">${entry.details || 'App Entry'}</td>
+                            <td style="padding:10px; border:1px solid #e0e2e0; text-align:right; color:#b3261e; font-weight:600;">${gaveText}</td>
+                            <td style="padding:10px; border:1px solid #e0e2e0; text-align:right; color:#146c2e; font-weight:600;">${gotText}</td>
+                            <td style="padding:10px; border:1px solid #e0e2e0; text-align:right; font-weight:bold; color:#1f1f1f;">${curBalStr}</td>
+                        </tr>
+                    `; 
+                } 
+            });
+            
+            document.getElementById('ps-date-range').innerText = `From: ${new Date(fromD).toLocaleDateString('en-GB')} To: ${new Date(toD).toLocaleDateString('en-GB')}`; 
+            document.getElementById('ps-party-name').innerText = currentPartyName; 
+            document.getElementById('ps-table-body').innerHTML = statementHtml; 
+            
+            let finalBalStr = currentBal > 0 ? `₹${currentBal.toLocaleString('en-IN')} Dr` : (currentBal < 0 ? `₹${Math.abs(currentBal).toLocaleString('en-IN')} Cr` : `₹0`); 
+            document.getElementById('ps-closing-bal').innerText = finalBalStr;
+            
+            let previewHtml = document.getElementById('pdf-statement-template').innerHTML; 
+            document.getElementById('preview-render-area').innerHTML = previewHtml; 
+            window.currentReportElemId = 'pdf-statement-template'; 
+            window.currentReportFilename = `Statement_${currentPartyName}_${fromD}.pdf`; 
+            openPage('report-preview-page');
         }
 
         function generateStockReport(fromD, toD) {

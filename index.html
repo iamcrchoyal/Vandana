@@ -1526,6 +1526,21 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.closeProfileModal = function() { document.getElementById('profile-modal-overlay').style.display='none'; document.getElementById('profile-modal').style.display='none'; }
         window.openAdminProfile = function() { closeSidebar(); closeProfileModal(); openPage('admin-profile-page'); }
 
+        // 🔥 NEW: Manage My Account Button Logic (Admin -> Business Profile, Customer -> Customer Profile)
+        window.openMyAccount = function() {
+            closeProfileModal();
+            if (window.currentUserRole === 'admin') {
+                openPage('admin-profile-page');
+            } else {
+                if (globalCustomers.length > 0) {
+                    currentPartyName = globalCustomers[0].name;
+                } else {
+                    currentPartyName = window.currentUserName;
+                }
+                openCustomerProfile();
+            }
+        }
+
         window.openDpViewer = function(src) {
             if(!src) return;
             document.getElementById('dp-viewer-img').src = src;

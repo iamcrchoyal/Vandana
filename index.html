@@ -1163,13 +1163,19 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                             // डेटाबेस से पुराना नंबर और पता निकाल लें
                             finalPhone = userData.phone || "";
                             finalAddress = userData.address || "";
+                            
+                            // 🔥 FIX: गूगल से बार-बार नाम/फोटो अपडेट होने से रोकें 
+                            let dbName = userData.name || userName;
+                            let dbPhoto = userData.photo || user.photoURL || "";
 
                             update(userRef, {
-                                name: userName,
+                                name: dbName,
                                 email: user.email || "",
-                                photo: user.photoURL || "",
+                                photo: dbPhoto,
                                 role: assignedRole 
                             });
+                            
+                            userName = dbName; // UI के लिए भी डेटाबेस वाला नाम यूज़ करें
                         }
                         
                         // ================= AUTO-FILL BUSINESS PROFILE =================
@@ -1245,13 +1251,35 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 }
 
                 // 2. Ledger Book Filter (कस्टमर को सिर्फ अपनी उधारी और बिल दिखेंगे)
-                let myCustName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
+                let myCustName = window.currentUserName;
+                if (globalCustomers.length > 0) {
+                    myCustName = globalCustomers[0].name; // एडमिन वाला नाम फाइनल माना जाएगा
+                    let myAdminPic = globalCustomers[0].pic || "";
+                    
+                    if (!isAdmin) {
+                        // 🔥 FIX: कस्टमर के ऐप में एडमिन वाला नाम और फोटो सेट करें
+                        window.currentUserName = myCustName;
+                        if(document.getElementById('user-name')) document.getElementById('user-name').innerText = myCustName;
+                        if(document.getElementById('pm-name-display')) document.getElementById('pm-name-display').innerText = "Hi, " + myCustName.split(' ')[0] + "!";
+                        
+                        const hour = new Date().getHours(); 
+                        let greet = "Good morning";
+                        if (hour >= 12 && hour < 17) greet = "Good afternoon"; else if (hour >= 17) greet = "Good evening";
+                        if (document.getElementById('dynamic-greeting')) document.getElementById('dynamic-greeting').innerText = greet + ", " + myCustName.split(' ')[0];
+
+                        if (myAdminPic) {
+                            if (document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').src = myAdminPic; document.getElementById('pm-avatar-img').style.display = 'block'; document.getElementById('pm-avatar-text').style.display = 'none'; }
+                            if (document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').src = myAdminPic; document.getElementById('top-avatar-img').style.display = 'block'; document.getElementById('top-avatar-text').style.display = 'none'; }
+                            if (document.getElementById('user-photo')) document.getElementById('user-photo').src = myAdminPic;
+                        }
+                    }
+                }
+
                 if (isAdmin) {
                     allLedgerData = [...window.rawLedger];
                 } else {
                     allLedgerData = window.rawLedger.filter(e => e.name === myCustName);
                 }
-
                 // फिल्टर होने के बाद स्क्रीन को रीफ्रेश करें
                 renderCustomerList(globalCustomers);
                 calculateGrandTotals();

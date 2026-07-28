@@ -874,23 +874,37 @@
     <!-- 🔥 KHATABOOK DEEP LEDGER PAGE -->
     <div class="page flex-page" id="ledger-deep-page">
         <div class="fixed-top-section" style="padding:0;">
-            <div class="ledger-header-area">
+            <div class="ledger-header-area" style="padding: 12px 16px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
                     <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:0;">
                         <button class="back-btn material-symbols-rounded" onclick="closePage('ledger-deep-page')" style="padding:0; margin:0; flex-shrink:0;">arrow_back</button>
-                        <div class="kb-avatar" id="l-deep-avatar-text" style="width:36px; height:36px; font-size:14px; background:#e8f0fe; color:var(--primary); flex-shrink:0;" onclick="openCustomerProfile()"></div>
-                        <div class="l-name scroll-text" id="l-deep-name" style="color:var(--text-dark); font-size:18px; cursor:pointer; font-weight:500; font-family:'Product Sans', sans-serif; flex:1;" onclick="openCustomerProfile()">Name</div>
+                        <div class="kb-avatar" id="l-deep-avatar-text" style="width:38px; height:38px; font-size:15px; background:#e8f0fe; color:var(--primary); flex-shrink:0; box-shadow:0 2px 4px rgba(0,0,0,0.05);" onclick="openCustomerProfile()"></div>
+                        
+                        <!-- 🔥 FIX: Professional Account Label added below Name -->
+                        <div class="l-name" style="flex:1; display:flex; flex-direction:column; justify-content:center; min-width:0;" onclick="openCustomerProfile()">
+                            <div class="scroll-text" id="l-deep-name" style="color:var(--text-dark); font-size:17px; font-weight:700; font-family:'Product Sans', sans-serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Name</div>
+                            <div style="font-size:11px; color:var(--primary); font-weight:600; display:flex; align-items:center; gap:3px; margin-top:2px;">
+                                <span class="material-symbols-rounded" style="font-size:12px;">verified_user</span> A/c with Vandana Enterprises
+                            </div>
+                        </div>
                     </div>
-                    <a href="#" id="l-call-btn" style="color:var(--primary); text-decoration:none; font-size:20px; border:1px solid var(--border); border-radius:50%; width:36px; height:36px; display:flex; justify-content:center; align-items:center; background:white; box-shadow:0 1px 2px rgba(0,0,0,0.02); flex-shrink:0; margin-left:12px;" class="material-symbols-rounded">call</a>
+                    <a href="#" id="l-call-btn" style="color:var(--text-muted); text-decoration:none; font-size:18px; border:1px solid var(--border); border-radius:50%; width:34px; height:34px; display:flex; justify-content:center; align-items:center; background:white; box-shadow:0 2px 5px rgba(0,0,0,0.02); flex-shrink:0; margin-left:8px;" class="material-symbols-rounded">call</a>
                 </div>
             </div>
-            <div class="ledger-bal-card">
+            
+            <div class="ledger-bal-card" style="margin: 0 16px; border-radius: 16px;">
                 <span style="font-size:13px; color:var(--text-muted); font-weight:500;" id="l-deep-bal-text">You will give</span>
-                <span style="font-size:24px; font-weight:400; font-family: 'Product Sans', sans-serif;" id="l-deep-bal-amt">₹ 0</span>
+                <span style="font-size:24px; font-weight:700; font-family: 'Product Sans', sans-serif;" id="l-deep-bal-amt">₹ 0</span>
             </div>
-            <div class="ledger-action-tabs">
-                <div class="l-tab" id="l-wa-btn" style="color:#146c2e; border-color:#e0e2e0; display:flex; justify-content:center; align-items:center; gap:4px;"><span class="material-symbols-rounded" style="font-size:16px;">chat</span> Reminder</div>
-                <div class="l-tab" id="l-sms-btn" onclick="openReportModal('ledger')" style="display:flex; justify-content:center; align-items:center; gap:4px;"><span class="material-symbols-rounded" style="font-size:16px;">description</span> Statement</div>
+            
+            <!-- 🔥 FIX: Buttons made smaller and more professional -->
+            <div class="ledger-action-tabs" style="margin: 12px 16px; gap: 10px;">
+                <div class="l-tab" id="l-wa-btn" style="flex:1; padding:8px 0; border-radius:12px; font-size:13px; box-shadow:0 2px 5px rgba(0,0,0,0.04); display:flex; justify-content:center; align-items:center; gap:6px;">
+                    <span class="material-symbols-rounded" style="font-size:15px;">chat</span> Reminder
+                </div>
+                <div class="l-tab" id="l-sms-btn" onclick="openReportModal('ledger')" style="flex:1; padding:8px 0; border-radius:12px; font-size:13px; box-shadow:0 2px 5px rgba(0,0,0,0.04); color:#444746; background:white; border:1px solid #e0e2e0; display:flex; justify-content:center; align-items:center; gap:6px;">
+                    <span class="material-symbols-rounded" style="font-size:15px;">receipt_long</span> Statement
+                </div>
             </div>
             <div style="text-align:center; font-size:11px; font-weight:500; color:var(--text-muted); margin-bottom:12px;" id="l-deep-today-date"></div>
             <div style="display:flex; justify-content:space-between; padding:0 20px; font-size:10px; font-weight:600; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;"><span style="flex:2;">ENTRIES</span><span style="flex:1; text-align:center;">YOU GAVE</span><span style="flex:1; text-align:right;">YOU GOT</span></div>

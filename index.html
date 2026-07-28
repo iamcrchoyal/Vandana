@@ -883,12 +883,19 @@
                         <!-- 🔥 FIX: Professional Account Label added below Name -->
                         <div class="l-name" style="flex:1; display:flex; flex-direction:column; justify-content:center; min-width:0;" onclick="openCustomerProfile()">
                             <div class="scroll-text" id="l-deep-name" style="color:var(--text-dark); font-size:17px; font-weight:700; font-family:'Product Sans', sans-serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Name</div>
-                            <div style="font-size:11px; color:var(--primary); font-weight:600; display:flex; align-items:center; gap:3px; margin-top:2px;">
+                            <a href="#" id="l-call-btn" style="color:var(--text-muted); text-decoration:none; font-size:18px; border:1px solid var(--border); border-radius:50%; width:34px; height:34px; display:flex; justify-content:center; align-items:center; background:white; box-shadow:0 2px 5px rgba(0,0,0,0.02); flex-shrink:0; margin-left:8px;" class="material-symbols-rounded">call</a>
+                    <a href="#" id="l-call-btn" style="color:var(--text-muted); text-decoration:none; font-size:18px; border:1px solid var(--border); border-radius:50%; width:34px; height:34px; display:flex; justify-content:center; align-items:center; background:white; box-shadow:0 2px 5px rgba(0,0,0,0.02); flex-shrink:0; margin-left:8px;" class="material-symbols-rounded">call</a>
+                </div>
+            </div>
+            
+            <div style="font-size:11px; color:var(--primary); font-weight:600; display:flex; align-items:center; gap:3px; margin-top:2px;">
                                 <span class="material-symbols-rounded" style="font-size:12px;">verified_user</span> A/c with Vandana Enterprises
                             </div>
                         </div>
                     </div>
-                    <a href="#" id="l-call-btn" style="color:var(--text-muted); text-decoration:none; font-size:18px; border:1px solid var(--border); border-radius:50%; width:34px; height:34px; display:flex; justify-content:center; align-items:center; background:white; box-shadow:0 2px 5px rgba(0,0,0,0.02); flex-shrink:0; margin-left:8px;" class="material-symbols-rounded">call</a>
+                    
+                    <!-- 🔥 FIX: Call button UI made bigger (40x40), perfectly round, and premium blue so it never looks cut off -->
+                    <a href="#" id="l-call-btn" style="color:#0a56d0; text-decoration:none; font-size:20px; border:1px solid #c2e7ff; border-radius:50%; width:40px; height:40px; display:flex; justify-content:center; align-items:center; background:#e8f0fe; box-shadow:0 2px 6px rgba(10,86,208,0.1); flex-shrink:0; margin-left:12px; transition:all 0.2s;" class="material-symbols-rounded">call</a>
                 </div>
             </div>
             

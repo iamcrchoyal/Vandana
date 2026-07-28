@@ -321,6 +321,22 @@
         </div>
     </div>
 
+      <!-- 💸 CUSTOMER PAYMENT SUBMIT MODAL -->
+    <div id="payment-confirm-modal" class="report-modal-overlay" style="z-index: 9999;">
+        <div class="report-modal-box">
+            <h3 style="margin-bottom: 10px; font-family: 'Product Sans', sans-serif; color:var(--primary);">Payment Sent?</h3>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">PhonePe पर पेमेंट करने के बाद, आपने जितना पैसा भेजा है वो यहाँ भरें ताकि दुकानदार उसे वेरीफाई कर सके।</p>
+            <div class="form-group">
+                <label class="form-label">Amount Paid (₹)</label>
+                <input type="number" id="cust-paid-amount" class="form-control" placeholder="Enter amount">
+            </div>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger);" onclick="document.getElementById('payment-confirm-modal').style.display='none'">Cancel</button>
+                <button class="btn-submit" style="flex:1;" onclick="submitPaymentRequest()">Submit</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- 📊 REPORTS MODAL -->
     <div id="report-modal" class="report-modal-overlay">
         <div class="report-modal-box">

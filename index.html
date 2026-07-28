@@ -947,10 +947,16 @@
                 <button class="btn-submit" onclick="saveCustomerProfile()" style="border-radius:20px;">💾 Save Profile Updates</button>
             </div>
         </div>
-        <div class="bottom-action-bar" style="justify-content:center; background:var(--bg-color); border-top:none;">
-            <button class="btn-outline" style="width:100%; border-color:var(--danger); color:var(--danger);" onclick="deleteCurrentCustomer()"><span class="material-symbols-rounded" style="font-size:16px; vertical-align:middle;">delete</span> Delete Account</button>
+        <div class="bottom-action-bar" style="justify-content:center; background:var(--bg-color); border-top:none; gap:10px;">
+            <!-- Admin के लिए Delete बटन -->
+            <button id="cp-delete-btn" class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger);" onclick="deleteCurrentCustomer()">
+                <span class="material-symbols-rounded" style="font-size:16px; vertical-align:middle;">delete</span> Delete Account
+            </button>
+            <!-- Customer के लिए Logout बटन -->
+            <button id="cp-logout-btn" class="btn-submit" style="flex:1; background:var(--danger); display:none; align-items:center; justify-content:center; gap:6px;" onclick="manualLogout()">
+                <span class="material-symbols-rounded" style="font-size:16px;">logout</span> Logout
+            </button>
         </div>
-    </div>
 
     <!-- 💸 ENTRY DETAILS PAGE -->
     <div class="page flex-page" id="entry-details-page">

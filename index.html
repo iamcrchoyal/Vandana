@@ -1800,7 +1800,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet }; updateLedgerTotalsUI(); if(document.getElementById('parties-page').classList.contains('active')) { renderCustomerList(globalCustomers); }
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
             // ============== TARGET AND PROGRESS BAR LOGIC ==============
-            let TARGET_AMOUNT = 50000; // 🎯 आप यहाँ अपना टारगेट सेट कर सकते हैं (जैसे 50,000 या 1,00,000)
+            let TARGET_AMOUNT = 120000; // 🎯 आप यहाँ अपना टारगेट सेट कर सकते हैं (जैसे 50,000 या 1,00,000)
             let activeSalesData = window.currentTopCustTab === 'current' ? currMonthSales : lastMonthSales; 
             let topCustHtml = ""; 
             let allSortedCustomers = Object.entries(activeSalesData).sort((a, b) => b[1] - a[1]); 

@@ -2582,13 +2582,14 @@ window.showTargetCelebration = function() {
                 return eTime >= fDate.getTime() && eTime <= (tDate.getTime() + 86399000); 
             });
 
-            // बिल नंबर के हिसाब से सॉर्ट (Sort Number Wise)
+            // बिल नंबर के हिसाब से सॉर्ट (Sort Number Wise - Newest First)
             myBills.sort((a, b) => {
                 let aNum = parseInt(a.billNo ? a.billNo.replace(/\D/g,'') : 0);
                 let bNum = parseInt(b.billNo ? b.billNo.replace(/\D/g,'') : 0);
-                return aNum - bNum;
+                
+                // 🔥 FIX: bNum - aNum करने से बड़े और नए बिल नंबर हमेशा सबसे ऊपर आएँगे
+                return bNum - aNum; 
             });
-
             window.currentBulkBills = myBills; // इसे PDF बनाने के लिए रख लिया
 
             if (myBills.length === 0) {

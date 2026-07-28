@@ -2009,32 +2009,28 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let waBtn = document.getElementById('l-wa-btn');
             let isAdmin = (window.currentUserRole === 'admin');
             
+            // 🔥 FIX: Adjusted Icon size to 15px for a more compact look
             if (isAdmin) {
-                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;">chat</span> Reminder`;
+                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:15px;">chat</span> Reminder`;
                 waBtn.style.color = '#146c2e';
-                waBtn.style.backgroundColor = 'white';
-                waBtn.style.borderColor = '#e0e2e0';
+                waBtn.style.backgroundColor = '#e6f4ea'; // एडमिन के लिए हल्का हरा बैकग्राउंड
+                waBtn.style.borderColor = '#e6f4ea';
                 waBtn.onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); 
             } else {
-                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;">payments</span> Pay Now`;
+                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:15px;">payments</span> Pay Now`;
                 waBtn.style.color = 'white';
-                waBtn.style.backgroundColor = '#5f259f'; 
+                waBtn.style.backgroundColor = '#5f259f'; // PhonePe Purple
                 waBtn.style.borderColor = '#5f259f';
                 
                 waBtn.onclick = () => {
-                    // 🔥 FETCHED FROM FIREBASE GLOBALLY
                     let upiId = window.globalAdminUpi;
                     if (!upiId) return alert("दुकानदार ने अभी तक अपना UPI सेट नहीं किया है। कृपया उन्हें याद दिलाएं।");
                     
                     let safeName = encodeURIComponent("Vandana Enterprises");
-                    
-                    // &am= हटा दिया है ताकि कस्टमर अपने मन से अमाउंट डाल सके
                     let upiString = `upi://pay?pa=${upiId}&pn=${safeName}&cu=INR`;
                     
-                    // 1. PhonePe/GPay खोलें
                     window.location.href = upiString;
                     
-                    // 2. जब कस्टमर वापस ऐप पर आएगा, उसे Popup दिखेगा
                     setTimeout(() => {
                         document.getElementById('cust-paid-amount').value = '';
                         document.getElementById('payment-confirm-modal').style.display = 'flex';
@@ -2055,7 +2051,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             renderLedgerEntries(name); 
             openPage('ledger-deep-page'); 
         }
-
 
         
         window.saveCalculatorEntry = function() { let amount = eval(window.calcValue) || 0; if(amount <= 0) return alert("Enter valid amount!"); let dateVal = document.getElementById('calc-date').value; if(!dateVal) dateVal = new Date().toISOString().split('T')[0]; if(window.isEditingEntry && currentEntryData) { update(ref(db, 'Ledger/' + currentEntryData.key), { amount: amount, details: document.getElementById('calc-details').value || "App Entry", type: window.calcType, date: new Date(dateVal).toISOString() }); window.isEditingEntry = false; currentEntryData = null; } else { push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: window.calcType, amount: amount, details: document.getElementById('calc-details').value || "App Entry" }); } closePage('calculator-page'); }

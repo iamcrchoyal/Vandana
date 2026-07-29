@@ -2004,40 +2004,22 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             sessionStorage.setItem('v_currentPartyPhone', phone || ""); 
             
             document.getElementById('l-deep-name').innerText = name; 
-            
-            let isAdmin = (window.currentUserRole === 'admin');
-            let callBtn = document.getElementById('l-call-btn');
-            
-            // 🔥 SMART CALL LOGIC: Admin vs Customer
-            if (isAdmin) {
-                // एडमिन कस्टमर को कॉल करेगा
-                callBtn.href = phone ? `tel:${phone}` : "#"; 
-                callBtn.style.background = 'white';
-                callBtn.style.border = '1px solid var(--border)';
-                callBtn.style.color = 'var(--primary)'; // Blue Icon
-                callBtn.onclick = () => { if(!phone) alert('कस्टमर का मोबाइल नंबर सेव नहीं है!'); };
-            } else {
-                // कस्टमर दुकानदार को कॉल करेगा
-                let adminPhone = localStorage.getItem('v_adminPhone') || "";
-                callBtn.href = adminPhone ? `tel:${adminPhone}` : "#";
-                callBtn.style.background = '#e6f4ea'; // Light Green Background
-                callBtn.style.border = '1px solid #146c2e';
-                callBtn.style.color = '#146c2e'; // Dark Green Icon
-                callBtn.onclick = () => { if(!adminPhone) alert('दुकानदार का नंबर उपलब्ध नहीं है!'); };
-            }
+            document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#"; 
             
             let waBtn = document.getElementById('l-wa-btn');
+            let isAdmin = (window.currentUserRole === 'admin');
             
+            // 🔥 FIX: Adjusted Icon size to 15px for a more compact look
             if (isAdmin) {
                 waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:15px;">chat</span> Reminder`;
                 waBtn.style.color = '#146c2e';
-                waBtn.style.backgroundColor = '#e6f4ea'; 
+                waBtn.style.backgroundColor = '#e6f4ea'; // एडमिन के लिए हल्का हरा बैकग्राउंड
                 waBtn.style.borderColor = '#e6f4ea';
                 waBtn.onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); 
             } else {
                 waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:15px;">payments</span> Pay Now`;
                 waBtn.style.color = 'white';
-                waBtn.style.backgroundColor = '#5f259f'; 
+                waBtn.style.backgroundColor = '#5f259f'; // PhonePe Purple
                 waBtn.style.borderColor = '#5f259f';
                 
                 waBtn.onclick = () => {

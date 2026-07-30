@@ -1251,12 +1251,11 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                             document.getElementById('new-customer-popup').style.display = 'flex';
                         }
                         // ================================================================
-                        // ================= CALL ROLE-BASED ACCESS (RBAC) =================
-                        // यूजर का रोल पास करके बटन छुपाने/दिखाने वाला फंक्शन चलाएं
-                        if(typeof window.applyRoleBasedAccess === 'function') {
-                            window.applyRoleBasedAccess(assignedRole);
+                        // 🔥 FIX: रोल कन्फर्म होने के बाद ही डेटाबेस से डेटा मंगाएं
+                        if(typeof window.startDatabaseSync === 'function') {
+                            window.startDatabaseSync();
                         }
-                        // =================================================================
+
                         
                     }).catch(err => console.error("Database Error:", err));
 
@@ -1337,57 +1336,62 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
 
             try {
-                // 🔔 Fetch Global Admin UPI for Customers
-                window.globalAdminUpi = "";
-                onValue(ref(db, 'Settings/AdminProfile'), (snapshot) => {
-                    if(snapshot.exists()) window.globalAdminUpi = snapshot.val().upiId || "";
-                });
+                // ================= SYNCHRONIZED DATABASE SYNC =================
+            window.startDatabaseSync = function() {
+                try {
+                    window.globalAdminUpi = "";
+                    onValue(ref(db, 'Settings/AdminProfile'), (snapshot) => {
+                        if(snapshot.exists()) window.globalAdminUpi = snapshot.val().upiId || "";
+                    });
 
-                // 🔔 Listen for Payment Requests (For Admin Dashboard)
-                window.pendingPaymentsList = [];
-                onValue(ref(db, 'PaymentRequests'), (snapshot) => {
-                    let data = snapshot.val() || {};
-                    window.pendingPaymentsList = Object.keys(data).map(key => ({ key: key, ...data[key] }));
-                    if(typeof renderPaymentRequests === 'function') renderPaymentRequests();
-                });
+                    window.pendingPaymentsList = [];
+                    onValue(ref(db, 'PaymentRequests'), (snapshot) => {
+                        let data = snapshot.val() || {};
+                        window.pendingPaymentsList = Object.keys(data).map(key => ({ key: key, ...data[key] }));
+                        if(typeof renderPaymentRequests === 'function') renderPaymentRequests();
+                    });
 
-                onValue(ref(db, 'Inventory'), (snapshot) => { 
-                    smartInventory = snapshot.val() || {}; 
-                    renderInventoryList(); 
-                    updatePosShades(); 
-                    checkRestore(); 
-                });
-                
-                onValue(ref(db, 'Customers'), (snapshot) => { 
-                    let data = snapshot.val() || {}; 
-                    window.rawCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); 
-                    if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
-                    setupPOSAutocomplete(); 
-                    checkRestore(); 
-                });
-                
-                onValue(ref(db, 'GodownTransfers'), (snapshot) => { 
-                    let data = snapshot.val() || {}; 
-                    allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
-                    renderGodownHistory(); 
-                    renderInventoryList(); 
-                    checkRestore(); 
-                });
-                
-                onValue(ref(db, 'Ledger'), (snapshot) => { 
-                    let data = snapshot.val() || {}; 
-                    window.rawLedger = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
-                    if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
-                    renderInventoryList(); 
-                    checkRestore(); 
-                });
-                
-                onValue(ref(db, 'RecycleBin'), (snapshot) => { 
-                    let data = snapshot.val() || {}; 
-                    allRecycleData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
-                    renderRecycleBin(); 
-                });
-            } catch (error) {}
+                    onValue(ref(db, 'Inventory'), (snapshot) => { 
+                        smartInventory = snapshot.val() || {}; 
+                        renderInventoryList(); 
+                        updatePosShades(); 
+                        checkRestore(); 
+                    });
+                    
+                    onValue(ref(db, 'Customers'), (snapshot) => { 
+                        let data = snapshot.val() || {}; 
+                        window.rawCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); 
+                        if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
+                        setupPOSAutocomplete(); 
+                        checkRestore(); 
+                    });
+                    
+                    onValue(ref(db, 'GodownTransfers'), (snapshot) => { 
+                        let data = snapshot.val() || {}; 
+                        allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
+                        renderGodownHistory(); 
+                        renderInventoryList(); 
+                        checkRestore(); 
+                    });
+                    
+                    onValue(ref(db, 'Ledger'), (snapshot) => { 
+                        let data = snapshot.val() || {}; 
+                        window.rawLedger = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
+                        if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
+                        renderInventoryList(); 
+                        checkRestore(); 
+                    });
+                    
+                    onValue(ref(db, 'RecycleBin'), (snapshot) => { 
+                        let data = snapshot.val() || {}; 
+                        allRecycleData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
+                        renderRecycleBin(); 
+                    });
+                } catch (error) {
+                    console.error("Database Connection Error:", error);
+                }
+            };
+            // ===============================================================
             // ===============================================================
 
             document.getElementById('inv-party').addEventListener('input', function(e) { let val = e.target.value; let cust = globalCustomers.find(c => c.name.toLowerCase() === val.toLowerCase()); if(cust && cust.phone) { document.getElementById('inv-phone').value = cust.phone; } });
@@ -2004,22 +2008,40 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             sessionStorage.setItem('v_currentPartyPhone', phone || ""); 
             
             document.getElementById('l-deep-name').innerText = name; 
-            document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#"; 
+            
+            let isAdmin = (window.currentUserRole === 'admin');
+            let callBtn = document.getElementById('l-call-btn');
+            
+            // 🔥 SMART CALL LOGIC: Admin vs Customer
+            if (isAdmin) {
+                // एडमिन कस्टमर को कॉल करेगा
+                callBtn.href = phone ? `tel:${phone}` : "#"; 
+                callBtn.style.background = 'white';
+                callBtn.style.border = '1px solid var(--border)';
+                callBtn.style.color = 'var(--primary)'; // Blue Icon
+                callBtn.onclick = () => { if(!phone) alert('कस्टमर का मोबाइल नंबर सेव नहीं है!'); };
+            } else {
+                // कस्टमर दुकानदार को कॉल करेगा
+                let adminPhone = localStorage.getItem('v_adminPhone') || "";
+                callBtn.href = adminPhone ? `tel:${adminPhone}` : "#";
+                callBtn.style.background = '#e6f4ea'; // Light Green Background
+                callBtn.style.border = '1px solid #146c2e';
+                callBtn.style.color = '#146c2e'; // Dark Green Icon
+                callBtn.onclick = () => { if(!adminPhone) alert('दुकानदार का नंबर उपलब्ध नहीं है!'); };
+            }
             
             let waBtn = document.getElementById('l-wa-btn');
-            let isAdmin = (window.currentUserRole === 'admin');
             
-            // 🔥 FIX: Adjusted Icon size to 15px for a more compact look
             if (isAdmin) {
                 waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:15px;">chat</span> Reminder`;
                 waBtn.style.color = '#146c2e';
-                waBtn.style.backgroundColor = '#e6f4ea'; // एडमिन के लिए हल्का हरा बैकग्राउंड
+                waBtn.style.backgroundColor = '#e6f4ea'; 
                 waBtn.style.borderColor = '#e6f4ea';
                 waBtn.onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); 
             } else {
                 waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:15px;">payments</span> Pay Now`;
                 waBtn.style.color = 'white';
-                waBtn.style.backgroundColor = '#5f259f'; // PhonePe Purple
+                waBtn.style.backgroundColor = '#5f259f'; 
                 waBtn.style.borderColor = '#5f259f';
                 
                 waBtn.onclick = () => {
@@ -2650,72 +2672,77 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         // ===============================================================
    // ================= ROLE-BASED ACCESS CONTROL (RBAC) =================
         window.applyRoleBasedAccess = function(role) {
-            // 3 Roles डिफाइन किये गए हैं
+            // चेक करें कि क्या यूजर एडमिन है?
             let isAdmin = (role === 'admin');
-            let isSupplier = (role === 'supplier');
-            let isCustomer = (role === 'pending' || role === 'customer');
+                // कस्टमर के लिए साइडबार (Hamburger Menu बटन) छुपाएं
+    let hamburgerBtn = document.getElementById('main-hamburger');
+    if (hamburgerBtn) {
+        hamburgerBtn.style.display = isAdmin ? 'block' : 'none';
+    }
+            // कस्टमर के लिए Inventory (स्टॉक) छुपाएं
+    let invNav = document.getElementById('nav-btn-inventory');
+    if (invNav) {
+        invNav.style.display = isAdmin ? 'flex' : 'none';
+    }
+            // कस्टमर के लिए My Bills बटन दिखाएं और एडमिन से छुपाएं
+    let myBillsNav = document.getElementById('nav-btn-mybills');
+    if (myBillsNav) {
+        myBillsNav.style.display = isAdmin ? 'none' : 'flex';
+    }
 
-            // 1. Sidebar (Hamburger Menu) & Bottom Nav
-            let hamburgerBtn = document.getElementById('main-hamburger');
-            if (hamburgerBtn) hamburgerBtn.style.display = isAdmin ? 'block' : 'none';
+    // कस्टमर के लिए Ledger का नाम बदलकर 'My Khata' करें
+    let ledgerNavSpan = document.querySelector('#nav-btn-ledger span');
+    if (ledgerNavSpan) {
+        ledgerNavSpan.innerText = isAdmin ? 'Ledger' : 'My Khata';
+    }
+            
+          // डैशबोर्ड का नाम एडमिन और कस्टमर के हिसाब से बदलें
+    let salesLabel = document.getElementById('dash-sales-label');
+    if (salesLabel) {
+        salesLabel.innerText = isAdmin ? "Total Sales (Today)" : "Today's Purchase";
+    }
+              // सेल इनवॉइस और गोडाउन ट्रांसफर वाले बॉक्स को कस्टमर से छुपाएं
+    let adminCards = document.getElementById('admin-action-cards');
+    if (adminCards) {
+        adminCards.style.display = isAdmin ? 'grid' : 'none';
+    }
+              // कस्टमर का टॉप कस्टमर टाइटल बदलें और टैब छुपाएं
+    let tcTabs = document.getElementById('tc-tabs');
+    let tcTitle = document.getElementById('tc-title');
+    if(tcTabs) tcTabs.style.display = isAdmin ? 'flex' : 'none';
+    if(tcTitle) tcTitle.innerHTML = isAdmin ? 'Top Customers 🏆 <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span>' : 'My Target Progress 🎯 <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span>';
+            
+            // 1. इन्वेंट्री और गोडाउन के सारे "Add" और "Transfer" बटन छुपाएं
+            document.querySelectorAll('.pro-add-btn').forEach(btn => {
+                btn.style.display = isAdmin ? 'flex' : 'none';
+            });
 
-            let invNav = document.getElementById('nav-btn-inventory');
-            if (invNav) invNav.style.display = isAdmin ? 'flex' : 'none';
+            // 2. स्टॉक के अंदर के ➕ IN और ➖ OUT बटन छुपाएं
+            document.querySelectorAll('.in-out-btn-group').forEach(group => {
+                group.style.display = isAdmin ? 'flex' : 'none';
+            });
 
-            let myBillsNav = document.getElementById('nav-btn-mybills');
-            if (myBillsNav) myBillsNav.style.display = isAdmin ? 'none' : 'flex';
-
-            // 2. लेजर (Ledger) का नाम Role के हिसाब से बदलना
-            let ledgerNavSpan = document.querySelector('#nav-btn-ledger span');
-            if (ledgerNavSpan) {
-                if (isAdmin) ledgerNavSpan.innerText = 'Ledger';
-                else if (isSupplier) ledgerNavSpan.innerText = 'Supplier Khata';
-                else ledgerNavSpan.innerText = 'My Khata';
-            }
-
-            // 3. Dashboard का टेक्स्ट और कार्ड्स
-            let salesLabel = document.getElementById('dash-sales-label');
-            if (salesLabel) {
-                if (isAdmin) salesLabel.innerText = "Total Sales (Today)";
-                else if (isSupplier) salesLabel.innerText = "Today's Supplied Value";
-                else salesLabel.innerText = "Today's Purchase";
-            }
-
-            let adminCards = document.getElementById('admin-action-cards');
-            if (adminCards) adminCards.style.display = isAdmin ? 'grid' : 'none';
-
-            let tcTabs = document.getElementById('tc-tabs');
-            if(tcTabs) tcTabs.style.display = isAdmin ? 'flex' : 'none';
-
-            let tcTitle = document.getElementById('tc-title');
-            if(tcTitle) {
-                if (isAdmin) tcTitle.innerHTML = 'Top Customers 🏆 <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span>';
-                else if (isSupplier) tcTitle.innerHTML = 'My Supply Performance 📈';
-                else tcTitle.innerHTML = 'My Target Progress 🎯 <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span>';
-            }
-
-            // 4. Admin के अलावा बाकी सब से Add/Transfer/IN-OUT बटन छुपाएं
-            document.querySelectorAll('.pro-add-btn').forEach(btn => btn.style.display = isAdmin ? 'flex' : 'none');
-            document.querySelectorAll('.in-out-btn-group').forEach(group => group.style.display = isAdmin ? 'flex' : 'none');
-
+            // 3. लेजर बुक (पार्टी) में नीचे दिखने वाला "Add Customer" बटन छुपाएं
             let mainFab = document.getElementById('main-fab');
             if (mainFab) mainFab.style.display = isAdmin ? 'flex' : 'none';
 
-            // 5. Ledger Deep Page (खाते के अंदर) के ऑप्शन्स
+            // 4. लेजर की डिटेल में नीचे दिखने वाले "YOU GAVE / YOU GOT" बटन छुपाएं
             let ledgerBottomBar = document.querySelector('#ledger-deep-page .bottom-action-bar');
-            // फिलहाल सप्लायर और कस्टमर दोनों से डायरेक्ट एंट्री (Gave/Got) के बटन छुपा रहे हैं।
             if (ledgerBottomBar) ledgerBottomBar.style.display = isAdmin ? 'flex' : 'none';
-
+            
+            // 5. एंट्री डिटेल में "Edit" बटन छुपाएं
             let entryEditBtn = document.getElementById('ed-edit-btn-container');
             if(entryEditBtn) entryEditBtn.style.display = isAdmin ? 'block' : 'none';
 
+            // 6. 🔥 सबसे जरूरी: बिल/एंट्री के नीचे वाला "Delete" बटन छुपाएं
             let entryDeleteBtn = document.querySelector('button[onclick="deleteCurrentEntry()"]');
             if(entryDeleteBtn) entryDeleteBtn.style.display = isAdmin ? 'inline-block' : 'none';
 
+            // 7. 🔥 कस्टमर प्रोफाइल से "Delete Account" बटन छुपाएं
             let customerDeleteBtn = document.querySelector('button[onclick="deleteCurrentCustomer()"]');
             if(customerDeleteBtn) customerDeleteBtn.style.display = isAdmin ? 'block' : 'none';
 
-            // 6. Sidebar से एक्स्ट्रा पेज छुपाएं
+            // 8. 🔥 साइडबार से "Recycle Bin", "Absent Today" और "Stock Report" छुपाएं
             document.querySelectorAll('.sidebar-menu li').forEach(li => {
                 let onclickText = li.getAttribute('onclick') || "";
                 if(onclickText.includes('recycle-page') || onclickText.includes('openAbsentCustomers') || onclickText.includes('stock')) {
@@ -2723,7 +2750,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 }
             });
         }
-// ====================================================================
+        // ====================================================================
 window.showTargetCelebration = function() {
             document.getElementById('target-modal').style.display = 'flex';
             var duration = 5000;

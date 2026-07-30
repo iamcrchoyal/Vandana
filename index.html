@@ -527,23 +527,19 @@
 
     <!-- 👤 GOOGLE STYLE PROFILE MODAL -->
     <div class="profile-modal-overlay" id="profile-modal-overlay" onclick="closeProfileModal()"></div>
-    <div class="profile-modal" id="profile-modal" style="padding: 20px 16px; border-radius: 24px; max-width: 320px; text-align: center;">
+    <div class="profile-modal" id="profile-modal" style="padding: 24px 20px; border-radius: 24px; max-width: 320px; text-align: center;">
         <span class="pm-close" onclick="closeProfileModal()">✕</span>
         
-        <div id="pm-email-display" style="font-size: 16px; font-weight: 700; color: var(--text-dark); margin-top: 10px; margin-bottom: 14px; word-break: break-word; line-height: 1.3; padding: 0 10px; font-family: 'Product Sans', sans-serif;">User Name</div>
+        <div id="pm-email-display" style="font-size: 17px; font-weight: 700; color: var(--text-dark); margin-top: 6px; margin-bottom: 16px; word-break: break-word; line-height: 1.3; font-family: 'Product Sans', sans-serif;">User Name</div>
         
-        <div class="pm-avatar-wrap" style="margin-bottom: 16px;">
+        <div class="pm-avatar-wrap" style="margin-bottom: 20px;">
             <div class="pm-avatar" id="pm-avatar-container" onclick="let img=document.getElementById('pm-avatar-img'); if(img && img.style.display!=='none') openDpViewer(img.src);">
                 <img src="" id="pm-avatar-img" style="display:none; width:100%; height:100%; border-radius:50%; object-fit:cover;">
                 <span id="pm-avatar-text">A</span>
             </div>
         </div>
 
-        <div class="pm-name" id="pm-name-display" style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; font-weight: 500;">Welcome!</div>
-
-        <button class="btn-outline" onclick="openSelfCustomerProfile()" style="width:100%; margin-bottom: 10px; border-radius:20px; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:6px; border-color:var(--primary); color:var(--primary); padding: 10px;"><span class="material-symbols-rounded" style="font-size:18px;">manage_accounts</span> Manage Your Account</button>
-
-        <button class="btn-submit" onclick="manualLogout()" style="width:100%; background:var(--danger); border-radius:20px; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:6px; padding: 10px;"><span class="material-symbols-rounded" style="font-size:18px;">logout</span> Logout</button>
+        <button class="btn-outline" onclick="openSelfCustomerProfile()" style="width:100%; border-radius:14px; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:8px; border-color:var(--primary); color:var(--primary); padding: 12px;"><span class="material-symbols-rounded" style="font-size:18px;">manage_accounts</span> Manage Your Account</button>
     </div>
 
     <!-- 📱 PERMANENT GLOBAL APP BAR -->
@@ -908,25 +904,29 @@
                 <div class="kb-avatar" id="cp-mini-avatar" style="width:28px; height:28px; font-size:12px; background:#e8f0fe; color:var(--primary); overflow:hidden; flex-shrink:0;">C</div>
                 <h2 class="page-title scroll-text" id="cp-header-name" style="font-size:16px; margin:0; max-width:60%;">Name</h2>
             </div>
-            <h2 class="page-title" id="cp-main-title" style="position:absolute; left:52px; transition:opacity 0.2s ease; margin:0;">Customer Profile</h2>
+            <h2 class="page-title" id="cp-main-title" style="position:absolute; left:52px; transition:opacity 0.2s ease; margin:0;">Account Settings</h2>
         </div>
-        <div class="scroll-content" id="cp-scroll-content" style="padding-top:16px;">
-            <div style="display:flex; justify-content:center; margin-bottom:16px;" id="cp-big-avatar-wrap">
+        <div class="scroll-content" id="cp-scroll-content" style="padding-top:16px; padding-bottom: 90px;">
+            <div style="display:flex; justify-content:center; margin-bottom:20px;" id="cp-big-avatar-wrap">
                 <div class="pm-avatar-wrap" style="margin:0;">
-                    <div class="kb-avatar" id="cp-avatar" style="width:80px; height:80px; font-size:30px; box-shadow: 0 0 0 4px #e0e2e0; cursor:pointer;" onclick="let img=this.querySelector('img'); if(img) openDpViewer(img.src);">C</div>
-                    <div class="pm-cam material-symbols-rounded" style="font-size:14px; width:28px; height:28px;" onclick="document.getElementById('cust-upload-hidden').click()">photo_camera</div>
+                    <div class="kb-avatar" id="cp-avatar" style="width:84px; height:80px; font-size:32px; box-shadow: 0 0 0 4px white, 0 4px 12px rgba(0,0,0,0.08); cursor:pointer;" onclick="let img=this.querySelector('img'); if(img) openDpViewer(img.src);">C</div>
+                    <div class="pm-cam material-symbols-rounded" style="font-size:14px; width:28px; height:28px; background:white; border:1px solid var(--border);" onclick="document.getElementById('cust-upload-hidden').click()">photo_camera</div>
                     <input type="file" id="cust-upload-hidden" accept="image/*" style="display:none;" onchange="handleCustPic(event)">
                 </div>
             </div>
-            <div class="form-panel">
-                <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-control" id="cp-edit-name"></div>
-                <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="cp-edit-phone"></div>
-                <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-control" id="cp-edit-email" placeholder="e.g. name@gmail.com, .in, .com"></div>
-                <div class="form-group"><label class="form-label">Address</label><textarea class="form-control" id="cp-edit-address" rows="3"></textarea></div>
-                <button class="btn-submit" onclick="saveCustomerProfile()" style="border-radius:20px;">💾 Save Profile Updates</button>
+            <div class="form-panel" style="border-radius:18px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+                <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">FULL NAME</label><input type="text" class="form-control" id="cp-edit-name" style="border-radius:10px;"></div>
+                <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">MOBILE NUMBER</label><input type="tel" class="form-control" id="cp-edit-phone" style="border-radius:10px;"></div>
+                <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">EMAIL ADDRESS</label><input type="email" class="form-control" id="cp-edit-email" placeholder="e.g. name@gmail.com" style="border-radius:10px;"></div>
+                <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">ADDRESS</label><textarea class="form-control" id="cp-edit-address" rows="3" style="border-radius:10px;"></textarea></div>
+                <button class="btn-submit" onclick="saveCustomerProfile()" style="border-radius:12px; margin-top:8px;">💾 Save Changes</button>
+            </div>
+
+            <div style="margin-top: 16px;">
+                <button class="btn-submit" onclick="manualLogout()" style="width:100%; background:#fdf2f2; color:var(--danger); border:1px solid #f8cbcb; border-radius:14px; font-size:14px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:8px; padding: 12px; box-shadow:none;"><span class="material-symbols-rounded" style="font-size:20px;">logout</span> Logout Account</button>
             </div>
         </div>
-        <div class="bottom-action-bar" style="justify-content:center; background:var(--bg-color); border-top:none;">
+        <div class="bottom-action-bar" style="justify-content:center; background:var(--bg-color); border-top:none; display:none;" id="cp-delete-bar">
             <button class="btn-outline" style="width:100%; border-color:var(--danger); color:var(--danger);" onclick="deleteCurrentCustomer()"><span class="material-symbols-rounded" style="font-size:16px; vertical-align:middle;">delete</span> Delete Account</button>
         </div>
     </div>
@@ -1237,11 +1237,22 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 // 2. Customer Name & Photo Sync from Admin Data
                 let myCust = globalCustomers.length > 0 ? globalCustomers[0] : null;
                 let displayName = myCust ? myCust.name : (window.currentUserName || "User");
+                let firstName = displayName.trim().split(' ')[0]; // SIRF FIRST NAME
                 let displayPic = myCust && myCust.pic ? myCust.pic : localStorage.getItem('v_adminPic');
 
-                // Admin dwara badla gaya naam aur photo top ring aur profile modal me dikhana
+                // Greeting Message me Sirf First Name Dikhana
+                const hour = new Date().getHours(); 
+                let greetText = "Good morning";
+                if (hour >= 12 && hour < 17) greetText = "Good afternoon"; 
+                else if (hour >= 17) greetText = "Good evening";
+                
+                if (document.getElementById('dynamic-greeting')) {
+                    document.getElementById('dynamic-greeting').innerText = greetText + ", " + firstName;
+                }
+
+                // Profile Modal & Header Ring Sync
                 if (document.getElementById('pm-email-display')) document.getElementById('pm-email-display').innerText = displayName;
-                if (document.getElementById('user-name')) document.getElementById('user-name').innerText = displayName;
+                if (document.getElementById('user-name')) document.getElementById('user-name').innerText = firstName;
 
                 if (displayPic) {
                     if (document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').src = displayPic; document.getElementById('pm-avatar-img').style.display = 'block'; }
@@ -2572,8 +2583,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             if(entryDeleteBtn) entryDeleteBtn.style.display = isAdmin ? 'inline-block' : 'none';
 
             // 7. 🔥 कस्टमर प्रोफाइल से "Delete Account" बटन छुपाएं
-            let customerDeleteBtn = document.querySelector('button[onclick="deleteCurrentCustomer()"]');
-            if(customerDeleteBtn) customerDeleteBtn.style.display = isAdmin ? 'block' : 'none';
+            let cpDeleteBar = document.getElementById('cp-delete-bar');
+            if(cpDeleteBar) cpDeleteBar.style.display = isAdmin ? 'flex' : 'none';
 
             // 8. 🔥 साइडबार से "Recycle Bin", "Absent Today" और "Stock Report" छुपाएं
             document.querySelectorAll('.sidebar-menu li').forEach(li => {

@@ -1588,8 +1588,97 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
         function setupPOSAutocomplete() { let dlHtml = ""; globalCustomers.forEach(c => dlHtml += `<option value="${c.name}">`); document.getElementById('pos-customers-dl').innerHTML = dlHtml; }
 
-        window.openCustomerProfile = function() { let customer = globalCustomers.find(c => c.name === currentPartyName); if(!customer) return; currentPartyKey = customer.key; sessionStorage.setItem('v_currentPartyName', currentPartyName); let adminPic = localStorage.getItem('v_adminPic'); let custPic = customer.pic || adminPic; if(custPic) { document.getElementById('cp-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; document.getElementById('cp-mini-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; } else { document.getElementById('cp-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); document.getElementById('cp-mini-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); } document.getElementById('cp-edit-name').value = customer.name; document.getElementById('cp-edit-phone').value = customer.phone || ""; document.getElementById('cp-edit-email').value = customer.email || ""; document.getElementById('cp-edit-address').value = customer.address || ""; document.getElementById('cp-header-name').innerText = customer.name; document.getElementById('cp-scroll-content').scrollTop = 0; document.getElementById('cp-header-group').style.opacity = '0'; document.getElementById('cp-header-group').style.transform = 'translateY(10px)'; document.getElementById('cp-main-title').style.opacity = '1'; let bWrap = document.getElementById('cp-big-avatar-wrap'); if(bWrap) { bWrap.style.opacity = '1'; bWrap.style.transform = 'scale(1)'; bWrap.style.pointerEvents = 'auto'; } openPage('customer-profile-page'); }
-        window.saveCustomerProfile = function() { let nName = document.getElementById('cp-edit-name').value.trim(); let nPhone = document.getElementById('cp-edit-phone').value; let nEmail = document.getElementById('cp-edit-email').value.trim(); let nAddr = document.getElementById('cp-edit-address').value; if(!nName) return alert("Name is required!"); update(ref(db, 'Customers/' + currentPartyKey), { name: nName, phone: nPhone, email: nEmail, address: nAddr }); currentPartyName = nName; currentPartyPhone = nPhone; sessionStorage.setItem('v_currentPartyName', nName); document.getElementById('l-deep-name').innerText = nName; document.getElementById('cp-header-name').innerText = nName; alert("Updated!"); closePage('customer-profile-page'); }
+        window.openCustomerProfile = function() { 
+            let customer = globalCustomers.find(c => c.name === currentPartyName); 
+            if(!customer) return; 
+            currentPartyKey = customer.key; 
+            sessionStorage.setItem('v_currentPartyName', currentPartyName); 
+            let adminPic = localStorage.getItem('v_adminPic'); 
+            let custPic = customer.pic || adminPic; 
+            
+            if(custPic) { 
+                document.getElementById('cp-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; 
+                document.getElementById('cp-mini-avatar').innerHTML = `<img src="${custPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; 
+            } else { 
+                document.getElementById('cp-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); 
+                document.getElementById('cp-mini-avatar').innerHTML = customer.name.substring(0, 1).toUpperCase(); 
+            } 
+            
+            document.getElementById('cp-edit-name').value = customer.name; 
+            document.getElementById('cp-edit-phone').value = customer.phone || ""; 
+            document.getElementById('cp-edit-email').value = customer.email || ""; 
+            document.getElementById('cp-edit-address').value = customer.address || ""; 
+
+            // ADMIN VS CUSTOMER LOGIC (Lock fields for customer)
+            let isAdmin = (window.currentUserRole === 'admin');
+            document.getElementById('cp-edit-name').disabled = !isAdmin;
+            document.getElementById('cp-edit-phone').disabled = !isAdmin;
+            document.getElementById('cp-edit-email').disabled = !isAdmin;
+
+            let lockColor = isAdmin ? 'var(--text-dark)' : '#7f8c8d';
+            let lockBg = isAdmin ? 'white' : '#f0f4f9';
+            ['cp-edit-name', 'cp-edit-phone', 'cp-edit-email'].forEach(id => {
+                document.getElementById(id).style.color = lockColor;
+                document.getElementById(id).style.backgroundColor = lockBg;
+            });
+
+            document.getElementById('cp-header-name').innerText = customer.name; 
+            document.getElementById('cp-scroll-content').scrollTop = 0; 
+            document.getElementById('cp-header-group').style.opacity = '0'; 
+            document.getElementById('cp-header-group').style.transform = 'translateY(10px)'; 
+            document.getElementById('cp-main-title').style.opacity = '1'; 
+            
+            let bWrap = document.getElementById('cp-big-avatar-wrap'); 
+            if(bWrap) { 
+                bWrap.style.opacity = '1'; 
+                bWrap.style.transform = 'scale(1)'; 
+                bWrap.style.pointerEvents = 'auto'; 
+            } 
+            openPage('customer-profile-page'); 
+        }
+
+        window.saveCustomerProfile = function() { 
+            let nName = document.getElementById('cp-edit-name').value.trim(); 
+            let nPhone = document.getElementById('cp-edit-phone').value; 
+            let nEmail = document.getElementById('cp-edit-email').value.trim(); 
+            let nAddr = document.getElementById('cp-edit-address').value; 
+            
+            if(!nName) return window.showSaaSToast("Name is required!"); 
+            
+            let oldName = currentPartyName;
+            let isAdmin = (window.currentUserRole === 'admin');
+
+            if (isAdmin) {
+                // 1. Admin can change everything
+                update(ref(db, 'Customers/' + currentPartyKey), { name: nName, phone: nPhone, email: nEmail, address: nAddr }); 
+                
+                // 2. MAGIC: Auto-shift old bills and entries to the new name!
+                if (oldName !== nName) {
+                    allLedgerData.forEach(entry => {
+                        if (entry.name === oldName) {
+                            update(ref(db, 'Ledger/' + entry.key), { name: nName });
+                        }
+                    });
+                    allPendingRequests.forEach(req => {
+                        if (req.name === oldName) {
+                            update(ref(db, 'PendingRequests/' + req.key), { name: nName });
+                        }
+                    });
+                }
+            } else {
+                // 3. Customer can only change address (Photo automatically saves when uploaded)
+                update(ref(db, 'Customers/' + currentPartyKey), { address: nAddr });
+            }
+
+            currentPartyName = nName; 
+            currentPartyPhone = nPhone; 
+            sessionStorage.setItem('v_currentPartyName', nName); 
+            document.getElementById('l-deep-name').innerText = nName; 
+            document.getElementById('cp-header-name').innerText = nName; 
+            
+            window.showSaaSToast("Profile Updated Successfully!"); 
+            closePage('customer-profile-page'); 
+        }
         window.addCustomerToCloud = function() { let name = document.getElementById('new-party-name').value.trim(); let phone = document.getElementById('new-party-phone').value; let address = document.getElementById('new-party-address').value; if(!name) return alert("Please enter Name!"); push(ref(db, 'Customers'), { name, phone, address, date: new Date().toISOString(), status: "Active", type: currentTabType }); closePage('add-party-page'); document.getElementById('new-party-name').value = ''; document.getElementById('new-party-phone').value = ''; document.getElementById('new-party-address').value = ''; }
         window.deleteCurrentCustomer = function() { if(confirm(`WARNING: Are you sure you want to permanently delete ${currentPartyName}?`)) { remove(ref(db, 'Customers/' + currentPartyKey)); closePage('customer-profile-page'); closePage('ledger-deep-page'); alert("Deleted!"); } }
 

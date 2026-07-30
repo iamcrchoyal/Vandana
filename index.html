@@ -1449,25 +1449,27 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
         document.getElementById('dash-date-picker').addEventListener('change', function(e) { calculateGrandTotals(); });
 
-        // --- GOOGLE LOGIN FUNCTION ---
-        window.loginWithGoogle = function() {
-            const googleProvider = new GoogleAuthProvider(); // <--- हमने चाबी यहाँ अंदर रख दी!
-            
+        // --- GOOGLE LOGIN FUNCTION (UPDATED & ERROR-FREE) ---
+        window.loginWithGoogle = async function() {
             let loginBtn = document.getElementById('google-login-btn');
-            loginBtn.innerHTML = "Checking...";
-            
-            signInWithPopup(auth, googleProvider)
-                .then((result) => {
-                    const user = result.user;
-                    alert("Welcome " + user.displayName + "! (लॉगिन सफल)");
-                    document.getElementById('login-overlay').style.display = 'none';
-                    loginBtn.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 24px;"> Sign in with Google`;
-                })
-                .catch((error) => {
-                    console.error(error);
-                    alert("लॉगिन कैंसल हो गया या एरर आया।");
-                    loginBtn.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 24px;"> Sign in with Google`;
-                });
+            try {
+                // बटन का टेक्स्ट बदलें ताकि पता चले क्लिक हुआ है
+                loginBtn.innerHTML = "⏳ Logging in...";
+                
+                const googleProvider = new GoogleAuthProvider();
+                const result = await signInWithPopup(auth, googleProvider);
+                
+                // लॉगिन सफल होने पर
+                const user = result.user;
+                document.getElementById('login-overlay').style.display = 'none';
+                loginBtn.innerHTML = `<img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width: 22px;"> Continue with Google`;
+                
+            } catch (error) {
+                console.error("Login Error:", error);
+                alert("लॉगिन में समस्या आई है: " + error.message);
+                // एरर आने पर बटन को वापस पहले जैसा कर दें
+                loginBtn.innerHTML = `<img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width: 22px;"> Continue with Google`;
+            }
         }
         // -----------------------------------
 

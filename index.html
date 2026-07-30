@@ -584,7 +584,7 @@
                     <div style="font-size:14px; color:var(--primary); font-weight:700; margin-top:4px;">View</div>
                 </div>
             </div>
-            <div style="background: rgba(255, 255, 255, 0.9); border-radius: 20px; padding: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid rgba(255,255,255,0.8); width: 100%; box-sizing: border-box;">
+            <div id="top-customers-container" style="background: rgba(255, 255, 255, 0.9); border-radius: 20px; padding: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid rgba(255,255,255,0.8); width: 100%; box-sizing: border-box;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
                     <div style="font-size: 14px; font-weight: 500; color: var(--text-dark); font-family: 'Inter', sans-serif; display:flex; align-items:center; gap:8px;" id="tc-title">Top Customers 🏆 <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span></div>
 </div>
@@ -2251,21 +2251,34 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         ledgerNavSpan.innerText = isAdmin ? 'Ledger' : 'My Khata';
     }
             
-          // डैशबोर्ड का नाम एडमिन और कस्टमर के हिसाब से बदलें
-    let salesLabel = document.getElementById('dash-sales-label');
-    if (salesLabel) {
-        salesLabel.innerText = isAdmin ? "Total Sales (Today)" : "Today's Purchase";
-    }
-              // सेल इनवॉइस और गोडाउन ट्रांसफर वाले बॉक्स को कस्टमर से छुपाएं
-    let adminCards = document.getElementById('admin-action-cards');
-    if (adminCards) {
-        adminCards.style.display = isAdmin ? 'grid' : 'none';
-    }
-              // कस्टमर का टॉप कस्टमर टाइटल बदलें और टैब छुपाएं
-    let tcTabs = document.getElementById('tc-tabs');
-    let tcTitle = document.getElementById('tc-title');
-    if(tcTabs) tcTabs.style.display = isAdmin ? 'flex' : 'none';
-    if(tcTitle) tcTitle.innerHTML = isAdmin ? 'Top Customers 🏆 <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span>' : 'My Target Progress 🎯 <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span>';
+          let isSupplier = (role === 'supplier');
+
+            // डैशबोर्ड का नाम एडमिन, सप्लायर और कस्टमर के हिसाब से बदलें
+            let salesLabel = document.getElementById('dash-sales-label');
+            if (salesLabel) {
+                if (isAdmin) salesLabel.innerText = "Today's Sale";
+                else if (isSupplier) salesLabel.innerText = "Today's Supply";
+                else salesLabel.innerText = "Today's Purchase";
+            }
+            
+            // सेल इनवॉइस और गोडाउन ट्रांसफर वाले बॉक्स को कस्टमर और सप्लायर से छुपाएं
+            let adminCards = document.getElementById('admin-action-cards');
+            if (adminCards) {
+                adminCards.style.display = isAdmin ? 'grid' : 'none';
+            }
+
+            // सप्लायर के लिए टॉप कस्टमर बॉक्स पूरा छुपाएं, बाकियों को दिखाएं
+            let topCustContainer = document.getElementById('top-customers-container');
+            if(topCustContainer) {
+                topCustContainer.style.display = isSupplier ? 'none' : 'block';
+            }
+
+            // कस्टमर का टॉप कस्टमर टाइटल बदलें और टैब छुपाएं
+            let tcTabs = document.getElementById('tc-tabs');
+            let tcTitle = document.getElementById('tc-title');
+            if(tcTabs) tcTabs.style.display = isAdmin ? 'flex' : 'none';
+            if(tcTitle) tcTitle.innerHTML = isAdmin ? 'Top Customers 🏆 <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span>' : 'My Target Progress 🎯 <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span>';
+            
             
             // 1. इन्वेंट्री और गोडाउन के सारे "Add" और "Transfer" बटन छुपाएं
             document.querySelectorAll('.pro-add-btn').forEach(btn => {

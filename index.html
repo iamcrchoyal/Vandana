@@ -564,6 +564,14 @@
                     <input type="date" id="dash-date-picker">
                 </div>
             </div>
+            
+            <div id="admin-pending-alert" style="display:none; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 16px; padding: 12px 16px; margin-bottom: 16px; cursor: pointer; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);" onclick="openVerificationPage()">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="material-symbols-rounded" style="color: #856404;">notifications_active</span>
+                    <span style="color: #856404; font-weight: 600; font-size: 14px;" id="pending-req-count">0 Pending Requests</span>
+                </div>
+                <span class="material-symbols-rounded" style="color: #856404;">chevron_right</span>
+            </div>
             <div class="google-card" onclick="openInvoicesPage()">
                 <div class="card-header" id="dash-sales-label">Total Sales (Today)</div>
                 <div class="card-value" id="dash-card-sale-value">₹0</div>
@@ -1062,7 +1070,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         const auth = getAuth(app); // OTP के लिए नया ताला
         window.confirmationResult = null;
 
-        let allLedgerData = []; let globalCustomers = []; let smartInventory = {}; let allGodownTransfers = []; let allRecycleData = [];
+        let allLedgerData = []; let globalCustomers = []; let smartInventory = {}; let allGodownTransfers = []; let allRecycleData = []; let allPendingRequests = [];
         let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null; 
         window.lastGeneratedEntryData = null;
         
@@ -1270,6 +1278,28 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     allRecycleData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
                     renderRecycleBin(); 
                 });
+                
+                // नया: Pending Requests को डेटाबेस से लाना
+                onValue(ref(db, 'PendingRequests'), (snapshot) => { 
+                    let data = snapshot.val() || {}; 
+                    allPendingRequests = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
+                    
+                    let badge = document.getElementById('admin-pending-alert');
+                    let countTxt = document.getElementById('pending-req-count');
+                    
+                    if(badge && countTxt) {
+                        if(allPendingRequests.length > 0 && window.currentUserRole === 'admin') {
+                            badge.style.display = 'flex';
+                            countTxt.innerText = `${allPendingRequests.length} Pending Request${allPendingRequests.length > 1 ? 's' : ''}`;
+                        } else {
+                            badge.style.display = 'none';
+                        }
+                    }
+                    // अगर वेरिफिकेशन पेज खुला है, तो उसे रियल-टाइम अपडेट करें
+                    if(document.getElementById('verification-page') && document.getElementById('verification-page').classList.contains('active')) {
+                        renderPendingRequests();
+                    }
+                });
             } catch (error) {}
             // ===============================================================
 
@@ -1361,7 +1391,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
-        const allPagesList = ['items-page', 'parties-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'home'];
+        const allPagesList = ['items-page', 'parties-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'home'];
         
         window.openPage = function(id, isBack = false) { 
             if(!isBack && window.pageStack[window.pageStack.length-1] !== id) {
@@ -2623,6 +2653,77 @@ window.showTargetCelebration = function() {
                 filterBox.style.display = 'none';  
             }
         }
+
+// ================= ADMIN VERIFICATION LOGIC =================
+        window.openVerificationPage = function() {
+            if(typeof renderPendingRequests === 'function') renderPendingRequests();
+            openPage('verification-page');
+        }
+
+        window.renderPendingRequests = function() {
+            let container = document.getElementById('pending-requests-list');
+            if (allPendingRequests.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px 20px; color:gray;">कोई पेंडिंग रिक्वेस्ट नहीं है 🎉</div>`;
+                return;
+            }
+            
+            let html = "";
+            allPendingRequests.forEach(req => {
+                let d = new Date(req.date);
+                let dateStr = isNaN(d) ? req.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
+                let color = req.type === 'Gave' ? 'var(--danger)' : 'var(--success)';
+                let typeText = req.type === 'Gave' ? 'Bill / Entry' : 'Payment Received';
+                
+                html += `
+                <div class="entry-card" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
+                        <div>
+                            <div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${req.name}</div>
+                            <div style="font-size:11px; color:var(--text-muted);">${dateStr}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="color:${color}; font-weight:800; font-size: 16px;">₹${parseFloat(req.amount).toLocaleString('en-IN')}</div>
+                            <div style="font-size:11px; font-weight:600; color:${color};">${typeText}</div>
+                        </div>
+                    </div>
+                    <div style="font-size:13px; color:var(--text-muted); margin-bottom:12px; background:#f8fafd; padding:10px; border-radius:8px; border:1px solid #e0e2e0;">
+                        <strong>Details:</strong> ${req.details || 'N/A'} <br>
+                        <span style="font-size:11px; color:#0a56d0;">(Sent by: ${req.requestedBy || 'Unknown'})</span>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger); padding:10px; border-radius:12px; font-size:13px; font-weight:600;" onclick="rejectRequest('${req.key}')">❌ Reject</button>
+                        <button class="btn-submit" style="flex:1; background:var(--success); padding:10px; border-radius:12px; font-size:13px; font-weight:600;" onclick="approveRequest('${req.key}')">✅ Approve</button>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        window.approveRequest = function(key) {
+            if(!confirm("क्या आप इस रिक्वेस्ट को अप्रूव करके लेजर में डालना चाहते हैं?")) return;
+            let req = allPendingRequests.find(r => r.key === key);
+            if(!req) return;
+            
+            let newEntry = { ...req };
+            delete newEntry.key;
+            delete newEntry.status;
+            delete newEntry.requestedBy;
+            
+            // 1. Move to Ledger
+            push(ref(db, 'Ledger'), newEntry).then(() => {
+                // 2. Remove from PendingRequests
+                remove(ref(db, 'PendingRequests/' + key));
+                alert("रिक्वेस्ट सफलतापूर्वक लेजर में ऐड हो गई है! ✅");
+            }).catch(err => alert("Error: " + err.message));
+        }
+
+        window.rejectRequest = function(key) {
+            if(!confirm("क्या आप इस रिक्वेस्ट को रिजेक्ट (डिलीट) करना चाहते हैं?")) return;
+            remove(ref(db, 'PendingRequests/' + key)).then(() => {
+                alert("रिक्वेस्ट रिजेक्ट कर दी गई है! ❌");
+            }).catch(err => alert("Error: " + err.message));
+        }
+        
            </script>
             
 <div id="customer-payment-popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 99999; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
@@ -2641,6 +2742,18 @@ window.showTargetCelebration = function() {
         </div>
     </div>
 
-            
+  <div class="page flex-page" id="verification-page">
+        <div class="sub-header">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('verification-page')">arrow_back</button>
+            <h2 class="page-title">Verification Center</h2>
+        </div>
+        <div class="fixed-top-section">
+            <div style="background:#e8f0fe; color:var(--primary-dark); padding:12px; border-radius:12px; font-weight:600; font-size:13px; border: 1px solid #c2e7ff; display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                <span class="material-symbols-rounded" style="font-size:20px;">admin_panel_settings</span> <span>Review and approve payments & bills.</span>
+            </div>
+        </div>
+        <div class="scroll-content" id="pending-requests-list" style="padding-top:0px;"></div>
+    </div>
+    
 </body>
 </html>

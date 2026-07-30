@@ -1665,6 +1665,14 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     // 2nd Priority: अगर फ़ोन में PhonePe नहीं है, तो GPay या Paytm का ऑप्शन खोलना
                     setTimeout(() => {
                         window.location.href = `upi://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
+                        // 2 सेकंड बाद पॉप-अप दिखाएं
+                        setTimeout(() => {
+                            let popup = document.getElementById('customer-payment-popup');
+                            if(popup) {
+                                popup.style.display = 'flex';
+                                document.getElementById('cp-pop-amount').value = safeAmount;
+                            }
+                        }, 2000);
                     }, 500);
                 };
             }
@@ -1683,7 +1691,51 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             openPage('ledger-deep-page'); 
         }
         
-        window.saveCalculatorEntry = function() { let amount = eval(window.calcValue) || 0; if(amount <= 0) return alert("Enter valid amount!"); let dateVal = document.getElementById('calc-date').value; if(!dateVal) dateVal = new Date().toISOString().split('T')[0]; if(window.isEditingEntry && currentEntryData) { update(ref(db, 'Ledger/' + currentEntryData.key), { amount: amount, details: document.getElementById('calc-details').value || "App Entry", type: window.calcType, date: new Date(dateVal).toISOString() }); window.isEditingEntry = false; currentEntryData = null; } else { push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: window.calcType, amount: amount, details: document.getElementById('calc-details').value || "App Entry" }); } closePage('calculator-page'); }
+        window.saveCalculatorEntry = function() { 
+            let amount = eval(window.calcValue) || 0; 
+            if(amount <= 0) return alert("Enter valid amount!"); 
+            let dateVal = document.getElementById('calc-date').value; 
+            if(!dateVal) dateVal = new Date().toISOString().split('T')[0]; 
+
+            let isAdmin = (window.currentUserRole === 'admin');
+            let entryDetails = document.getElementById('calc-details').value || "App Entry";
+
+            if(window.isEditingEntry && currentEntryData) { 
+                if(isAdmin) {
+                    update(ref(db, 'Ledger/' + currentEntryData.key), { amount: amount, details: entryDetails, type: window.calcType, date: new Date(dateVal).toISOString() }); 
+                }
+                window.isEditingEntry = false; 
+                currentEntryData = null; 
+            } else { 
+                if(isAdmin) {
+                    push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: window.calcType, amount: amount, details: entryDetails }); 
+                } else {
+                    push(ref(db, 'PendingRequests'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: window.calcType, amount: amount, details: entryDetails, requestedBy: window.currentUserName, status: 'Pending' });
+                    alert("आपकी रिक्वेस्ट एडमिन को भेज दी गई है!");
+                }
+            } 
+            closePage('calculator-page'); 
+        }
+
+        window.sendCustomerPaymentReq = function() {
+            let amt = parseFloat(document.getElementById('cp-pop-amount').value) || 0;
+            if(amt <= 0) return alert("Please enter a valid amount!");
+            
+            let myName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
+
+            push(ref(db, 'PendingRequests'), {
+                date: new Date().toISOString(),
+                name: myName, 
+                type: 'Got', // एडमिन को पैसे मिलेंगे
+                amount: amt,
+                details: "Payment sent via App",
+                requestedBy: myName,
+                status: 'Pending'
+            }).then(() => {
+                alert("पेमेंट वेरिफिकेशन रिक्वेस्ट एडमिन को भेज दी गई है!");
+                document.getElementById('customer-payment-popup').style.display = 'none';
+            }).catch(err => alert("Error: " + err.message));
+        }
 
         window.openEntryDetails = function(key) { 
             sessionStorage.setItem('v_currentEntryKey', key); 
@@ -2296,7 +2348,22 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
             // 4. लेजर की डिटेल में नीचे दिखने वाले "YOU GAVE / YOU GOT" बटन छुपाएं
             let ledgerBottomBar = document.querySelector('#ledger-deep-page .bottom-action-bar');
-            if (ledgerBottomBar) ledgerBottomBar.style.display = isAdmin ? 'flex' : 'none';
+            let btnGave = document.querySelector('.btn-l-gave');
+            let btnGot = document.querySelector('.btn-l-got');
+            
+            if (ledgerBottomBar) {
+                let isSupplier = (window.currentUserRole === 'supplier');
+                ledgerBottomBar.style.display = (isAdmin || isSupplier) ? 'flex' : 'none';
+                
+                if (isSupplier && !isAdmin) {
+                    btnGave.innerText = "Send Payment Request ₹";
+                    btnGot.style.display = 'none';
+                } else if (isAdmin) {
+                    btnGave.innerText = "YOU GAVE ₹";
+                    btnGot.style.display = 'block';
+                    btnGot.innerText = "YOU GOT ₹";
+                }
+            }
             
             // 5. एंट्री डिटेल में "Edit" बटन छुपाएं
             let entryEditBtn = document.getElementById('ed-edit-btn-container');
@@ -2556,6 +2623,22 @@ window.showTargetCelebration = function() {
                 filterBox.style.display = 'none';  
             }
         }
+
+<div id="customer-payment-popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 99999; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
+        <div style="background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); width: 100%; max-width: 350px; text-align: center;">
+            <div style="font-size: 40px; margin-bottom: 10px;">💸</div>
+            <h2 style="color: #2c3e50; margin-bottom: 8px; font-size: 22px; font-weight: 700; font-family: 'Product Sans', sans-serif;">Payment Sent?</h2>
+            <p style="color: #7f8c8d; font-size: 13px; margin-bottom: 25px;">अगर आपने पेमेंट कर दिया है, तो कृपया नीचे अमाउंट डालकर वेरिफिकेशन रिक्वेस्ट भेजें।</p>
+            <div class="form-group" style="text-align: left;">
+                <label class="form-label">अमाउंट (₹) *</label>
+                <input type="number" id="cp-pop-amount" class="form-control" placeholder="0">
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger);" onclick="document.getElementById('customer-payment-popup').style.display='none'">Cancel</button>
+                <button class="btn-submit" style="flex:1; background:var(--success);" onclick="sendCustomerPaymentReq()">Send Request</button>
+            </div>
+        </div>
+    </div>
         
     </script>
 </body>

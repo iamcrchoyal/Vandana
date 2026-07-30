@@ -1156,11 +1156,9 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
             onAuthStateChanged(auth, (user) => {
                 if (user) {
-                    // 1. लॉगिन स्क्रीन छुपाएं
                     document.getElementById('login-overlay').style.display = 'none'; 
                     document.getElementById('user-profile-badge').style.display = 'flex';
                     
-                    // UI UPDATE: वेबसाइट के डिज़ाइन में नाम और ईमेल बदलना
                     let userName = user.displayName || "User";
                     let firstName = userName.split(' ')[0];
                     let userInitial = userName.charAt(0).toUpperCase();
@@ -1184,7 +1182,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                         if (document.getElementById('top-avatar-text')) { document.getElementById('top-avatar-text').innerText = userInitial; document.getElementById('top-avatar-text').style.display = 'flex'; document.getElementById('top-avatar-img').style.display = 'none'; }
                     }
 
-                    // 2. डेटाबेस में यूजर का डेटा सेव/अपडेट करना
                     const userRef = ref(db, 'AppUsers/' + user.uid);
                     
                     get(userRef).then((snapshot) => {
@@ -1193,7 +1190,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                         let finalAddress = "";
 
                         if (!snapshot.exists()) {
-                            // नया अकाउंट
                             set(userRef, {
                                 name: userName,
                                 email: user.email || "",
@@ -1204,15 +1200,11 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                                 createdAt: new Date().toISOString()
                             });
                         } else {
-                            // पुराना अकाउंट 
                             let userData = snapshot.val();
                             if (user.email !== MASTER_ADMIN_EMAIL) assignedRole = userData.role || "pending"; 
-                            
-                            // डेटाबेस से पुराना नंबर और पता निकाल लें
                             finalPhone = userData.phone || "";
                             finalAddress = userData.address || "";
                             
-                            // 🔥 FIX: गूगल से बार-बार नाम/फोटो अपडेट होने से रोकें 
                             let dbName = userData.name || userName;
                             let dbPhoto = userData.photo || user.photoURL || "";
 
@@ -1222,40 +1214,34 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                                 photo: dbPhoto,
                                 role: assignedRole 
                             });
-                            
-                            userName = dbName; // UI के लिए भी डेटाबेस वाला नाम यूज़ करें
+                            userName = dbName; 
                         }
                         
-                        // ================= AUTO-FILL BUSINESS PROFILE =================
                         if (document.getElementById('ap-name')) document.getElementById('ap-name').value = userName;
                         if (document.getElementById('ap-email')) document.getElementById('ap-email').value = user.email || "";
                         if (document.getElementById('ap-phone') && finalPhone) document.getElementById('ap-phone').value = finalPhone;
                         if (document.getElementById('ap-address') && finalAddress) document.getElementById('ap-address').value = finalAddress;
-                        // ================================================================
 
-                        // ================= STORE GLOBAL USER DATA =================
                         window.currentUserEmail = user.email;
                         window.currentUserRole = assignedRole;
                         window.currentUserPhone = finalPhone;
                         window.currentUserName = userName;
                         
-                        // डेटा छाँटने वाले फंक्शन को चालू करें
                         if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
-                        
-                        // 🔥 FIX: पेज रीफ्रेश होने पर पेमेंट रिक्वेस्ट बॉक्स वापस दिखाएं (Lifetime save)
                         if(typeof window.renderPaymentRequests === 'function') window.renderPaymentRequests();
-                        // ==========================================================
-                        // ================= SHOW POPUP FOR NEW CUSTOMERS =================
-                        // अगर रोल 'pending' है और फोन नंबर या एड्रेस खाली है, तो पॉप-अप दिखाएं
+                        
                         if (assignedRole === "pending" && (!finalPhone || !finalAddress)) {
                             document.getElementById('new-customer-popup').style.display = 'flex';
                         }
-                        // ================================================================
-                        // 🔥 FIX: रोल कन्फर्म होने के बाद ही डेटाबेस से डेटा मंगाएं
+                        
+                        if(typeof window.applyRoleBasedAccess === 'function') {
+                            window.applyRoleBasedAccess(assignedRole);
+                        }
+
+                        // 🔥 SYNCHRONIZED DB CALL (Race condition fix)
                         if(typeof window.startDatabaseSync === 'function') {
                             window.startDatabaseSync();
                         }
-
                         
                     }).catch(err => console.error("Database Error:", err));
 
@@ -1265,6 +1251,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 }
             });
             // --- NEW AUTH LOGIC ENDS ---
+
             let todayStr = new Date().toISOString().split('T')[0];
             if(document.getElementById('dash-date-picker')) document.getElementById('dash-date-picker').value = todayStr;
             if(document.getElementById('calc-date')) document.getElementById('calc-date').value = todayStr;
@@ -1278,15 +1265,13 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 if(savedStack) window.pageStack = JSON.parse(savedStack);
             } catch(e){}
             
-            // ================= SMART DATA FILTERING ENGINE =================
             window.rawCustomers = [];
             window.rawLedger = [];
 
             window.applyDataFiltering = function() {
-                if (!window.currentUserRole) return; // जब तक रोल चेक न हो, रुकें
+                if (!window.currentUserRole) return; 
                 let isAdmin = (window.currentUserRole === 'admin');
 
-                // 1. Customers Filter (एडमिन को सब दिखेंगे, कस्टमर को सिर्फ वो खुद दिखेगा)
                 if (isAdmin) {
                     globalCustomers = [...window.rawCustomers];
                 } else {
@@ -1297,14 +1282,12 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     );
                 }
 
-                // 2. Ledger Book Filter (कस्टमर को सिर्फ अपनी उधारी और बिल दिखेंगे)
                 let myCustName = window.currentUserName;
                 if (globalCustomers.length > 0) {
-                    myCustName = globalCustomers[0].name; // एडमिन वाला नाम फाइनल माना जाएगा
+                    myCustName = globalCustomers[0].name; 
                     let myAdminPic = globalCustomers[0].pic || "";
                     
                     if (!isAdmin) {
-                        // 🔥 FIX: कस्टमर के ऐप में एडमिन वाला नाम और फोटो सेट करें
                         window.currentUserName = myCustName;
                         if(document.getElementById('user-name')) document.getElementById('user-name').innerText = myCustName;
                         if(document.getElementById('pm-name-display')) document.getElementById('pm-name-display').innerText = "Hi, " + myCustName.split(' ')[0] + "!";
@@ -1327,7 +1310,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 } else {
                     allLedgerData = window.rawLedger.filter(e => e.name === myCustName);
                 }
-                // फिल्टर होने के बाद स्क्रीन को रीफ्रेश करें
+                
                 renderCustomerList(globalCustomers);
                 calculateGrandTotals();
                 if (document.getElementById('ledger-deep-page').classList.contains('active')) {
@@ -1335,8 +1318,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 }
             }
 
-            try {
-                // ================= SYNCHRONIZED DATABASE SYNC =================
+            // ================= SYNCHRONIZED DATABASE SYNC =================
             window.startDatabaseSync = function() {
                 try {
                     window.globalAdminUpi = "";
@@ -1392,7 +1374,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 }
             };
             // ===============================================================
-            // ===============================================================
 
             document.getElementById('inv-party').addEventListener('input', function(e) { let val = e.target.value; let cust = globalCustomers.find(c => c.name.toLowerCase() === val.toLowerCase()); if(cust && cust.phone) { document.getElementById('inv-phone').value = cust.phone; } });
 
@@ -1424,42 +1405,18 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 if(st > lastScrollTop && st > 50) { document.getElementById('bottom-nav-bar').classList.add('hidden-by-scroll'); } else { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-scroll'); }
                 lastScrollTop = st <= 0 ? 0 : st;
             });
+            
             loadAdminProfile();
         });
-
-        function checkRestore() {
-            dataLoadCount++;
-            if(dataLoadCount === 4) { 
-                let savedPage = sessionStorage.getItem('v_activePage');
-                if(savedPage === 'ledger-deep-page') {
-                    let pName = sessionStorage.getItem('v_currentPartyName');
-                    let pPhone = sessionStorage.getItem('v_currentPartyPhone');
-                    if(pName) { currentPartyName = pName; openLedgerDetail(pName, pPhone); openPage('ledger-deep-page', true); }
-                } else if(savedPage === 'customer-profile-page') {
-                    let pName = sessionStorage.getItem('v_currentPartyName');
-                    if(pName) { currentPartyName = pName; openCustomerProfile(); openPage('customer-profile-page', true); }
-                } else if(savedPage === 'entry-details-page') {
-                    let eKey = sessionStorage.getItem('v_currentEntryKey');
-                    if(eKey) { openEntryDetails(eKey); openPage('entry-details-page', true); }
-                } else if(savedPage && savedPage !== 'home') {
-                    openPage(savedPage, true);
-                }
-            }
-        }
-
-        document.getElementById('dash-date-picker').addEventListener('change', function(e) { calculateGrandTotals(); });
 
         // --- GOOGLE LOGIN FUNCTION (UPDATED & ERROR-FREE) ---
         window.loginWithGoogle = async function() {
             let loginBtn = document.getElementById('google-login-btn');
             try {
-                // बटन का टेक्स्ट बदलें ताकि पता चले क्लिक हुआ है
                 loginBtn.innerHTML = "⏳ Logging in...";
-                
                 const googleProvider = new GoogleAuthProvider();
                 const result = await signInWithPopup(auth, googleProvider);
                 
-                // लॉगिन सफल होने पर
                 const user = result.user;
                 document.getElementById('login-overlay').style.display = 'none';
                 loginBtn.innerHTML = `<img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width: 22px;"> Continue with Google`;
@@ -1467,7 +1424,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             } catch (error) {
                 console.error("Login Error:", error);
                 alert("लॉगिन में समस्या आई है: " + error.message);
-                // एरर आने पर बटन को वापस पहले जैसा कर दें
                 loginBtn.innerHTML = `<img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width: 22px;"> Continue with Google`;
             }
         }

@@ -158,7 +158,8 @@
         .ledger-header-area { background: var(--bg-color); color: var(--text-dark); padding: 10px 16px;}
         .ledger-bal-card { background: white; border-radius: 16px; padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border: 1px solid var(--border);}
         .ledger-action-tabs { display: flex; margin: 16px 0; gap: 10px;}
-        .l-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 12px; color: var(--text-dark); font-weight: 600; background: white; border-radius: 20px; cursor: pointer; border: 1px solid var(--border);}
+        .l-tab { flex: 1; display: flex; justify-content: center; align-items: center; gap: 6px; padding: 8px 0; font-size: 12px; color: var(--text-dark); font-weight: 600; background: white; border-radius: 12px; cursor: pointer; border: 1px solid var(--border); font-family: 'Product Sans', sans-serif; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: all 0.2s;}
+        .l-tab:active { transform: scale(0.96); }
         .entry-card { background: white; border-radius: 12px; display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 10px; cursor: pointer; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.02);}
         .ec-left { padding: 14px 16px; flex: 2; border-right: 1px solid #f1f5f9; }
         .ec-gave, .ec-got { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; }
@@ -1659,42 +1660,38 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             sessionStorage.setItem('v_currentPartyPhone', phone || ""); 
             
             document.getElementById('l-deep-name').innerText = name; 
-            document.getElementById('l-call-btn').href = phone ? `tel:${phone}` : "#"; 
             
-            // SMART BUTTON LOGIC: Admin sees Reminder, Customer sees Pay Now (PhonePe)
-            let waBtn = document.getElementById('l-wa-btn');
+            // SMART CALL LOGIC: Admin ko customer ka number milega, Customer ko Admin ka number milega
             let isAdmin = (window.currentUserRole === 'admin');
+            let adminPhone = localStorage.getItem('v_adminPhone') || "";
+            let callPhone = isAdmin ? phone : adminPhone;
+            
+            document.getElementById('l-call-btn').href = callPhone ? `tel:${callPhone}` : "#"; 
+            
+            let waBtn = document.getElementById('l-wa-btn');
             
             if (isAdmin) {
-                // एडमिन के लिए Reminder बटन
-                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:15px;">chat</span> Reminder`;
+                // Admin Button
+                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;">chat</span> Reminder`;
                 waBtn.style.color = '#146c2e';
                 waBtn.style.backgroundColor = 'white';
                 waBtn.style.borderColor = '#e0e2e0';
-                waBtn.style.fontSize = '12px';
-                waBtn.style.padding = '6px 12px';
-                waBtn.style.borderRadius = '20px';
                 waBtn.onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); 
             } else {
-                // कस्टमर के लिए छोटा & प्रोफेशनल "Pay Now" बटन
-                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:15px;">payments</span> Pay Now`;
+                // Customer Button
+                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;">payments</span> Pay Now`;
                 waBtn.style.color = 'white';
-                waBtn.style.backgroundColor = '#5f259f'; // PhonePe Purple Color
+                waBtn.style.backgroundColor = '#5f259f'; 
                 waBtn.style.borderColor = '#5f259f';
-                waBtn.style.fontSize = '12px';
-                waBtn.style.padding = '6px 12px';
-                waBtn.style.borderRadius = '20px';
-                waBtn.style.boxShadow = '0 2px 6px rgba(95, 37, 159, 0.25)';
                 
                 waBtn.onclick = () => {
                     let upiId = localStorage.getItem('v_adminUpi');
-                    if (!upiId) return alert("Dukandar ne abhi tak UPI ID set nahi ki hai.");
+                    if (!upiId) return window.showSaaSToast("Dukandar ne abhi tak UPI ID set nahi ki hai.");
                     
                     let netBal = window.globalBalances[name] || 0;
                     let popup = document.getElementById('customer-payment-popup');
                     if(popup) {
                         popup.style.display = 'flex';
-                        // Agar due balance hai to pre-fill kar do, warna manual edit ke liye empty chhod do
                         document.getElementById('cp-pop-amount').value = netBal > 0 ? parseFloat(netBal).toFixed(0) : '';
                     }
                 };
@@ -1742,16 +1739,15 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
         window.submitPaymentAndOpenUPI = function() {
             let amt = parseFloat(document.getElementById('cp-pop-amount').value) || 0;
-            if(amt <= 0) return alert("Kripya sahi amount dalein!");
+            if(amt <= 0) return window.showSaaSToast("Kripya sahi amount dalein!");
             
             let upiId = localStorage.getItem('v_adminUpi');
-            if (!upiId) return alert("Dukandar ne abhi tak UPI ID set nahi ki hai.");
+            if (!upiId) return window.showSaaSToast("Dukandar ne abhi tak UPI ID set nahi ki hai.");
 
             let myName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
             let safeAmount = amt.toFixed(2);
             let safeName = encodeURIComponent("Vandana Enterprises");
 
-            // 1. Backend Firebase mein verification request bhejna
             push(ref(db, 'PendingRequests'), {
                 date: new Date().toISOString(),
                 name: myName, 
@@ -1761,19 +1757,19 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 requestedBy: myName,
                 status: 'Pending'
             }).then(() => {
-                // 2. Alert message
-                alert("Request bhej di gayi hai! Admin dwara verify hone ke baad aapka amount ledger me update ho jayega.");
-                
                 // Pop-up close karna
                 document.getElementById('customer-payment-popup').style.display = 'none';
 
-                // 3. Auto PhonePe / UPI app mein entered amount ke sath redirect karna
+                // Professional SaaS Toast Dikhana
+                window.showSaaSToast("Payment verification request submitted successfully. It will reflect in your ledger shortly.");
+
+                // Auto PhonePe / UPI app mein entered amount ke sath redirect karna
                 window.location.href = `phonepe://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
                 
                 setTimeout(() => {
                     window.location.href = `upi://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
                 }, 600);
-            }).catch(err => alert("Error: " + err.message));
+            }).catch(err => window.showSaaSToast("Error: " + err.message));
         }
 
         window.openEntryDetails = function(key) { 
@@ -2763,6 +2759,19 @@ window.showTargetCelebration = function() {
         </div>
         <div class="scroll-content" id="pending-requests-list" style="padding-top:0px;"></div>
     </div>
+<div id="saas-toast" style="display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#1f1f1f; color:white; padding:12px 20px; border-radius:12px; font-family:'Product Sans', sans-serif; font-size:13px; font-weight:500; z-index:999999; box-shadow:0 10px 30px rgba(0,0,0,0.2); align-items:center; gap:10px; min-width: 280px; border: 1px solid #444; animation: slideDown 0.3s ease-out;">
+        <span class="material-symbols-rounded" style="color:#2ecc71; font-size: 20px;">check_circle</span>
+        <span id="saas-toast-msg" style="flex:1;">Success!</span>
+    </div>
+    
+    <script>
+        window.showSaaSToast = function(msg) {
+            let toast = document.getElementById('saas-toast');
+            document.getElementById('saas-toast-msg').innerText = msg;
+            toast.style.display = 'flex';
+            setTimeout(() => { toast.style.display = 'none'; }, 4000);
+        }
+    </script>
     
 </body>
 </html>

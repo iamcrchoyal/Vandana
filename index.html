@@ -1667,43 +1667,36 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             
             if (isAdmin) {
                 // एडमिन के लिए Reminder बटन
-                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;">chat</span> Reminder`;
+                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:15px;">chat</span> Reminder`;
                 waBtn.style.color = '#146c2e';
                 waBtn.style.backgroundColor = 'white';
                 waBtn.style.borderColor = '#e0e2e0';
+                waBtn.style.fontSize = '12px';
+                waBtn.style.padding = '6px 12px';
+                waBtn.style.borderRadius = '20px';
                 waBtn.onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); 
             } else {
-                // कस्टमर के लिए PhonePe "Pay Now" बटन
-                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;">payments</span> Pay Now`;
+                // कस्टमर के लिए छोटा & प्रोफेशनल "Pay Now" बटन
+                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:15px;">payments</span> Pay Now`;
                 waBtn.style.color = 'white';
                 waBtn.style.backgroundColor = '#5f259f'; // PhonePe Purple Color
                 waBtn.style.borderColor = '#5f259f';
+                waBtn.style.fontSize = '12px';
+                waBtn.style.padding = '6px 12px';
+                waBtn.style.borderRadius = '20px';
+                waBtn.style.boxShadow = '0 2px 6px rgba(95, 37, 159, 0.25)';
                 
                 waBtn.onclick = () => {
                     let upiId = localStorage.getItem('v_adminUpi');
-                    if (!upiId) return alert("दुकानदार ने अभी तक अपना UPI सेट नहीं किया है।");
+                    if (!upiId) return alert("Dukandar ne abhi tak UPI ID set nahi ki hai.");
                     
                     let netBal = window.globalBalances[name] || 0;
-                    if (netBal <= 0) return alert("आपकी कोई उधारी नहीं है! (No Due Payment)");
-                    
-                    let safeAmount = parseFloat(netBal).toFixed(2);
-                    let safeName = encodeURIComponent("Vandana Enterprises");
-                    
-                    // 1st Priority: सीधा PhonePe ऐप खोलना
-                    window.location.href = `phonepe://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
-                    
-                    // 2nd Priority: अगर फ़ोन में PhonePe नहीं है, तो GPay या Paytm का ऑप्शन खोलना
-                    setTimeout(() => {
-                        window.location.href = `upi://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
-                        // 2 सेकंड बाद पॉप-अप दिखाएं
-                        setTimeout(() => {
-                            let popup = document.getElementById('customer-payment-popup');
-                            if(popup) {
-                                popup.style.display = 'flex';
-                                document.getElementById('cp-pop-amount').value = safeAmount;
-                            }
-                        }, 2000);
-                    }, 500);
+                    let popup = document.getElementById('customer-payment-popup');
+                    if(popup) {
+                        popup.style.display = 'flex';
+                        // Agar due balance hai to pre-fill kar do, warna manual edit ke liye empty chhod do
+                        document.getElementById('cp-pop-amount').value = netBal > 0 ? parseFloat(netBal).toFixed(0) : '';
+                    }
                 };
             }
 
@@ -1747,23 +1740,39 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             closePage('calculator-page'); 
         }
 
-        window.sendCustomerPaymentReq = function() {
+        window.submitPaymentAndOpenUPI = function() {
             let amt = parseFloat(document.getElementById('cp-pop-amount').value) || 0;
-            if(amt <= 0) return alert("Please enter a valid amount!");
+            if(amt <= 0) return alert("Kripya sahi amount dalein!");
             
-            let myName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
+            let upiId = localStorage.getItem('v_adminUpi');
+            if (!upiId) return alert("Dukandar ne abhi tak UPI ID set nahi ki hai.");
 
+            let myName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
+            let safeAmount = amt.toFixed(2);
+            let safeName = encodeURIComponent("Vandana Enterprises");
+
+            // 1. Backend Firebase mein verification request bhejna
             push(ref(db, 'PendingRequests'), {
                 date: new Date().toISOString(),
                 name: myName, 
-                type: 'Got', // एडमिन को पैसे मिलेंगे
+                type: 'Got', 
                 amount: amt,
-                details: "Payment sent via App",
+                details: "Payment sent via Pay Now",
                 requestedBy: myName,
                 status: 'Pending'
             }).then(() => {
-                alert("पेमेंट वेरिफिकेशन रिक्वेस्ट एडमिन को भेज दी गई है!");
+                // 2. Alert message
+                alert("Request bhej di gayi hai! Admin dwara verify hone ke baad aapka amount ledger me update ho jayega.");
+                
+                // Pop-up close karna
                 document.getElementById('customer-payment-popup').style.display = 'none';
+
+                // 3. Auto PhonePe / UPI app mein entered amount ke sath redirect karna
+                window.location.href = `phonepe://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
+                
+                setTimeout(() => {
+                    window.location.href = `upi://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
+                }, 600);
             }).catch(err => alert("Error: " + err.message));
         }
 
@@ -2727,21 +2736,21 @@ window.showTargetCelebration = function() {
            </script>
             
 <div id="customer-payment-popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 99999; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
-        <div style="background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); width: 100%; max-width: 350px; text-align: center;">
-            <div style="font-size: 40px; margin-bottom: 10px;">💸</div>
-            <h2 style="color: #2c3e50; margin-bottom: 8px; font-size: 22px; font-weight: 700; font-family: 'Product Sans', sans-serif;">Payment Sent?</h2>
-            <p style="color: #7f8c8d; font-size: 13px; margin-bottom: 25px;">अगर आपने पेमेंट कर दिया है, तो कृपया नीचे अमाउंट डालकर वेरिफिकेशन रिक्वेस्ट भेजें।</p>
-            <div class="form-group" style="text-align: left;">
-                <label class="form-label">अमाउंट (₹) *</label>
-                <input type="number" id="cp-pop-amount" class="form-control" placeholder="0">
+        <div style="background: white; padding: 25px 20px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); width: 100%; max-width: 350px; text-align: center;">
+            <div style="font-size: 36px; margin-bottom: 6px;">💸</div>
+            <h2 style="color: #2c3e50; margin-bottom: 6px; font-size: 20px; font-weight: 700; font-family: 'Product Sans', sans-serif;">Enter Payment Amount</h2>
+            <p style="color: #7f8c8d; font-size: 12px; margin-bottom: 20px;">Jitna amount aap pay karna chahte hain enter karein.</p>
+            <div class="form-group" style="text-align: left; margin-bottom: 16px;">
+                <label class="form-label" style="font-size:12px; font-weight:600;">Amount (₹) *</label>
+                <input type="number" id="cp-pop-amount" class="form-control" placeholder="Enter amount (e.g. 5000)" style="font-size:16px; font-weight:600; padding:10px;">
             </div>
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger);" onclick="document.getElementById('customer-payment-popup').style.display='none'">Cancel</button>
-                <button class="btn-submit" style="flex:1; background:var(--success);" onclick="sendCustomerPaymentReq()">Send Request</button>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger); padding:10px; font-size:13px;" onclick="document.getElementById('customer-payment-popup').style.display='none'">Cancel</button>
+                <button class="btn-submit" style="flex:1.2; background:#5f259f; color:white; padding:10px; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="submitPaymentAndOpenUPI()"><span class="material-symbols-rounded" style="font-size:16px;">payments</span> Pay Now</button>
             </div>
         </div>
     </div>
-
+    
   <div class="page flex-page" id="verification-page">
         <div class="sub-header">
             <button class="back-btn material-symbols-rounded" onclick="closePage('verification-page')">arrow_back</button>

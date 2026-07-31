@@ -549,7 +549,7 @@
             </div>
         </div>
 
-        <button class="btn-outline" onclick="openSelfCustomerProfile()" style="width:100%; border-radius:14px; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:8px; border-color:var(--primary); color:var(--primary); padding: 12px;"><span class="material-symbols-rounded" style="font-size:18px;">manage_accounts</span> Manage Your Account</button>
+        <button id="pm-manage-btn" class="btn-outline" onclick="openSelfCustomerProfile()" style="width:100%; border-radius:14px; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:8px; border-color:var(--primary); color:var(--primary); padding: 12px;"><span class="material-symbols-rounded" style="font-size:18px;">manage_accounts</span> Manage Your Account</button>
     </div>
 
     <!-- 📱 PERMANENT GLOBAL APP BAR -->
@@ -894,22 +894,31 @@
 
     <!-- ⚙️ PROFESSIONAL ADMIN PROFILE FORM PAGE -->
     <div class="page flex-page" id="admin-profile-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('admin-profile-page')">arrow_back</button><h2 class="page-title">Business Profile</h2></div>
-        <div class="scroll-content" style="padding-top:16px;">
-            <div class="form-panel">
-                <div class="form-group"><label class="form-label">Admin / First Name</label><input type="text" class="form-control" id="ap-name"></div>
-                <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-control" id="ap-phone"></div>
-                <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-control" id="ap-email"></div>
-                <div class="form-group"><label class="form-label">GST Number</label><input type="text" class="form-control" id="ap-gst" style="text-transform:uppercase;"></div>
-
-                  <!-- UPI ID BOX FOR QR CODE -->
-                <div class="form-group">
-                    <label class="form-label">UPI ID (For QR Code in Bills)</label>
-                    <input type="text" class="form-control" id="ap-upi" placeholder="6378481623-7@ybl">
+        <div class="sub-header" style="justify-content: flex-start;">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('admin-profile-page')" style="margin-right: 12px;">arrow_back</button>
+            <h2 class="page-title">Business Settings</h2>
+        </div>
+        <!-- Scroll Fix: padding-bottom 20px कर दिया गया है ताकि पेज फालतू स्क्रॉल न हो -->
+        <div class="scroll-content" style="padding-top:16px; padding-bottom: 20px;">
+            
+            <!-- NEW PHOTO UPLOAD UI FOR ADMIN -->
+            <div style="display:flex; justify-content:center; margin-bottom:20px;">
+                <div class="pm-avatar-wrap" style="margin:0;">
+                    <div class="kb-avatar" id="admin-big-avatar" style="width:84px; height:80px; font-size:32px; box-shadow: 0 0 0 4px white, 0 4px 12px rgba(0,0,0,0.08); cursor:pointer;" onclick="let img=this.querySelector('img'); if(img) openDpViewer(img.src);">A</div>
+                    <div class="pm-cam material-symbols-rounded" style="font-size:14px; width:28px; height:28px; background:white; border:1px solid var(--border);" onclick="document.getElementById('admin-upload-hidden').click()">photo_camera</div>
+                    <input type="file" id="admin-upload-hidden" accept="image/*" style="display:none;" onchange="handleAdminPic(event)">
                 </div>
+            </div>
+
+            <div class="form-panel" style="border-radius:18px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+                <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">BUSINESS NAME</label><input type="text" class="form-control" id="ap-name" style="border-radius:10px;"></div>
+                <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">MOBILE NUMBER</label><input type="tel" class="form-control" id="ap-phone" style="border-radius:10px;"></div>
+                <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">EMAIL ADDRESS</label><input type="email" class="form-control" id="ap-email" style="border-radius:10px;"></div>
+                <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">GST NUMBER</label><input type="text" class="form-control" id="ap-gst" style="text-transform:uppercase; border-radius:10px;"></div>
+                <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">UPI ID (For QR)</label><input type="text" class="form-control" id="ap-upi" placeholder="e.g. mobile@upi" style="border-radius:10px;"></div>
+                <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">FULL ADDRESS</label><textarea class="form-control" id="ap-address" rows="3" style="border-radius:10px;"></textarea></div>
                 
-                <div class="form-group"><label class="form-label">Full Address</label><textarea class="form-control" id="ap-address" rows="3"></textarea></div>
-                <button class="btn-submit" onclick="saveAdminProfile()" style="border-radius:20px;">💾 Save Changes</button>
+                <button class="btn-submit" onclick="saveAdminProfile()" style="border-radius:12px; margin-top:8px;">💾 Save Changes</button>
             </div>
         </div>
     </div>
@@ -1181,10 +1190,13 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                         }
                         
                         // ================= AUTO-FILL BUSINESS PROFILE =================
-                        if (document.getElementById('ap-name')) document.getElementById('ap-name').value = userName;
-                        if (document.getElementById('ap-email')) document.getElementById('ap-email').value = user.email || "";
-                        if (document.getElementById('ap-phone') && finalPhone) document.getElementById('ap-phone').value = finalPhone;
-                        if (document.getElementById('ap-address') && finalAddress) document.getElementById('ap-address').value = finalAddress;
+                        // Admin ka data DB se aayega, isliye Google usko overwrite nahi karega
+                        if (assignedRole !== "admin") {
+                            if (document.getElementById('ap-name')) document.getElementById('ap-name').value = userName;
+                            if (document.getElementById('ap-email')) document.getElementById('ap-email').value = user.email || "";
+                            if (document.getElementById('ap-phone') && finalPhone) document.getElementById('ap-phone').value = finalPhone;
+                            if (document.getElementById('ap-address') && finalAddress) document.getElementById('ap-address').value = finalAddress;
+                        }
                         // ================================================================
 
                         // ================= STORE GLOBAL USER DATA =================
@@ -1689,9 +1701,20 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             if(document.getElementById('ap-address')) document.getElementById('ap-address').value = pAddr; 
             if(document.getElementById('ap-upi')) document.getElementById('ap-upi').value = pUpi; // ✨ UPI ID SET
 
-            if(document.getElementById('pm-email-display')) document.getElementById('pm-email-display').innerText = pEmail; 
+            // ✨ Full Company Name Update on UI
+            if(document.getElementById('pm-email-display')) document.getElementById('pm-email-display').innerText = pName; 
+            if(document.getElementById('user-name')) document.getElementById('user-name').innerText = pName; 
+            
+            if(document.getElementById('dynamic-greeting')) {
+                const hour = new Date().getHours(); 
+                let greetText = "Good morning";
+                if (hour >= 12 && hour < 17) greetText = "Good afternoon"; 
+                else if (hour >= 17) greetText = "Good evening";
+                document.getElementById('dynamic-greeting').innerText = greetText + ", " + pName;
+            }
             
             if(pPic) { 
+                if(document.getElementById('admin-big-avatar')) document.getElementById('admin-big-avatar').innerHTML = `<img src="${pPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
                 if(document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').src = pPic; document.getElementById('pm-avatar-img').style.display = 'block'; document.getElementById('pm-avatar-text').style.display = 'none'; } 
                 if(document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').src = pPic; document.getElementById('top-avatar-img').style.display = 'block'; document.getElementById('top-avatar-text').style.display = 'none'; } 
             } else { 
@@ -2936,6 +2959,10 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     li.style.display = isAdmin ? 'flex' : 'none';
                 }
             });
+
+            // 9. 🔥 एडमिन के लिए प्रोफाइल मोडल का "Manage Your Account" बटन छुपाएं
+            let pmManageBtn = document.getElementById('pm-manage-btn');
+            if (pmManageBtn) pmManageBtn.style.display = isAdmin ? 'none' : 'flex';
         }
         // ====================================================================
 window.showTargetCelebration = function() {

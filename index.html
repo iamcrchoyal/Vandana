@@ -1787,7 +1787,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
             window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet }; updateLedgerTotalsUI(); if(document.getElementById('parties-page').classList.contains('active')) { renderCustomerList(globalCustomers); }
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
-
+            
             // ============== SMART DYNAMIC TITLE LOGIC ==============
             let selectedDateObj = new Date(selectedDateString);
             let todayObj = new Date();
@@ -1808,7 +1808,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             // =======================================================
 
             // ============== TARGET AND PROGRESS BAR LOGIC ==============
-            let TARGET_AMOUNT = 50000; // 🎯 आप यहाँ अपना टारगेट सेट कर सकते हैं (जैसे 50,000 या 1,00,000)
+            let TARGET_AMOUNT = 50000;
             let activeSalesData = window.currentTopCustTab === 'current' ? currMonthSales : lastMonthSales; 
             let topCustHtml = ""; 
             let allSortedCustomers = Object.entries(activeSalesData).sort((a, b) => b[1] - a[1]); 
@@ -1821,7 +1821,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     top5.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-name scroll-text">${cust[0]}</div><div class="ua-item-count scroll-text">₹${cust[1].toLocaleString('en-IN')} <span style="color:var(--text-muted); font-size:16px; vertical-align:middle;" class="material-symbols-rounded">chevron_right</span></div></div>`; }); 
                 }
             } else {
-                // Customer View: Progress Bar
                 let myName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
                 let myIndex = allSortedCustomers.findIndex(c => c[0] === myName);
                 let myTotal = activeSalesData[myName] || 0;
@@ -1842,7 +1841,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     </div>
                 </div>`;
 
-                // Firework logic (Session में एक बार ही चलेगा ताकि बार-बार इरिटेट न करे)
                 if (myTotal >= TARGET_AMOUNT && !sessionStorage.getItem('target_celebrated')) {
                     setTimeout(() => { showTargetCelebration(); }, 1000);
                     sessionStorage.setItem('target_celebrated', 'true');
@@ -1850,7 +1848,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
             document.getElementById('top-customers-list').innerHTML = topCustHtml;
             // ==========================================================
-        }
+        };
         
         window.openLedgerDetail = function(name, phone) { 
             currentPartyName = name; 

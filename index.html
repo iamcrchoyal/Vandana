@@ -1274,11 +1274,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 if (document.getElementById('ledger-deep-page').classList.contains('active')) {
                     renderLedgerEntries(currentPartyName);
                 }
-                
-                // कस्टमर के लिए बिना साइन (Unsigned) वाले बिल चेक करना
-                if(typeof window.checkUnsignedBills === 'function') {
-                    window.checkUnsignedBills();
-                }
             }
 
             try {
@@ -1787,7 +1782,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
             window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet }; updateLedgerTotalsUI(); if(document.getElementById('parties-page').classList.contains('active')) { renderCustomerList(globalCustomers); }
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
-            
+
             // ============== SMART DYNAMIC TITLE LOGIC ==============
             let selectedDateObj = new Date(selectedDateString);
             let todayObj = new Date();
@@ -1808,7 +1803,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             // =======================================================
 
             // ============== TARGET AND PROGRESS BAR LOGIC ==============
-            let TARGET_AMOUNT = 50000;
+            let TARGET_AMOUNT = 50000; // 🎯 आप यहाँ अपना टारगेट सेट कर सकते हैं (जैसे 50,000 या 1,00,000)
             let activeSalesData = window.currentTopCustTab === 'current' ? currMonthSales : lastMonthSales; 
             let topCustHtml = ""; 
             let allSortedCustomers = Object.entries(activeSalesData).sort((a, b) => b[1] - a[1]); 
@@ -1821,6 +1816,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     top5.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-name scroll-text">${cust[0]}</div><div class="ua-item-count scroll-text">₹${cust[1].toLocaleString('en-IN')} <span style="color:var(--text-muted); font-size:16px; vertical-align:middle;" class="material-symbols-rounded">chevron_right</span></div></div>`; }); 
                 }
             } else {
+                // Customer View: Progress Bar
                 let myName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
                 let myIndex = allSortedCustomers.findIndex(c => c[0] === myName);
                 let myTotal = activeSalesData[myName] || 0;
@@ -1841,6 +1837,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     </div>
                 </div>`;
 
+                // Firework logic (Session में एक बार ही चलेगा ताकि बार-बार इरिटेट न करे)
                 if (myTotal >= TARGET_AMOUNT && !sessionStorage.getItem('target_celebrated')) {
                     setTimeout(() => { showTargetCelebration(); }, 1000);
                     sessionStorage.setItem('target_celebrated', 'true');
@@ -1848,7 +1845,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
             document.getElementById('top-customers-list').innerHTML = topCustHtml;
             // ==========================================================
-        };
+        }
         
         window.openLedgerDetail = function(name, phone) { 
             currentPartyName = name; 
@@ -2410,18 +2407,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
             
             // 3. ग्रैंड टोटल अमाउंट
-            // 3. ग्रैंड टोटल अमाउंट
             document.getElementById('pdf-total').innerText = "₹ " + parseFloat(currentEntryData.amount).toLocaleString('en-IN');
-
-            // 3.5. सिग्नेचर (Signature) PDF में डालना
-            let sigBox = document.getElementById('pdf-auth-sign');
-            if(sigBox) {
-                if(currentEntryData.signature) {
-                    sigBox.innerHTML = `<img src="${currentEntryData.signature}" style="max-height:60px; object-fit:contain; margin-bottom:5px; border-bottom:1px solid #ccc;"><br><span style="font-size:12px; color:#718096;">Customer Signature</span>`;
-                } else {
-                    sigBox.innerHTML = `<br><br>Authorized Signatory`;
-                }
-            }
 
             // 4. ✨ SMART QR CODE LOGIC ✨
             let qrContainer = document.getElementById('pdf-qr-container');
@@ -2847,7 +2833,7 @@ window.showTargetCelebration = function() {
                                 <p style="margin:0 0 4px 0; color:#1f1f1f; font-weight:600; font-size:15px;">Thank you for your business!</p>
                                 <p style="margin:0;">Report generated via Vandana ERP Software</p>
                             </div>
-                            <div style="text-align:right; color:#1f1f1f; font-size:15px; font-weight:700;" id="pdf-auth-sign">
+                            <div style="text-align:right; color:#1f1f1f; font-size:15px; font-weight:700;">
                                 Authorized Signatory
                             </div>
                         </div>
@@ -3002,115 +2988,7 @@ window.showTargetCelebration = function() {
             toast.style.display = 'flex';
             setTimeout(() => { toast.style.display = 'none'; }, 4000);
         }
-// ================= DIGITAL SIGNATURE LOGIC =================
-        let sigCanvas, sigCtx, isDrawing = false;
-        window.unsignedBillKey = null;
-
-        window.initSignaturePad = function() {
-            sigCanvas = document.getElementById('sig-canvas');
-            if(!sigCanvas) return;
-            sigCtx = sigCanvas.getContext('2d');
-            
-            // Canvas Size Fix (Mobile Blur Fix)
-            let rect = sigCanvas.parentElement.getBoundingClientRect();
-            sigCanvas.width = rect.width;
-            sigCanvas.height = 180;
-            
-            sigCtx.lineWidth = 3;
-            sigCtx.lineCap = 'round';
-            sigCtx.strokeStyle = '#0a56d0'; // Blue Ink
-
-            const startPos = (e) => {
-                isDrawing = true;
-                let pos = getPos(e);
-                sigCtx.beginPath();
-                sigCtx.moveTo(pos.x, pos.y);
-            };
-            const draw = (e) => {
-                if(!isDrawing) return;
-                if(e.cancelable) e.preventDefault(); // Stop scrolling while signing
-                let pos = getPos(e);
-                sigCtx.lineTo(pos.x, pos.y);
-                sigCtx.stroke();
-            };
-            const endPos = () => { isDrawing = false; };
-
-            const getPos = (e) => {
-                let rect = sigCanvas.getBoundingClientRect();
-                let clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                let clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                return { x: clientX - rect.left, y: clientY - rect.top };
-            };
-
-            // Mouse Events
-            sigCanvas.addEventListener('mousedown', startPos);
-            sigCanvas.addEventListener('mousemove', draw);
-            sigCanvas.addEventListener('mouseup', endPos);
-            sigCanvas.addEventListener('mouseout', endPos);
-            
-            // Touch Events (Mobile)
-            sigCanvas.addEventListener('touchstart', startPos, {passive: false});
-            sigCanvas.addEventListener('touchmove', draw, {passive: false});
-            sigCanvas.addEventListener('touchend', endPos);
-        }
-
-        window.clearSignature = function() {
-            if(sigCtx && sigCanvas) sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
-        }
-
-        window.saveSignature = function() {
-            if(!window.unsignedBillKey) return;
-            
-            let canvas = document.getElementById('sig-canvas');
-            let dataUrl = canvas.toDataURL('image/png'); // Signature Image
-            
-            update(ref(db, 'Ledger/' + window.unsignedBillKey), { signature: dataUrl }).then(() => {
-                document.getElementById('signature-modal').style.display = 'none';
-                if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Signature Saved! Bill Confirmed.");
-                window.unsignedBillKey = null;
-                // Update UI instantly
-                if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
-            }).catch(err => alert(err));
-        }
-
-        window.checkUnsignedBills = function() {
-            if(window.currentUserRole === 'admin') return; // Admin ko sign nahi karna
-            
-            let myName = window.currentUserName;
-            if(globalCustomers.length > 0) myName = globalCustomers[0].name;
-
-            // Find the oldest unsigned SALE bill (jo app entry se nahi, bulk se nahi, balki jisme cart ho)
-            let unsigned = allLedgerData.slice().reverse().find(e => e.name === myName && e.type === 'Gave' && e.cart && !e.signature);
-            
-            let modal = document.getElementById('signature-modal');
-            if(unsigned && !window.unsignedBillKey && modal.style.display === 'none') { 
-                window.unsignedBillKey = unsigned.key;
-                document.getElementById('sig-bill-info').innerText = `Bill No: ${unsigned.billNo || '-'} | Amount: ₹${parseFloat(unsigned.amount).toLocaleString('en-IN')}`;
-                modal.style.display = 'flex';
-                
-                // Thoda wait karke canvas initialize karein taaki width sahi set ho
-                setTimeout(initSignaturePad, 300); 
-            }
-        }
-        
     </script>
-
-<div id="signature-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999999; flex-direction:column; justify-content:center; align-items:center; padding:20px; backdrop-filter: blur(5px);">
-        <div style="background:white; padding:24px; border-radius:20px; width:100%; max-width:350px; text-align:center; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-            <div class="material-symbols-rounded" style="font-size:36px; color:var(--primary); margin-bottom:8px;">draw</div>
-            <h3 style="margin-bottom:6px; font-family:'Product Sans', sans-serif; color:var(--text-dark); font-size: 20px;">Please Sign Your Bill</h3>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;" id="sig-bill-info">Bill #--- (₹0)</p>
-            
-            <div style="border:2px dashed #c2e7ff; border-radius:12px; background:#f8fafd; margin-bottom:20px; position:relative; overflow:hidden;">
-                <canvas id="sig-canvas" width="300" height="180" style="touch-action:none; width:100%; max-width:300px; display:block; cursor:crosshair;"></canvas>
-            </div>
-            
-            <div style="display:flex; gap:10px;">
-                <button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger); border-radius:14px; font-size:13px;" onclick="clearSignature()">Clear</button>
-                <button class="btn-submit" style="flex:2; background:var(--primary); border-radius:14px; font-size:13px; font-weight:600;" onclick="saveSignature()">Submit Sign</button>
-            </div>
-        </div>
-    </div>
     
 </body>
 </html>

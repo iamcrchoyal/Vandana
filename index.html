@@ -1913,7 +1913,55 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             closePage('calculator-page'); 
         }
 
-        window.submitPaymentAndOpenUPI = function()
+        window.submitPaymentAndOpenUPI = function() {
+            let amtElem = document.getElementById('full-screen-pay-amount');
+            if(!amtElem) return;
+            let amt = parseFloat(amtElem.value) || 0;
+            
+            if(amt <= 0) {
+                if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Kripya sahi amount dalein!");
+                else alert("Kripya sahi amount dalein!");
+                return;
+            }
+            
+            let upiId = localStorage.getItem('v_adminUpi');
+            if (!upiId) {
+                if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Dukandar ne abhi tak UPI ID set nahi ki hai.");
+                else alert("Dukandar ne abhi tak UPI ID set nahi ki hai.");
+                return;
+            }
+
+            let myName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
+            let safeAmount = amt.toFixed(2);
+            let safeName = encodeURIComponent("Vandana Enterprises");
+
+            push(ref(db, 'PendingRequests'), {
+                date: new Date().toISOString(),
+                name: myName, 
+                type: 'Got', 
+                amount: amt,
+                details: "Payment sent via App",
+                requestedBy: myName,
+                status: 'Pending'
+            }).then(() => {
+                closePage('payment-screen-page');
+
+                if (typeof window.showSaaSToast === 'function') {
+                    window.showSaaSToast("Payment request submitted successfully! Verifying your ledger...");
+                } else {
+                    alert("Payment request submitted successfully! Verifying your ledger...");
+                }
+
+                window.location.href = `phonepe://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
+                
+                setTimeout(() => {
+                    window.location.href = `upi://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
+                }, 600);
+            }).catch(err => {
+                if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Error: " + err.message);
+                else alert("Error: " + err.message);
+            });
+        };
 
         window.openEntryDetails = function(key) { 
             sessionStorage.setItem('v_currentEntryKey', key); 

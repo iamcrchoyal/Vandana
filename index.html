@@ -1949,20 +1949,32 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let dateVal = document.getElementById('calc-date').value; 
             if(!dateVal) dateVal = new Date().toISOString().split('T')[0]; 
 
+            // 🌟 NEW TIME LOGIC: Selected Date + Current Exact Time Merge
+            let [year, month, day] = dateVal.split('-');
+            let finalDateObj = new Date(); // Gets current time (HH:MM:SS)
+            finalDateObj.setFullYear(year, month - 1, day); // Set user selected date
+            let finalIsoString = finalDateObj.toISOString();
+
             let isAdmin = (window.currentUserRole === 'admin');
             let entryDetails = document.getElementById('calc-details').value || "App Entry";
 
             if(window.isEditingEntry && currentEntryData) { 
+                // 🌟 अगर पुरानी डेट चेंज नहीं की गई है, तो उसका ओरिजिनल टाइम ही रखें
+                let oldDateStr = new Date(currentEntryData.date).toISOString().split('T')[0];
+                if (oldDateStr === dateVal) {
+                    finalIsoString = currentEntryData.date; 
+                }
+
                 if(isAdmin) {
-                    update(ref(db, 'Ledger/' + currentEntryData.key), { amount: amount, details: entryDetails, type: window.calcType, date: new Date(dateVal).toISOString() }); 
+                    update(ref(db, 'Ledger/' + currentEntryData.key), { amount: amount, details: entryDetails, type: window.calcType, date: finalIsoString }); 
                 }
                 window.isEditingEntry = false; 
                 currentEntryData = null; 
             } else { 
                 if(isAdmin) {
-                    push(ref(db, 'Ledger'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: window.calcType, amount: amount, details: entryDetails }); 
+                    push(ref(db, 'Ledger'), { date: finalIsoString, name: currentPartyName, type: window.calcType, amount: amount, details: entryDetails }); 
                 } else {
-                    push(ref(db, 'PendingRequests'), { date: new Date(dateVal).toISOString(), name: currentPartyName, type: window.calcType, amount: amount, details: entryDetails, requestedBy: window.currentUserName, status: 'Pending' });
+                    push(ref(db, 'PendingRequests'), { date: finalIsoString, name: currentPartyName, type: window.calcType, amount: amount, details: entryDetails, requestedBy: window.currentUserName, status: 'Pending' });
                     alert("आपकी रिक्वेस्ट एडमिन को भेज दी गई है!");
                 }
             } 
@@ -2327,7 +2339,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             });
         };
 
-        // 🌟 STEP 3B: Save Bill & Trigger Renumbering
+        // 🌟 STEP 3B: Save Bill & Trigger Renumbering (With Perfect Time Logic)
         window.triggerSaveAndShare = function() { 
             if (currentCart.length === 0) return alert("Cart is empty!"); 
             
@@ -2353,13 +2365,17 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let invDate = document.getElementById('inv-date').value; 
             if(!invDate) invDate = new Date().toISOString().split('T')[0];
             
-            // 🕒 Backdate Logic - Time Maintain करना ताकि Statement सीक्वेंस न बिगड़े
-            let now = new Date();
-            let timeString = now.toTimeString().split(' ')[0]; // Returns HH:MM:SS
-            let finalDateTime = window.editingEntryKey ? window.editingEntryDate : `${invDate}T${timeString}.000Z`;
+            // 🕒 Perfect Time Logic: Selected Date + Current Time (No Timezone Issues)
+            let [iYear, iMonth, iDay] = invDate.split('-');
+            let invDateObj = new Date();
+            invDateObj.setFullYear(iYear, iMonth - 1, iDay);
+            let finalDateTime = invDateObj.toISOString();
             
-            if (window.editingEntryKey && finalDateTime.split('T')[0] !== invDate) {
-                finalDateTime = `${invDate}T${timeString}.000Z`;
+            if (window.editingEntryKey) {
+                let oldDateStr = new Date(window.editingEntryDate).toISOString().split('T')[0];
+                if (oldDateStr === invDate) {
+                    finalDateTime = window.editingEntryDate; // Puraana time maintain karo
+                }
             }
 
             let newEntry = { date: finalDateTime, name: partyName, type: "Gave", amount: grandInvoiceTotal, details: `Invoice #${tempBillNo} - ${invoiceBoxCount} Box`, cart: currentCart, billNo: tempBillNo };
@@ -2380,6 +2396,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             // Save होने के बाद Auto Adjust Sequence चलाएं
             savePromise.then(() => {
                 if(receivedAmt > 0) {
+                    // Payment got same Date+Time as bill
                     let paymentEntry = { date: finalDateTime, name: partyName, type: "Got", amount: receivedAmt, details: `Payment against #${tempBillNo}` };
                     push(ref(db, 'Ledger'), paymentEntry).then(() => {
                         window.autoAdjustBillNumbers(); 

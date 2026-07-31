@@ -1251,20 +1251,32 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     );
                 }
 
-                // 2. Customer Name & Photo Sync from Admin Data
-                let myCust = globalCustomers.length > 0 ? globalCustomers[0] : null;
-                let displayName = myCust ? myCust.name : (window.currentUserName || "User");
-                let firstName = displayName.trim().split(' ')[0]; // SIRF FIRST NAME
-                let displayPic = myCust && myCust.pic ? myCust.pic : localStorage.getItem('v_adminPic');
+                // 🌟 STEP 1: Admin & Customer Name Logic
+                let displayName = "";
+                let displayPic = "";
+                
+                if (isAdmin) {
+                    // Admin ke liye unka business name dikhayein
+                    displayName = localStorage.getItem('v_adminName') || "Vandana Enterprises";
+                    displayPic = localStorage.getItem('v_adminPic');
+                } else {
+                    // Customer ke liye customer ka naam dikhayein
+                    let myCust = globalCustomers.length > 0 ? globalCustomers[0] : null;
+                    displayName = myCust ? myCust.name : (window.currentUserName || "User");
+                    displayPic = myCust && myCust.pic ? myCust.pic : "";
+                }
 
-                // Greeting Message me Sirf First Name Dikhana
+                // Admin ko pura naam dikhega, Customer ko sirf First Name
+                let firstName = isAdmin ? displayName : displayName.trim().split(' ')[0]; 
+
+                // Greeting Message
                 const hour = new Date().getHours(); 
                 let greetText = "Good morning";
                 if (hour >= 12 && hour < 17) greetText = "Good afternoon"; 
                 else if (hour >= 17) greetText = "Good evening";
                 
                 if (document.getElementById('dynamic-greeting')) {
-                    document.getElementById('dynamic-greeting').innerText = greetText + ", " + firstName;
+                    document.getElementById('dynamic-greeting').innerText = greetText + ",\n" + firstName;
                 }
 
                 // Profile Modal & Header Ring Sync
@@ -1294,6 +1306,23 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
 
             try {
+                // 🌟 STEP 3: Auto-load Admin Profile from Firebase
+                onValue(ref(db, 'BusinessProfile'), (snapshot) => {
+                    let data = snapshot.val();
+                    if(data) {
+                        localStorage.setItem('v_adminName', data.name || "Vandana Enterprises");
+                        if(data.phone) localStorage.setItem('v_adminPhone', data.phone);
+                        if(data.email) localStorage.setItem('v_adminEmail', data.email);
+                        if(data.gst) localStorage.setItem('v_adminGst', data.gst);
+                        if(data.address) localStorage.setItem('v_adminAddr', data.address);
+                        if(data.upi) localStorage.setItem('v_adminUpi', data.upi);
+                        if(data.pic) localStorage.setItem('v_adminPic', data.pic);
+                        
+                        loadAdminProfile();
+                        if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
+                    }
+                });
+
                 onValue(ref(db, 'Inventory'), (snapshot) => { 
                     smartInventory = snapshot.val() || {}; 
                     renderInventoryList(); 
@@ -1671,20 +1700,52 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             updateGreeting(); 
         }
 
+        // 🌟 STEP 2: Permanent Saving to Firebase Database
         window.saveAdminProfile = function() { 
-            localStorage.setItem('v_adminName', document.getElementById('ap-name').value); 
-            localStorage.setItem('v_adminPhone', document.getElementById('ap-phone').value); 
-            localStorage.setItem('v_adminEmail', document.getElementById('ap-email').value); 
-            localStorage.setItem('v_adminGst', document.getElementById('ap-gst').value.toUpperCase()); 
-            localStorage.setItem('v_adminAddr', document.getElementById('ap-address').value); 
-            localStorage.setItem('v_adminUpi', document.getElementById('ap-upi').value.trim()); // ✨ UPI ID SAVE
+            let pName = document.getElementById('ap-name').value.trim() || "Vandana Enterprises";
+            let pPhone = document.getElementById('ap-phone').value.trim();
+            let pEmail = document.getElementById('ap-email').value.trim();
+            let pGst = document.getElementById('ap-gst').value.toUpperCase();
+            let pAddr = document.getElementById('ap-address').value.trim();
+            let pUpi = document.getElementById('ap-upi').value.trim();
+
+            // Local save for instant load
+            localStorage.setItem('v_adminName', pName); 
+            localStorage.setItem('v_adminPhone', pPhone); 
+            localStorage.setItem('v_adminEmail', pEmail); 
+            localStorage.setItem('v_adminGst', pGst); 
+            localStorage.setItem('v_adminAddr', pAddr); 
+            localStorage.setItem('v_adminUpi', pUpi);
             
-            loadAdminProfile(); 
-            alert("Profile Saved Successfully!"); 
+            // 🔥 FIREBASE SAVE
+            update(ref(db, 'BusinessProfile'), {
+                name: pName, phone: pPhone, email: pEmail, gst: pGst, address: pAddr, upi: pUpi
+            }).then(() => {
+                loadAdminProfile(); 
+                if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering(); // Turant dashboard update karein
+                if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Business Profile Permanently Saved!");
+                else alert("Profile Saved Successfully!"); 
+            }).catch(err => alert("Error saving profile: " + err.message));
         }
+
         window.handleAdminPic = function(event) { let file = event.target.files[0]; if(file) { let reader = new FileReader(); reader.onload = function(e) { document.getElementById('crop-modal').style.display = 'flex'; let img = document.getElementById('crop-image'); img.src = e.target.result; if(cropper) cropper.destroy(); setTimeout(() => { cropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, background: false }); }, 200); }; reader.readAsDataURL(file); } }
         window.cancelCrop = function() { document.getElementById('crop-modal').style.display = 'none'; }
-        window.applyCrop = function() { if(!cropper) return; let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 }); localStorage.setItem('v_adminPic', canvas.toDataURL('image/jpeg', 0.8)); loadAdminProfile(); document.getElementById('crop-modal').style.display = 'none'; }
+        
+        window.applyCrop = function() { 
+            if(!cropper) return; 
+            let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 }); 
+            let dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            
+            localStorage.setItem('v_adminPic', dataUrl); 
+            
+            // 🔥 FIREBASE PHOTO SAVE
+            update(ref(db, 'BusinessProfile'), { pic: dataUrl }).then(() => {
+                loadAdminProfile(); 
+                if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
+                document.getElementById('crop-modal').style.display = 'none'; 
+                if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Profile Photo Updated!");
+            });
+        }
 
         window.handleCustPic = function(event) { let file = event.target.files[0]; if(file) { let reader = new FileReader(); reader.onload = function(e) { document.getElementById('cust-crop-modal').style.display = 'flex'; let img = document.getElementById('cust-crop-image'); img.src = e.target.result; if(custCropper) custCropper.destroy(); setTimeout(() => { custCropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, background: false }); }, 200); }; reader.readAsDataURL(file); } }
         window.cancelCustCrop = function() { document.getElementById('cust-crop-modal').style.display = 'none'; }

@@ -157,9 +157,9 @@
         
         .ledger-header-area { background: var(--bg-color); color: var(--text-dark); padding: 10px 16px;}
         .ledger-bal-card { background: white; border-radius: 16px; padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.03); border: 1px solid var(--border);}
-        .ledger-action-tabs { display: flex; margin: 16px 0; gap: 10px;}
-        .l-tab { flex: 1; display: flex; justify-content: center; align-items: center; gap: 6px; padding: 8px 0; font-size: 12px; color: var(--text-dark); font-weight: 600; background: white; border-radius: 12px; cursor: pointer; border: 1px solid var(--border); font-family: 'Product Sans', sans-serif; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: all 0.2s;}
-        .l-tab:active { transform: scale(0.96); }
+        .ledger-action-tabs { display: flex; margin: 12px 16px; gap: 12px; justify-content: center; }
+        .l-tab { flex: 1; max-width: 140px; display: flex; justify-content: center; align-items: center; gap: 6px; padding: 8px 0; font-size: 12px; color: var(--text-dark); font-weight: 600; background: white; border-radius: 20px; cursor: pointer; border: 1px solid var(--border); font-family: 'Product Sans', sans-serif; box-shadow: 0 2px 5px rgba(0,0,0,0.04); transition: all 0.2s;}
+        .l-tab:active { transform: scale(0.95); }
         .entry-card { background: white; border-radius: 12px; display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 10px; cursor: pointer; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.02);}
         .ec-left { padding: 14px 16px; flex: 2; border-right: 1px solid #f1f5f9; }
         .ec-gave, .ec-got { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; }
@@ -1432,7 +1432,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
-        const allPagesList = ['items-page', 'parties-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'home'];
+        const allPagesList = ['items-page', 'parties-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'home'];
         
         window.openPage = function(id, isBack = false) { 
             if(!isBack && window.pageStack[window.pageStack.length-1] !== id) {
@@ -1863,11 +1863,13 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     if (!upiId) return window.showSaaSToast("Dukandar ne abhi tak UPI ID set nahi ki hai.");
                     
                     let netBal = window.globalBalances[name] || 0;
-                    let popup = document.getElementById('customer-payment-popup');
-                    if(popup) {
-                        popup.style.display = 'flex';
-                        document.getElementById('cp-pop-amount').value = netBal > 0 ? parseFloat(netBal).toFixed(0) : '';
-                    }
+                    
+                    // Naye phonepe screen mein data bhejna
+                    document.getElementById('payment-due-badge').innerHTML = `<span class="material-symbols-rounded" style="font-size:18px; color:var(--primary);">account_balance_wallet</span> Total Due: ₹${netBal.toLocaleString('en-IN')}`;
+                    document.getElementById('full-screen-pay-amount').value = netBal > 0 ? parseFloat(netBal).toFixed(0) : '';
+                    
+                    // Nayi screen open karna
+                    openPage('payment-screen-page');
                 };
             }
 
@@ -1911,40 +1913,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             closePage('calculator-page'); 
         }
 
-        window.submitPaymentAndOpenUPI = function() {
-            let amt = parseFloat(document.getElementById('cp-pop-amount').value) || 0;
-            if(amt <= 0) return window.showSaaSToast("Kripya sahi amount dalein!");
-            
-            let upiId = localStorage.getItem('v_adminUpi');
-            if (!upiId) return window.showSaaSToast("Dukandar ne abhi tak UPI ID set nahi ki hai.");
-
-            let myName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
-            let safeAmount = amt.toFixed(2);
-            let safeName = encodeURIComponent("Vandana Enterprises");
-
-            push(ref(db, 'PendingRequests'), {
-                date: new Date().toISOString(),
-                name: myName, 
-                type: 'Got', 
-                amount: amt,
-                details: "Payment sent via Pay Now",
-                requestedBy: myName,
-                status: 'Pending'
-            }).then(() => {
-                // Pop-up close karna
-                document.getElementById('customer-payment-popup').style.display = 'none';
-
-                // Professional SaaS Toast Dikhana
-                window.showSaaSToast("Payment verification request submitted successfully. It will reflect in your ledger shortly.");
-
-                // Auto PhonePe / UPI app mein entered amount ke sath redirect karna
-                window.location.href = `phonepe://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
-                
-                setTimeout(() => {
-                    window.location.href = `upi://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
-                }, 600);
-            }).catch(err => window.showSaaSToast("Error: " + err.message));
-        }
+        window.submitPaymentAndOpenUPI = function()
 
         window.openEntryDetails = function(key) { 
             sessionStorage.setItem('v_currentEntryKey', key); 
@@ -2905,19 +2874,29 @@ window.showTargetCelebration = function() {
         
            </script>
             
-<div id="customer-payment-popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 99999; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
-        <div style="background: white; padding: 25px 20px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); width: 100%; max-width: 350px; text-align: center;">
-            <div style="font-size: 36px; margin-bottom: 6px;">💸</div>
-            <h2 style="color: #2c3e50; margin-bottom: 6px; font-size: 20px; font-weight: 700; font-family: 'Product Sans', sans-serif;">Enter Payment Amount</h2>
-            <p style="color: #7f8c8d; font-size: 12px; margin-bottom: 20px;">Jitna amount aap pay karna chahte hain enter karein.</p>
-            <div class="form-group" style="text-align: left; margin-bottom: 16px;">
-                <label class="form-label" style="font-size:12px; font-weight:600;">Amount (₹) *</label>
-                <input type="number" id="cp-pop-amount" class="form-control" placeholder="Enter amount (e.g. 5000)" style="font-size:16px; font-weight:600; padding:10px;">
+<div class="page flex-page" id="payment-screen-page" style="background: #ffffff; z-index: 99999;">
+        <div class="sub-header" style="background: #ffffff; border-bottom: none; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('payment-screen-page')" style="color: #1f1f1f;">arrow_back</button>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:38px; height:38px; background:#0a56d0; color:white; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:700; font-size:18px; box-shadow: 0 2px 5px rgba(10, 86, 208, 0.3);">V</div>
+                <div>
+                    <h2 class="page-title" style="font-size:16px; font-weight:700;">Vandana Enterprises</h2>
+                    <div style="font-size:11px; color:var(--success); font-weight: 600; display:flex; align-items:center; gap:2px;"><span class="material-symbols-rounded" style="font-size:12px;">verified</span> Verified Merchant</div>
+                </div>
             </div>
-            <div style="display: flex; gap: 10px;">
-                <button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger); padding:10px; font-size:13px;" onclick="document.getElementById('customer-payment-popup').style.display='none'">Cancel</button>
-                <button class="btn-submit" style="flex:1.2; background:#5f259f; color:white; padding:10px; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="submitPaymentAndOpenUPI()"><span class="material-symbols-rounded" style="font-size:16px;">payments</span> Pay Now</button>
+        </div>
+        <div class="scroll-content" style="padding-top:50px; display:flex; flex-direction:column; align-items:center;">
+            <div style="font-size:14px; color:var(--text-muted); font-weight:500; margin-bottom:12px;">Enter Amount</div>
+            <div style="display:flex; align-items:center; justify-content:center; gap:6px; margin-bottom: 24px;">
+                <span style="font-size:40px; font-weight:600; color:var(--text-dark); margin-top:-5px;">₹</span>
+                <input type="number" id="full-screen-pay-amount" placeholder="0" style="font-size:52px; font-weight:700; color:var(--text-dark); border:none; outline:none; background:transparent; width:180px; text-align:center; font-family:'Product Sans', sans-serif;">
             </div>
+            <div style="background:#f8fafd; padding:10px 20px; border-radius:24px; font-size:13px; color:var(--text-dark); font-weight:600; display:flex; gap:8px; align-items:center; border: 1px solid #c2e7ff;" id="payment-due-badge">
+                <span class="material-symbols-rounded" style="font-size:18px; color:var(--primary);">account_balance_wallet</span> Total Due: ₹0
+            </div>
+        </div>
+        <div class="bottom-action-bar" style="background:transparent; border:none; justify-content:center; padding: 20px;">
+            <button class="btn-submit" onclick="submitPaymentAndOpenUPI()" style="width:100%; max-width:350px; background:#5f259f; color:white; padding:18px; font-size:16px; font-weight:700; border-radius:16px; box-shadow: 0 4px 15px rgba(95, 37, 159, 0.4); letter-spacing:0.5px;">PROCEED TO PAY</button>
         </div>
     </div>
     

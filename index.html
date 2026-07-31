@@ -1122,7 +1122,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     
                     // UI UPDATE: वेबसाइट के डिज़ाइन में नाम और ईमेल बदलना
                     let userName = user.displayName || "User";
-                    let fullName = userName.split(' ')[0];
+                    let firstName = userName.split(' ')[0];
                     let userInitial = userName.charAt(0).toUpperCase();
 
                     if (document.getElementById('user-name')) document.getElementById('user-name').innerText = userName;
@@ -1131,10 +1131,10 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     const hour = new Date().getHours(); 
                     let greet = "Good morning";
                     if (hour >= 12 && hour < 17) greet = "Good afternoon"; else if (hour >= 17) greet = "Good evening";
-                    if (document.getElementById('dynamic-greeting')) document.getElementById('dynamic-greeting').innerText = greet + ", " + fullName;
+                    if (document.getElementById('dynamic-greeting')) document.getElementById('dynamic-greeting').innerText = greet + ", " + firstName;
 
                     if (document.getElementById('pm-email-display')) document.getElementById('pm-email-display').innerText = user.email;
-                    if (document.getElementById('pm-name-display')) document.getElementById('pm-name-display').innerText = "Hi, " + fullName + "!";
+                    if (document.getElementById('pm-name-display')) document.getElementById('pm-name-display').innerText = "Hi, " + firstName + "!";
                     
                     if (user.photoURL) {
                         if (document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').src = user.photoURL; document.getElementById('pm-avatar-img').style.display = 'block'; document.getElementById('pm-avatar-text').style.display = 'none'; }
@@ -1268,7 +1268,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 }
 
                 // Admin ko pura naam dikhega, Customer ko sirf First Name
-                let fullName = isAdmin ? displayName : displayName.trim().split(' ')[0]; 
+                let firstName = isAdmin ? displayName : displayName.trim().split(' ')[0]; 
 
                 // Greeting Message - Professional Single Line Format
                 const hour = new Date().getHours(); 
@@ -1278,12 +1278,12 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 
                 if (document.getElementById('dynamic-greeting')) {
                     // \n को हटा दिया गया है ताकि सब कुछ एक ही लाइन में सुन्दर दिखे
-                    document.getElementById('dynamic-greeting').innerText = greetText + ", " + fullName;
+                    document.getElementById('dynamic-greeting').innerText = greetText + ", " + firstName;
                 }
 
                 // Profile Modal & Header Ring Sync
                 if (document.getElementById('pm-email-display')) document.getElementById('pm-email-display').innerText = displayName;
-                if (document.getElementById('user-name')) document.getElementById('user-name').innerText = fullName;
+                if (document.getElementById('user-name')) document.getElementById('user-name').innerText = firstName;
 
                 if (displayPic) {
                     if (document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').src = displayPic; document.getElementById('pm-avatar-img').style.display = 'block'; }

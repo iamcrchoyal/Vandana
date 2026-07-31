@@ -701,7 +701,7 @@
 
     <!-- 📄 INVOICES LIST PAGE -->
     <div class="page flex-page" id="invoices-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('invoices-page')">arrow_back</button><h2 class="page-title">Today's Bills</h2></div>
+        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('invoices-page')">arrow_back</button><h2 class="page-title" id="invoices-page-title">Today's Bills</h2></div>
         <div class="scroll-content" id="invoices-list-container" style="padding-top:16px;"></div>
     </div>
 
@@ -1782,6 +1782,26 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
             window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet }; updateLedgerTotalsUI(); if(document.getElementById('parties-page').classList.contains('active')) { renderCustomerList(globalCustomers); }
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
+
+            // ============== SMART DYNAMIC TITLE LOGIC ==============
+            let selectedDateObj = new Date(selectedDateString);
+            let todayObj = new Date();
+            let isToday = (selectedDateObj.toDateString() === todayObj.toDateString());
+            let dateDisplay = isToday ? "Today" : selectedDateObj.toLocaleDateString('en-GB', {day: 'numeric', month: 'short'});
+
+            let role = window.currentUserRole;
+            let prefix = (role === 'admin') ? "Sales" : ((role === 'supplier') ? "Supplies" : "Purchases");
+            let finalTitle = isToday ? `Today's ${prefix}` : `${prefix} - ${dateDisplay}`;
+
+            // डैशबोर्ड कार्ड का नाम बदलना
+            let dashLabel = document.getElementById('dash-sales-label');
+            if(dashLabel) dashLabel.innerText = finalTitle;
+
+            // अंदर वाले पेज (Invoices) का नाम बदलना
+            let invoicePageTitle = document.getElementById('invoices-page-title');
+            if(invoicePageTitle) invoicePageTitle.innerText = finalTitle;
+            // =======================================================
+
             // ============== TARGET AND PROGRESS BAR LOGIC ==============
             let TARGET_AMOUNT = 50000; // 🎯 आप यहाँ अपना टारगेट सेट कर सकते हैं (जैसे 50,000 या 1,00,000)
             let activeSalesData = window.currentTopCustTab === 'current' ? currMonthSales : lastMonthSales; 
@@ -2531,13 +2551,9 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             
           let isSupplier = (role === 'supplier');
 
-            // डैशबोर्ड का नाम एडमिन, सप्लायर और कस्टमर के हिसाब से बदलें
-            let salesLabel = document.getElementById('dash-sales-label');
-            if (salesLabel) {
-                if (isAdmin) salesLabel.innerText = "Today's Sale";
-                else if (isSupplier) salesLabel.innerText = "Today's Supply";
-                else salesLabel.innerText = "Today's Purchase";
-            }
+            // Title बदलने का लॉजिक अब डेट बदलते ही (calculateGrandTotals) काम करेगा
+
+            
             
             // सेल इनवॉइस और गोडाउन ट्रांसफर वाले बॉक्स को कस्टमर और सप्लायर से छुपाएं
             let adminCards = document.getElementById('admin-action-cards');

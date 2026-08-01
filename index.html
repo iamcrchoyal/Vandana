@@ -352,7 +352,8 @@
             <div style="display:flex; justify-content:space-between; border-bottom:3px solid #0a56d0; padding-bottom:20px; margin-bottom:30px;">
                 <div>
                     <h1 style="color:#0a56d0; margin:0; font-size:28px; font-weight:800; text-transform:uppercase; letter-spacing:-0.5px;" id="pdf-biz-name">Vandana Enterprises</h1>
-                    <p style="margin:8px 0 0 0; font-size:14px; color:#444746; font-weight:500;" id="pdf-biz-phone">Phone: +91 ----------</p>
+                    <p style="margin:8px 0 0 0; font-size:14px; color:#444746; font-weight:500;" id="pdf-biz-phone">Mob: +91 ----------</p>
+                    <p style="margin:4px 0 0 0; font-size:14px; color:#444746; font-weight:500;" id="pdf-biz-address">Address: --------</p>
                     <p style="margin:4px 0 0 0; font-size:14px; color:#444746; font-weight:500;" id="pdf-biz-gst">GSTIN: --------</p>
                 </div>
                 <div style="text-align:right;">
@@ -391,9 +392,9 @@
             <div style="display:flex; justify-content:space-between; align-items:center; background:#f0f4f9; border:1px solid #c2e7ff; border-radius:16px; padding:25px; margin-bottom:40px;">
                 
                 <!-- Left Side: QR Code -->
-                <div id="pdf-qr-container" style="text-align:center; position:relative; width:110px; height:110px; background:white; padding:8px; border-radius:12px; border:1px solid #e0e2e0; box-shadow:0 4px 10px rgba(0,0,0,0.05); display:none;">
-                    <img id="pdf-qr-img" src="" style="width:100%; height:100%; display:block;">
-                    <!-- 'VE' Center Badge -->
+                <div id="pdf-qr-container" style="text-align:center; position:relative; width:110px; height:110px; background:white; padding:8px; border-radius:12px; border:1px solid #e0e2e0; box-shadow:0 4px 10px rgba(0,0,0,0.05); display:none; margin-top:15px;">
+                    <img id="pdf-qr-img" src="" style="width:100%; height:100%; display:block; object-fit:contain;">
+                    <!-- 'VE' Center Badge Re-added -->
                     <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:3px 6px; font-weight:900; color:#0a56d0; border-radius:6px; font-size:15px; box-shadow:0 0 8px rgba(0,0,0,0.2);">VE</div>
                 </div>
                 
@@ -2679,11 +2680,19 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.openPhonebook = async function(nameId, phoneId) { if ('contacts' in navigator) { try { const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false }); if (contacts.length > 0) { if (contacts[0].name) document.getElementById(nameId).value = contacts[0].name[0]; if (contacts[0].tel) document.getElementById(phoneId).value = String(contacts[0].tel[0]).replace(/\D/g, '').slice(-10); } } catch(e) {} } }
         
         function preparePDFData() {
-            // 1. एडमिन और कस्टमर की डिटेल्स
+            // 1. एडमिन और कस्टमर की डिटेल्स (Name -> Phone -> Address -> GST)
             document.getElementById('pdf-biz-name').innerText = localStorage.getItem('v_adminName') || "Vandana Enterprises"; 
-            document.getElementById('pdf-biz-phone').innerText = "Phone: +91 " + (localStorage.getItem('v_adminPhone') || "----------"); 
+            document.getElementById('pdf-biz-phone').innerText = "Mob: +91 " + (localStorage.getItem('v_adminPhone') || "----------"); 
+            
+            let addr = localStorage.getItem('v_adminAddr');
+            if(document.getElementById('pdf-biz-address')) {
+                document.getElementById('pdf-biz-address').innerText = addr ? "Address: " + addr : "";
+                document.getElementById('pdf-biz-address').style.display = addr ? "block" : "none";
+            }
+            
             let gst = localStorage.getItem('v_adminGst');
             document.getElementById('pdf-biz-gst').innerText = gst ? "GSTIN: " + gst : "";
+            document.getElementById('pdf-biz-gst').style.display = gst ? "block" : "none";
             
             let d = new Date(currentEntryData.date); 
             document.getElementById('pdf-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleDateString('en-GB'); 
@@ -2789,15 +2798,16 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 
                 document.getElementById('pdf-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=H&margin=0&data=${encodeURIComponent(upiString)}`;
                 
-                // Professional 'PAY DUE' Badge with dynamic styling
+                // Professional 'PAY DUE' Badge (Moved Up for 100% Scanning)
                 let qrLabel = document.getElementById('pdf-qr-label');
                 if(!qrLabel) {
                     qrContainer.style.border = "2px solid #0a56d0";
                     qrContainer.style.background = "white";
                     qrContainer.style.boxShadow = "0 8px 20px rgba(10,86,208,0.15)";
                     
+                    // top:-26px ensure karega ki label QR code image par bilkul na aaye
                     qrContainer.insertAdjacentHTML('afterbegin', `
-                        <div id="pdf-qr-label" style="position:absolute; top:-16px; left:50%; transform:translateX(-50%); background:#0a56d0; color:white; border:2px solid white; font-size:12px; font-weight:800; padding:6px 16px; border-radius:20px; white-space:nowrap; box-shadow:0 4px 10px rgba(10,86,208,0.3); font-family:'Product Sans', sans-serif; letter-spacing:0.5px;">
+                        <div id="pdf-qr-label" style="position:absolute; top:-26px; left:50%; transform:translateX(-50%); background:#0a56d0; color:white; border:2px solid white; font-size:12px; font-weight:800; padding:4px 12px; border-radius:20px; white-space:nowrap; box-shadow:0 4px 10px rgba(10,86,208,0.3); font-family:'Product Sans', sans-serif; z-index:10;">
                             PAY DUE: ₹${safeAmount}
                         </div>
                     `);
@@ -3178,9 +3188,11 @@ window.showTargetCelebration = function() {
                         <div style="display:flex; justify-content:space-between; border-bottom:3px solid #0a56d0; padding-bottom:20px; margin-bottom:30px;">
                             <div>
                                 <h1 style="color:#0a56d0; margin:0; font-size:28px; font-weight:800; text-transform:uppercase; letter-spacing:-0.5px;">${adminName}</h1>
-                                <p style="margin:8px 0 0 0; font-size:14px; color:#444746; font-weight:500;">Phone: +91 ${adminPhone}</p>
+                                <p style="margin:8px 0 0 0; font-size:14px; color:#444746; font-weight:500;">Mob: +91 ${adminPhone}</p>
+                                ${localStorage.getItem('v_adminAddr') ? `<p style="margin:4px 0 0 0; font-size:14px; color:#444746; font-weight:500;">Address: ${localStorage.getItem('v_adminAddr')}</p>` : ''}
                                 ${adminGst ? `<p style="margin:4px 0 0 0; font-size:14px; color:#444746; font-weight:500;">GSTIN: ${adminGst}</p>` : ''}
                             </div>
+                            
                             <div style="text-align:right;">
                                 <h2 style="margin:0; font-size:36px; color:#1f1f1f; letter-spacing:1px; text-transform:uppercase;">INVOICE</h2>
                                 <p style="margin:12px 0 0 0; font-size:15px; font-weight:700;">Bill No: <span style="color:#b3261e;">${bill.billNo || '-'}</span></p>

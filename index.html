@@ -775,21 +775,29 @@
                 <div class="form-panel">
                     <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Add Product</label>
                     <select class="form-control" id="inv-cat" style="margin-bottom: 12px;" onchange="updatePosShades()">
+                        <div class="form-panel" style="border-radius:18px; box-shadow:0 2px 8px rgba(0,0,0,0.03);">
+                    <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:13px; font-weight:600;">Add Product</label>
+                    <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:10px;" onchange="updatePosShades()">
                         <option value="">Select Category</option>
                         <option value="Thread">Thread</option><option value="Zari">Zari</option><option value="Nylon">Nylon</option>
                         <option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>
                     </select>
-                    <select class="form-control" id="inv-shade" style="margin-bottom: 12px;"><option value="">Select Category First</option></select>
+                    <select class="form-control" id="inv-shade" style="margin-bottom: 12px; border-radius:10px;"><option value="">Select Category First</option></select>
                     <div class="input-btn-group" style="margin-bottom: 16px;">
-                        <input type="number" class="form-control" id="inv-qty" placeholder="Qty (Box)">
-                        <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)">
+                        <input type="number" class="form-control" id="inv-qty" placeholder="Qty (Box)" style="border-radius:10px;">
+                        <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:10px;">
                     </div>
-                    <button class="btn-submit" style="background:var(--text-dark);" onclick="addCartItem()">⬇ Add to Cart</button>
+                    <!-- Professional Add Product Button -->
+                    <button class="btn-submit" style="background:#0a56d0; display:flex; align-items:center; justify-content:center; gap:8px; border-radius:14px; font-size:15px; box-shadow:0 4px 10px rgba(10,86,208,0.2);" onclick="addCartItem()"><span class="material-symbols-rounded" style="font-size:20px;">add_shopping_cart</span> Add Product</button>
                 </div>
-                <table class="invoice-table" style="margin-bottom: 16px;">
-                    <thead><tr><th>Details</th><th>Qty</th><th>Rate</th><th>Total</th></tr></thead>
-                    <tbody id="cart-rows"><tr><td colspan="4" style="text-align:center; padding:16px; color:var(--text-muted);">Cart is empty</td></tr></tbody>
-                </table>
+                
+                <!-- Mobile Friendly Scrollable Table Wrapper -->
+                <div style="overflow-x:auto; margin-bottom:16px; border-radius:12px; border:1px solid var(--border); background:white;">
+                    <table class="invoice-table" style="margin-bottom: 0; border:none;">
+                        <thead><tr style="background:#f8fafd;"><th>Details</th><th style="text-align:center;">Qty</th><th style="text-align:center;">Rate</th><th style="text-align:right;">Total</th><th style="text-align:center;">Action</th></tr></thead>
+                        <tbody id="cart-rows"><tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted); font-weight:500;">Cart is empty</td></tr></tbody>
+                    </table>
+                </div>
                 <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:16px;">
                     <span style="font-weight:600; font-size:16px; color:var(--primary); font-family: 'Product Sans', sans-serif;">Grand Total:</span>
                     <span style="font-size:26px; font-weight:700; color:var(--primary); font-family: 'Product Sans', sans-serif;" id="cart-grand-total">₹ 0</span>
@@ -2430,8 +2438,26 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
         window.updatePosShades = function() { let cat = document.getElementById('inv-cat').value; let shadeSelect = document.getElementById('inv-shade'); shadeSelect.innerHTML = '<option value="">Select Shade/Item</option>'; if(!cat) return; for (let key in smartInventory) { let parts = key.split("_"); if(parts[0] === cat && smartInventory[key] > 0) { shadeSelect.innerHTML += `<option value="${parts[1]}">${parts[1]} (${smartInventory[key]} Box Left)</option>`; } } }
         window.addCartItem = function() { const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value; const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0; if (!cat || !shade) return alert("Select Category and Item first!"); if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!"); let key = cat + "_" + shade; let currentStock = smartInventory[key] || 0; if(qty > currentStock) { alert(`OUT OF STOCK! You only have ${currentStock} Box of ${shade} left.`); return; } currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty, rate, itemTotal: qty * rate }); renderCartUi(); }
-        // 🌟 EDITABLE CART LOGIC
+        // 🌟 EDITABLE CART LOGIC WITH PROFESSIONAL UI
         window.removeCartItem = function(index) {
+            currentCart.splice(index, 1);
+            renderCartUi();
+        };
+
+        // नया Edit Function
+        window.editCartItem = function(index) {
+            let item = currentCart[index];
+            document.getElementById('inv-cat').value = item.cat;
+            updatePosShades(); // Shade ka dropdown refresh karega
+            
+            setTimeout(() => {
+                document.getElementById('inv-shade').value = item.shade;
+            }, 100);
+            
+            document.getElementById('inv-qty').value = item.qty;
+            document.getElementById('inv-rate').value = item.rate;
+            
+            // Item ko cart se hata do taaki save karne par duplicate na ho
             currentCart.splice(index, 1);
             renderCartUi();
         };
@@ -2445,18 +2471,24 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 grandInvoiceTotal += item.itemTotal; 
                 invoiceBoxCount += item.qty; 
                 tbody.innerHTML += `<tr>
-                    <td>${item.title}</td>
-                    <td>${item.qty}</td>
-                    <td>₹${item.rate}</td>
-                    <td><strong>₹${item.itemTotal.toLocaleString()}</strong> <span class="material-symbols-rounded" style="color:var(--danger); font-size:18px; cursor:pointer; vertical-align:middle; margin-left:6px;" onclick="removeCartItem(${index})">delete</span></td>
+                    <td style="font-weight:600; color:var(--text-dark); font-size:13px;">${item.title}</td>
+                    <td style="text-align:center; font-size:13px;">${item.qty}</td>
+                    <td style="text-align:center; font-size:13px;">₹${item.rate}</td>
+                    <td style="text-align:right; font-size:13px; color:var(--primary);"><strong>₹${item.itemTotal.toLocaleString()}</strong></td>
+                    <td style="text-align:center; white-space:nowrap;">
+                        <span class="material-symbols-rounded" style="color:var(--primary); font-size:20px; cursor:pointer; vertical-align:middle; margin-right:8px; padding:6px; background:#e8f0fe; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.05);" onclick="editCartItem(${index})">edit</span>
+                        <span class="material-symbols-rounded" style="color:var(--danger); font-size:20px; cursor:pointer; vertical-align:middle; padding:6px; background:#fdf2f2; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.05);" onclick="removeCartItem(${index})">delete</span>
+                    </td>
                 </tr>`; 
             }); 
+            if(currentCart.length === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted); font-weight:500;">Cart is empty</td></tr>`;
+            
             document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`; 
             document.getElementById('inv-qty').value=''; 
             document.getElementById('inv-rate').value=''; 
             let btn = document.getElementById('save-bill-btn'); 
             if(btn) { 
-                btn.innerText = window.editingBillNo ? "💾 Update Bill" : "💾 Generate Bill"; 
+                btn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px;">update</span> Update Bill` : `<span class="material-symbols-rounded" style="font-size:18px;">receipt_long</span> Generate Bill`; 
                 btn.style.background = window.editingBillNo ? "var(--warning)" : "var(--primary)"; 
             }
             if(typeof window.updateDynamicQR === 'function') window.updateDynamicQR();
@@ -2742,17 +2774,37 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 document.getElementById('pdf-payment-breakdown').style.display = 'none';
             }
 
-            // 4. ✨ SMART QR CODE LOGIC ✨
+            // 4. ✨ SMART QR CODE LOGIC (For Pending/Due Amount) ✨
             let qrContainer = document.getElementById('pdf-qr-container');
             let upiId = localStorage.getItem('v_adminUpi'); 
             
-            if(upiId && currentEntryData.amount > 0) {
-                let safeAmount = parseFloat(currentEntryData.amount).toFixed(2);
-                let safeName = encodeURIComponent("Vandana Enterprises");
+            // डिफ़ॉल्ट रूप से पूरा अमाउंट लें
+            let amountForQR = parseFloat(currentEntryData.amount) || 0;
+            
+            // अगर हाफ पेमेंट या कैश दिया गया है, तो सिर्फ 'Pending' अमाउंट का QR बनाएं
+            if(currentEntryData.breakdown && currentEntryData.breakdown.pending !== undefined) {
+                amountForQR = parseFloat(currentEntryData.breakdown.pending);
+            }
+
+            // अगर कुछ भी बकाया (Pending) पैसा है और UPI ID है, तभी QR दिखाएं
+            if(upiId && amountForQR > 0) {
+                let safeAmount = amountForQR.toFixed(2);
+                let safeName = encodeURIComponent(localStorage.getItem('v_adminName') || "Vandana Enterprises");
                 let upiString = `upi://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
+                
                 document.getElementById('pdf-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=H&margin=0&data=${encodeURIComponent(upiString)}`;
+                
+                // QR के ऊपर 'Pay Due Amount' का लेबल लगा दें ताकि कस्टमर समझ जाए
+                let qrLabel = document.getElementById('pdf-qr-label');
+                if(!qrLabel) {
+                    qrContainer.insertAdjacentHTML('afterbegin', `<div id="pdf-qr-label" style="position:absolute; top:-25px; left:50%; transform:translateX(-50%); background:#fdf2f2; color:var(--danger); border:1px solid #f8cbcb; font-size:11px; font-weight:800; padding:4px 10px; border-radius:12px; white-space:nowrap; box-shadow:0 2px 4px rgba(0,0,0,0.05);">PAY DUE: ₹${safeAmount}</div>`);
+                } else {
+                    qrLabel.innerText = `PAY DUE: ₹${safeAmount}`;
+                }
+
                 qrContainer.style.display = 'block';
             } else {
+                // अगर पूरा पैसा आ गया है (Pending = 0), तो QR Code गायब कर दें
                 qrContainer.style.display = 'none';
             }
         }

@@ -773,76 +773,60 @@
                         <input type="tel" class="form-control" id="inv-phone" placeholder="Mobile Number">
                     </div>
                 </div>
-                
-                <!-- 🌟 STEP 2: ADD PRODUCT SECTION (HIDDEN INITIALLY) -->
-                <div id="pos-add-product-section" style="display:none; animation: slideDown 0.3s ease-out;">
-                    <div class="form-panel" style="border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
-                        <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">📦 Add Product</label>
-                        <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;" onchange="updatePosShades()">
-                            <option value="">Select Category</option>
-                            <option value="Thread">Thread</option><option value="Zari">Zari</option><option value="Nylon">Nylon</option>
-                            <option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>
-                        </select>
-                        <select class="form-control" id="inv-shade" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;"><option value="">Select Category First</option></select>
-                        <div class="input-btn-group" style="margin-bottom: 16px;">
-                            <input type="number" class="form-control" id="inv-qty" placeholder="Qty (Box)" style="border-radius:12px;">
-                            <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">
-                        </div>
-                        <button class="btn-submit" style="background:linear-gradient(135deg, #0a56d0 0%, #0842a0 100%); display:flex; align-items:center; justify-content:center; gap:8px; border-radius:16px; font-size:15px; box-shadow:0 4px 12px rgba(10,86,208,0.25); padding:14px;" onclick="addCartItem()"><span class="material-symbols-rounded" style="font-size:22px;">add_shopping_cart</span> Add Product</button>
+                <div class="form-panel" style="border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
+                    <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">📦 Add Product</label>
+                    <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;" onchange="updatePosShades()">
+                        <option value="">Select Category</option>
+                        <option value="Thread">Thread</option><option value="Zari">Zari</option><option value="Nylon">Nylon</option>
+                        <option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>
+                    </select>
+                    <select class="form-control" id="inv-shade" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;"><option value="">Select Category First</option></select>
+                    <div class="input-btn-group" style="margin-bottom: 16px;">
+                        <input type="number" class="form-control" id="inv-qty" placeholder="Qty (Box)" style="border-radius:12px;">
+                        <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">
                     </div>
+                    <button class="btn-submit" style="background:linear-gradient(135deg, #0a56d0 0%, #0842a0 100%); display:flex; align-items:center; justify-content:center; gap:8px; border-radius:16px; font-size:15px; box-shadow:0 4px 12px rgba(10,86,208,0.25); padding:14px;" onclick="addCartItem()"><span class="material-symbols-rounded" style="font-size:22px;">add_shopping_cart</span> Add Product</button>
                 </div>
                 
-                <!-- 🌟 STEP 3: CART, TOTAL & PAYMENT SECTION (HIDDEN INITIALLY) -->
-                <div id="pos-cart-payment-section" style="display:none; animation: slideDown 0.3s ease-out;">
-                    <!-- Mobile Friendly Table -->
-                    <div style="overflow-x:auto; margin-bottom:16px; border-radius:16px; border:1px solid var(--border); background:white; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
-                        <table class="invoice-table" style="margin-bottom: 0; border:none; min-width: 400px;">
-                            <thead><tr style="background:#f8fafd;"><th>Details</th><th style="text-align:center;">Qty</th><th style="text-align:center;">Rate</th><th style="text-align:right;">Total</th><th style="text-align:center;">Action</th></tr></thead>
-                            <tbody id="cart-rows"><tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted); font-weight:500;">🛒 Cart is empty. Add a product above.</td></tr></tbody>
-                        </table>
+                <!-- Mobile Friendly Table -->
+                <div style="overflow-x:auto; margin-bottom:16px; border-radius:16px; border:1px solid var(--border); background:white; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
+                    <table class="invoice-table" style="margin-bottom: 0; border:none; min-width: 400px;">
+                        <thead><tr style="background:#f8fafd;"><th>Details</th><th style="text-align:center;">Qty</th><th style="text-align:center;">Rate</th><th style="text-align:right;">Total</th><th style="text-align:center;">Action</th></tr></thead>
+                        <tbody id="cart-rows"><tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted); font-weight:500;">🛒 Cart is empty. Add a product above.</td></tr></tbody>
+                    </table>
+                </div>
+                <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:16px;">
+                    <span style="font-weight:600; font-size:16px; color:var(--primary); font-family: 'Product Sans', sans-serif;">Grand Total:</span>
+                    <span style="font-size:26px; font-weight:700; color:var(--primary); font-family: 'Product Sans', sans-serif;" id="cart-grand-total">₹ 0</span>
+                </div>
+
+                <div class="form-panel" style="margin-bottom: 16px; border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
+                    <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">💳 Payment Status</label>
+                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                        <button id="pm-pending" class="btn-outline" style="flex:1; min-width:45%; border-color:var(--danger); color:var(--danger); background:#fdf2f2; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('pending')">⏳ Pending</button>
+                        <button id="pm-cash" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('cash')">💵 Cash</button>
+                        <button id="pm-online" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('online')">📱 Online</button>
+                        <button id="pm-half" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('half')">🌗 Split / Half</button>
+                    </div>
+                    <div id="half-payment-container" style="display:none; margin-bottom:16px; background:#fdf4e5; padding:12px; border-radius:12px; border:1px solid #f29900;">
+                        <div class="input-btn-group">
+                            <input type="number" class="form-control" id="inv-cash-amt" placeholder="Cash Paid (₹)" style="border-radius:10px; border-color:#f29900;" onkeyup="updateDynamicQR()">
+                            <input type="number" class="form-control" id="inv-online-amt" placeholder="Online Paid (₹)" style="border-radius:10px; border-color:#f29900;" onkeyup="updateDynamicQR()">
+                        </div>
                     </div>
                     
-                    <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:16px; border-radius:18px;">
-                        <span style="font-weight:600; font-size:16px; color:var(--primary); font-family: 'Product Sans', sans-serif;">Grand Total:</span>
-                        <span style="font-size:26px; font-weight:700; color:var(--primary); font-family: 'Product Sans', sans-serif;" id="cart-grand-total">₹ 0</span>
-                    </div>
-
-                    <!-- BADA PAYMENT BUTTON -->
-                    <button class="btn-outline" style="width:100%; border:2px solid #0a56d0; color:#0a56d0; background:#f8fafd; border-radius:16px; padding:18px; font-size:16px; font-weight:800; margin-bottom:16px; display:flex; justify-content:center; align-items:center; gap:8px; font-family:'Product Sans', sans-serif; box-shadow:0 4px 10px rgba(10,86,208,0.1);" onclick="togglePaymentOptions()">
-                        <span class="material-symbols-rounded" style="font-size:24px;">payments</span> Set Payment Status
-                    </button>
-
-                    <!-- PAYMENT OPTIONS PANEL (Khulega jab Button par click hoga) -->
-                    <div id="pos-payment-options-panel" class="form-panel" style="display:none; margin-bottom: 16px; border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
-                        <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">💳 Payment Status</label>
-                        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-                            <button id="pm-pending" class="btn-outline" style="flex:1; min-width:45%; border-color:var(--danger); color:var(--danger); background:#fdf2f2; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('pending')">⏳ Pending</button>
-                            <button id="pm-cash" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('cash')">💵 Cash</button>
-                            <button id="pm-online" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('online')">📱 Online</button>
-                            <button id="pm-half" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('half')">🌗 Split / Half</button>
-                        </div>
-                        <div id="half-payment-container" style="display:none; margin-bottom:16px; background:#fdf4e5; padding:12px; border-radius:12px; border:1px solid #f29900;">
-                            <div class="input-btn-group">
-                                <input type="number" class="form-control" id="inv-cash-amt" placeholder="Cash Paid (₹)" style="border-radius:10px; border-color:#f29900;" onkeyup="updateDynamicQR()">
-                                <input type="number" class="form-control" id="inv-online-amt" placeholder="Online Paid (₹)" style="border-radius:10px; border-color:#f29900;" onkeyup="updateDynamicQR()">
-                            </div>
-                        </div>
-                        
-                        <div id="pos-dynamic-qr-box" style="display:none; text-align:center; padding:20px; background:white; border:2px solid #0a56d0; border-radius:16px; box-shadow:0 8px 20px rgba(10,86,208,0.15); position:relative; margin-top:10px;">
-                            <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:#0a56d0; color:white; padding:4px 14px; border-radius:20px; font-size:11px; font-weight:800; letter-spacing:1px; display:flex; align-items:center; gap:4px;"><span class="material-symbols-rounded" style="font-size:14px;">qr_code_scanner</span> SCAN TO PAY</div>
-                            <div style="font-size:14px; font-weight:600; color:var(--text-muted); margin-bottom:8px; margin-top:8px;">Amount to be paid</div>
-                            <div id="pos-qr-amount-text" style="color:var(--text-dark); font-size:32px; font-weight:800; font-family:'Product Sans', sans-serif; letter-spacing:-1px; margin-bottom:16px;">₹0</div>
-                            <div style="background:white; padding:10px; border-radius:12px; display:inline-block; border:1px solid #e0e2e0; box-shadow:inset 0 0 10px rgba(0,0,0,0.02); position:relative;">
-                                <img id="pos-qr-img" src="" style="width:180px; height:180px; display:block;">
-                                <!-- 'VE' Center Badge Re-added! -->
-                                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:3px 6px; font-weight:900; color:#0a56d0; border-radius:6px; font-size:15px; box-shadow:0 0 8px rgba(0,0,0,0.2);">VE</div>
-                            </div>
+                    <!-- Highly Professional Dynamic QR Display for POS -->
+                    <div id="pos-dynamic-qr-box" style="display:none; text-align:center; padding:20px; background:white; border:2px solid #0a56d0; border-radius:16px; box-shadow:0 8px 20px rgba(10,86,208,0.15); position:relative; margin-top:10px;">
+                        <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:#0a56d0; color:white; padding:4px 14px; border-radius:20px; font-size:11px; font-weight:800; letter-spacing:1px; display:flex; align-items:center; gap:4px;"><span class="material-symbols-rounded" style="font-size:14px;">qr_code_scanner</span> SCAN TO PAY</div>
+                        <div style="font-size:14px; font-weight:600; color:var(--text-muted); margin-bottom:8px; margin-top:8px;">Amount to be paid</div>
+                        <div id="pos-qr-amount-text" style="color:var(--text-dark); font-size:32px; font-weight:800; font-family:'Product Sans', sans-serif; letter-spacing:-1px; margin-bottom:16px;">₹0</div>
+                        <div style="background:white; padding:10px; border-radius:12px; display:inline-block; border:1px solid #e0e2e0; box-shadow:inset 0 0 10px rgba(0,0,0,0.02);">
+                            <img id="pos-qr-img" src="" style="width:180px; height:180px; display:block;">
                         </div>
                     </div>
-
-                    <button id="save-bill-btn" class="btn-submit" onclick="triggerSaveAndShare()">💾 Generate Bill</button>
                 </div>
-                
+                <button id="save-bill-btn" class="btn-submit" onclick="triggerSaveAndShare()">💾 Generate Bill</button>
+            </div>
 
             <div id="post-bill-area" style="display:none; text-align:center; margin-top:20px;">
                 <div style="font-size:50px; margin-bottom:10px;" class="material-symbols-rounded">check_circle</div>
@@ -1433,30 +1417,15 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             } catch (error) {}
             // ===============================================================
 
-            // 🌟 SMART CUSTOMER AUTOCOMPLETE & PROGRESSIVE UI
-            function checkCustomerFilled() {
-                let val = document.getElementById('inv-party').value.trim();
-                // Customar ka naam dalte hi Add Product section dikhega
-                if(val.length > 0) {
-                    document.getElementById('pos-add-product-section').style.display = 'block';
-                } else {
-                    document.getElementById('pos-add-product-section').style.display = 'none';
-                }
-            }
-            
-            // Jaise hi customer name type hoga, check karega
-            document.getElementById('inv-party').addEventListener('input', checkCustomerFilled);
-            
+            // 🌟 SMART CUSTOMER AUTOCOMPLETE
             document.getElementById('inv-party').addEventListener('change', function(e) { 
                 let val = e.target.value.trim().toLowerCase(); 
                 let cust = globalCustomers.find(c => c.name.toLowerCase() === val); 
                 if(cust) { 
-                    e.target.value = cust.name; 
+                    e.target.value = cust.name; // Auto-correct exact case matching the DB
                     if(cust.phone) document.getElementById('inv-phone').value = cust.phone; 
                 } 
-                checkCustomerFilled();
             });
-            
 
             document.getElementById('cp-scroll-content').addEventListener('scroll', function() {
                 let st = this.scrollTop;
@@ -2227,38 +2196,11 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             document.getElementById('inv-phone').value = cust ? cust.phone : ""; 
             let d = new Date(currentEntryData.date); 
             if(!isNaN(d)) document.getElementById('inv-date').value = d.toISOString().split('T')[0]; 
-            window.setPaymentMode('pending'); 
+            window.setPaymentMode('credit'); 
             renderCartUi(); 
             navTo('pos-page', null); 
-            
-            // Edit karte time saare sections show karna
-            document.getElementById('billing-form-area').style.display = 'block'; 
-            document.getElementById('post-bill-area').style.display = 'none';
-            document.getElementById('pos-add-product-section').style.display = 'block';
-            document.getElementById('pos-cart-payment-section').style.display = 'block';
-            document.getElementById('pos-payment-options-panel').style.display = 'block';
-        }
-
-        // 🌟 RESET BILLING PAGE LOGIC
-        window.resetBillingPage = function() { 
-            currentCart = []; 
-            renderCartUi(); 
-            window.editingBillNo = null; 
-            window.editingEntryKey = null;
-            window.editingEntryDate = null;
-            document.getElementById('inv-date').value = new Date().toISOString().split('T')[0]; 
-            document.getElementById('inv-party').value = ''; 
-            document.getElementById('inv-phone').value = ''; 
-            window.setPaymentMode('pending'); 
-            if(document.getElementById('inv-cash-amt')) document.getElementById('inv-cash-amt').value = ''; 
-            if(document.getElementById('inv-online-amt')) document.getElementById('inv-online-amt').value = ''; 
-            
-            // Reset hone par saare sections chhupa dena
             document.getElementById('billing-form-area').style.display = 'block'; 
             document.getElementById('post-bill-area').style.display = 'none'; 
-            document.getElementById('pos-add-product-section').style.display = 'none';
-            document.getElementById('pos-cart-payment-section').style.display = 'none';
-            document.getElementById('pos-payment-options-panel').style.display = 'none';
         }
 
         window.editCurrentEntryAmount = function() { if(!currentEntryData) return; window.isEditingEntry = true; window.calcType = currentEntryData.type; window.calcValue = currentEntryData.amount.toString(); document.getElementById('calc-amount').value = window.calcValue; document.getElementById('calc-details').value = currentEntryData.details || ""; document.getElementById('calc-hidden-area').classList.add('show'); document.getElementById('calc-save-btn').innerText = "UPDATE ENTRY"; let d = new Date(currentEntryData.date); if(!isNaN(d)) document.getElementById('calc-date').value = d.toISOString().split('T')[0]; closePage('entry-details-page'); openCalculator(window.calcType, true); }
@@ -2548,26 +2490,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 btn.style.background = window.editingBillNo ? "var(--warning)" : "var(--primary)"; 
             }
             if(typeof window.updateDynamicQR === 'function') window.updateDynamicQR();
-
-            // 🌟 STEP 3: Auto-show Cart & Payment Button when item is added
-            if (currentCart.length > 0) {
-                document.getElementById('pos-cart-payment-section').style.display = 'block';
-            } else {
-                document.getElementById('pos-cart-payment-section').style.display = 'none';
-                document.getElementById('pos-payment-options-panel').style.display = 'none'; // Options bhi band karo
-            }
         }
-
-        // Toggles the actual Payment Options panel
-        window.togglePaymentOptions = function() {
-            let panel = document.getElementById('pos-payment-options-panel');
-            if(panel.style.display === 'none' || panel.style.display === '') {
-                panel.style.display = 'block';
-            } else {
-                panel.style.display = 'none';
-            }
-        }
-        
         
         // 🌟 STEP 3A: Auto Adjust Bill Number Logic (Date के हिसाब से Sequence Fix करना)
         window.autoAdjustBillNumbers = function() {
@@ -2712,7 +2635,22 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             document.getElementById('post-bill-area').style.display = 'block';  
         }
 
-    
+        // 🌟 RESET BILLING PAGE LOGIC
+        window.resetBillingPage = function() { 
+            currentCart = []; 
+            renderCartUi(); 
+            window.editingBillNo = null; 
+            window.editingEntryKey = null;
+            window.editingEntryDate = null;
+            document.getElementById('inv-date').value = new Date().toISOString().split('T')[0]; 
+            document.getElementById('inv-party').value = ''; 
+            document.getElementById('inv-phone').value = ''; 
+            window.setPaymentMode('pending'); 
+            if(document.getElementById('inv-cash-amt')) document.getElementById('inv-cash-amt').value = ''; 
+            if(document.getElementById('inv-online-amt')) document.getElementById('inv-online-amt').value = ''; 
+            document.getElementById('billing-form-area').style.display = 'block'; 
+            document.getElementById('post-bill-area').style.display = 'none'; 
+        }
 
         window.shareLastGeneratedInvoice = function() {
             if(window.lastGeneratedEntryData) {

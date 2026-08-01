@@ -760,6 +760,7 @@
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('pos-page')">arrow_back</button><h2 class="page-title">Create Invoice</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
             <div id="billing-form-area">
+                <!-- STEP 1: Date & Customer Details (Always Visible) -->
                 <div class="form-panel">
                     <div class="form-group" style="margin-bottom:0;">
                         <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Invoice Date</label>
@@ -767,13 +768,16 @@
                         
                         <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Customer Details</label>
                         <div class="input-btn-group" style="margin-bottom:12px;">
-                            <input type="text" id="inv-party" class="form-control" list="pos-customers-dl" placeholder="Enter Customer Name">
+                            <!-- 'oninput' lagaya gaya hai taki type karte hi agla box khul jaye -->
+                            <input type="text" id="inv-party" class="form-control" list="pos-customers-dl" placeholder="Enter Customer Name" oninput="checkCustomerFilled()">
                             <button class="action-btn material-symbols-rounded" onclick="openPhonebook('inv-party', 'inv-phone')" style="width:48px; border-radius:8px; flex-shrink:0;">contacts</button>
                         </div>
-                        <input type="tel" class="form-control" id="inv-phone" placeholder="Mobile Number">
+                        <input type="tel" class="form-control" id="inv-phone" placeholder="Mobile Number" oninput="checkCustomerFilled()">
                     </div>
                 </div>
-                <div class="form-panel" style="border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
+
+                <!-- STEP 2: Add Product Section (Hidden By Default) -->
+                <div class="form-panel" id="pos-add-product-panel" style="display:none; border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
                     <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">📦 Add Product</label>
                     <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;" onchange="updatePosShades()">
                         <option value="">Select Category</option>
@@ -788,46 +792,56 @@
                     <button class="btn-submit" style="background:linear-gradient(135deg, #0a56d0 0%, #0842a0 100%); display:flex; align-items:center; justify-content:center; gap:8px; border-radius:16px; font-size:15px; box-shadow:0 4px 12px rgba(10,86,208,0.25); padding:14px;" onclick="addCartItem()"><span class="material-symbols-rounded" style="font-size:22px;">add_shopping_cart</span> Add Product</button>
                 </div>
                 
-                <!-- Mobile Friendly Table -->
-                <div style="overflow-x:auto; margin-bottom:16px; border-radius:16px; border:1px solid var(--border); background:white; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
-                    <table class="invoice-table" style="margin-bottom: 0; border:none; min-width: 400px;">
-                        <thead><tr style="background:#f8fafd;"><th>Details</th><th style="text-align:center;">Qty</th><th style="text-align:center;">Rate</th><th style="text-align:right;">Total</th><th style="text-align:center;">Action</th></tr></thead>
-                        <tbody id="cart-rows"><tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted); font-weight:500;">🛒 Cart is empty. Add a product above.</td></tr></tbody>
-                    </table>
-                </div>
-                <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:16px;">
-                    <span style="font-weight:600; font-size:16px; color:var(--primary); font-family: 'Product Sans', sans-serif;">Grand Total:</span>
-                    <span style="font-size:26px; font-weight:700; color:var(--primary); font-family: 'Product Sans', sans-serif;" id="cart-grand-total">₹ 0</span>
-                </div>
+                <!-- STEP 3: Cart Table, Grand Total, and Payment Section (Hidden By Default) -->
+                <div id="pos-cart-section" style="display:none;">
+                    <div style="overflow-x:auto; margin-bottom:16px; border-radius:16px; border:1px solid var(--border); background:white; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
+                        <table class="invoice-table" style="margin-bottom: 0; border:none; min-width: 400px;">
+                            <thead><tr style="background:#f8fafd;"><th>Details</th><th style="text-align:center;">Qty</th><th style="text-align:center;">Rate</th><th style="text-align:right;">Total</th><th style="text-align:center;">Action</th></tr></thead>
+                            <tbody id="cart-rows"><tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted); font-weight:500;">🛒 Cart is empty. Add a product above.</td></tr></tbody>
+                        </table>
+                    </div>
 
-                <div class="form-panel" style="margin-bottom: 16px; border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
-                    <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">💳 Payment Status</label>
-                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-                        <button id="pm-pending" class="btn-outline" style="flex:1; min-width:45%; border-color:var(--danger); color:var(--danger); background:#fdf2f2; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('pending')">⏳ Pending</button>
-                        <button id="pm-cash" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('cash')">💵 Cash</button>
-                        <button id="pm-online" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('online')">📱 Online</button>
-                        <button id="pm-half" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('half')">🌗 Split / Half</button>
+                    <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:16px; border-radius:16px;">
+                        <span style="font-weight:600; font-size:16px; color:var(--primary); font-family: 'Product Sans', sans-serif;">Grand Total:</span>
+                        <span style="font-size:26px; font-weight:700; color:var(--primary); font-family: 'Product Sans', sans-serif;" id="cart-grand-total">₹ 0</span>
                     </div>
-                    <div id="half-payment-container" style="display:none; margin-bottom:16px; background:#fdf4e5; padding:12px; border-radius:12px; border:1px solid #f29900;">
-                        <div class="input-btn-group">
-                            <input type="number" class="form-control" id="inv-cash-amt" placeholder="Cash Paid (₹)" style="border-radius:10px; border-color:#f29900;" onkeyup="updateDynamicQR()">
-                            <input type="number" class="form-control" id="inv-online-amt" placeholder="Online Paid (₹)" style="border-radius:10px; border-color:#f29900;" onkeyup="updateDynamicQR()">
+
+                    <!-- BIG PAYMENT STATUS TRIGGER BUTTON -->
+                    <button id="pos-payment-trigger-btn" class="btn-outline" style="width:100%; border:2px dashed var(--primary); color:var(--primary); background:#f0f4f9; font-size:16px; font-weight:700; padding:16px; border-radius:16px; margin-bottom:16px; display:flex; justify-content:center; align-items:center; gap:8px;" onclick="revealPaymentOptions()">
+                        <span class="material-symbols-rounded" style="font-size:22px;">payments</span> Set Payment Status
+                    </button>
+
+                    <!-- STEP 4: Payment Options (Hidden initially until big button is clicked) -->
+                    <div id="pos-payment-panel" class="form-panel" style="display:none; margin-bottom: 16px; border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
+                        <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">💳 Payment Status</label>
+                        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                            <button id="pm-pending" class="btn-outline" style="flex:1; min-width:45%; border-color:var(--danger); color:var(--danger); background:#fdf2f2; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('pending')">⏳ Pending</button>
+                            <button id="pm-cash" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('cash')">💵 Cash</button>
+                            <button id="pm-online" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('online')">📱 Online</button>
+                            <button id="pm-half" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('half')">🌗 Split / Half</button>
+                        </div>
+                        <div id="half-payment-container" style="display:none; margin-bottom:16px; background:#fdf4e5; padding:12px; border-radius:12px; border:1px solid #f29900;">
+                            <div class="input-btn-group">
+                                <input type="number" class="form-control" id="inv-cash-amt" placeholder="Cash Paid (₹)" style="border-radius:10px; border-color:#f29900;" onkeyup="updateDynamicQR()">
+                                <input type="number" class="form-control" id="inv-online-amt" placeholder="Online Paid (₹)" style="border-radius:10px; border-color:#f29900;" onkeyup="updateDynamicQR()">
+                            </div>
+                        </div>
+                        
+                        <div id="pos-dynamic-qr-box" style="display:none; text-align:center; padding:20px; background:white; border:2px solid #0a56d0; border-radius:16px; box-shadow:0 8px 20px rgba(10,86,208,0.15); position:relative; margin-top:10px;">
+                            <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:#0a56d0; color:white; padding:4px 14px; border-radius:20px; font-size:11px; font-weight:800; letter-spacing:1px; display:flex; align-items:center; gap:4px;"><span class="material-symbols-rounded" style="font-size:14px;">qr_code_scanner</span> SCAN TO PAY</div>
+                            <div style="font-size:14px; font-weight:600; color:var(--text-muted); margin-bottom:8px; margin-top:8px;">Amount to be paid</div>
+                            <div id="pos-qr-amount-text" style="color:var(--text-dark); font-size:32px; font-weight:800; font-family:'Product Sans', sans-serif; letter-spacing:-1px; margin-bottom:16px;">₹0</div>
+                            <div style="background:white; padding:10px; border-radius:12px; display:inline-block; border:1px solid #e0e2e0; box-shadow:inset 0 0 10px rgba(0,0,0,0.02); position:relative;">
+                                <img id="pos-qr-img" src="" style="width:180px; height:180px; display:block;">
+                                <!-- ✨ VE Badge in POS QR Code ✨ -->
+                                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:3px 6px; font-weight:900; color:#0a56d0; border-radius:6px; font-size:15px; box-shadow:0 0 8px rgba(0,0,0,0.2);">VE</div>
+                            </div>
                         </div>
                     </div>
-                    
-                    <!-- Highly Professional Dynamic QR Display for POS -->
-                    <div id="pos-dynamic-qr-box" style="display:none; text-align:center; padding:20px; background:white; border:2px solid #0a56d0; border-radius:16px; box-shadow:0 8px 20px rgba(10,86,208,0.15); position:relative; margin-top:10px;">
-                        <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:#0a56d0; color:white; padding:4px 14px; border-radius:20px; font-size:11px; font-weight:800; letter-spacing:1px; display:flex; align-items:center; gap:4px;"><span class="material-symbols-rounded" style="font-size:14px;">qr_code_scanner</span> SCAN TO PAY</div>
-                        <div style="font-size:14px; font-weight:600; color:var(--text-muted); margin-bottom:8px; margin-top:8px;">Amount to be paid</div>
-                        <div id="pos-qr-amount-text" style="color:var(--text-dark); font-size:32px; font-weight:800; font-family:'Product Sans', sans-serif; letter-spacing:-1px; margin-bottom:16px;">₹0</div>
-                        <div style="background:white; padding:10px; border-radius:12px; display:inline-block; border:1px solid #e0e2e0; box-shadow:inset 0 0 10px rgba(0,0,0,0.02);">
-                            <img id="pos-qr-img" src="" style="width:180px; height:180px; display:block;">
-                        </div>
-                    </div>
+
+                    <button id="save-bill-btn" class="btn-submit" style="display:none;" onclick="triggerSaveAndShare()"><span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">receipt_long</span> Generate Bill</button>
                 </div>
-                <button id="save-bill-btn" class="btn-submit" onclick="triggerSaveAndShare()">💾 Generate Bill</button>
             </div>
-
             <div id="post-bill-area" style="display:none; text-align:center; margin-top:20px;">
                 <div style="font-size:50px; margin-bottom:10px;" class="material-symbols-rounded">check_circle</div>
                 <h3 id="success-msg-title" style="margin-bottom:20px; color:var(--success); font-weight:500; font-family: 'Product Sans', sans-serif;">Bill Generated Successfully!</h3>
@@ -2440,6 +2454,25 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
         window.updatePosShades = function() { let cat = document.getElementById('inv-cat').value; let shadeSelect = document.getElementById('inv-shade'); shadeSelect.innerHTML = '<option value="">Select Shade/Item</option>'; if(!cat) return; for (let key in smartInventory) { let parts = key.split("_"); if(parts[0] === cat && smartInventory[key] > 0) { shadeSelect.innerHTML += `<option value="${parts[1]}">${parts[1]} (${smartInventory[key]} Box Left)</option>`; } } }
         window.addCartItem = function() { const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value; const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0; if (!cat || !shade) return alert("Select Category and Item first!"); if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!"); let key = cat + "_" + shade; let currentStock = smartInventory[key] || 0; if(qty > currentStock) { alert(`OUT OF STOCK! You only have ${currentStock} Box of ${shade} left.`); return; } currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty, rate, itemTotal: qty * rate }); renderCartUi(); }
+        // 🌟 NEW INVOICE FLOW LOGIC
+        window.checkCustomerFilled = function() {
+            let party = document.getElementById('inv-party').value.trim();
+            let phone = document.getElementById('inv-phone').value.trim();
+            // Jaise hi customer name ya phone me kuch bhi type hoga, Add Product wala box dikh jayega
+            if(party || phone || window.editingBillNo) {
+                document.getElementById('pos-add-product-panel').style.display = 'block';
+            } else {
+                document.getElementById('pos-add-product-panel').style.display = 'none';
+            }
+        };
+
+        window.revealPaymentOptions = function() {
+            // Big button gayab ho jayega aur asali payment options aa jayenge
+            document.getElementById('pos-payment-trigger-btn').style.display = 'none';
+            document.getElementById('pos-payment-panel').style.display = 'block';
+            document.getElementById('save-bill-btn').style.display = 'block';
+        };
+
         // 🌟 EDITABLE CART LOGIC WITH PROFESSIONAL ICONS
         window.removeCartItem = function(index) {
             currentCart.splice(index, 1);
@@ -2479,7 +2512,14 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     </td>
                 </tr>`; 
             }); 
-            if(currentCart.length === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted); font-weight:500;">🛒 Cart is empty. Add a product above.</td></tr>`;
+            
+            // 🔥 Jaise hi cart me item aayega, Cart Table aur Grand Total section dikhne lagega
+            if(currentCart.length > 0) {
+                document.getElementById('pos-cart-section').style.display = 'block';
+            } else {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted); font-weight:500;">🛒 Cart is empty. Add a product above.</td></tr>`;
+                document.getElementById('pos-cart-section').style.display = 'none';
+            }
             
             document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`; 
             document.getElementById('inv-qty').value=''; 
@@ -2646,12 +2686,26 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             document.getElementById('inv-party').value = ''; 
             document.getElementById('inv-phone').value = ''; 
             window.setPaymentMode('pending'); 
-            if(document.getElementById('inv-cash-amt')) document.getElementById('inv-cash-amt').value = ''; 
-            if(document.getElementById('inv-online-amt')) document.getElementById('inv-online-amt').value = ''; 
+            renderCartUi(); 
+            navTo('pos-page', null); 
             document.getElementById('billing-form-area').style.display = 'block'; 
             document.getElementById('post-bill-area').style.display = 'none'; 
+            
+            // 🌟 EDITING VISIBILITY REVEAL
+            document.getElementById('pos-add-product-panel').style.display = 'block';
+            document.getElementById('pos-cart-section').style.display = 'block';
+            document.getElementById('pos-payment-trigger-btn').style.display = 'none';
+            document.getElementById('pos-payment-panel').style.display = 'block';
+            document.getElementById('save-bill-btn').style.display = 'block';
+        } 
+            
+            // 🌟 UI RESET (Hidden by default)
+            document.getElementById('pos-add-product-panel').style.display = 'none';
+            document.getElementById('pos-cart-section').style.display = 'none';
+            document.getElementById('pos-payment-trigger-btn').style.display = 'flex';
+            document.getElementById('pos-payment-panel').style.display = 'none';
+            document.getElementById('save-bill-btn').style.display = 'none';
         }
-
         window.shareLastGeneratedInvoice = function() {
             if(window.lastGeneratedEntryData) {
                 currentEntryData = window.lastGeneratedEntryData;

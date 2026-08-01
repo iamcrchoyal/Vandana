@@ -772,30 +772,26 @@
                         <input type="tel" class="form-control" id="inv-phone" placeholder="Mobile Number">
                     </div>
                 </div>
-                <div class="form-panel">
-                    <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Add Product</label>
-                    <select class="form-control" id="inv-cat" style="margin-bottom: 12px;" onchange="updatePosShades()">
-                        <div class="form-panel" style="border-radius:18px; box-shadow:0 2px 8px rgba(0,0,0,0.03);">
-                    <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:13px; font-weight:600;">Add Product</label>
-                    <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:10px;" onchange="updatePosShades()">
+                <div class="form-panel" style="border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
+                    <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">📦 Add Product</label>
+                    <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;" onchange="updatePosShades()">
                         <option value="">Select Category</option>
                         <option value="Thread">Thread</option><option value="Zari">Zari</option><option value="Nylon">Nylon</option>
                         <option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>
                     </select>
-                    <select class="form-control" id="inv-shade" style="margin-bottom: 12px; border-radius:10px;"><option value="">Select Category First</option></select>
+                    <select class="form-control" id="inv-shade" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;"><option value="">Select Category First</option></select>
                     <div class="input-btn-group" style="margin-bottom: 16px;">
-                        <input type="number" class="form-control" id="inv-qty" placeholder="Qty (Box)" style="border-radius:10px;">
-                        <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:10px;">
+                        <input type="number" class="form-control" id="inv-qty" placeholder="Qty (Box)" style="border-radius:12px;">
+                        <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">
                     </div>
-                    <!-- Professional Add Product Button -->
-                    <button class="btn-submit" style="background:#0a56d0; display:flex; align-items:center; justify-content:center; gap:8px; border-radius:14px; font-size:15px; box-shadow:0 4px 10px rgba(10,86,208,0.2);" onclick="addCartItem()"><span class="material-symbols-rounded" style="font-size:20px;">add_shopping_cart</span> Add Product</button>
+                    <button class="btn-submit" style="background:linear-gradient(135deg, #0a56d0 0%, #0842a0 100%); display:flex; align-items:center; justify-content:center; gap:8px; border-radius:16px; font-size:15px; box-shadow:0 4px 12px rgba(10,86,208,0.25); padding:14px;" onclick="addCartItem()"><span class="material-symbols-rounded" style="font-size:22px;">add_shopping_cart</span> Add Product</button>
                 </div>
                 
-                <!-- Mobile Friendly Scrollable Table Wrapper -->
-                <div style="overflow-x:auto; margin-bottom:16px; border-radius:12px; border:1px solid var(--border); background:white;">
-                    <table class="invoice-table" style="margin-bottom: 0; border:none;">
+                <!-- Mobile Friendly Table -->
+                <div style="overflow-x:auto; margin-bottom:16px; border-radius:16px; border:1px solid var(--border); background:white; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
+                    <table class="invoice-table" style="margin-bottom: 0; border:none; min-width: 400px;">
                         <thead><tr style="background:#f8fafd;"><th>Details</th><th style="text-align:center;">Qty</th><th style="text-align:center;">Rate</th><th style="text-align:right;">Total</th><th style="text-align:center;">Action</th></tr></thead>
-                        <tbody id="cart-rows"><tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted); font-weight:500;">Cart is empty</td></tr></tbody>
+                        <tbody id="cart-rows"><tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted); font-weight:500;">🛒 Cart is empty. Add a product above.</td></tr></tbody>
                     </table>
                 </div>
                 <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:16px;">
@@ -803,24 +799,29 @@
                     <span style="font-size:26px; font-weight:700; color:var(--primary); font-family: 'Product Sans', sans-serif;" id="cart-grand-total">₹ 0</span>
                 </div>
 
-                <div class="form-panel" style="margin-bottom: 16px;">
-                    <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Payment Status</label>
-                    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
-                        <button id="pm-pending" class="btn-outline" style="flex:1; min-width:45%; border-color:var(--danger); color:var(--danger); background:#fdf2f2; padding:10px 4px; font-size:13px;" onclick="setPaymentMode('pending')">⏳ Pending</button>
-                        <button id="pm-cash" class="btn-outline" style="flex:1; min-width:45%; padding:10px 4px; font-size:13px;" onclick="setPaymentMode('cash')">💵 Cash</button>
-                        <button id="pm-online" class="btn-outline" style="flex:1; min-width:45%; padding:10px 4px; font-size:13px;" onclick="setPaymentMode('online')">📱 Online</button>
-                        <button id="pm-half" class="btn-outline" style="flex:1; min-width:45%; padding:10px 4px; font-size:13px;" onclick="setPaymentMode('half')">🌗 Half Payment</button>
+                <div class="form-panel" style="margin-bottom: 16px; border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
+                    <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">💳 Payment Status</label>
+                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                        <button id="pm-pending" class="btn-outline" style="flex:1; min-width:45%; border-color:var(--danger); color:var(--danger); background:#fdf2f2; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('pending')">⏳ Pending</button>
+                        <button id="pm-cash" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('cash')">💵 Cash</button>
+                        <button id="pm-online" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('online')">📱 Online</button>
+                        <button id="pm-half" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('half')">🌗 Split / Half</button>
                     </div>
-                    <div id="half-payment-container" style="display:none; margin-bottom:12px;">
+                    <div id="half-payment-container" style="display:none; margin-bottom:16px; background:#fdf4e5; padding:12px; border-radius:12px; border:1px solid #f29900;">
                         <div class="input-btn-group">
-                            <input type="number" class="form-control" id="inv-cash-amt" placeholder="Cash Amount (₹)" onkeyup="updateDynamicQR()">
-                            <input type="number" class="form-control" id="inv-online-amt" placeholder="Online Amount (₹)" onkeyup="updateDynamicQR()">
+                            <input type="number" class="form-control" id="inv-cash-amt" placeholder="Cash Paid (₹)" style="border-radius:10px; border-color:#f29900;" onkeyup="updateDynamicQR()">
+                            <input type="number" class="form-control" id="inv-online-amt" placeholder="Online Paid (₹)" style="border-radius:10px; border-color:#f29900;" onkeyup="updateDynamicQR()">
                         </div>
                     </div>
-                    <!-- Dynamic QR Display for POS -->
-                    <div id="pos-dynamic-qr-box" style="display:none; text-align:center; padding:16px; background:#f8fafd; border:1px dashed var(--primary); border-radius:12px;">
-                        <div style="font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:8px;">Scan to Pay <span id="pos-qr-amount-text" style="color:var(--primary); font-size:16px;">₹0</span></div>
-                        <img id="pos-qr-img" src="" style="width:150px; height:150px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+                    
+                    <!-- Highly Professional Dynamic QR Display for POS -->
+                    <div id="pos-dynamic-qr-box" style="display:none; text-align:center; padding:20px; background:white; border:2px solid #0a56d0; border-radius:16px; box-shadow:0 8px 20px rgba(10,86,208,0.15); position:relative; margin-top:10px;">
+                        <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:#0a56d0; color:white; padding:4px 14px; border-radius:20px; font-size:11px; font-weight:800; letter-spacing:1px; display:flex; align-items:center; gap:4px;"><span class="material-symbols-rounded" style="font-size:14px;">qr_code_scanner</span> SCAN TO PAY</div>
+                        <div style="font-size:14px; font-weight:600; color:var(--text-muted); margin-bottom:8px; margin-top:8px;">Amount to be paid</div>
+                        <div id="pos-qr-amount-text" style="color:var(--text-dark); font-size:32px; font-weight:800; font-family:'Product Sans', sans-serif; letter-spacing:-1px; margin-bottom:16px;">₹0</div>
+                        <div style="background:white; padding:10px; border-radius:12px; display:inline-block; border:1px solid #e0e2e0; box-shadow:inset 0 0 10px rgba(0,0,0,0.02);">
+                            <img id="pos-qr-img" src="" style="width:180px; height:180px; display:block;">
+                        </div>
                     </div>
                 </div>
                 <button id="save-bill-btn" class="btn-submit" onclick="triggerSaveAndShare()">💾 Generate Bill</button>
@@ -2438,28 +2439,24 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
         window.updatePosShades = function() { let cat = document.getElementById('inv-cat').value; let shadeSelect = document.getElementById('inv-shade'); shadeSelect.innerHTML = '<option value="">Select Shade/Item</option>'; if(!cat) return; for (let key in smartInventory) { let parts = key.split("_"); if(parts[0] === cat && smartInventory[key] > 0) { shadeSelect.innerHTML += `<option value="${parts[1]}">${parts[1]} (${smartInventory[key]} Box Left)</option>`; } } }
         window.addCartItem = function() { const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value; const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0; if (!cat || !shade) return alert("Select Category and Item first!"); if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!"); let key = cat + "_" + shade; let currentStock = smartInventory[key] || 0; if(qty > currentStock) { alert(`OUT OF STOCK! You only have ${currentStock} Box of ${shade} left.`); return; } currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty, rate, itemTotal: qty * rate }); renderCartUi(); }
-        // 🌟 EDITABLE CART LOGIC WITH PROFESSIONAL UI
+        // 🌟 EDITABLE CART LOGIC WITH PROFESSIONAL ICONS
         window.removeCartItem = function(index) {
             currentCart.splice(index, 1);
             renderCartUi();
         };
 
-        // नया Edit Function
         window.editCartItem = function(index) {
             let item = currentCart[index];
             document.getElementById('inv-cat').value = item.cat;
-            updatePosShades(); // Shade ka dropdown refresh karega
-            
-            setTimeout(() => {
-                document.getElementById('inv-shade').value = item.shade;
-            }, 100);
+            updatePosShades(); 
+            setTimeout(() => { document.getElementById('inv-shade').value = item.shade; }, 150);
             
             document.getElementById('inv-qty').value = item.qty;
             document.getElementById('inv-rate').value = item.rate;
             
-            // Item ko cart se hata do taaki save karne par duplicate na ho
             currentCart.splice(index, 1);
             renderCartUi();
+            window.showSaaSToast("Item ready for editing!");
         };
 
         function renderCartUi() { 
@@ -2472,23 +2469,23 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 invoiceBoxCount += item.qty; 
                 tbody.innerHTML += `<tr>
                     <td style="font-weight:600; color:var(--text-dark); font-size:13px;">${item.title}</td>
-                    <td style="text-align:center; font-size:13px;">${item.qty}</td>
+                    <td style="text-align:center; font-size:13px; font-weight:600;">${item.qty}</td>
                     <td style="text-align:center; font-size:13px;">₹${item.rate}</td>
-                    <td style="text-align:right; font-size:13px; color:var(--primary);"><strong>₹${item.itemTotal.toLocaleString()}</strong></td>
+                    <td style="text-align:right; font-size:14px; color:var(--primary);"><strong>₹${item.itemTotal.toLocaleString()}</strong></td>
                     <td style="text-align:center; white-space:nowrap;">
-                        <span class="material-symbols-rounded" style="color:var(--primary); font-size:20px; cursor:pointer; vertical-align:middle; margin-right:8px; padding:6px; background:#e8f0fe; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.05);" onclick="editCartItem(${index})">edit</span>
-                        <span class="material-symbols-rounded" style="color:var(--danger); font-size:20px; cursor:pointer; vertical-align:middle; padding:6px; background:#fdf2f2; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.05);" onclick="removeCartItem(${index})">delete</span>
+                        <span class="material-symbols-rounded" style="color:#0a56d0; font-size:18px; cursor:pointer; vertical-align:middle; margin-right:6px; padding:6px; background:#e8f0fe; border-radius:8px; border:1px solid #c2e7ff; transition:0.2s;" onclick="editCartItem(${index})">edit</span>
+                        <span class="material-symbols-rounded" style="color:#b3261e; font-size:18px; cursor:pointer; vertical-align:middle; padding:6px; background:#fdf2f2; border-radius:8px; border:1px solid #f8cbcb; transition:0.2s;" onclick="removeCartItem(${index})">delete</span>
                     </td>
                 </tr>`; 
             }); 
-            if(currentCart.length === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted); font-weight:500;">Cart is empty</td></tr>`;
+            if(currentCart.length === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted); font-weight:500;">🛒 Cart is empty. Add a product above.</td></tr>`;
             
             document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`; 
             document.getElementById('inv-qty').value=''; 
             document.getElementById('inv-rate').value=''; 
             let btn = document.getElementById('save-bill-btn'); 
             if(btn) { 
-                btn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px;">update</span> Update Bill` : `<span class="material-symbols-rounded" style="font-size:18px;">receipt_long</span> Generate Bill`; 
+                btn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">update</span> Update Bill` : `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">receipt_long</span> Generate Bill`; 
                 btn.style.background = window.editingBillNo ? "var(--warning)" : "var(--primary)"; 
             }
             if(typeof window.updateDynamicQR === 'function') window.updateDynamicQR();
@@ -2774,19 +2771,17 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 document.getElementById('pdf-payment-breakdown').style.display = 'none';
             }
 
-            // 4. ✨ SMART QR CODE LOGIC (For Pending/Due Amount) ✨
+            // 4. ✨ HIGHLY PROFESSIONAL PDF QR LOGIC (For Pending/Due Amount) ✨
             let qrContainer = document.getElementById('pdf-qr-container');
             let upiId = localStorage.getItem('v_adminUpi'); 
             
-            // डिफ़ॉल्ट रूप से पूरा अमाउंट लें
             let amountForQR = parseFloat(currentEntryData.amount) || 0;
             
-            // अगर हाफ पेमेंट या कैश दिया गया है, तो सिर्फ 'Pending' अमाउंट का QR बनाएं
+            // Calculate exact pending amount
             if(currentEntryData.breakdown && currentEntryData.breakdown.pending !== undefined) {
                 amountForQR = parseFloat(currentEntryData.breakdown.pending);
             }
 
-            // अगर कुछ भी बकाया (Pending) पैसा है और UPI ID है, तभी QR दिखाएं
             if(upiId && amountForQR > 0) {
                 let safeAmount = amountForQR.toFixed(2);
                 let safeName = encodeURIComponent(localStorage.getItem('v_adminName') || "Vandana Enterprises");
@@ -2794,17 +2789,24 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 
                 document.getElementById('pdf-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=H&margin=0&data=${encodeURIComponent(upiString)}`;
                 
-                // QR के ऊपर 'Pay Due Amount' का लेबल लगा दें ताकि कस्टमर समझ जाए
+                // Professional 'PAY DUE' Badge with dynamic styling
                 let qrLabel = document.getElementById('pdf-qr-label');
                 if(!qrLabel) {
-                    qrContainer.insertAdjacentHTML('afterbegin', `<div id="pdf-qr-label" style="position:absolute; top:-25px; left:50%; transform:translateX(-50%); background:#fdf2f2; color:var(--danger); border:1px solid #f8cbcb; font-size:11px; font-weight:800; padding:4px 10px; border-radius:12px; white-space:nowrap; box-shadow:0 2px 4px rgba(0,0,0,0.05);">PAY DUE: ₹${safeAmount}</div>`);
+                    qrContainer.style.border = "2px solid #0a56d0";
+                    qrContainer.style.background = "white";
+                    qrContainer.style.boxShadow = "0 8px 20px rgba(10,86,208,0.15)";
+                    
+                    qrContainer.insertAdjacentHTML('afterbegin', `
+                        <div id="pdf-qr-label" style="position:absolute; top:-16px; left:50%; transform:translateX(-50%); background:#0a56d0; color:white; border:2px solid white; font-size:12px; font-weight:800; padding:6px 16px; border-radius:20px; white-space:nowrap; box-shadow:0 4px 10px rgba(10,86,208,0.3); font-family:'Product Sans', sans-serif; letter-spacing:0.5px;">
+                            PAY DUE: ₹${safeAmount}
+                        </div>
+                    `);
                 } else {
                     qrLabel.innerText = `PAY DUE: ₹${safeAmount}`;
                 }
 
                 qrContainer.style.display = 'block';
             } else {
-                // अगर पूरा पैसा आ गया है (Pending = 0), तो QR Code गायब कर दें
                 qrContainer.style.display = 'none';
             }
         }

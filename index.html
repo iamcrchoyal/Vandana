@@ -33,9 +33,7 @@
         #home { background: linear-gradient(135deg, #f0f4f9 0%, #d2e3fc 30%, #fad2e1 70%, #e8dff5 100%); background-size: 300% 300%; animation: gemini-mesh 12s ease-in-out infinite; min-height: 100vh; }
 
         /* ================= APP STYLES ================= */
-        .global-app-bar { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: rgba(255, 255, 255, 0.95); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 5000; border-bottom: 1px solid var(--border); transition: background 0.3s, box-shadow 0.3s; will-change: transform;}
-        .global-app-bar.scrolled { box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .page { position: fixed; top: 60px; bottom: 0; left: 0; width: 100%; max-width: 100vw; background: var(--bg-color); z-index: 3500; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display:none; flex-direction:column; overscroll-behavior-y: none; overflow-x: hidden; will-change: transform;}
+        .global-app-bar { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: rgba(240, 244, 249, 0.8); backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 5000; border-bottom: 1px solid transparent; transition: background 0.3s, border-bottom 0.3s;}
         .global-app-bar.scrolled { background: rgba(255, 255, 255, 0.95); border-bottom: 1px solid var(--border); }
         .app-bar-left { display: flex; align-items: center; gap: 12px; }
         .hamburger { font-size: 24px; cursor: pointer; color: #444746; padding: 5px; }
@@ -1770,9 +1768,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         
         window.applyCrop = function() { 
             if(!cropper) return; 
-            // साइज़ 150x150 और क्वालिटी 0.6 कर दी गई है जिससे डेटाबेस बहुत फ़ास्ट हो जाएगा
-            let canvas = cropper.getCroppedCanvas({ width: 150, height: 150 }); 
-            let dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+            let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 }); 
+            let dataUrl = canvas.toDataURL('image/jpeg', 0.8);
             
             localStorage.setItem('v_adminPic', dataUrl); 
             
@@ -1789,7 +1786,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.cancelCustCrop = function() { document.getElementById('cust-crop-modal').style.display = 'none'; }
         window.applyCustCrop = function() { 
             if(!custCropper) return; 
-            let dataUrl = custCropper.getCroppedCanvas({ width: 150, height: 150 }).toDataURL('image/jpeg', 0.6); 
+            let dataUrl = custCropper.getCroppedCanvas({ width: 300, height: 300 }).toDataURL('image/jpeg', 0.8); 
             
             // 1. Firebase me photo save karna
             if (currentPartyKey) {
@@ -2679,30 +2676,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             document.getElementById('post-bill-area').style.display = 'none'; 
         }
         
-        // 🚀 Smart Debounce Search (ऐप को हैंग होने से बचाएगा)
-        let searchTimeout;
-        window.searchParties = function() { 
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                let filter = document.getElementById('party-search').value.toUpperCase(); 
-                document.querySelectorAll('#kb-customer-list .kb-list-item').forEach(item => { 
-                    item.style.display = item.querySelector('.kb-name').innerText.toUpperCase().indexOf(filter) > -1 ? "" : "none"; 
-                });
-            }, 300); // 300ms का स्मार्ट डिले
-        }
-
-        let stockSearchTimeout;
-        window.filterStockList = function(inputId, listId) { 
-            clearTimeout(stockSearchTimeout);
-            stockSearchTimeout = setTimeout(() => {
-                let filter = document.getElementById(inputId).value.toUpperCase(); 
-                let rows = document.querySelectorAll('#' + listId + ' .stock-row'); 
-                rows.forEach(row => { 
-                    let name = row.getAttribute('data-name'); 
-                    row.style.display = name.includes(filter) ? '' : 'none'; 
-                });
-            }, 300);
-        }
+        window.searchParties = function() { let filter = document.getElementById('party-search').value.toUpperCase(); document.querySelectorAll('#kb-customer-list .kb-list-item').forEach(item => { item.style.display = item.querySelector('.kb-name').innerText.toUpperCase().indexOf(filter) > -1 ? "" : "none"; }); }
         window.openPhonebook = async function(nameId, phoneId) { if ('contacts' in navigator) { try { const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false }); if (contacts.length > 0) { if (contacts[0].name) document.getElementById(nameId).value = contacts[0].name[0]; if (contacts[0].tel) document.getElementById(phoneId).value = String(contacts[0].tel[0]).replace(/\D/g, '').slice(-10); } } catch(e) {} } }
         
         function preparePDFData() {

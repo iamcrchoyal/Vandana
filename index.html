@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tea Pay - UI V7 (Ultimate 3D Splash)</title>
+    <title>Tea Pay - UI V8 (Modern Minimalist Splash)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* --- Base & Typography --- */
@@ -28,103 +28,58 @@
         .btn-secondary:active { transform: scale(0.96); background-color: #ddd6fe; }
 
         /* ========================================================
-           🔥 THE "JAW-DROPPING" 3D SPLASH SCREEN (CRED/FinTech Vibe)
+           🌟 THE MODERN MINIMALIST SPLASH SCREEN (Trending FinTech Style)
            ======================================================== */
         #splash { 
-            background: #050505; /* Pitch Black for high contrast */
-            overflow: hidden; 
+            background: #4c1d95; /* Deep, rich premium indigo */
             justify-content: center; 
             align-items: center; 
             z-index: 100;
         }
 
-        /* 3D Moving Grid Background */
-        .bg-grid {
-            position: absolute; top: 0; left: -50%; width: 200%; height: 200%;
-            background-image: 
-                linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
-            background-size: 40px 40px;
-            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
-            animation: gridMove 8s linear infinite;
-            z-index: 0;
-        }
-        @keyframes gridMove {
-            0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); }
-            100% { transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px); }
-        }
-
-        /* Intense Center Glow */
-        .bg-glow {
-            position: absolute; width: 350px; height: 350px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, transparent 70%);
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 1; filter: blur(40px);
-            animation: pulseGlow 3s infinite alternate ease-in-out;
-        }
-        @keyframes pulseGlow { 0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.8); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } }
-
-        /* The 3D Floating Glass Card */
-        .splash-3d-wrapper {
-            perspective: 1200px;
-            z-index: 10;
-            margin-top: -40px;
-        }
-        .splash-card-pro {
-            width: 220px; height: 280px;
-            background: rgba(20, 20, 30, 0.4);
-            border-radius: 35px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 
-                0 30px 60px rgba(0,0,0,0.8),
-                inset 0 1px 0 rgba(255,255,255,0.3),
-                inset 0 -1px 0 rgba(255,255,255,0.1),
-                0 0 30px rgba(139, 92, 246, 0.4);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            transform-style: preserve-3d;
-            animation: cardFloatTilt 6s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            position: relative; overflow: hidden;
+        .splash-logo-container {
+            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
         
-        /* Sweeping Light Reflection on Card */
-        .splash-card-pro::after {
-            content: ''; position: absolute; top: -150%; left: -150%; width: 300%; height: 300%;
-            background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
-            transform: rotate(45deg);
-            animation: glassShine 4s infinite;
+        .splash-icon {
+            width: 90px; height: 90px;
+            background: white;
+            border-radius: 28px; /* Squircle look */
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
         }
-        @keyframes glassShine { 0% { transform: translate(-50%, -50%) rotate(45deg); } 100% { transform: translate(50%, 50%) rotate(45deg); } }
-
-        @keyframes cardFloatTilt {
-            0% { transform: rotateX(15deg) rotateY(-15deg) translateY(10px); }
-            100% { transform: rotateX(-10deg) rotateY(15deg) translateY(-25px); box-shadow: 0 50px 80px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.4), 0 0 50px rgba(139, 92, 246, 0.6); }
-        }
-
-        /* Elements popping out of the 3D Card */
-        .icon-3d-container { transform: translateZ(60px); text-align: center; }
-        .icon-3d-container i { 
-            font-size: 75px; 
-            background: linear-gradient(135deg, #c4b5fd, #38bdf8); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            filter: drop-shadow(0 15px 15px rgba(0,0,0,0.6)); 
-        }
-
-        .brand-text { transform: translateZ(50px); color: white; font-size: 34px; font-weight: 800; margin-top: 20px; letter-spacing: 1px; text-shadow: 0 8px 15px rgba(0,0,0,0.8);}
-        .pro-badge { transform: translateZ(40px); margin-top: 8px; background: linear-gradient(135deg, #10b981, #059669); font-size: 11px; padding: 5px 12px; border-radius: 12px; color: white; font-weight: 800; letter-spacing: 3px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);}
-
-        /* Cyberpunk Loading Bar */
-        .cyber-loader { z-index: 10; margin-top: 50px; width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; position: relative;}
-        .cyber-progress { width: 0%; height: 100%; background: linear-gradient(90deg, #8b5cf6, #38bdf8); box-shadow: 0 0 15px #38bdf8; animation: loadProgress 3.5s cubic-bezier(0.1, 0.7, 0.1, 1) forwards; }
-        @keyframes loadProgress { 0% { width: 0%; } 100% { width: 100%; } }
         
-        .loading-text { z-index: 10; color: #94a3b8; font-size: 10px; font-weight: 700; letter-spacing: 4px; margin-top: 15px; animation: textPulse 1s infinite alternate; }
-        @keyframes textPulse { from { opacity: 0.4; } to { opacity: 1; text-shadow: 0 0 8px rgba(255,255,255,0.5); } }
+        .splash-icon i {
+            font-size: 45px;
+            color: #4c1d95;
+        }
+
+        .splash-title {
+            color: white; font-size: 34px; font-weight: 800; margin-top: 25px; letter-spacing: -0.5px;
+            opacity: 0; animation: fadeUpText 0.8s ease forwards 0.3s;
+        }
+
+        .splash-tagline {
+            color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 500; margin-top: 8px; letter-spacing: 1px; text-transform: uppercase;
+            opacity: 0; animation: fadeUpText 0.8s ease forwards 0.5s;
+        }
+
+        .splash-spinner {
+            margin-top: 50px;
+            width: 32px; height: 32px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: spin 1s linear infinite, fadeUpText 0.5s ease forwards 0.8s;
+        }
+
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes fadeUpText { 0% { transform: translateY(15px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* ========================================================
-           Rest of the App UI
+           Rest of the App UI (From V6 Premium)
            ======================================================== */
            
         /* Role Selection */
@@ -221,28 +176,20 @@
 <body>
     <div class="mobile-frame">
         
-        <!-- 1. JAW-DROPPING 3D SPLASH SCREEN -->
+        <!-- 1. MODERN MINIMALIST SPLASH SCREEN -->
         <div id="splash" class="screen active">
-            <!-- Animated Background -->
-            <div class="bg-grid"></div>
-            <div class="bg-glow"></div>
             
-            <!-- 3D Holographic Card -->
-            <div class="splash-3d-wrapper">
-                <div class="splash-card-pro">
-                    <div class="icon-3d-container">
-                        <i class="fa-solid fa-mug-hot"></i>
-                    </div>
-                    <h1 class="brand-text">Tea Pay</h1>
-                    <div class="pro-badge">SECURE LEDGER</div>
+            <div class="splash-logo-container">
+                <div class="splash-icon">
+                    <i class="fa-solid fa-mug-hot"></i>
                 </div>
             </div>
-
-            <!-- Cyber Loading Area -->
-            <div class="cyber-loader">
-                <div class="cyber-progress"></div>
-            </div>
-            <div class="loading-text">INITIALIZING SECURE NETWORK...</div>
+            
+            <h1 class="splash-title">Tea Pay</h1>
+            <p class="splash-tagline">Trusted By Local Vendors</p>
+            
+            <div class="splash-spinner"></div>
+            
         </div>
 
         <!-- 2. Role Select (Premium Glass/Cards) -->
@@ -554,8 +501,8 @@
     </div>
 
     <script>
-        // Wait longer (3.5s) for the user to enjoy the 3D Splash
-        setTimeout(() => { showScreen('role-select'); }, 3500);
+        // Wait for the minimal splash to finish
+        setTimeout(() => { showScreen('role-select'); }, 2500);
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));

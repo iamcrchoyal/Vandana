@@ -1,85 +1,89 @@
+        <div id="dashboard" class="screen">
+            
+            <!-- Header (PhonePe Style) -->
 <!DOCTYPE html>
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tea Pay - UI V2 (PhonePe Style)</title>
-    <!-- FontAwesome for Icons -->
+    <title>Tea Pay - UI V3 (Pro & Functional)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #e0e0e0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         
-        /* Mobile Frame */
-        .mobile-frame {
-            width: 360px; height: 720px; background-color: #f4f6f8;
-            border-radius: 35px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            position: relative; overflow: hidden; border: 8px solid #333;
-        }
-
-        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; background-color: #f4f6f8; }
+        .mobile-frame { width: 100vw; height: 100vh; max-width: 400px; background-color: #f4f6f8; position: relative; overflow: hidden; }
+        @media (min-width: 401px) { .mobile-frame { height: 800px; border-radius: 35px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); border: 8px solid #333; margin-top: 20px;} }
+        
+        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; background-color: #f4f6f8; overflow-y: auto; overflow-x: hidden; padding-bottom: 70px; }
         .active { display: flex; }
-
-        /* Splash Screen */
-        #splash { background-color: #5f259f; color: white; justify-content: center; align-items: center; }
-        #splash i { font-size: 60px; margin-bottom: 15px; }
-        #splash h1 { font-size: 36px; font-weight: bold; letter-spacing: 1px; }
         
-        /* Login */
-        #login { padding: 40px 20px; justify-content: center; background: white; }
-        .login-logo { font-size: 30px; font-weight: bold; color: #5f259f; text-align: center; margin-bottom: 40px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .login-logo i { font-size: 40px; }
-        .input-group { margin-bottom: 20px; }
-        .input-group input { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; text-align: center; letter-spacing: 2px;}
-        .btn-primary { background-color: #5f259f; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-size: 16px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 10px rgba(95,37,159,0.3);}
+        /* Smooth Fade In */
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .screen.active { animation: fadeIn 0.3s ease-out forwards; }
+
+        /* --- Splash Screen --- */
+        #splash { background: linear-gradient(135deg, #4b1d7d, #5f259f); color: white; justify-content: center; align-items: center; z-index: 100; }
+        .splash-content { text-align: center; }
+        .splash-content i { font-size: 70px; margin-bottom: 20px; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .splash-content h1 { font-size: 38px; font-weight: 800; letter-spacing: 2px; margin-bottom: 10px; }
+        .splash-loader { width: 40px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; margin: 0 auto; overflow: hidden; position: relative; }
+        .splash-loader::after { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 50%; background: white; border-radius: 2px; animation: loading 1.5s infinite ease-in-out; }
+        @keyframes loading { 0% { left: -50%; } 100% { left: 100%; } }
+
+        /* --- Role Selection --- */
+        #role-select { padding: 40px 20px; justify-content: center; align-items: center; background: white; text-align: center; }
+        .role-card { background: #f9f9f9; border: 2px solid #eee; border-radius: 15px; padding: 25px; margin: 15px 0; width: 100%; cursor: pointer; transition: all 0.2s; }
+        .role-card:active { border-color: #5f259f; background: #f3effa; }
+        .role-card i { font-size: 40px; color: #5f259f; margin-bottom: 10px; }
+        .role-card h2 { font-size: 20px; color: #333; margin-bottom: 5px; }
+
+        /* --- Shared Header --- */
+        .header { background-color: #5f259f; color: white; padding: 25px 20px 20px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .header h2 { font-size: 18px; font-weight: 600; }
+
+        /* --- Dashboard (Customer) --- */
+        .balance-card { background: linear-gradient(135deg, #ffffff, #f9f9f9); margin: 20px; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); text-align: center; border: 1px solid #eee; }
+        .balance-card p { color: #666; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+        .balance-card h2 { color: #111; font-size: 32px; margin: 10px 0; }
         
-        /* Dashboard */
-        /* Top Header like PhonePe */
-        .header { background-color: #5f259f; color: white; padding: 25px 20px 70px 20px; display: flex; justify-content: space-between; align-items: flex-start; }
-        .user-info { display: flex; align-items: center; gap: 12px; }
-        .user-info img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); }
-        .address-box p { font-size: 11px; opacity: 0.8; margin-bottom: 2px;}
-        .address-box h3 { font-size: 15px; display: flex; align-items: center; gap: 5px; }
-        .header-icons i { font-size: 22px; margin-left: 18px; cursor: pointer;}
+        .add-vendor-box { background: white; margin: 0 20px 15px 20px; padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: space-between; border: 1px dashed #5f259f; cursor: pointer; }
+        .add-vendor-box div { display: flex; align-items: center; gap: 15px; }
+        .add-vendor-box i { font-size: 24px; color: #5f259f; background: #f3effa; padding: 12px; border-radius: 10px; }
+        .add-vendor-box h4 { font-size: 15px; color: #333; }
+        .add-vendor-box p { font-size: 11px; color: #777; }
 
-        /* Balance Card */
-        .balance-card { background: white; margin: -45px 20px 15px 20px; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center; z-index: 5; position: relative; }
-        .balance-left p { color: #666; font-size: 13px; margin-bottom: 5px; font-weight: 500;}
-        .balance-left h2 { color: #111; font-size: 26px; }
-        .pay-btn { background-color: #5f259f; color: white; border: none; padding: 10px 22px; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; box-shadow: 0 3px 8px rgba(95,37,159,0.3); }
-
-        /* Icon Grid (Quick Actions) */
-        .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px 15px; margin-bottom: 10px; background: white; margin: 0 20px 15px 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03);}
-        .action-item { text-align: center; cursor: pointer; }
-        .action-icon { width: 45px; height: 45px; background: #f3effa; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 20px; color: #5f259f; margin: 0 auto 8px auto; transition: background 0.2s; }
-        .action-item:hover .action-icon { background: #e3d5f5; }
-        .action-item span { font-size: 11px; color: #444; font-weight: 500; }
-
-        /* Transactions List */
-        .tx-list { padding: 0 20px; overflow-y: auto; height: calc(100% - 410px); padding-bottom: 90px; }
-        .tx-list h3 { font-size: 15px; margin-bottom: 12px; color: #333; font-weight: 600;}
-        .tx-item { background: white; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; box-shadow: 0 1px 5px rgba(0,0,0,0.04); }
-        .tx-icon { width: 40px; height: 40px; background: #f9f9f9; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #5f259f; font-size: 18px; margin-right: 15px; border: 1px solid #eee;}
-        .tx-details { flex: 1; }
-        .tx-details h4 { font-size: 14px; color: #222; margin-bottom: 4px; }
-        .tx-details p { font-size: 11px; color: #888; }
-        .tx-amount { font-weight: bold; font-size: 15px; }
+        /* --- History Screen --- */
+        .tx-list { padding: 20px; }
+        .tx-item { background: white; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border-left: 4px solid #5f259f; }
+        .tx-item.credit { border-left-color: #2e7d32; }
+        .tx-details h4 { font-size: 15px; color: #222; margin-bottom: 4px; }
+        .tx-details p { font-size: 12px; color: #888; }
+        .tx-amount { font-weight: bold; font-size: 16px; }
         .text-red { color: #d32f2f; }
         .text-green { color: #2e7d32; }
 
-        /* Bottom Nav Bar (PhonePe Style) */
-        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 65px; background: white; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; box-shadow: 0 -3px 15px rgba(0,0,0,0.06); border-bottom-left-radius: 27px; border-bottom-right-radius: 27px; z-index: 10;}
-        .nav-item { text-align: center; color: #777; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;}
-        .nav-item.active-nav { color: #5f259f; font-weight: 600;}
-        .nav-item i { font-size: 22px; margin-bottom: 4px; }
-        .nav-item span { font-size: 10px; }
+        /* --- Vendor QR Screen --- */
+        .qr-container { padding: 30px 20px; text-align: center; }
+        .qr-box { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-bottom: 25px; }
+        .qr-box img { width: 200px; height: 200px; margin-bottom: 20px; }
+        .activation-code { background: #f3effa; padding: 15px; border-radius: 10px; border: 1px dashed #5f259f; font-size: 22px; font-weight: bold; letter-spacing: 3px; color: #5f259f; }
+        .btn-primary { background-color: #5f259f; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
 
-        /* Floating QR Scanner Button */
-        .qr-wrapper { flex: 1; display: flex; justify-content: center; position: relative; }
-        .qr-scanner-btn { position: absolute; bottom: 5px; width: 60px; height: 60px; background: #5f259f; border-radius: 18px; transform: rotate(45deg); display: flex; justify-content: center; align-items: center; box-shadow: 0 6px 15px rgba(95,37,159,0.4); border: 4px solid #f4f6f8; cursor: pointer; transition: transform 0.2s; }
-        .qr-scanner-btn i { color: white; font-size: 28px; transform: rotate(-45deg); } /* Un-rotate the icon */
-        .qr-scanner-btn:active { box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); }
-        .qr-label { position: absolute; bottom: -20px; font-size: 10px; color: #5f259f; font-weight: 600; width: 100px; text-align: center;}
+        /* --- Bottom Nav --- */
+        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 65px; background: white; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -3px 15px rgba(0,0,0,0.06); z-index: 50; }
+        .nav-item { text-align: center; color: #999; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: color 0.2s; }
+        .nav-item.active-nav { color: #5f259f; }
+        .nav-item i { font-size: 22px; margin-bottom: 4px; }
+        .nav-item span { font-size: 10px; font-weight: 500; }
+        
+        .qr-scanner-btn { width: 55px; height: 55px; background: #5f259f; border-radius: 15px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(95,37,159,0.4); cursor: pointer; transform: translateY(-15px); border: 4px solid #f4f6f8; }
+        .qr-scanner-btn i { color: white; font-size: 24px; }
+        
+        /* Modal */
+        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; display: none; justify-content: center; align-items: center; }
+        .modal-box { background: white; padding: 25px; border-radius: 15px; width: 85%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .modal-box input { width: 100%; padding: 15px; margin: 15px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 18px; text-align: center; letter-spacing: 2px; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -87,150 +91,149 @@
         
         <!-- Splash -->
         <div id="splash" class="screen active">
-            <i class="fa-solid fa-mug-hot"></i>
-            <h1>Tea Pay</h1>
-        </div>
-
-        <!-- Login -->
-        <div id="login" class="screen">
-            <div class="login-logo">
+            <div class="splash-content">
                 <i class="fa-solid fa-mug-hot"></i>
-                Tea Pay
+                <h1>Tea Pay</h1>
+                <div class="splash-loader"></div>
             </div>
-            <p style="text-align: center; color: #666; margin-bottom: 25px; font-size: 14px;">Enter your mobile number</p>
-            <div class="input-group">
-                <input type="tel" value="9876 543 210" disabled>
-            </div>
-            <button class="btn-primary" onclick="showScreen('dashboard')">Proceed Securely</button>
         </div>
 
-        <!-- Dashboard -->
-        <div id="dashboard" class="screen">
+        <!-- Role Select -->
+        <div id="role-select" class="screen">
+            <h2 style="margin-bottom: 10px; color: #333;">Welcome to Tea Pay</h2>
+            <p style="color: #666; font-size: 14px; margin-bottom: 30px;">Choose how you want to use the app</p>
             
-            <!-- Header (PhonePe Style) -->
+            <div class="role-card" onclick="showScreen('dashboard')">
+                <i class="fa-solid fa-user"></i>
+                <h2>I am a Customer</h2>
+                <p style="font-size: 12px; color: #888;">Scan QR and manage my dues</p>
+            </div>
+            
+            <div class="role-card" onclick="showScreen('vendor-dashboard')">
+                <i class="fa-solid fa-store"></i>
+                <h2>I am a Vendor</h2>
+                <p style="font-size: 12px; color: #888;">Generate QR and track customers</p>
+            </div>
+        </div>
+
+        <!-- Customer Dashboard -->
+        <div id="dashboard" class="screen">
             <div class="header">
-                <div class="user-info">
-                    <img src="https://ui-avatars.com/api/?name=Ramesh+Kumar&background=fff&color=5f259f" alt="Profile">
-                    <div class="address-box">
-                        <p>Add Address</p>
-                        <h3>Home <i class="fa-solid fa-chevron-down" style="font-size: 12px;"></i></h3>
-                    </div>
-                </div>
-                <div class="header-icons">
-                    <i class="fa-solid fa-qrcode" style="font-size: 18px; border: 1px solid white; padding: 4px; border-radius: 5px;"></i>
-                    <i class="fa-regular fa-bell"></i>
-                    <i class="fa-regular fa-circle-question"></i>
-                </div>
+                <h2><i class="fa-solid fa-user-circle" style="margin-right: 8px;"></i> Hi, Ramesh</h2>
+                <i class="fa-regular fa-bell"></i>
             </div>
-
-            <!-- Balance Card -->
+            
             <div class="balance-card">
-                <div class="balance-left">
-                    <p>Total Tea Dues</p>
-                    <h2>₹ 500</h2>
-                </div>
-                <button class="pay-btn">Settle Bill</button>
+                <p>Total Tea Dues</p>
+                <h2>₹ 500</h2>
+                <button class="btn-primary" style="margin-top: 10px; padding: 10px; font-size: 14px; border-radius: 30px;" onclick="alert('Proceeding to UPI payment...')">Settle All Bills</button>
             </div>
 
-            <!-- Quick Actions Grid -->
-            <div class="quick-actions">
-                <div class="action-item">
-                    <div class="action-icon"><i class="fa-solid fa-users"></i></div>
-                    <span>Vendors</span>
-                </div>
-                <div class="action-item">
-                    <div class="action-icon"><i class="fa-solid fa-wallet"></i></div>
-                    <span>To Bank</span>
-                </div>
-                <div class="action-item">
-                    <div class="action-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
-                    <span>Bills</span>
-                </div>
-                <div class="action-item">
-                    <div class="action-icon"><i class="fa-solid fa-building-columns"></i></div>
-                    <span>Balance</span>
-                </div>
-            </div>
-
-            <!-- Transactions -->
-            <div class="tx-list">
-                <h3>Recent Activity</h3>
-                
-                <div class="tx-item">
-                    <div class="tx-icon"><i class="fa-solid fa-mug-saucer"></i></div>
-                    <div class="tx-details">
-                        <h4>Raju Tea Stall</h4>
-                        <p>Today, 10:15 AM</p>
+            <!-- Activation Box -->
+            <div class="add-vendor-box" onclick="document.getElementById('activation-modal').style.display='flex'">
+                <div>
+                    <i class="fa-solid fa-link"></i>
+                    <div>
+                        <h4>Link New Vendor</h4>
+                        <p>Enter 6-digit Activation Code</p>
                     </div>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="background: none; color: #ccc; font-size: 16px;"></i>
+            </div>
+
+            <div style="padding: 0 20px;">
+                <h3 style="font-size: 14px; color: #666; margin-bottom: 10px;">Linked Vendors (My Network)</h3>
+                <div class="tx-item" style="border-left: 4px solid #f39c12;">
+                    <div class="tx-details"><h4>Raju Tea Stall</h4><p>Vendor ID: RAJ-001</p></div>
+                    <div class="tx-amount">Due: ₹ 120</div>
+                </div>
+                <div class="tx-item" style="border-left: 4px solid #f39c12;">
+                    <div class="tx-details"><h4>Sharma Ji Canteen</h4><p>Vendor ID: SHA-099</p></div>
+                    <div class="tx-amount">Due: ₹ 380</div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <div class="nav-item active-nav" onclick="showScreen('dashboard')"><i class="fa-solid fa-house"></i><span>Home</span></div>
+                <div class="nav-item" onclick="showScreen('history')"><i class="fa-solid fa-clock-rotate-left"></i><span>History</span></div>
+                <div class="qr-scanner-btn" onclick="alert('Opening Proprietary Scanner... \nOnly linked vendors can be scanned.')"><i class="fa-solid fa-qrcode"></i></div>
+                <div class="nav-item"><i class="fa-solid fa-wallet"></i><span>Wallet</span></div>
+                <div class="nav-item"><i class="fa-solid fa-gear"></i><span>Settings</span></div>
+            </div>
+        </div>
+
+        <!-- History Screen -->
+        <div id="history" class="screen">
+            <div class="header"><h2>Transaction History</h2></div>
+            <div class="tx-list">
+                <div class="tx-item">
+                    <div class="tx-details"><h4>Raju Tea Stall</h4><p>Today, 10:15 AM</p></div>
                     <div class="tx-amount text-red">- ₹ 20</div>
                 </div>
-
                 <div class="tx-item">
-                    <div class="tx-icon"><i class="fa-solid fa-store"></i></div>
-                    <div class="tx-details">
-                        <h4>Dolly Chaiwala</h4>
-                        <p>Yesterday, 04:30 PM</p>
-                    </div>
+                    <div class="tx-details"><h4>Sharma Ji Canteen</h4><p>Yesterday, 04:30 PM</p></div>
                     <div class="tx-amount text-red">- ₹ 30</div>
                 </div>
-                
-                <div class="tx-item">
-                    <div class="tx-icon"><i class="fa-brands fa-google-pay"></i></div>
-                    <div class="tx-details">
-                        <h4>Paid to Raju</h4>
-                        <p>12 Aug 2026</p>
-                    </div>
+                <div class="tx-item credit">
+                    <div class="tx-details"><h4>Bill Settled (Raju)</h4><p>12 Aug 2026, via UPI</p></div>
                     <div class="tx-amount text-green">+ ₹ 450</div>
                 </div>
-                
-                <div class="tx-item">
-                    <div class="tx-icon"><i class="fa-solid fa-mug-saucer"></i></div>
-                    <div class="tx-details">
-                        <h4>Sharma Ji</h4>
-                        <p>11 Aug 2026</p>
-                    </div>
-                    <div class="tx-amount text-red">- ₹ 15</div>
-                </div>
             </div>
-
-            <!-- Bottom Navigation Bar with Floating QR -->
             <div class="bottom-nav">
-                <div class="nav-item active-nav">
-                    <i class="fa-solid fa-house"></i>
-                    <span>Home</span>
-                </div>
-                <div class="nav-item">
-                    <i class="fa-solid fa-store"></i>
-                    <span>Stores</span>
-                </div>
-                
-                <!-- Center Floating QR button -->
-                <div class="qr-wrapper">
-                    <div class="qr-scanner-btn" onclick="alert('Opening QR Camera...')">
-                        <i class="fa-solid fa-qrcode"></i>
-                    </div>
-                    <span class="qr-label">Scan & Pay</span>
-                </div>
-
-                <div class="nav-item">
-                    <i class="fa-solid fa-chart-pie"></i>
-                    <span>Wealth</span>
-                </div>
-                <div class="nav-item">
-                    <i class="fa-solid fa-clock-rotate-left"></i>
-                    <span>History</span>
-                </div>
+                <div class="nav-item" onclick="showScreen('dashboard')"><i class="fa-solid fa-house"></i><span>Home</span></div>
+                <div class="nav-item active-nav" onclick="showScreen('history')"><i class="fa-solid fa-clock-rotate-left"></i><span>History</span></div>
+                <div class="qr-scanner-btn" onclick="alert('Opening Scanner...')"><i class="fa-solid fa-qrcode"></i></div>
+                <div class="nav-item"><i class="fa-solid fa-wallet"></i><span>Wallet</span></div>
+                <div class="nav-item"><i class="fa-solid fa-gear"></i><span>Settings</span></div>
             </div>
-
         </div>
+
+        <!-- Vendor Dashboard -->
+        <div id="vendor-dashboard" class="screen">
+            <div class="header" style="background-color: #333;">
+                <h2><i class="fa-solid fa-store" style="margin-right: 8px;"></i> Raju Tea Stall</h2>
+                <i class="fa-solid fa-right-from-bracket" onclick="showScreen('role-select')" style="cursor:pointer;"></i>
+            </div>
+            
+            <div class="qr-container">
+                <h3 style="color: #333; margin-bottom: 10px;">Your Proprietary QR</h3>
+                <p style="font-size: 12px; color: #666; margin-bottom: 20px;">Only scannable by linked Tea Pay customers</p>
+                <div class="qr-box">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=TeaPay_Vendor_Raju001&color=5f259f" alt="QR Code">
+                    <p style="font-size: 14px; color: #333; font-weight: bold;">Scan to Pay</p>
+                </div>
+                <div style="text-align: left; margin-bottom: 20px;">
+                    <p style="font-size: 13px; color: #555; margin-bottom: 8px;">Share this code to link new customers:</p>
+                    <div class="activation-code">RAJ-786</div>
+                </div>
+                <button class="btn-primary" style="background: #333;" onclick="alert('Opening list of your 150 linked customers...')">View Connected Customers</button>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal-overlay" id="activation-modal">
+            <div class="modal-box">
+                <h3 style="color: #5f259f; margin-bottom: 10px;">Link Vendor</h3>
+                <p style="font-size: 12px; color: #666;">Ask your tea vendor for their 6-digit activation code.</p>
+                <input type="text" placeholder="e.g. RAJ-786" maxlength="7">
+                <button class="btn-primary" onclick="document.getElementById('activation-modal').style.display='none'; alert('Vendor Linked! You can now scan their QR.');">Verify & Link</button>
+                <p style="margin-top: 15px; font-size: 12px; color: #888; cursor: pointer;" onclick="document.getElementById('activation-modal').style.display='none'">Cancel</p>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // Splash screen to login transition
-        setTimeout(() => { showScreen('login'); }, 2000);
+        setTimeout(() => { showScreen('role-select'); }, 2000);
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            
+            if(id === 'dashboard' || id === 'history') {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
+                if(id === 'dashboard') document.querySelectorAll('.nav-item')[0].classList.add('active-nav');
+                if(id === 'history') document.querySelectorAll('.nav-item')[1].classList.add('active-nav');
+            }
         }
     </script>
 </body>

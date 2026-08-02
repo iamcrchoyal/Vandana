@@ -3,78 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tea Pay - UI V4 (Advanced Logic)</title>
+    <title>Tea Pay - UI V5 (Pro & fully Functional)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #e0e0e0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        /* --- Base & Typography --- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #e2e8f0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         
-        .mobile-frame { width: 100vw; height: 100vh; max-width: 400px; background-color: #f4f6f8; position: relative; overflow: hidden; }
-        @media (min-width: 401px) { .mobile-frame { height: 800px; border-radius: 35px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); border: 8px solid #333; margin-top: 20px;} }
+        /* --- Mobile Frame --- */
+        .mobile-frame { width: 100vw; height: 100vh; max-width: 400px; background-color: #f8fafc; position: relative; overflow: hidden; }
+        @media (min-width: 401px) { .mobile-frame { height: 800px; border-radius: 40px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 12px solid #1e293b; margin-top: 10px;} }
         
-        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; background-color: #f4f6f8; overflow-y: auto; overflow-x: hidden; padding-bottom: 70px; }
+        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; background-color: #f8fafc; overflow-y: auto; overflow-x: hidden; padding-bottom: 90px; }
         .active { display: flex; }
         
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .screen.active { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .screen.active { animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
 
-        /* Splash */
-        #splash { background: linear-gradient(135deg, #4b1d7d, #5f259f); color: white; justify-content: center; align-items: center; z-index: 100; }
-        .splash-content { text-align: center; }
-        .splash-content i { font-size: 70px; margin-bottom: 20px; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .splash-content h1 { font-size: 38px; font-weight: 800; letter-spacing: 2px; margin-bottom: 10px; }
-        
-        /* Role Selection */
-        #role-select { padding: 40px 20px; justify-content: center; align-items: center; background: white; text-align: center; }
-        .role-card { background: #f9f9f9; border: 2px solid #eee; border-radius: 15px; padding: 25px; margin: 15px 0; width: 100%; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;}
-        .role-card:active { border-color: #5f259f; background: #f3effa; }
-        .role-card i { font-size: 40px; color: #5f259f; margin-bottom: 10px; }
-        .role-card h2 { font-size: 20px; color: #333; margin-bottom: 5px; }
-        .secure-badge { position: absolute; top: 10px; right: 10px; background: #e8f5e9; color: #2e7d32; font-size: 10px; padding: 4px 8px; border-radius: 10px; font-weight: bold;}
+        /* --- Reusable UI Components --- */
+        .btn-primary { background: linear-gradient(135deg, #6d28d9, #4f46e5); color: white; border: none; padding: 16px; width: 100%; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); transition: transform 0.1s; }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-secondary { background-color: #ede9fe; color: #4f46e5; border: none; padding: 16px; width: 100%; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        .header { background: linear-gradient(135deg, #4c1d95, #6d28d9); color: white; padding: 30px 20px 25px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .header h2 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px;}
+        .back-btn { background: rgba(255,255,255,0.2); width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; }
 
-        /* Shared Header */
-        .header { background-color: #5f259f; color: white; padding: 25px 20px 20px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .header h2 { font-size: 18px; font-weight: 600; }
+        /* --- Splash --- */
+        #splash { background: linear-gradient(135deg, #4c1d95, #6d28d9); color: white; justify-content: center; align-items: center; z-index: 100; }
+        .splash-content i { font-size: 70px; margin-bottom: 20px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)); }
+        .splash-content h1 { font-size: 42px; font-weight: 800; letter-spacing: -1px; margin-bottom: 15px; }
+        
+        /* --- Role Selection --- */
+        #role-select { padding: 40px 20px; justify-content: center; background: white; text-align: center; }
+        .role-card { background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 20px; padding: 25px 20px; margin: 15px 0; width: 100%; cursor: pointer; transition: all 0.2s; position: relative; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .role-card:active { border-color: #6d28d9; background: #f5f3ff; }
+        .role-card i { font-size: 38px; color: #6d28d9; margin-bottom: 12px; }
+        .role-card h2 { font-size: 20px; color: #0f172a; margin-bottom: 6px; font-weight: 700;}
+        .secure-badge { position: absolute; top: 12px; right: 12px; background: #dcfce7; color: #166534; font-size: 10px; padding: 5px 10px; border-radius: 12px; font-weight: 700; text-transform: uppercase;}
 
-        /* Dashboard (Customer) */
-        .balance-card { background: linear-gradient(135deg, #ffffff, #f9f9f9); margin: 20px; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); text-align: center; border: 1px solid #eee; }
-        .balance-card h2 { color: #111; font-size: 32px; margin: 10px 0; }
+        /* --- Customer Dashboard --- */
+        .balance-card { background: white; margin: -10px 20px 20px 20px; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08); text-align: center; position: relative; z-index: 10;}
+        .balance-card p { color: #64748b; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .balance-card h2 { color: #0f172a; font-size: 40px; margin: 8px 0 15px 0; font-weight: 800; letter-spacing: -1px;}
         
-        /* PhonePe Style Add Vendor Box */
-        .add-vendor-box { background: white; margin: 0 20px 15px 20px; padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: space-between; border: 1px dashed #5f259f; cursor: pointer; }
-        .add-vendor-box div { display: flex; align-items: center; gap: 15px; }
-        .add-vendor-box i { font-size: 24px; color: #5f259f; background: #f3effa; padding: 12px; border-radius: 50%; }
+        .action-box { background: white; margin: 0 20px 15px 20px; padding: 18px 20px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; border: 1px solid #e2e8f0; cursor: pointer; transition: background 0.2s;}
+        .action-box:active { background: #f8fafc; }
+        .action-icon { background: #f5f3ff; width: 45px; height: 45px; border-radius: 12px; display: flex; justify-content: center; align-items: center; color: #6d28d9; font-size: 20px; margin-right: 15px;}
         
-        /* Lists */
         .tx-list { padding: 0 20px; }
-        .tx-item { background: white; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border-left: 4px solid #f39c12; }
-        .tx-details h4 { font-size: 15px; color: #222; margin-bottom: 4px; }
-        .tx-details p { font-size: 12px; color: #888; }
-        .tx-amount { font-weight: bold; font-size: 16px; }
+        .tx-item { background: white; padding: 16px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; }
+        .tx-avatar { width: 40px; height: 40px; border-radius: 50%; background: #fef3c7; color: #d97706; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; margin-right: 12px; }
         
-        .btn-primary { background-color: #5f259f; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .btn-secondary { background-color: #f3effa; color: #5f259f; border: 1px solid #5f259f; padding: 12px; width: 100%; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 10px;}
+        /* --- Modern Floating Bottom Nav --- */
+        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 75px; background: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -10px 25px rgba(0,0,0,0.05); padding: 0 10px; z-index: 50; border-radius: 0 0 30px 30px;}
+        .nav-item { text-align: center; color: #94a3b8; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; transition: 0.2s; }
+        .nav-item.active-nav { color: #6d28d9; }
+        .nav-item i { font-size: 22px; margin-bottom: 5px; }
+        .nav-item span { font-size: 11px; font-weight: 600; }
+        
+        .scan-fab-wrapper { position: relative; top: -25px; display: flex; flex-direction: column; align-items: center;}
+        .scan-fab { width: 65px; height: 65px; background: linear-gradient(135deg, #6d28d9, #4f46e5); border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px rgba(109, 40, 217, 0.4); border: 6px solid #f8fafc; cursor: pointer; color: white; font-size: 26px; transition: transform 0.1s;}
+        .scan-fab:active { transform: scale(0.95); }
 
-        /* Vendor QR Screen */
-        .qr-container { padding: 30px 20px; text-align: center; }
-        .qr-box { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-bottom: 25px; }
-        .qr-box img { width: 180px; height: 180px; margin-bottom: 20px; }
+        /* --- Modals / Bottom Sheets --- */
+        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); z-index: 200; display: none; justify-content: center; align-items: flex-end; backdrop-filter: blur(2px);}
+        .bottom-sheet { background: white; padding: 25px 20px 35px 20px; border-radius: 25px 25px 0 0; width: 100%; text-align: center; animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 -10px 25px rgba(0,0,0,0.1);}
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .sheet-drag { width: 40px; height: 5px; background: #cbd5e1; border-radius: 5px; margin: 0 auto 20px auto; }
+        .bottom-sheet input { width: 100%; padding: 16px; margin: 15px 0; border: 1.5px solid #e2e8f0; border-radius: 12px; font-size: 16px; outline: none; transition: border 0.2s;}
+        .bottom-sheet input:focus { border-color: #6d28d9; }
         
-        /* Bottom Nav */
-        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 65px; background: white; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -3px 15px rgba(0,0,0,0.06); z-index: 50; border-bottom-left-radius: 27px; border-bottom-right-radius: 27px;}
-        .nav-item { text-align: center; color: #999; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .nav-item.active-nav { color: #5f259f; }
-        .nav-item i { font-size: 22px; margin-bottom: 4px; }
-        .nav-item span { font-size: 10px; font-weight: 500; }
-        
-        /* Modals */
-        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 200; display: none; justify-content: center; align-items: center; }
-        .modal-box { background: white; padding: 25px; border-radius: 15px; width: 85%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .modal-box input { width: 100%; padding: 15px; margin: 15px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; text-align: center; letter-spacing: 1px; }
-        
-        /* Search Result Box */
-        .search-result { display: none; background: #f8f9fa; border: 1px solid #ddd; padding: 15px; border-radius: 10px; margin-bottom: 15px; text-align: left; align-items: center; gap: 15px; }
-        .search-result img { width: 40px; height: 40px; border-radius: 50%; }
+        /* UPI Payment Options */
+        .upi-option { display: flex; align-items: center; padding: 15px; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 10px; cursor: pointer; text-align: left;}
+        .upi-option:active { background: #f8fafc; border-color: #6d28d9; }
+        .upi-option img { width: 35px; height: 35px; border-radius: 8px; margin-right: 15px; }
+
+        /* Scanner Modal */
+        .scanner-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 300; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .scan-box { width: 250px; height: 250px; border: 2px solid rgba(255,255,255,0.5); border-radius: 20px; position: relative; overflow: hidden; }
+        .scan-line { width: 100%; height: 3px; background: #10b981; position: absolute; box-shadow: 0 0 15px #10b981; animation: scanning 2s infinite linear; }
+        @keyframes scanning { 0% { top: 0; } 100% { top: 100%; } }
+        .close-scanner { position: absolute; top: 40px; left: 20px; color: white; font-size: 30px; cursor: pointer; background: rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center;}
     </style>
 </head>
 <body>
@@ -84,218 +94,399 @@
         <div id="splash" class="screen active">
             <div class="splash-content">
                 <i class="fa-solid fa-mug-hot"></i><h1>Tea Pay</h1>
+                <p style="color: rgba(255,255,255,0.8); font-weight: 500;">Smart Ledger for India</p>
             </div>
         </div>
 
         <!-- Role Select -->
         <div id="role-select" class="screen">
-            <h2 style="margin-bottom: 10px; color: #333;">Welcome to Tea Pay</h2>
-            <p style="color: #666; font-size: 14px; margin-bottom: 30px;">Choose your account type</p>
+            <h2 style="margin-bottom: 8px; color: #0f172a; font-size: 24px; font-weight: 800;">Welcome to Tea Pay</h2>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 35px; font-weight: 500;">Choose your account type to proceed</p>
             
-            <!-- Vendor at TOP -->
-            <div class="role-card" onclick="openVendorAuth()">
-                <div class="secure-badge"><i class="fa-solid fa-shield-halved"></i> KYC Required</div>
+            <div class="role-card" onclick="openSheet('vendor-auth-sheet')">
+                <div class="secure-badge"><i class="fa-solid fa-lock"></i> KYC Required</div>
                 <i class="fa-solid fa-store"></i>
                 <h2>I am a Vendor</h2>
-                <p style="font-size: 12px; color: #888;">Manage stall, receive payments & track dues</p>
+                <p style="font-size: 13px; color: #64748b; font-weight: 500;">Manage stall, receive payments & track dues</p>
             </div>
 
-            <!-- Customer at BOTTOM -->
             <div class="role-card" onclick="showScreen('dashboard')">
-                <i class="fa-solid fa-user"></i>
+                <i class="fa-solid fa-user-astronaut"></i>
                 <h2>I am a Customer</h2>
-                <p style="font-size: 12px; color: #888;">Scan QR, search vendors & settle bills</p>
+                <p style="font-size: 13px; color: #64748b; font-weight: 500;">Scan QR, search vendors & settle bills</p>
             </div>
         </div>
 
-        <!-- Customer Dashboard -->
+        <!-- ================= CUSTOMER SCREENS ================= -->
+        
+        <!-- 1. Customer Home -->
         <div id="dashboard" class="screen">
-            <div class="header">
-                <h2><i class="fa-solid fa-user-circle" style="margin-right: 8px;"></i> Hi, Ramesh</h2>
-                <i class="fa-regular fa-bell"></i>
+            <div class="header" style="padding-bottom: 45px;">
+                <h2><img src="https://ui-avatars.com/api/?name=Ramesh+K&background=fff&color=6d28d9" style="width: 35px; border-radius: 50%;"> Hi, Ramesh</h2>
+                <i class="fa-regular fa-bell" style="font-size: 22px;"></i>
             </div>
             
             <div class="balance-card">
-                <p style="color: #666; font-size: 13px; font-weight: 500;">Total Tea Dues</p>
-                <h2 id="total-dues">₹ 120</h2>
-                <button class="btn-primary" style="margin-top: 10px; padding: 10px; font-size: 14px; border-radius: 30px;" onclick="alert('Opening UPI Intent...')">Settle All Bills</button>
+                <p>Total Outstanding Dues</p>
+                <h2 id="total-dues">₹ 520</h2>
+                <button class="btn-primary" onclick="openSheet('payment-sheet')">Pay Total Dues via UPI</button>
             </div>
 
-            <!-- PhonePe Style Add Vendor -->
-            <div class="add-vendor-box" onclick="document.getElementById('search-vendor-modal').style.display='flex'">
-                <div>
-                    <i class="fa-solid fa-magnifying-glass"></i>
+            <div class="action-box" onclick="openSheet('search-vendor-sheet')">
+                <div style="display: flex; align-items: center;">
+                    <div class="action-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
                     <div>
-                        <h4 style="font-size: 15px; color: #333;">Add Vendor Account</h4>
-                        <p style="font-size: 11px; color: #777;">Search by Mobile Number</p>
+                        <h4 style="font-size: 16px; color: #0f172a; font-weight: 600;">Link New Vendor</h4>
+                        <p style="font-size: 12px; color: #64748b; margin-top: 2px;">Search by Mobile Number</p>
                     </div>
                 </div>
-                <i class="fa-solid fa-plus" style="color: #5f259f; font-size: 18px;"></i>
+                <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
             </div>
 
             <div class="tx-list" id="customer-vendor-list">
-                <h3 style="font-size: 14px; color: #666; margin-bottom: 10px;">Linked Vendors</h3>
-                <!-- Dynamic Vendors go here -->
-                <div class="tx-item">
-                    <div class="tx-details"><h4>Raju Tea Stall</h4><p>+91 9876543210</p></div>
-                    <div class="tx-amount">Due: ₹ 120</div>
+                <h3 style="font-size: 15px; color: #64748b; margin-bottom: 12px; font-weight: 600;">My Linked Vendors</h3>
+                <div class="tx-item" onclick="alert('Viewing Raju Tea Stall details...')">
+                    <div style="display: flex; align-items: center;">
+                        <div class="tx-avatar">R</div>
+                        <div>
+                            <h4 style="font-size: 15px; color: #0f172a; font-weight: 600;">Raju Tea Stall</h4>
+                            <p style="font-size: 12px; color: #64748b;">+91 98765 43210</p>
+                        </div>
+                    </div>
+                    <div style="font-weight: 700; color: #b45309; font-size: 16px;">₹ 120</div>
                 </div>
-            </div>
-
-            <div class="bottom-nav">
-                <div class="nav-item active-nav"><i class="fa-solid fa-house"></i><span>Home</span></div>
-                <div class="nav-item" onclick="alert('Transaction History Loading...')"><i class="fa-solid fa-clock-rotate-left"></i><span>History</span></div>
-                <div class="nav-item"><i class="fa-solid fa-wallet"></i><span>Wallet</span></div>
-                <div class="nav-item"><i class="fa-solid fa-gear"></i><span>Settings</span></div>
-            </div>
-        </div>
-
-        <!-- Vendor Dashboard -->
-        <div id="vendor-dashboard" class="screen">
-            <div class="header" style="background-color: #333;">
-                <h2><i class="fa-solid fa-store" style="margin-right: 8px;"></i> Raju Tea Stall</h2>
-                <i class="fa-solid fa-right-from-bracket" onclick="showScreen('role-select')" style="cursor:pointer;"></i>
+                <div class="tx-item">
+                    <div style="display: flex; align-items: center;">
+                        <div class="tx-avatar" style="background: #e0e7ff; color: #4338ca;">S</div>
+                        <div>
+                            <h4 style="font-size: 15px; color: #0f172a; font-weight: 600;">Sharma Ji Canteen</h4>
+                            <p style="font-size: 12px; color: #64748b;">+91 99999 88888</p>
+                        </div>
+                    </div>
+                    <div style="font-weight: 700; color: #b45309; font-size: 16px;">₹ 400</div>
+                </div>
             </div>
             
-            <div class="qr-container">
-                <div class="qr-box">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://iamcrchoyal.github.io/Vandana/&color=5f259f" alt="QR Code">
-                    <p style="font-size: 14px; color: #333; font-weight: bold;">My Tea Pay QR</p>
+            <!-- Standard Customer Bottom Nav -->
+            <div class="bottom-nav">
+                <div class="nav-item active-nav" onclick="showScreen('dashboard')"><i class="fa-solid fa-house"></i><span>Home</span></div>
+                <div class="nav-item" onclick="showScreen('history')"><i class="fa-solid fa-clock-rotate-left"></i><span>History</span></div>
+                <div class="scan-fab-wrapper" onclick="openScanner()">
+                    <div class="scan-fab"><i class="fa-solid fa-qrcode"></i></div>
+                    <span style="font-size: 11px; font-weight: 700; color: #6d28d9; margin-top: 5px;">Scan QR</span>
+                </div>
+                <div class="nav-item" onclick="openSheet('wallet-sheet')"><i class="fa-solid fa-wallet"></i><span>Wallet</span></div>
+                <div class="nav-item" onclick="alert('Opening Settings...')"><i class="fa-solid fa-gear"></i><span>Settings</span></div>
+            </div>
+        </div>
+
+        <!-- 2. Customer History Screen -->
+        <div id="history" class="screen">
+            <div class="header">
+                <h2>Transaction History</h2>
+            </div>
+            <div class="tx-list" style="margin-top: 20px;">
+                <!-- History Items -->
+                <div class="tx-item" style="border-left: 4px solid #ef4444;">
+                    <div style="display: flex; align-items: center;">
+                        <div class="action-icon" style="background: #fee2e2; color: #ef4444; width: 40px; height: 40px; font-size: 16px;"><i class="fa-solid fa-mug-hot"></i></div>
+                        <div>
+                            <h4 style="font-size: 14px; color: #0f172a; font-weight: 600;">Raju Tea Stall</h4>
+                            <p style="font-size: 11px; color: #64748b;">Today, 10:15 AM</p>
+                        </div>
+                    </div>
+                    <div style="font-weight: 700; color: #ef4444;">- ₹ 20</div>
                 </div>
                 
-                <!-- Vendor adding customer -->
-                <button class="btn-primary" style="background: #27ae60; margin-bottom: 15px;" onclick="document.getElementById('add-customer-modal').style.display='flex'">
-                    <i class="fa-solid fa-user-plus"></i> Add New Customer
+                <div class="tx-item" style="border-left: 4px solid #10b981;">
+                    <div style="display: flex; align-items: center;">
+                        <div class="action-icon" style="background: #d1fae5; color: #10b981; width: 40px; height: 40px; font-size: 16px;"><i class="fa-brands fa-google-pay"></i></div>
+                        <div>
+                            <h4 style="font-size: 14px; color: #0f172a; font-weight: 600;">Paid (Sharma Ji)</h4>
+                            <p style="font-size: 11px; color: #64748b;">Yesterday, 06:30 PM</p>
+                        </div>
+                    </div>
+                    <div style="font-weight: 700; color: #10b981;">+ ₹ 350</div>
+                </div>
+            </div>
+            
+            <div class="bottom-nav">
+                <div class="nav-item" onclick="showScreen('dashboard')"><i class="fa-solid fa-house"></i><span>Home</span></div>
+                <div class="nav-item active-nav" onclick="showScreen('history')"><i class="fa-solid fa-clock-rotate-left"></i><span>History</span></div>
+                <div class="scan-fab-wrapper" onclick="openScanner()">
+                    <div class="scan-fab"><i class="fa-solid fa-qrcode"></i></div>
+                    <span style="font-size: 11px; font-weight: 700; color: #6d28d9; margin-top: 5px;">Scan QR</span>
+                </div>
+                <div class="nav-item" onclick="openSheet('wallet-sheet')"><i class="fa-solid fa-wallet"></i><span>Wallet</span></div>
+                <div class="nav-item" onclick="alert('Opening Settings...')"><i class="fa-solid fa-gear"></i><span>Settings</span></div>
+            </div>
+        </div>
+
+        <!-- ================= VENDOR SCREENS ================= -->
+        
+        <!-- Vendor Dashboard -->
+        <div id="vendor-dashboard" class="screen">
+            <div class="header" style="background: linear-gradient(135deg, #0f172a, #1e293b);">
+                <h2><i class="fa-solid fa-store" style="color: #10b981;"></i> Raju Tea Stall</h2>
+                <div class="back-btn" onclick="showScreen('role-select')"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+            </div>
+            
+            <div style="padding: 20px; text-align: center;">
+                <div style="background: white; padding: 30px; border-radius: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px;">
+                    <h3 style="color: #0f172a; margin-bottom: 5px;">Your Tea Pay QR</h3>
+                    <p style="font-size: 13px; color: #64748b; margin-bottom: 20px; font-weight: 500;">Scannable by linked customers only</p>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://iamcrchoyal.github.io/Vandana/&color=0f172a" style="border-radius: 10px; width: 200px;">
+                </div>
+                
+                <button class="btn-primary" style="background: linear-gradient(135deg, #059669, #10b981); margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="openSheet('add-customer-sheet')">
+                    <i class="fa-solid fa-user-plus"></i> Invite New Customer
                 </button>
                 
-                <button class="btn-secondary" onclick="alert('Opening customer list...\nTotal Linked: 151')">
-                    View Connected Customers (151)
+                <button class="btn-secondary" style="border: 1px solid #cbd5e1; background: white; color: #0f172a;" onclick="showScreen('vendor-customers')">
+                    <i class="fa-solid fa-users" style="margin-right: 5px;"></i> View Connected Customers (151)
                 </button>
             </div>
         </div>
 
-        <!-- Modals -->
-
-        <!-- 1. Vendor Auth Modal -->
-        <div class="modal-overlay" id="vendor-auth-modal">
-            <div class="modal-box">
-                <h3 style="color: #333; margin-bottom: 10px;">Vendor Verification</h3>
-                <p style="font-size: 12px; color: #666;">Enter your 4-digit Admin Auth PIN to access vendor dashboard.</p>
-                <p style="font-size: 10px; color: #d32f2f;">(Hint: Enter 1234 for demo)</p>
-                <input type="password" id="vendor-pin" placeholder="* * * *" maxlength="4" style="letter-spacing: 15px; font-weight: bold;">
-                <button class="btn-primary" onclick="verifyVendor()">Verify & Login</button>
-                <p style="margin-top: 15px; font-size: 12px; color: #888; cursor: pointer;" onclick="document.getElementById('vendor-auth-modal').style.display='none'">Cancel</p>
+        <!-- Vendor Customers List Screen -->
+        <div id="vendor-customers" class="screen">
+            <div class="header" style="background: linear-gradient(135deg, #0f172a, #1e293b);">
+                <h2><div class="back-btn" style="margin-right: 10px;" onclick="showScreen('vendor-dashboard')"><i class="fa-solid fa-arrow-left"></i></div> My Customers</h2>
+            </div>
+            <div class="tx-list" style="margin-top: 20px;">
+                <div style="background: white; padding: 12px 15px; border-radius: 12px; display: flex; margin-bottom: 15px; border: 1px solid #e2e8f0;">
+                    <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; margin-right: 10px; margin-top: 2px;"></i>
+                    <input type="text" placeholder="Search customer by name..." style="border: none; outline: none; width: 100%; font-size: 14px;">
+                </div>
+                
+                <!-- Customer Items -->
+                <div class="tx-item" onclick="alert('Deducting tea price for Ramesh...')">
+                    <div style="display: flex; align-items: center;">
+                        <div class="tx-avatar">R</div>
+                        <div>
+                            <h4 style="font-size: 15px; color: #0f172a; font-weight: 600;">Ramesh Kumar</h4>
+                            <p style="font-size: 12px; color: #64748b;">Due: ₹ 120</p>
+                        </div>
+                    </div>
+                    <button style="background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer;">- ₹10 (Tea)</button>
+                </div>
+                
+                <div class="tx-item">
+                    <div style="display: flex; align-items: center;">
+                        <div class="tx-avatar" style="background: #dcfce7; color: #166534;">A</div>
+                        <div>
+                            <h4 style="font-size: 15px; color: #0f172a; font-weight: 600;">Amit Singh</h4>
+                            <p style="font-size: 12px; color: #64748b;">Due: ₹ 0</p>
+                        </div>
+                    </div>
+                    <button style="background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer;">- ₹10 (Tea)</button>
+                </div>
             </div>
         </div>
 
-        <!-- 2. Customer Searching Vendor Modal (PhonePe Style) -->
-        <div class="modal-overlay" id="search-vendor-modal">
-            <div class="modal-box">
-                <h3 style="color: #5f259f; margin-bottom: 10px;">Search Vendor</h3>
-                <p style="font-size: 12px; color: #666;">Enter Vendor's 10-digit mobile number</p>
-                <input type="tel" id="search-mobile" placeholder="e.g. 9999999999" maxlength="10">
-                <button class="btn-primary" id="search-btn" onclick="searchVendor()">Search</button>
+        <!-- ================= MODALS & BOTTOM SHEETS ================= -->
+        
+        <!-- Vendor Auth PIN -->
+        <div class="modal-overlay" id="vendor-auth-sheet">
+            <div class="bottom-sheet">
+                <div class="sheet-drag"></div>
+                <h3 style="color: #0f172a; margin-bottom: 5px; font-size: 20px;">Vendor Login</h3>
+                <p style="font-size: 13px; color: #64748b; margin-bottom: 20px;">Enter 4-digit Admin PIN (Demo: 1234)</p>
+                <input type="password" id="vendor-pin" placeholder="* * * *" maxlength="4" style="letter-spacing: 20px; font-weight: bold; text-align: center; font-size: 24px;">
+                <button class="btn-primary" onclick="verifyVendor()">Secure Login</button>
+                <p style="margin-top: 15px; font-size: 13px; color: #94a3b8; cursor: pointer; font-weight: 600;" onclick="closeAllSheets()">Cancel</p>
+            </div>
+        </div>
+
+        <!-- Add/Search Vendor (Customer Side) -->
+        <div class="modal-overlay" id="search-vendor-sheet">
+            <div class="bottom-sheet">
+                <div class="sheet-drag"></div>
+                <h3 style="color: #0f172a; margin-bottom: 5px; font-size: 20px;">Find Vendor</h3>
+                <p style="font-size: 13px; color: #64748b;">Enter 10-digit mobile number</p>
                 
-                <!-- Search Result (Hidden by default) -->
-                <div class="search-result" id="vendor-result">
-                    <i class="fa-solid fa-store" style="font-size: 24px; color: #5f259f;"></i>
+                <div style="position: relative;">
+                    <span style="position: absolute; left: 15px; top: 31px; color: #0f172a; font-weight: 600;">+91</span>
+                    <input type="tel" id="search-mobile" placeholder="99999 99999" maxlength="10" style="padding-left: 55px; letter-spacing: 1px; font-weight: 500;">
+                </div>
+                
+                <button class="btn-primary" id="search-btn" onclick="searchVendor()">Search Vendor</button>
+                
+                <!-- Hidden Result -->
+                <div id="vendor-result" style="display: none; background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; margin: 15px 0; text-align: left; align-items: center;">
+                    <div class="action-icon" style="background: #e0e7ff; color: #4338ca; width: 45px; height: 45px; margin-right: 15px;"><i class="fa-solid fa-store"></i></div>
                     <div style="flex: 1;">
-                        <h4 style="font-size: 14px; color: #333;" id="found-vendor-name">Sharma Ji Canteen</h4>
-                        <p style="font-size: 11px; color: #27ae60;"><i class="fa-solid fa-circle-check"></i> Verified Tea Pay Vendor</p>
+                        <h4 style="font-size: 15px; color: #0f172a; font-weight: 600;">Verma Ji Tea Stall</h4>
+                        <p style="font-size: 12px; color: #10b981; font-weight: 600; margin-top: 2px;"><i class="fa-solid fa-shield-check"></i> Verified Partner</p>
                     </div>
                 </div>
                 
-                <button class="btn-primary" id="link-btn" style="display: none; background: #27ae60; margin-top: 10px;" onclick="linkNewVendor()">Link This Vendor</button>
-                <p style="margin-top: 15px; font-size: 12px; color: #888; cursor: pointer;" onclick="closeSearchModal()">Cancel</p>
+                <button class="btn-primary" id="link-btn" style="display: none; background: linear-gradient(135deg, #059669, #10b981);" onclick="linkNewVendor()">Link Vendor to My App</button>
+                <p style="margin-top: 15px; font-size: 13px; color: #94a3b8; cursor: pointer; font-weight: 600;" onclick="closeAllSheets()">Cancel</p>
             </div>
         </div>
 
-        <!-- 3. Vendor Adding Customer Modal -->
-        <div class="modal-overlay" id="add-customer-modal">
-            <div class="modal-box">
-                <h3 style="color: #27ae60; margin-bottom: 10px;">Add Customer</h3>
-                <p style="font-size: 12px; color: #666;">Enter Customer's Mobile Number to send a link request.</p>
-                <input type="tel" id="customer-mobile" placeholder="Customer Mobile No." maxlength="10">
-                <button class="btn-primary" style="background: #27ae60;" onclick="sendCustomerInvite()">Send Request</button>
-                <p style="margin-top: 15px; font-size: 12px; color: #888; cursor: pointer;" onclick="document.getElementById('add-customer-modal').style.display='none'">Cancel</p>
+        <!-- Add Customer (Vendor Side) -->
+        <div class="modal-overlay" id="add-customer-sheet">
+            <div class="bottom-sheet">
+                <div class="sheet-drag"></div>
+                <h3 style="color: #0f172a; margin-bottom: 5px; font-size: 20px;">Invite Customer</h3>
+                <p style="font-size: 13px; color: #64748b;">Send an SMS link to download & connect.</p>
+                <input type="tel" id="customer-mobile" placeholder="Customer Mobile Number" maxlength="10" style="text-align: center; font-weight: 500;">
+                <button class="btn-primary" style="background: linear-gradient(135deg, #059669, #10b981);" onclick="sendCustomerInvite()">Send Invite Link</button>
+                <p style="margin-top: 15px; font-size: 13px; color: #94a3b8; cursor: pointer; font-weight: 600;" onclick="closeAllSheets()">Cancel</p>
             </div>
+        </div>
+
+        <!-- UPI Payment Sheet -->
+        <div class="modal-overlay" id="payment-sheet">
+            <div class="bottom-sheet">
+                <div class="sheet-drag"></div>
+                <p style="font-size: 13px; color: #64748b; font-weight: 600; text-transform: uppercase;">Paying Total Dues</p>
+                <h2 style="font-size: 36px; color: #0f172a; font-weight: 800; margin: 10px 0 25px 0;">₹ 520</h2>
+                
+                <div class="upi-option" onclick="processPayment('PhonePe')">
+                    <div style="width: 40px; height: 40px; background: #5f259f; border-radius: 8px; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; font-size: 20px; margin-right: 15px;">पे</div>
+                    <div style="flex: 1;"><h4 style="font-size: 15px; font-weight: 600; color: #0f172a;">PhonePe</h4></div>
+                    <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
+                </div>
+                
+                <div class="upi-option" onclick="processPayment('GPay')">
+                    <div style="width: 40px; height: 40px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; justify-content: center; align-items: center; color: #ea4335; font-weight: bold; font-size: 20px; margin-right: 15px;"><i class="fa-brands fa-google"></i></div>
+                    <div style="flex: 1;"><h4 style="font-size: 15px; font-weight: 600; color: #0f172a;">Google Pay</h4></div>
+                    <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
+                </div>
+                
+                <p style="margin-top: 20px; font-size: 13px; color: #94a3b8; cursor: pointer; font-weight: 600;" onclick="closeAllSheets()">Cancel</p>
+            </div>
+        </div>
+
+        <!-- Wallet Coming Soon Sheet -->
+        <div class="modal-overlay" id="wallet-sheet">
+            <div class="bottom-sheet">
+                <div class="sheet-drag"></div>
+                <div style="background: #fef3c7; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 15px auto; color: #d97706; font-size: 24px;">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+                <h3 style="color: #0f172a; margin-bottom: 5px; font-size: 20px;">Tea Coins Wallet</h3>
+                <p style="font-size: 13px; color: #64748b; margin-bottom: 25px; line-height: 1.5;">Earn 1 Tea Coin for every 10 cups you drink. Use coins for free tea! <br><strong>Launching in Phase 2.</strong></p>
+                <button class="btn-primary" onclick="closeAllSheets()">Got it!</button>
+            </div>
+        </div>
+
+        <!-- Scanner Camera UI -->
+        <div class="scanner-view" id="scanner-view">
+            <div class="close-scanner" onclick="closeScanner()"><i class="fa-solid fa-xmark"></i></div>
+            <h3 style="color: white; margin-bottom: 30px; font-weight: 600;">Scan Vendor's Tea Pay QR</h3>
+            <div class="scan-box">
+                <div class="scan-line"></div>
+            </div>
+            <p style="color: rgba(255,255,255,0.7); font-size: 13px; margin-top: 30px; width: 70%; text-align: center;">Align the QR code within the frame to deduct your tea cup or settle bills.</p>
         </div>
 
     </div>
 
     <script>
+        // Start flow
         setTimeout(() => { showScreen('role-select'); }, 1500);
+
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         }
 
-        // Logic 1: Vendor Auth
-        function openVendorAuth() {
-            document.getElementById('vendor-auth-modal').style.display = 'flex';
-            document.getElementById('vendor-pin').value = '';
+        // Bottom Sheets Logic
+        function openSheet(id) {
+            document.getElementById(id).style.display = 'flex';
         }
-
-        function verifyVendor() {
-            const pin = document.getElementById('vendor-pin').value;
-            if(pin === '1234') {
-                document.getElementById('vendor-auth-modal').style.display = 'none';
-                showScreen('vendor-dashboard');
-            } else {
-                alert('Invalid PIN! Only verified vendors can access this section.');
-            }
-        }
-
-        // Logic 2: Customer searching vendor (PhonePe Style)
-        function searchVendor() {
-            const mobile = document.getElementById('search-mobile').value;
-            if(mobile.length === 10) {
-                // Simulate network request loading
-                document.getElementById('search-btn').innerHTML = 'Searching...';
-                setTimeout(() => {
-                    document.getElementById('search-btn').style.display = 'none';
-                    document.getElementById('vendor-result').style.display = 'flex';
-                    document.getElementById('link-btn').style.display = 'block';
-                }, 1000);
-            } else {
-                alert('Please enter a valid 10-digit mobile number.');
-            }
-        }
-
-        function linkNewVendor() {
-            // Add to UI dynamically
-            const vendorList = document.getElementById('customer-vendor-list');
-            const newVendor = `
-                <div class="tx-item" style="border-left-color: #27ae60; animation: fadeIn 0.5s;">
-                    <div class="tx-details"><h4>Sharma Ji Canteen</h4><p>+91 ${document.getElementById('search-mobile').value}</p></div>
-                    <div class="tx-amount">Due: ₹ 0</div>
-                </div>
-            `;
-            vendorList.innerHTML += newVendor;
-            
-            alert('Vendor Linked Successfully!');
-            closeSearchModal();
-        }
-
-        function closeSearchModal() {
-            document.getElementById('search-vendor-modal').style.display = 'none';
+        function closeAllSheets() {
+            document.querySelectorAll('.modal-overlay').forEach(s => {
+                // Reset states
+                s.style.display = 'none';
+            });
+            // Reset Vendor search
             document.getElementById('search-mobile').value = '';
             document.getElementById('search-btn').style.display = 'block';
-            document.getElementById('search-btn').innerHTML = 'Search';
+            document.getElementById('search-btn').innerHTML = 'Search Vendor';
             document.getElementById('vendor-result').style.display = 'none';
             document.getElementById('link-btn').style.display = 'none';
         }
 
-        // Logic 3: Vendor adding customer
+        // Scanner Logic
+        function openScanner() {
+            document.getElementById('scanner-view').style.display = 'flex';
+            setTimeout(() => {
+                alert("QR Scanned Successfully! \nDeducting ₹10 for 1 Cup of Tea...");
+                closeScanner();
+            }, 3000); // Simulate scan success after 3 seconds
+        }
+        function closeScanner() {
+            document.getElementById('scanner-view').style.display = 'none';
+        }
+
+        // Vendor Auth
+        function verifyVendor() {
+            const pin = document.getElementById('vendor-pin').value;
+            if(pin === '1234') {
+                closeAllSheets();
+                showScreen('vendor-dashboard');
+                document.getElementById('vendor-pin').value = '';
+            } else {
+                alert('Invalid PIN! Access Denied.');
+            }
+        }
+
+        // Search & Link Vendor
+        function searchVendor() {
+            const mobile = document.getElementById('search-mobile').value;
+            if(mobile.length === 10) {
+                document.getElementById('search-btn').innerHTML = 'Searching Network...';
+                setTimeout(() => {
+                    document.getElementById('search-btn').style.display = 'none';
+                    document.getElementById('vendor-result').style.display = 'flex';
+                    document.getElementById('link-btn').style.display = 'block';
+                }, 1200);
+            } else {
+                alert('Please enter a valid 10-digit number.');
+            }
+        }
+
+        function linkNewVendor() {
+            const num = document.getElementById('search-mobile').value;
+            const vendorList = document.getElementById('customer-vendor-list');
+            const newVendor = `
+                <div class="tx-item" style="animation: slideIn 0.4s ease-out forwards; border: 1px solid #10b981; background: #f0fdf4;">
+                    <div style="display: flex; align-items: center;">
+                        <div class="tx-avatar" style="background: #d1fae5; color: #059669;">V</div>
+                        <div>
+                            <h4 style="font-size: 15px; color: #0f172a; font-weight: 600;">Verma Ji Tea Stall</h4>
+                            <p style="font-size: 12px; color: #64748b;">+91 ${num}</p>
+                        </div>
+                    </div>
+                    <div style="font-weight: 700; color: #b45309; font-size: 16px;">₹ 0</div>
+                </div>
+            `;
+            vendorList.innerHTML += newVendor;
+            alert('Verma Ji Tea Stall linked successfully! You can now scan their QR.');
+            closeAllSheets();
+        }
+
+        // Vendor invite
         function sendCustomerInvite() {
             const num = document.getElementById('customer-mobile').value;
             if(num.length === 10) {
-                alert(`Link request sent to +91 ${num}. Once they accept, they will be added to your list.`);
-                document.getElementById('add-customer-modal').style.display = 'none';
+                alert(`SMS Invite sent to +91 ${num}.`);
+                closeAllSheets();
                 document.getElementById('customer-mobile').value = '';
             } else {
                 alert('Enter valid 10-digit number');
             }
+        }
+        
+        // Mock Payment
+        function processPayment(app) {
+            alert(`Opening ${app} through UPI Intent...\nAmount: ₹520`);
+            closeAllSheets();
         }
     </script>
 </body>

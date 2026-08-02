@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tea Pay - UI V6 (3D & Premium Vendor UI)</title>
+    <title>Tea Pay - UI V7 (Ultimate 3D Splash)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* --- Base & Typography --- */
@@ -26,107 +26,162 @@
         .btn-primary:active { transform: scale(0.96); box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2); }
         .btn-secondary { background-color: #ede9fe; color: #4f46e5; border: none; padding: 16px; width: 100%; border-radius: 16px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s;}
         .btn-secondary:active { transform: scale(0.96); background-color: #ddd6fe; }
-        
-        /* --- 1. Splash Screen (3D Modern) --- */
-        #splash { background: linear-gradient(135deg, #1e1b4b, #4338ca, #312e81); color: white; justify-content: center; align-items: center; z-index: 100; perspective: 1000px; overflow: hidden;}
-        
-        /* Glowing Orbs for background */
-        .orb-1 { position: absolute; top: -10%; left: -20%; width: 300px; height: 300px; background: rgba(139, 92, 246, 0.5); filter: blur(80px); border-radius: 50%; }
-        .orb-2 { position: absolute; bottom: -10%; right: -20%; width: 300px; height: 300px; background: rgba(56, 189, 248, 0.4); filter: blur(80px); border-radius: 50%; }
 
-        .splash-3d-card {
-            transform-style: preserve-3d;
-            animation: float3D 4s ease-in-out infinite;
-            background: rgba(255, 255, 255, 0.05);
+        /* ========================================================
+           🔥 THE "JAW-DROPPING" 3D SPLASH SCREEN (CRED/FinTech Vibe)
+           ======================================================== */
+        #splash { 
+            background: #050505; /* Pitch Black for high contrast */
+            overflow: hidden; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 100;
+        }
+
+        /* 3D Moving Grid Background */
+        .bg-grid {
+            position: absolute; top: 0; left: -50%; width: 200%; height: 200%;
+            background-image: 
+                linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            animation: gridMove 8s linear infinite;
+            z-index: 0;
+        }
+        @keyframes gridMove {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px); }
+        }
+
+        /* Intense Center Glow */
+        .bg-glow {
+            position: absolute; width: 350px; height: 350px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, transparent 70%);
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 1; filter: blur(40px);
+            animation: pulseGlow 3s infinite alternate ease-in-out;
+        }
+        @keyframes pulseGlow { 0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.8); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } }
+
+        /* The 3D Floating Glass Card */
+        .splash-3d-wrapper {
+            perspective: 1200px;
+            z-index: 10;
+            margin-top: -40px;
+        }
+        .splash-card-pro {
+            width: 220px; height: 280px;
+            background: rgba(20, 20, 30, 0.4);
+            border-radius: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 30px 60px rgba(0,0,0,0.8),
+                inset 0 1px 0 rgba(255,255,255,0.3),
+                inset 0 -1px 0 rgba(255,255,255,0.1),
+                0 0 30px rgba(139, 92, 246, 0.4);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 50px 40px;
-            border-radius: 35px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4), inset 0 0 20px rgba(255,255,255,0.1);
-            text-align: center;
-            z-index: 10;
+            transform-style: preserve-3d;
+            animation: cardFloatTilt 6s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
         }
-        @keyframes float3D {
-            0% { transform: translateY(0) rotateX(5deg) rotateY(-5deg); }
-            50% { transform: translateY(-20px) rotateX(-5deg) rotateY(10deg); }
-            100% { transform: translateY(0) rotateX(5deg) rotateY(-5deg); }
-        }
-        .splash-3d-card i { font-size: 80px; margin-bottom: 25px; background: -webkit-linear-gradient(#a78bfa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); transform: translateZ(30px);}
-        .splash-3d-card h1 { font-size: 46px; font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; transform: translateZ(40px); color: white;}
-        .splash-3d-card p { font-size: 14px; font-weight: 500; color: #cbd5e1; transform: translateZ(20px); letter-spacing: 2px; text-transform: uppercase;}
         
-        .loader-bar { width: 60px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin: 30px auto 0 auto; overflow: hidden; position: relative; transform: translateZ(10px);}
-        .loader-bar::after { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 50%; background: #38bdf8; border-radius: 2px; animation: loading 1.5s infinite ease-in-out; }
-        @keyframes loading { 0% { left: -50%; } 100% { left: 100%; } }
+        /* Sweeping Light Reflection on Card */
+        .splash-card-pro::after {
+            content: ''; position: absolute; top: -150%; left: -150%; width: 300%; height: 300%;
+            background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
+            transform: rotate(45deg);
+            animation: glassShine 4s infinite;
+        }
+        @keyframes glassShine { 0% { transform: translate(-50%, -50%) rotate(45deg); } 100% { transform: translate(50%, 50%) rotate(45deg); } }
 
-        /* --- 2. Role Selection (Professional Glassmorphism/Cards) --- */
+        @keyframes cardFloatTilt {
+            0% { transform: rotateX(15deg) rotateY(-15deg) translateY(10px); }
+            100% { transform: rotateX(-10deg) rotateY(15deg) translateY(-25px); box-shadow: 0 50px 80px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.4), 0 0 50px rgba(139, 92, 246, 0.6); }
+        }
+
+        /* Elements popping out of the 3D Card */
+        .icon-3d-container { transform: translateZ(60px); text-align: center; }
+        .icon-3d-container i { 
+            font-size: 75px; 
+            background: linear-gradient(135deg, #c4b5fd, #38bdf8); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            filter: drop-shadow(0 15px 15px rgba(0,0,0,0.6)); 
+        }
+
+        .brand-text { transform: translateZ(50px); color: white; font-size: 34px; font-weight: 800; margin-top: 20px; letter-spacing: 1px; text-shadow: 0 8px 15px rgba(0,0,0,0.8);}
+        .pro-badge { transform: translateZ(40px); margin-top: 8px; background: linear-gradient(135deg, #10b981, #059669); font-size: 11px; padding: 5px 12px; border-radius: 12px; color: white; font-weight: 800; letter-spacing: 3px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);}
+
+        /* Cyberpunk Loading Bar */
+        .cyber-loader { z-index: 10; margin-top: 50px; width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; position: relative;}
+        .cyber-progress { width: 0%; height: 100%; background: linear-gradient(90deg, #8b5cf6, #38bdf8); box-shadow: 0 0 15px #38bdf8; animation: loadProgress 3.5s cubic-bezier(0.1, 0.7, 0.1, 1) forwards; }
+        @keyframes loadProgress { 0% { width: 0%; } 100% { width: 100%; } }
+        
+        .loading-text { z-index: 10; color: #94a3b8; font-size: 10px; font-weight: 700; letter-spacing: 4px; margin-top: 15px; animation: textPulse 1s infinite alternate; }
+        @keyframes textPulse { from { opacity: 0.4; } to { opacity: 1; text-shadow: 0 0 8px rgba(255,255,255,0.5); } }
+
+        /* ========================================================
+           Rest of the App UI
+           ======================================================== */
+           
+        /* Role Selection */
         #role-select { background: #f1f5f9; padding: 0; justify-content: flex-start; align-items: center; position: relative; }
         .role-header-bg { background: linear-gradient(135deg, #1e1b4b, #4338ca); width: 100%; height: 35%; position: absolute; top: 0; left: 0; border-radius: 0 0 40px 40px; z-index: 1;}
         .role-content { position: relative; z-index: 10; width: 100%; padding: 60px 20px 20px 20px; display: flex; flex-direction: column; align-items: center; }
         
-        .role-card-pro {
-            background: white; border-radius: 28px; padding: 25px; margin-bottom: 20px; width: 100%;
-            cursor: pointer; position: relative; overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.05); border: 1px solid white;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; align-items: center; gap: 20px;
-        }
+        .role-card-pro { background: white; border-radius: 28px; padding: 25px; margin-bottom: 20px; width: 100%; cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.05); border: 1px solid white; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; gap: 20px; }
         .role-card-pro:active { transform: scale(0.95); border-color: #6d28d9; }
         .role-card-pro .icon-box { width: 70px; height: 70px; border-radius: 20px; display: flex; justify-content: center; align-items: center; font-size: 30px; transition: 0.3s;}
         
-        /* Vendor Card Styling */
         .vendor-card .icon-box { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);}
         .vendor-card .badge { position: absolute; top: 15px; right: 20px; background: #dcfce7; color: #166534; font-size: 10px; padding: 4px 8px; border-radius: 8px; font-weight: 700; border: 1px solid #bbf7d0;}
-        
-        /* Customer Card Styling */
         .customer-card .icon-box { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white; box-shadow: 0 10px 20px rgba(109, 40, 217, 0.3);}
         
         .role-text h2 { font-size: 20px; color: #0f172a; margin-bottom: 4px; font-weight: 800;}
         .role-text p { font-size: 12px; color: #64748b; font-weight: 500; line-height: 1.4;}
 
-        /* --- 3. Vendor Dashboard (Premium UI) --- */
+        /* Vendor Dashboard */
         .vendor-header { background: #0f172a; color: white; padding: 30px 20px 70px 20px; display: flex; justify-content: space-between; align-items: flex-start; border-radius: 0 0 30px 30px;}
         .vendor-header-info h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;}
         .vendor-header-info p { font-size: 13px; color: #94a3b8; font-weight: 500;}
         
-        /* Dashboard Stats */
         .stats-container { display: flex; gap: 15px; padding: 0 20px; margin-top: -40px; position: relative; z-index: 10;}
         .stat-box { background: white; flex: 1; padding: 18px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.06); border: 1px solid #f1f5f9; display: flex; flex-direction: column; justify-content: center;}
         .stat-box i { font-size: 20px; margin-bottom: 10px;}
         .stat-box p { font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 4px;}
         .stat-box h3 { font-size: 22px; color: #0f172a; font-weight: 800;}
 
-        /* Premium QR Section */
         .qr-section { margin: 25px 20px; background: white; border-radius: 24px; padding: 25px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; text-align: center; position: relative; overflow: hidden;}
-        /* QR Background pattern */
         .qr-section::before { content: ''; position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(16, 185, 129, 0.05); border-radius: 50%; z-index: 0;}
         .qr-section > * { position: relative; z-index: 1;}
-        
         .qr-frame { background: white; padding: 15px; border-radius: 20px; display: inline-block; box-shadow: 0 15px 35px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; margin-bottom: 15px;}
         .qr-frame img { width: 160px; height: 160px; border-radius: 10px; display: block;}
         
         .qr-text-box h3 { font-size: 18px; color: #0f172a; font-weight: 700; margin-bottom: 4px;}
         .qr-text-box p { font-size: 12px; color: #64748b; font-weight: 500;}
 
-        /* Grid Actions */
         .vendor-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; margin-bottom: 20px;}
         .v-action-btn { background: white; border: 1px solid #f1f5f9; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer; transition: 0.2s;}
         .v-action-btn:active { transform: scale(0.95); background: #f8fafc;}
         .v-action-btn i { font-size: 24px; margin-bottom: 10px; }
         .v-action-btn span { display: block; font-size: 13px; font-weight: 700; color: #0f172a;}
 
-        /* --- Customer Screens (Unchanged styling structure) --- */
+        /* Vendor Customers Ledger */
         .header-c { background: linear-gradient(135deg, #4c1d95, #6d28d9); color: white; padding: 30px 20px 25px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .header-c h2 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px;}
+        .tx-list { padding: 0 20px; }
+        .tx-item { background: white; padding: 16px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; cursor: pointer; }
+        .tx-avatar { width: 40px; height: 40px; border-radius: 50%; background: #fef3c7; color: #d97706; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; margin-right: 12px; }
+
+        /* Customer Screens */
         .balance-card { background: white; margin: -10px 20px 20px 20px; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08); text-align: center; position: relative; z-index: 10;}
         .balance-card p { color: #64748b; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .balance-card h2 { color: #0f172a; font-size: 40px; margin: 8px 0 15px 0; font-weight: 800; letter-spacing: -1px;}
         .action-box { background: white; margin: 0 20px 15px 20px; padding: 18px 20px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; border: 1px solid #e2e8f0; cursor: pointer; transition: background 0.2s;}
         .action-icon { background: #f5f3ff; width: 45px; height: 45px; border-radius: 12px; display: flex; justify-content: center; align-items: center; color: #6d28d9; font-size: 20px; margin-right: 15px;}
-        .tx-list { padding: 0 20px; }
-        .tx-item { background: white; padding: 16px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; cursor: pointer; }
-        .tx-avatar { width: 40px; height: 40px; border-radius: 50%; background: #fef3c7; color: #d97706; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; margin-right: 12px; }
         
         .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 75px; background: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -10px 25px rgba(0,0,0,0.05); padding: 0 10px; z-index: 50; border-radius: 0 0 30px 30px;}
         .nav-item { text-align: center; color: #94a3b8; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; transition: 0.2s; }
@@ -138,7 +193,7 @@
         .scan-fab { width: 65px; height: 65px; background: linear-gradient(135deg, #6d28d9, #4f46e5); border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px rgba(109, 40, 217, 0.4); border: 6px solid #f8fafc; cursor: pointer; color: white; font-size: 26px; transition: transform 0.1s;}
         .scan-fab:active { transform: scale(0.95); }
 
-        /* --- Modals / Bottom Sheets --- */
+        /* Modals & Bottom Sheets */
         .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); z-index: 200; display: none; justify-content: center; align-items: flex-end; backdrop-filter: blur(4px);}
         .bottom-sheet { background: white; padding: 25px 20px 35px 20px; border-radius: 30px 30px 0 0; width: 100%; text-align: center; animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 -10px 25px rgba(0,0,0,0.1);}
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -166,17 +221,28 @@
 <body>
     <div class="mobile-frame">
         
-        <!-- 1. Splash Screen (3D) -->
+        <!-- 1. JAW-DROPPING 3D SPLASH SCREEN -->
         <div id="splash" class="screen active">
-            <div class="orb-1"></div>
-            <div class="orb-2"></div>
+            <!-- Animated Background -->
+            <div class="bg-grid"></div>
+            <div class="bg-glow"></div>
             
-            <div class="splash-3d-card">
-                <i class="fa-solid fa-mug-hot"></i>
-                <h1>Tea Pay</h1>
-                <p>Smart Ledger India</p>
-                <div class="loader-bar"></div>
+            <!-- 3D Holographic Card -->
+            <div class="splash-3d-wrapper">
+                <div class="splash-card-pro">
+                    <div class="icon-3d-container">
+                        <i class="fa-solid fa-mug-hot"></i>
+                    </div>
+                    <h1 class="brand-text">Tea Pay</h1>
+                    <div class="pro-badge">SECURE LEDGER</div>
+                </div>
             </div>
+
+            <!-- Cyber Loading Area -->
+            <div class="cyber-loader">
+                <div class="cyber-progress"></div>
+            </div>
+            <div class="loading-text">INITIALIZING SECURE NETWORK...</div>
         </div>
 
         <!-- 2. Role Select (Premium Glass/Cards) -->
@@ -208,9 +274,8 @@
             </div>
         </div>
 
-        <!-- ================= VENDOR SCREENS (Redesigned) ================= -->
+        <!-- ================= VENDOR SCREENS ================= -->
         
-        <!-- Vendor Dashboard -->
         <div id="vendor-dashboard" class="screen">
             <div class="vendor-header">
                 <div class="vendor-header-info">
@@ -222,7 +287,6 @@
                 </div>
             </div>
             
-            <!-- Key Metrics -->
             <div class="stats-container">
                 <div class="stat-box">
                     <i class="fa-solid fa-sack-dollar" style="color: #10b981;"></i>
@@ -236,7 +300,6 @@
                 </div>
             </div>
 
-            <!-- Premium QR Display -->
             <div class="qr-section">
                 <div class="qr-frame">
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://iamcrchoyal.github.io/Vandana/&color=0f172a" alt="Tea Pay QR">
@@ -247,7 +310,6 @@
                 </div>
             </div>
 
-            <!-- Grid Actions -->
             <div class="vendor-actions">
                 <div class="v-action-btn" onclick="openSheet('add-customer-sheet')">
                     <i class="fa-solid fa-user-plus" style="color: #10b981;"></i>
@@ -268,7 +330,6 @@
             </div>
         </div>
 
-        <!-- Vendor Customers Ledger Screen -->
         <div id="vendor-customers" class="screen">
             <div class="header-c" style="background: #0f172a; padding-bottom: 25px;">
                 <h2><div class="back-btn" style="background: rgba(255,255,255,0.1); width: 30px; height: 30px; margin-right: 8px;" onclick="showScreen('vendor-dashboard')"><i class="fa-solid fa-arrow-left" style="font-size: 14px;"></i></div> Client Ledger</h2>
@@ -387,7 +448,6 @@
 
         <!-- ================= MODALS & BOTTOM SHEETS ================= -->
         
-        <!-- Vendor Auth PIN -->
         <div class="modal-overlay" id="vendor-auth-sheet">
             <div class="bottom-sheet">
                 <div class="sheet-drag"></div>
@@ -399,7 +459,6 @@
             </div>
         </div>
 
-        <!-- Add/Search Vendor (Customer) -->
         <div class="modal-overlay" id="search-vendor-sheet">
             <div class="bottom-sheet">
                 <div class="sheet-drag"></div>
@@ -413,7 +472,6 @@
                 
                 <button class="btn-primary" id="search-btn" onclick="searchVendor()">Search Vendor</button>
                 
-                <!-- Hidden Result -->
                 <div id="vendor-result" style="display: none; background: #f8fafc; border: 1px solid #e2e8f0; padding: 18px; border-radius: 16px; margin: 15px 0; text-align: left; align-items: center;">
                     <div class="action-icon" style="background: #e0e7ff; color: #4338ca; width: 50px; height: 50px; margin-right: 15px;"><i class="fa-solid fa-store" style="font-size: 22px;"></i></div>
                     <div style="flex: 1;">
@@ -427,7 +485,6 @@
             </div>
         </div>
 
-        <!-- Add Customer (Vendor) -->
         <div class="modal-overlay" id="add-customer-sheet">
             <div class="bottom-sheet">
                 <div class="sheet-drag"></div>
@@ -439,7 +496,6 @@
             </div>
         </div>
         
-        <!-- Vendor Deduct Tea (Manual Action) -->
         <div class="modal-overlay" id="deduct-tea-sheet">
             <div class="bottom-sheet">
                 <div class="sheet-drag"></div>
@@ -451,7 +507,6 @@
             </div>
         </div>
 
-        <!-- UPI Payment Sheet -->
         <div class="modal-overlay" id="payment-sheet">
             <div class="bottom-sheet">
                 <div class="sheet-drag"></div>
@@ -474,7 +529,6 @@
             </div>
         </div>
 
-        <!-- Wallet Coming Soon Sheet -->
         <div class="modal-overlay" id="wallet-sheet">
             <div class="bottom-sheet">
                 <div class="sheet-drag"></div>
@@ -487,7 +541,6 @@
             </div>
         </div>
 
-        <!-- Scanner Camera UI -->
         <div class="scanner-view" id="scanner-view">
             <div class="close-scanner" onclick="closeScanner()"><i class="fa-solid fa-xmark"></i></div>
             <h3 style="color: white; margin-bottom: 35px; font-weight: 700; font-size: 20px;">Scan Vendor's QR</h3>
@@ -501,15 +554,14 @@
     </div>
 
     <script>
-        // Start flow (Wait 3s for user to see the 3D splash)
-        setTimeout(() => { showScreen('role-select'); }, 3000);
+        // Wait longer (3.5s) for the user to enjoy the 3D Splash
+        setTimeout(() => { showScreen('role-select'); }, 3500);
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         }
 
-        // Bottom Sheets Logic
         function openSheet(id) {
             document.getElementById(id).style.display = 'flex';
         }
@@ -522,7 +574,6 @@
             document.getElementById('link-btn').style.display = 'none';
         }
 
-        // Scanner Logic
         function openScanner() {
             document.getElementById('scanner-view').style.display = 'flex';
             setTimeout(() => {
@@ -534,7 +585,6 @@
             document.getElementById('scanner-view').style.display = 'none';
         }
 
-        // Vendor Auth
         function verifyVendor() {
             const pin = document.getElementById('vendor-pin').value;
             if(pin === '1234') {
@@ -546,7 +596,6 @@
             }
         }
 
-        // Search & Link Vendor
         function searchVendor() {
             const mobile = document.getElementById('search-mobile').value;
             if(mobile.length === 10) {

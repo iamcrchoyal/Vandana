@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tea Pay - Live Prototype</title>
+    <title>Tea Pay - UI V4 (Advanced Logic)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
@@ -18,68 +18,63 @@
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .screen.active { animation: fadeIn 0.3s ease-out forwards; }
 
-        /* --- Splash Screen --- */
+        /* Splash */
         #splash { background: linear-gradient(135deg, #4b1d7d, #5f259f); color: white; justify-content: center; align-items: center; z-index: 100; }
         .splash-content { text-align: center; }
         .splash-content i { font-size: 70px; margin-bottom: 20px; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .splash-content h1 { font-size: 38px; font-weight: 800; letter-spacing: 2px; margin-bottom: 10px; }
-        .splash-loader { width: 40px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; margin: 0 auto; overflow: hidden; position: relative; }
-        .splash-loader::after { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 50%; background: white; border-radius: 2px; animation: loading 1.5s infinite ease-in-out; }
-        @keyframes loading { 0% { left: -50%; } 100% { left: 100%; } }
-
-        /* --- Role Selection --- */
+        
+        /* Role Selection */
         #role-select { padding: 40px 20px; justify-content: center; align-items: center; background: white; text-align: center; }
-        .role-card { background: #f9f9f9; border: 2px solid #eee; border-radius: 15px; padding: 25px; margin: 15px 0; width: 100%; cursor: pointer; transition: all 0.2s; }
+        .role-card { background: #f9f9f9; border: 2px solid #eee; border-radius: 15px; padding: 25px; margin: 15px 0; width: 100%; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;}
         .role-card:active { border-color: #5f259f; background: #f3effa; }
         .role-card i { font-size: 40px; color: #5f259f; margin-bottom: 10px; }
         .role-card h2 { font-size: 20px; color: #333; margin-bottom: 5px; }
+        .secure-badge { position: absolute; top: 10px; right: 10px; background: #e8f5e9; color: #2e7d32; font-size: 10px; padding: 4px 8px; border-radius: 10px; font-weight: bold;}
 
-        /* --- Shared Header --- */
+        /* Shared Header */
         .header { background-color: #5f259f; color: white; padding: 25px 20px 20px 20px; display: flex; justify-content: space-between; align-items: center; }
         .header h2 { font-size: 18px; font-weight: 600; }
 
-        /* --- Dashboard (Customer) --- */
+        /* Dashboard (Customer) */
         .balance-card { background: linear-gradient(135deg, #ffffff, #f9f9f9); margin: 20px; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); text-align: center; border: 1px solid #eee; }
-        .balance-card p { color: #666; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
         .balance-card h2 { color: #111; font-size: 32px; margin: 10px 0; }
         
+        /* PhonePe Style Add Vendor Box */
         .add-vendor-box { background: white; margin: 0 20px 15px 20px; padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: space-between; border: 1px dashed #5f259f; cursor: pointer; }
         .add-vendor-box div { display: flex; align-items: center; gap: 15px; }
-        .add-vendor-box i { font-size: 24px; color: #5f259f; background: #f3effa; padding: 12px; border-radius: 10px; }
-        .add-vendor-box h4 { font-size: 15px; color: #333; }
-        .add-vendor-box p { font-size: 11px; color: #777; }
-
-        /* --- History Screen --- */
-        .tx-list { padding: 20px; }
-        .tx-item { background: white; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border-left: 4px solid #5f259f; }
-        .tx-item.credit { border-left-color: #2e7d32; }
+        .add-vendor-box i { font-size: 24px; color: #5f259f; background: #f3effa; padding: 12px; border-radius: 50%; }
+        
+        /* Lists */
+        .tx-list { padding: 0 20px; }
+        .tx-item { background: white; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border-left: 4px solid #f39c12; }
         .tx-details h4 { font-size: 15px; color: #222; margin-bottom: 4px; }
         .tx-details p { font-size: 12px; color: #888; }
         .tx-amount { font-weight: bold; font-size: 16px; }
-        .text-red { color: #d32f2f; }
-        .text-green { color: #2e7d32; }
+        
+        .btn-primary { background-color: #5f259f; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .btn-secondary { background-color: #f3effa; color: #5f259f; border: 1px solid #5f259f; padding: 12px; width: 100%; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 10px;}
 
-        /* --- Vendor QR Screen --- */
+        /* Vendor QR Screen */
         .qr-container { padding: 30px 20px; text-align: center; }
         .qr-box { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-bottom: 25px; }
-        .qr-box img { width: 200px; height: 200px; margin-bottom: 20px; }
-        .activation-code { background: #f3effa; padding: 15px; border-radius: 10px; border: 1px dashed #5f259f; font-size: 22px; font-weight: bold; letter-spacing: 3px; color: #5f259f; }
-        .btn-primary { background-color: #5f259f; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
-
-        /* --- Bottom Nav --- */
+        .qr-box img { width: 180px; height: 180px; margin-bottom: 20px; }
+        
+        /* Bottom Nav */
         .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 65px; background: white; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -3px 15px rgba(0,0,0,0.06); z-index: 50; border-bottom-left-radius: 27px; border-bottom-right-radius: 27px;}
-        .nav-item { text-align: center; color: #999; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: color 0.2s; }
+        .nav-item { text-align: center; color: #999; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .nav-item.active-nav { color: #5f259f; }
         .nav-item i { font-size: 22px; margin-bottom: 4px; }
         .nav-item span { font-size: 10px; font-weight: 500; }
         
-        .qr-scanner-btn { width: 55px; height: 55px; background: #5f259f; border-radius: 15px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(95,37,159,0.4); cursor: pointer; transform: translateY(-15px); border: 4px solid #f4f6f8; }
-        .qr-scanner-btn i { color: white; font-size: 24px; }
-        
-        /* Modal */
-        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; display: none; justify-content: center; align-items: center; }
+        /* Modals */
+        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 200; display: none; justify-content: center; align-items: center; }
         .modal-box { background: white; padding: 25px; border-radius: 15px; width: 85%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .modal-box input { width: 100%; padding: 15px; margin: 15px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 18px; text-align: center; letter-spacing: 2px; text-transform: uppercase; }
+        .modal-box input { width: 100%; padding: 15px; margin: 15px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; text-align: center; letter-spacing: 1px; }
+        
+        /* Search Result Box */
+        .search-result { display: none; background: #f8f9fa; border: 1px solid #ddd; padding: 15px; border-radius: 10px; margin-bottom: 15px; text-align: left; align-items: center; gap: 15px; }
+        .search-result img { width: 40px; height: 40px; border-radius: 50%; }
     </style>
 </head>
 <body>
@@ -88,27 +83,28 @@
         <!-- Splash -->
         <div id="splash" class="screen active">
             <div class="splash-content">
-                <i class="fa-solid fa-mug-hot"></i>
-                <h1>Tea Pay</h1>
-                <div class="splash-loader"></div>
+                <i class="fa-solid fa-mug-hot"></i><h1>Tea Pay</h1>
             </div>
         </div>
 
         <!-- Role Select -->
         <div id="role-select" class="screen">
             <h2 style="margin-bottom: 10px; color: #333;">Welcome to Tea Pay</h2>
-            <p style="color: #666; font-size: 14px; margin-bottom: 30px;">Choose how you want to use the app</p>
+            <p style="color: #666; font-size: 14px; margin-bottom: 30px;">Choose your account type</p>
             
+            <!-- Vendor at TOP -->
+            <div class="role-card" onclick="openVendorAuth()">
+                <div class="secure-badge"><i class="fa-solid fa-shield-halved"></i> KYC Required</div>
+                <i class="fa-solid fa-store"></i>
+                <h2>I am a Vendor</h2>
+                <p style="font-size: 12px; color: #888;">Manage stall, receive payments & track dues</p>
+            </div>
+
+            <!-- Customer at BOTTOM -->
             <div class="role-card" onclick="showScreen('dashboard')">
                 <i class="fa-solid fa-user"></i>
                 <h2>I am a Customer</h2>
-                <p style="font-size: 12px; color: #888;">Scan QR and manage my dues</p>
-            </div>
-            
-            <div class="role-card" onclick="showScreen('vendor-dashboard')">
-                <i class="fa-solid fa-store"></i>
-                <h2>I am a Vendor</h2>
-                <p style="font-size: 12px; color: #888;">Generate QR and track customers</p>
+                <p style="font-size: 12px; color: #888;">Scan QR, search vendors & settle bills</p>
             </div>
         </div>
 
@@ -120,71 +116,41 @@
             </div>
             
             <div class="balance-card">
-                <p>Total Tea Dues</p>
-                <h2>₹ 500</h2>
-                <button class="btn-primary" style="margin-top: 10px; padding: 10px; font-size: 14px; border-radius: 30px;" onclick="alert('Proceeding to UPI payment...')">Settle All Bills</button>
+                <p style="color: #666; font-size: 13px; font-weight: 500;">Total Tea Dues</p>
+                <h2 id="total-dues">₹ 120</h2>
+                <button class="btn-primary" style="margin-top: 10px; padding: 10px; font-size: 14px; border-radius: 30px;" onclick="alert('Opening UPI Intent...')">Settle All Bills</button>
             </div>
 
-            <!-- Activation Box -->
-            <div class="add-vendor-box" onclick="document.getElementById('activation-modal').style.display='flex'">
+            <!-- PhonePe Style Add Vendor -->
+            <div class="add-vendor-box" onclick="document.getElementById('search-vendor-modal').style.display='flex'">
                 <div>
-                    <i class="fa-solid fa-link"></i>
+                    <i class="fa-solid fa-magnifying-glass"></i>
                     <div>
-                        <h4>Link New Vendor</h4>
-                        <p>Enter 6-digit Activation Code</p>
+                        <h4 style="font-size: 15px; color: #333;">Add Vendor Account</h4>
+                        <p style="font-size: 11px; color: #777;">Search by Mobile Number</p>
                     </div>
                 </div>
-                <i class="fa-solid fa-chevron-right" style="background: none; color: #ccc; font-size: 16px;"></i>
+                <i class="fa-solid fa-plus" style="color: #5f259f; font-size: 18px;"></i>
             </div>
 
-            <div style="padding: 0 20px;">
-                <h3 style="font-size: 14px; color: #666; margin-bottom: 10px;">Linked Vendors (My Network)</h3>
-                <div class="tx-item" style="border-left: 4px solid #f39c12;">
-                    <div class="tx-details"><h4>Raju Tea Stall</h4><p>Vendor ID: RAJ-001</p></div>
+            <div class="tx-list" id="customer-vendor-list">
+                <h3 style="font-size: 14px; color: #666; margin-bottom: 10px;">Linked Vendors</h3>
+                <!-- Dynamic Vendors go here -->
+                <div class="tx-item">
+                    <div class="tx-details"><h4>Raju Tea Stall</h4><p>+91 9876543210</p></div>
                     <div class="tx-amount">Due: ₹ 120</div>
                 </div>
-                <div class="tx-item" style="border-left: 4px solid #f39c12;">
-                    <div class="tx-details"><h4>Sharma Ji Canteen</h4><p>Vendor ID: SHA-099</p></div>
-                    <div class="tx-amount">Due: ₹ 380</div>
-                </div>
             </div>
 
             <div class="bottom-nav">
-                <div class="nav-item active-nav" onclick="showScreen('dashboard')"><i class="fa-solid fa-house"></i><span>Home</span></div>
-                <div class="nav-item" onclick="showScreen('history')"><i class="fa-solid fa-clock-rotate-left"></i><span>History</span></div>
-                <div class="qr-scanner-btn" onclick="alert('Opening Proprietary Scanner... \nOnly linked vendors can be scanned.')"><i class="fa-solid fa-qrcode"></i></div>
+                <div class="nav-item active-nav"><i class="fa-solid fa-house"></i><span>Home</span></div>
+                <div class="nav-item" onclick="alert('Transaction History Loading...')"><i class="fa-solid fa-clock-rotate-left"></i><span>History</span></div>
                 <div class="nav-item"><i class="fa-solid fa-wallet"></i><span>Wallet</span></div>
                 <div class="nav-item"><i class="fa-solid fa-gear"></i><span>Settings</span></div>
             </div>
         </div>
 
-        <!-- History Screen -->
-        <div id="history" class="screen">
-            <div class="header"><h2>Transaction History</h2></div>
-            <div class="tx-list">
-                <div class="tx-item">
-                    <div class="tx-details"><h4>Raju Tea Stall</h4><p>Today, 10:15 AM</p></div>
-                    <div class="tx-amount text-red">- ₹ 20</div>
-                </div>
-                <div class="tx-item">
-                    <div class="tx-details"><h4>Sharma Ji Canteen</h4><p>Yesterday, 04:30 PM</p></div>
-                    <div class="tx-amount text-red">- ₹ 30</div>
-                </div>
-                <div class="tx-item credit">
-                    <div class="tx-details"><h4>Bill Settled (Raju)</h4><p>12 Aug 2026, via UPI</p></div>
-                    <div class="tx-amount text-green">+ ₹ 450</div>
-                </div>
-            </div>
-            <div class="bottom-nav">
-                <div class="nav-item" onclick="showScreen('dashboard')"><i class="fa-solid fa-house"></i><span>Home</span></div>
-                <div class="nav-item active-nav" onclick="showScreen('history')"><i class="fa-solid fa-clock-rotate-left"></i><span>History</span></div>
-                <div class="qr-scanner-btn" onclick="alert('Opening Scanner...')"><i class="fa-solid fa-qrcode"></i></div>
-                <div class="nav-item"><i class="fa-solid fa-wallet"></i><span>Wallet</span></div>
-                <div class="nav-item"><i class="fa-solid fa-gear"></i><span>Settings</span></div>
-            </div>
-        </div>
-
-        <!-- Vendor Dashboard (QR Link Updated) -->
+        <!-- Vendor Dashboard -->
         <div id="vendor-dashboard" class="screen">
             <div class="header" style="background-color: #333;">
                 <h2><i class="fa-solid fa-store" style="margin-right: 8px;"></i> Raju Tea Stall</h2>
@@ -192,44 +158,143 @@
             </div>
             
             <div class="qr-container">
-                <h3 style="color: #333; margin-bottom: 10px;">Your Proprietary QR</h3>
-                <p style="font-size: 12px; color: #666; margin-bottom: 20px;">Only scannable by linked Tea Pay customers</p>
                 <div class="qr-box">
-                    <!-- यह QR कोड अब आपकी लाइव लिंक पर डायरेक्ट करेगा -->
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://iamcrchoyal.github.io/Vandana/&color=5f259f" alt="QR Code">
-                    <p style="font-size: 14px; color: #333; font-weight: bold;">Scan to Pay</p>
+                    <p style="font-size: 14px; color: #333; font-weight: bold;">My Tea Pay QR</p>
                 </div>
-                <div style="text-align: left; margin-bottom: 20px;">
-                    <p style="font-size: 13px; color: #555; margin-bottom: 8px;">Share this code to link new customers:</p>
-                    <div class="activation-code">RAJ-786</div>
-                </div>
-                <button class="btn-primary" style="background: #333;" onclick="alert('Opening list of your 150 linked customers...')">View Connected Customers</button>
+                
+                <!-- Vendor adding customer -->
+                <button class="btn-primary" style="background: #27ae60; margin-bottom: 15px;" onclick="document.getElementById('add-customer-modal').style.display='flex'">
+                    <i class="fa-solid fa-user-plus"></i> Add New Customer
+                </button>
+                
+                <button class="btn-secondary" onclick="alert('Opening customer list...\nTotal Linked: 151')">
+                    View Connected Customers (151)
+                </button>
             </div>
         </div>
 
-        <!-- Modal -->
-        <div class="modal-overlay" id="activation-modal">
+        <!-- Modals -->
+
+        <!-- 1. Vendor Auth Modal -->
+        <div class="modal-overlay" id="vendor-auth-modal">
             <div class="modal-box">
-                <h3 style="color: #5f259f; margin-bottom: 10px;">Link Vendor</h3>
-                <p style="font-size: 12px; color: #666;">Ask your tea vendor for their 6-digit activation code.</p>
-                <input type="text" placeholder="e.g. RAJ-786" maxlength="7">
-                <button class="btn-primary" onclick="document.getElementById('activation-modal').style.display='none'; alert('Vendor Linked! You can now scan their QR.');">Verify & Link</button>
-                <p style="margin-top: 15px; font-size: 12px; color: #888; cursor: pointer;" onclick="document.getElementById('activation-modal').style.display='none'">Cancel</p>
+                <h3 style="color: #333; margin-bottom: 10px;">Vendor Verification</h3>
+                <p style="font-size: 12px; color: #666;">Enter your 4-digit Admin Auth PIN to access vendor dashboard.</p>
+                <p style="font-size: 10px; color: #d32f2f;">(Hint: Enter 1234 for demo)</p>
+                <input type="password" id="vendor-pin" placeholder="* * * *" maxlength="4" style="letter-spacing: 15px; font-weight: bold;">
+                <button class="btn-primary" onclick="verifyVendor()">Verify & Login</button>
+                <p style="margin-top: 15px; font-size: 12px; color: #888; cursor: pointer;" onclick="document.getElementById('vendor-auth-modal').style.display='none'">Cancel</p>
+            </div>
+        </div>
+
+        <!-- 2. Customer Searching Vendor Modal (PhonePe Style) -->
+        <div class="modal-overlay" id="search-vendor-modal">
+            <div class="modal-box">
+                <h3 style="color: #5f259f; margin-bottom: 10px;">Search Vendor</h3>
+                <p style="font-size: 12px; color: #666;">Enter Vendor's 10-digit mobile number</p>
+                <input type="tel" id="search-mobile" placeholder="e.g. 9999999999" maxlength="10">
+                <button class="btn-primary" id="search-btn" onclick="searchVendor()">Search</button>
+                
+                <!-- Search Result (Hidden by default) -->
+                <div class="search-result" id="vendor-result">
+                    <i class="fa-solid fa-store" style="font-size: 24px; color: #5f259f;"></i>
+                    <div style="flex: 1;">
+                        <h4 style="font-size: 14px; color: #333;" id="found-vendor-name">Sharma Ji Canteen</h4>
+                        <p style="font-size: 11px; color: #27ae60;"><i class="fa-solid fa-circle-check"></i> Verified Tea Pay Vendor</p>
+                    </div>
+                </div>
+                
+                <button class="btn-primary" id="link-btn" style="display: none; background: #27ae60; margin-top: 10px;" onclick="linkNewVendor()">Link This Vendor</button>
+                <p style="margin-top: 15px; font-size: 12px; color: #888; cursor: pointer;" onclick="closeSearchModal()">Cancel</p>
+            </div>
+        </div>
+
+        <!-- 3. Vendor Adding Customer Modal -->
+        <div class="modal-overlay" id="add-customer-modal">
+            <div class="modal-box">
+                <h3 style="color: #27ae60; margin-bottom: 10px;">Add Customer</h3>
+                <p style="font-size: 12px; color: #666;">Enter Customer's Mobile Number to send a link request.</p>
+                <input type="tel" id="customer-mobile" placeholder="Customer Mobile No." maxlength="10">
+                <button class="btn-primary" style="background: #27ae60;" onclick="sendCustomerInvite()">Send Request</button>
+                <p style="margin-top: 15px; font-size: 12px; color: #888; cursor: pointer;" onclick="document.getElementById('add-customer-modal').style.display='none'">Cancel</p>
             </div>
         </div>
 
     </div>
 
     <script>
-        setTimeout(() => { showScreen('role-select'); }, 2000);
+        setTimeout(() => { showScreen('role-select'); }, 1500);
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+        }
+
+        // Logic 1: Vendor Auth
+        function openVendorAuth() {
+            document.getElementById('vendor-auth-modal').style.display = 'flex';
+            document.getElementById('vendor-pin').value = '';
+        }
+
+        function verifyVendor() {
+            const pin = document.getElementById('vendor-pin').value;
+            if(pin === '1234') {
+                document.getElementById('vendor-auth-modal').style.display = 'none';
+                showScreen('vendor-dashboard');
+            } else {
+                alert('Invalid PIN! Only verified vendors can access this section.');
+            }
+        }
+
+        // Logic 2: Customer searching vendor (PhonePe Style)
+        function searchVendor() {
+            const mobile = document.getElementById('search-mobile').value;
+            if(mobile.length === 10) {
+                // Simulate network request loading
+                document.getElementById('search-btn').innerHTML = 'Searching...';
+                setTimeout(() => {
+                    document.getElementById('search-btn').style.display = 'none';
+                    document.getElementById('vendor-result').style.display = 'flex';
+                    document.getElementById('link-btn').style.display = 'block';
+                }, 1000);
+            } else {
+                alert('Please enter a valid 10-digit mobile number.');
+            }
+        }
+
+        function linkNewVendor() {
+            // Add to UI dynamically
+            const vendorList = document.getElementById('customer-vendor-list');
+            const newVendor = `
+                <div class="tx-item" style="border-left-color: #27ae60; animation: fadeIn 0.5s;">
+                    <div class="tx-details"><h4>Sharma Ji Canteen</h4><p>+91 ${document.getElementById('search-mobile').value}</p></div>
+                    <div class="tx-amount">Due: ₹ 0</div>
+                </div>
+            `;
+            vendorList.innerHTML += newVendor;
             
-            if(id === 'dashboard' || id === 'history') {
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
-                if(id === 'dashboard') document.querySelectorAll('.nav-item')[0].classList.add('active-nav');
-                if(id === 'history') document.querySelectorAll('.nav-item')[1].classList.add('active-nav');
+            alert('Vendor Linked Successfully!');
+            closeSearchModal();
+        }
+
+        function closeSearchModal() {
+            document.getElementById('search-vendor-modal').style.display = 'none';
+            document.getElementById('search-mobile').value = '';
+            document.getElementById('search-btn').style.display = 'block';
+            document.getElementById('search-btn').innerHTML = 'Search';
+            document.getElementById('vendor-result').style.display = 'none';
+            document.getElementById('link-btn').style.display = 'none';
+        }
+
+        // Logic 3: Vendor adding customer
+        function sendCustomerInvite() {
+            const num = document.getElementById('customer-mobile').value;
+            if(num.length === 10) {
+                alert(`Link request sent to +91 ${num}. Once they accept, they will be added to your list.`);
+                document.getElementById('add-customer-modal').style.display = 'none';
+                document.getElementById('customer-mobile').value = '';
+            } else {
+                alert('Enter valid 10-digit number');
             }
         }
     </script>

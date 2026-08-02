@@ -591,6 +591,21 @@
                 <div class="progress-bar-bg"><div class="progress-bar-fill"></div></div>
                 <div class="card-subtext">Tap to view today's generated bills</div>
             </div>
+
+         <!-- 💰 NEW: CASH & BANK PASSBOOK CARDS -->
+            <div class="dash-card-grid" id="passbook-cards" style="margin-bottom: 12px;">
+                <div class="dash-card" style="background:#e6f4ea; border-color:#cce8d5; min-height: 90px; padding: 12px;">
+                    <div class="card-header" style="margin-bottom:0; font-size:14px; color:#146c2e;">💵 गल्ला (Cash)</div>
+                    <div class="card-value" id="dash-cash-bal" style="font-size:22px; color:#146c2e; margin:6px 0;">₹0</div>
+                    <div style="font-size:11px; color:#146c2e; font-weight:600;">Cash in Hand</div>
+                </div>
+                <div class="dash-card" style="background:#e8f0fe; border-color:#c2e7ff; min-height: 90px; padding: 12px;">
+                    <div class="card-header" style="margin-bottom:0; font-size:14px; color:#0a56d0;">🏦 बैंक (Online)</div>
+                    <div class="card-value" id="dash-online-bal" style="font-size:22px; color:#0a56d0; margin:6px 0;">₹0</div>
+                    <div style="font-size:11px; color:#0a56d0; font-weight:600;">Total Bank Balance</div>
+                </div>
+            </div>
+            
             <div class="dash-card-grid" id="admin-action-cards">
                 <div class="dash-card" onclick="navTo('pos-page', null)">
                     <div class="card-header" style="margin-bottom:0; font-size:16px;">Sale Invoice</div>
@@ -814,6 +829,18 @@
                             <input type="number" class="form-control" id="inv-online-amt" placeholder="Online Paid (₹)" style="border-radius:10px; border-color:#f29900;" onkeyup="updateDynamicQR()">
                         </div>
                     </div>
+
+                    <!-- 🏦 NEW: BANK SELECTION DROPDOWN -->
+                    <div id="bank-selection-container" style="display:none; margin-bottom:16px;">
+                        <select id="inv-bank-name" class="form-control" style="border-radius:12px; border:1px solid var(--primary); background:#e8f0fe; color:var(--primary-dark); font-weight:600;">
+                            <option value="PhonePe/Paytm">📱 PhonePe / Paytm / UPI</option>
+                            <option value="HDFC Bank">🏦 HDFC Bank</option>
+                            <option value="SBI Bank">🏦 SBI Bank</option>
+                            <option value="ICICI Bank">🏦 ICICI Bank</option>
+                            <option value="Bank of Baroda">🏦 Bank of Baroda</option>
+                        </select>
+                    </div>
+
                     
                     <!-- Highly Professional Dynamic QR Display for POS -->
                     <div id="pos-dynamic-qr-box" style="display:none; text-align:center; padding:20px; background:white; border:2px solid #0a56d0; border-radius:16px; box-shadow:0 8px 20px rgba(10,86,208,0.15); position:relative; margin-top:10px;">
@@ -1921,7 +1948,33 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
         window.calculateGrandTotals = function() {
             let balances = {}; let todayTotalSale = 0; let todayTotalBox = 0; let currMonthSales = {}; let lastMonthSales = {}; let selectedDateString = document.getElementById('dash-date-picker').value; let todayDate = new Date(); let currentMonth = todayDate.toISOString().slice(0, 7); let lmDate = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1); let lastMonth = lmDate.toISOString().slice(0, 7);
-            allLedgerData.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let entryDateString = ""; let entryMonthString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) { entryDateString = d.toISOString().split('T')[0]; entryMonthString = d.toISOString().slice(0, 7); } } catch(e){} if(!balances[entry.name]) balances[entry.name] = 0; if(entry.type === 'Gave') balances[entry.name] += amt; if(entry.type === 'Got') balances[entry.name] -= amt; if (entry.details && entry.details.includes("Invoice")) { if(entryMonthString === currentMonth) { currMonthSales[entry.name] = (currMonthSales[entry.name] || 0) + amt; } if(entryMonthString === lastMonth) { lastMonthSales[entry.name] = (lastMonthSales[entry.name] || 0) + amt; } if(entryDateString === selectedDateString){ todayTotalSale += amt; let boxMatch = entry.details.match(/(\d+)\s*Box/i); if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); } } });
+            // NEW: Passbook Variables
+            let totalCashBalance = 0; 
+            let totalOnlineBalance = 0;
+            allLedgerData.forEach(entry => { 
+                let amt = parseFloat(entry.amount) || 0; let entryDateString = ""; let entryMonthString = ""; 
+                try { let d = new Date(entry.date); if (!isNaN(d)) { entryDateString = d.toISOString().split('T')[0]; entryMonthString = d.toISOString().slice(0, 7); } } catch(e){} 
+                
+                if(!balances[entry.name]) balances[entry.name] = 0; 
+                if(entry.type === 'Gave') balances[entry.name] += amt; 
+                if(entry.type === 'Got') balances[entry.name] -= amt; 
+                
+                // 💰 NEW: CASH & BANK PASSBOOK CALCULATION
+                if(entry.details) {
+                    let lowerDetails = entry.details.toLowerCase();
+                    // If money came in (Got)
+                    if(entry.type === 'Got') {
+                        if(lowerDetails.includes('cash')) totalCashBalance += amt;
+                        else if(lowerDetails.includes('online') || lowerDetails.includes('bank') || lowerDetails.includes('phonepe') || lowerDetails.includes('upi') || lowerDetails.includes('paytm')) totalOnlineBalance += amt;
+                    }
+                    // If money went out (Gave / Expenses)
+                    if(entry.type === 'Gave' && !lowerDetails.includes('invoice')) {
+                        if(lowerDetails.includes('cash')) totalCashBalance -= amt;
+                        else if(lowerDetails.includes('online') || lowerDetails.includes('bank') || lowerDetails.includes('upi') || lowerDetails.includes('paytm')) totalOnlineBalance -= amt;
+                    }
+                }
+
+                if (entry.details && entry.details.includes("Invoice")) { if(entryMonthString === currentMonth) { currMonthSales[entry.name] = (currMonthSales[entry.name] || 0) + amt; } if(entryMonthString === lastMonth) { lastMonthSales[entry.name] = (lastMonthSales[entry.name] || 0) + amt; } if(entryDateString === selectedDateString){ todayTotalSale += amt; let boxMatch = entry.details.match(/(\d+)\s*Box/i); if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); } } });
             window.globalBalances = balances; 
             let partyTypes = {}; 
             globalCustomers.forEach(c => { if(c.name) partyTypes[c.name.toLowerCase()] = c.type || 'Customer'; }); 
@@ -1939,6 +1992,10 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
             window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet }; updateLedgerTotalsUI(); if(document.getElementById('parties-page').classList.contains('active')) { renderCustomerList(globalCustomers); }
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
+            // UPDATE DASHBOARD PASSBOOK CARDS UI
+            if(document.getElementById('dash-cash-bal')) document.getElementById('dash-cash-bal').innerText = `₹${totalCashBalance.toLocaleString('en-IN')}`;
+            if(document.getElementById('dash-online-bal')) document.getElementById('dash-online-bal').innerText = `₹${totalOnlineBalance.toLocaleString('en-IN')}`;
+            
 
             // ============== SMART DYNAMIC TITLE LOGIC ==============
             let selectedDateObj = new Date(selectedDateString);
@@ -2380,7 +2437,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         let currentCart = []; let grandInvoiceTotal = 0; let invoiceBoxCount = 0;
         
         // 🌟 NEW PAYMENT MODES & DYNAMIC QR LOGIC
-        window.setPaymentMode = function(mode) {
+       window.setPaymentMode = function(mode) {
             window.currentPaymentMode = mode;
             let btnPending = document.getElementById('pm-pending');
             let btnCash = document.getElementById('pm-cash');
@@ -2393,8 +2450,22 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
             document.getElementById('half-payment-container').style.display = 'none';
             document.getElementById('pos-dynamic-qr-box').style.display = 'none';
+            if(document.getElementById('bank-selection-container')) document.getElementById('bank-selection-container').style.display = 'none';
 
             if(mode === 'pending') {
+                if(btnPending) { btnPending.style.background = '#fdf2f2'; btnPending.style.color = 'var(--danger)'; btnPending.style.borderColor = 'var(--danger)'; }
+            } else if(mode === 'cash') {
+                if(btnCash) { btnCash.style.background = '#e6f4ea'; btnCash.style.color = 'var(--success)'; btnCash.style.borderColor = 'var(--success)'; }
+            } else if(mode === 'online') {
+                if(btnOnline) { btnOnline.style.background = '#e8f0fe'; btnOnline.style.color = 'var(--primary)'; btnOnline.style.borderColor = 'var(--primary)'; }
+                if(document.getElementById('bank-selection-container')) document.getElementById('bank-selection-container').style.display = 'block';
+            } else if(mode === 'half') {
+                if(btnHalf) { btnHalf.style.background = '#fdf4e5'; btnHalf.style.color = '#b36b00'; btnHalf.style.borderColor = '#f29900'; }
+                document.getElementById('half-payment-container').style.display = 'flex';
+                if(document.getElementById('bank-selection-container')) document.getElementById('bank-selection-container').style.display = 'block';
+            }
+            window.updateDynamicQR();
+        }
                 if(btnPending) { btnPending.style.background = '#fdf2f2'; btnPending.style.color = 'var(--danger)'; btnPending.style.borderColor = 'var(--danger)'; }
             } else if(mode === 'cash') {
                 if(btnCash) { btnCash.style.background = '#e6f4ea'; btnCash.style.color = 'var(--success)'; btnCash.style.borderColor = 'var(--success)'; }
@@ -2618,9 +2689,10 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     let cashEntry = { date: finalDateTime, name: partyName, type: "Got", amount: cAmt, details: `Cash Received (Bill #${tempBillNo})` };
                     paymentPromises.push(push(ref(db, 'Ledger'), cashEntry));
                 }
-                // Add exact Online Entry
+                // Add exact Online Entry (With Bank Name)
                 if(oAmt > 0) {
-                    let onlineEntry = { date: finalDateTime, name: partyName, type: "Got", amount: oAmt, details: `Online Payment Received (Bill #${tempBillNo})` };
+                    let bankName = document.getElementById('inv-bank-name') ? document.getElementById('inv-bank-name').value : 'Online';
+                    let onlineEntry = { date: finalDateTime, name: partyName, type: "Got", amount: oAmt, details: `Online Received in ${bankName} (Bill #${tempBillNo})` };
                     paymentPromises.push(push(ref(db, 'Ledger'), onlineEntry));
                 }
 

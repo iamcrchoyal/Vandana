@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tea Pay - UI V8 (Modern Minimalist Splash)</title>
+    <title>Tea Pay - UI V9 (Premium Splash & Fintech Customer UI)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* --- Base & Typography --- */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #cbd5e1; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         
@@ -22,67 +22,84 @@
         .screen.active { animation: fadeSlideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 
         /* --- Reusable UI --- */
-        .btn-primary { background: linear-gradient(135deg, #6d28d9, #4f46e5); color: white; border: none; padding: 16px; width: 100%; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3); transition: transform 0.2s, box-shadow 0.2s; }
+        .btn-primary { background: linear-gradient(135deg, #4f46e5, #4338ca); color: white; border: none; padding: 16px; width: 100%; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3); transition: transform 0.2s, box-shadow 0.2s; }
         .btn-primary:active { transform: scale(0.96); box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2); }
         .btn-secondary { background-color: #ede9fe; color: #4f46e5; border: none; padding: 16px; width: 100%; border-radius: 16px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s;}
         .btn-secondary:active { transform: scale(0.96); background-color: #ddd6fe; }
 
         /* ========================================================
-           🌟 THE MODERN MINIMALIST SPLASH SCREEN (Trending FinTech Style)
+           🔥 V9: THE "MAST" (AWESOME) SPLASH SCREEN
            ======================================================== */
         #splash { 
-            background: #4c1d95; /* Deep, rich premium indigo */
+            /* Animated Gradient Background */
+            background: linear-gradient(-45deg, #1e1b4b, #4338ca, #3b82f6, #6d28d9);
+            background-size: 400% 400%;
+            animation: gradientBG 6s ease infinite;
             justify-content: center; 
             align-items: center; 
             z-index: 100;
         }
+        @keyframes gradientBG { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+
+        /* Ripples behind logo */
+        .ripple {
+            position: absolute;
+            width: 150px; height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: rippleEffect 2s infinite cubic-bezier(0.1, 0.5, 0.5, 1);
+        }
+        .ripple:nth-child(2) { animation-delay: 0.5s; }
+        .ripple:nth-child(3) { animation-delay: 1s; }
+        @keyframes rippleEffect { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
 
         .splash-logo-container {
+            z-index: 10;
             animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            position: relative;
         }
         
         .splash-icon {
-            width: 90px; height: 90px;
-            background: white;
-            border-radius: 28px; /* Squircle look */
+            width: 110px; height: 110px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 35px;
             display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
         
         .splash-icon i {
-            font-size: 45px;
-            color: #4c1d95;
+            font-size: 55px;
+            color: white;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
         }
 
         .splash-title {
-            color: white; font-size: 34px; font-weight: 800; margin-top: 25px; letter-spacing: -0.5px;
-            opacity: 0; animation: fadeUpText 0.8s ease forwards 0.3s;
+            color: white; font-size: 38px; font-weight: 900; margin-top: 30px; letter-spacing: -1px;
+            z-index: 10; opacity: 0; animation: fadeUpText 0.8s ease forwards 0.3s;
+            text-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
         .splash-tagline {
-            color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 500; margin-top: 8px; letter-spacing: 1px; text-transform: uppercase;
-            opacity: 0; animation: fadeUpText 0.8s ease forwards 0.5s;
+            color: rgba(255,255,255,0.9); font-size: 14px; font-weight: 600; margin-top: 8px; letter-spacing: 2px; text-transform: uppercase;
+            z-index: 10; opacity: 0; animation: fadeUpText 0.8s ease forwards 0.5s;
         }
 
-        .splash-spinner {
-            margin-top: 50px;
-            width: 32px; height: 32px;
-            border: 3px solid rgba(255,255,255,0.1);
-            border-top-color: white;
-            border-radius: 50%;
-            opacity: 0;
-            animation: spin 1s linear infinite, fadeUpText 0.5s ease forwards 0.8s;
+        .splash-loader-bar {
+            position: absolute; bottom: 50px; width: 60%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden;
+            z-index: 10; opacity: 0; animation: fadeUpText 0.5s ease forwards 0.8s;
         }
-
+        .splash-loader-fill { width: 0%; height: 100%; background: white; border-radius: 10px; animation: loadBar 2s ease-in-out forwards 1s; box-shadow: 0 0 10px white;}
+        
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes fadeUpText { 0% { transform: translateY(15px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes loadBar { 0% { width: 0%; } 100% { width: 100%; } }
 
         /* ========================================================
-           Rest of the App UI (From V6 Premium)
+           Role Selection 
            ======================================================== */
-           
-        /* Role Selection */
         #role-select { background: #f1f5f9; padding: 0; justify-content: flex-start; align-items: center; position: relative; }
         .role-header-bg { background: linear-gradient(135deg, #1e1b4b, #4338ca); width: 100%; height: 35%; position: absolute; top: 0; left: 0; border-radius: 0 0 40px 40px; z-index: 1;}
         .role-content { position: relative; z-index: 10; width: 100%; padding: 60px 20px 20px 20px; display: flex; flex-direction: column; align-items: center; }
@@ -93,31 +110,67 @@
         
         .vendor-card .icon-box { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);}
         .vendor-card .badge { position: absolute; top: 15px; right: 20px; background: #dcfce7; color: #166534; font-size: 10px; padding: 4px 8px; border-radius: 8px; font-weight: 700; border: 1px solid #bbf7d0;}
-        .customer-card .icon-box { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white; box-shadow: 0 10px 20px rgba(109, 40, 217, 0.3);}
+        .customer-card .icon-box { background: linear-gradient(135deg, #4f46e5, #4338ca); color: white; box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);}
         
         .role-text h2 { font-size: 20px; color: #0f172a; margin-bottom: 4px; font-weight: 800;}
         .role-text p { font-size: 12px; color: #64748b; font-weight: 500; line-height: 1.4;}
 
-        /* Vendor Dashboard */
+        /* ========================================================
+           🔥 V9: ULTRA PROFESSIONAL CUSTOMER DASHBOARD (CRED Style)
+           ======================================================== */
+        
+        /* Seamless Top Header for Customer */
+        .header-fintech { background: #1e1b4b; color: white; padding: 30px 20px 100px 20px; display: flex; justify-content: space-between; align-items: flex-start; border-radius: 0 0 30px 30px; position: relative;}
+        .user-profile-mini { display: flex; align-items: center; gap: 12px; }
+        .user-profile-mini img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); }
+        .user-profile-mini h2 { font-size: 18px; font-weight: 700; }
+        .user-profile-mini p { font-size: 12px; color: #a5b4fc; font-weight: 500; }
+
+        /* The Premium Black/Purple Balance Card */
+        .premium-balance-card { 
+            background: linear-gradient(135deg, #0f172a, #1e1b4b);
+            margin: -70px 20px 20px 20px; 
+            padding: 30px 25px; 
+            border-radius: 28px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
+            position: relative; z-index: 10;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        /* Card design elements */
+        .premium-balance-card::before { content: ''; position: absolute; top: -50px; right: -20px; width: 150px; height: 150px; background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%); border-radius: 50%; }
+        .card-label { color: #94a3b8; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;}
+        .card-amount { color: white; font-size: 46px; margin: 10px 0 25px 0; font-weight: 900; letter-spacing: -1px; display: flex; align-items: baseline; gap: 5px;}
+        .card-amount span { font-size: 24px; color: #818cf8; font-weight: 700;}
+        .btn-pay-premium { background: white; color: #1e1b4b; border: none; padding: 14px; width: 100%; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px rgba(255,255,255,0.2);}
+        .btn-pay-premium:active { transform: scale(0.96); }
+
+        /* Modern Quick Action Box */
+        .action-box-modern { background: white; margin: 0 20px 15px 20px; padding: 18px 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: space-between; border: 1px solid #f1f5f9; cursor: pointer; transition: 0.2s;}
+        .action-box-modern:active { transform: scale(0.98); background: #f8fafc; }
+        .icon-circle { width: 50px; height: 50px; border-radius: 50%; background: #eff6ff; color: #3b82f6; display: flex; justify-content: center; align-items: center; font-size: 20px; margin-right: 15px;}
+        
+        /* List UI */
+        .tx-list { padding: 0 20px; }
+        .tx-list-title { font-size: 13px; color: #64748b; margin-bottom: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;}
+        .tx-item { background: white; padding: 18px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border: 1px solid #f1f5f9; cursor: pointer; transition: 0.2s;}
+        .tx-item:active { transform: scale(0.98); }
+        .tx-avatar { width: 45px; height: 45px; border-radius: 14px; background: #fef3c7; color: #d97706; display: flex; justify-content: center; align-items: center; font-weight: 800; font-size: 18px; margin-right: 15px; }
+
+        /* Vendor Dashboard (Retained V8 Pro Style) */
         .vendor-header { background: #0f172a; color: white; padding: 30px 20px 70px 20px; display: flex; justify-content: space-between; align-items: flex-start; border-radius: 0 0 30px 30px;}
         .vendor-header-info h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;}
         .vendor-header-info p { font-size: 13px; color: #94a3b8; font-weight: 500;}
-        
         .stats-container { display: flex; gap: 15px; padding: 0 20px; margin-top: -40px; position: relative; z-index: 10;}
         .stat-box { background: white; flex: 1; padding: 18px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.06); border: 1px solid #f1f5f9; display: flex; flex-direction: column; justify-content: center;}
         .stat-box i { font-size: 20px; margin-bottom: 10px;}
         .stat-box p { font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 4px;}
         .stat-box h3 { font-size: 22px; color: #0f172a; font-weight: 800;}
-
         .qr-section { margin: 25px 20px; background: white; border-radius: 24px; padding: 25px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; text-align: center; position: relative; overflow: hidden;}
-        .qr-section::before { content: ''; position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(16, 185, 129, 0.05); border-radius: 50%; z-index: 0;}
-        .qr-section > * { position: relative; z-index: 1;}
         .qr-frame { background: white; padding: 15px; border-radius: 20px; display: inline-block; box-shadow: 0 15px 35px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; margin-bottom: 15px;}
         .qr-frame img { width: 160px; height: 160px; border-radius: 10px; display: block;}
-        
         .qr-text-box h3 { font-size: 18px; color: #0f172a; font-weight: 700; margin-bottom: 4px;}
         .qr-text-box p { font-size: 12px; color: #64748b; font-weight: 500;}
-
         .vendor-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; margin-bottom: 20px;}
         .v-action-btn { background: white; border: 1px solid #f1f5f9; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer; transition: 0.2s;}
         .v-action-btn:active { transform: scale(0.95); background: #f8fafc;}
@@ -125,27 +178,17 @@
         .v-action-btn span { display: block; font-size: 13px; font-weight: 700; color: #0f172a;}
 
         /* Vendor Customers Ledger */
-        .header-c { background: linear-gradient(135deg, #4c1d95, #6d28d9); color: white; padding: 30px 20px 25px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .header-c { background: linear-gradient(135deg, #1e1b4b, #4338ca); color: white; padding: 30px 20px 25px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .header-c h2 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px;}
-        .tx-list { padding: 0 20px; }
-        .tx-item { background: white; padding: 16px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; cursor: pointer; }
-        .tx-avatar { width: 40px; height: 40px; border-radius: 50%; background: #fef3c7; color: #d97706; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; margin-right: 12px; }
 
-        /* Customer Screens */
-        .balance-card { background: white; margin: -10px 20px 20px 20px; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08); text-align: center; position: relative; z-index: 10;}
-        .balance-card p { color: #64748b; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .balance-card h2 { color: #0f172a; font-size: 40px; margin: 8px 0 15px 0; font-weight: 800; letter-spacing: -1px;}
-        .action-box { background: white; margin: 0 20px 15px 20px; padding: 18px 20px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; border: 1px solid #e2e8f0; cursor: pointer; transition: background 0.2s;}
-        .action-icon { background: #f5f3ff; width: 45px; height: 45px; border-radius: 12px; display: flex; justify-content: center; align-items: center; color: #6d28d9; font-size: 20px; margin-right: 15px;}
-        
+        /* Bottom Nav */
         .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 75px; background: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -10px 25px rgba(0,0,0,0.05); padding: 0 10px; z-index: 50; border-radius: 0 0 30px 30px;}
         .nav-item { text-align: center; color: #94a3b8; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; transition: 0.2s; }
-        .nav-item.active-nav { color: #6d28d9; }
+        .nav-item.active-nav { color: #4f46e5; }
         .nav-item i { font-size: 22px; margin-bottom: 5px; }
         .nav-item span { font-size: 11px; font-weight: 600; }
-        
         .scan-fab-wrapper { position: relative; top: -25px; display: flex; flex-direction: column; align-items: center;}
-        .scan-fab { width: 65px; height: 65px; background: linear-gradient(135deg, #6d28d9, #4f46e5); border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px rgba(109, 40, 217, 0.4); border: 6px solid #f8fafc; cursor: pointer; color: white; font-size: 26px; transition: transform 0.1s;}
+        .scan-fab { width: 65px; height: 65px; background: linear-gradient(135deg, #4f46e5, #4338ca); border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4); border: 6px solid #f8fafc; cursor: pointer; color: white; font-size: 26px; transition: transform 0.1s;}
         .scan-fab:active { transform: scale(0.95); }
 
         /* Modals & Bottom Sheets */
@@ -154,21 +197,20 @@
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         .sheet-drag { width: 50px; height: 5px; background: #cbd5e1; border-radius: 5px; margin: 0 auto 25px auto; }
         .bottom-sheet input { width: 100%; padding: 16px; margin: 15px 0; border: 1.5px solid #e2e8f0; border-radius: 16px; font-size: 16px; outline: none; transition: border 0.2s;}
-        .bottom-sheet input:focus { border-color: #6d28d9; }
+        .bottom-sheet input:focus { border-color: #4f46e5; }
         .upi-option { display: flex; align-items: center; padding: 15px; border: 1px solid #e2e8f0; border-radius: 16px; margin-bottom: 10px; cursor: pointer; text-align: left;}
-        .upi-option:active { background: #f8fafc; border-color: #6d28d9; }
+        .upi-option:active { background: #f8fafc; border-color: #4f46e5; }
 
         /* Scanner Modal */
-        .scanner-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 300; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(10px);}
-        .scan-box { width: 260px; height: 260px; border: 2px solid rgba(255,255,255,0.3); border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 0 0 4000px rgba(0,0,0,0.5); }
-        .scan-box::before, .scan-box::after, .scan-corners::before, .scan-corners::after { content: ''; position: absolute; width: 40px; height: 40px; border-color: #10b981; border-style: solid; }
+        .scanner-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 300; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(10px);}
+        .scan-box { width: 260px; height: 260px; border: 2px solid rgba(255,255,255,0.2); border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 0 0 4000px rgba(0,0,0,0.6); }
+        .scan-box::before, .scan-box::after, .scan-corners::before, .scan-corners::after { content: ''; position: absolute; width: 40px; height: 40px; border-color: #3b82f6; border-style: solid; }
         .scan-box::before { top: 0; left: 0; border-width: 4px 0 0 4px; border-radius: 30px 0 0 0; }
         .scan-box::after { top: 0; right: 0; border-width: 4px 4px 0 0; border-radius: 0 30px 0 0; }
         .scan-corners { position: absolute; width: 100%; height: 100%; top: 0; left: 0;}
         .scan-corners::before { bottom: 0; left: 0; border-width: 0 0 4px 4px; border-radius: 0 0 0 30px; }
         .scan-corners::after { bottom: 0; right: 0; border-width: 0 4px 4px 0; border-radius: 0 0 30px 0; }
-        
-        .scan-line { width: 100%; height: 3px; background: #10b981; position: absolute; box-shadow: 0 0 20px 2px #10b981; animation: scanning 2s infinite linear; z-index: 10;}
+        .scan-line { width: 100%; height: 3px; background: #3b82f6; position: absolute; box-shadow: 0 0 20px 2px #3b82f6; animation: scanning 2s infinite linear; z-index: 10;}
         @keyframes scanning { 0% { top: 0; } 100% { top: 100%; } }
         .close-scanner { position: absolute; top: 50px; left: 25px; color: white; font-size: 24px; cursor: pointer; background: rgba(255,255,255,0.2); width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px);}
     </style>
@@ -176,8 +218,12 @@
 <body>
     <div class="mobile-frame">
         
-        <!-- 1. MODERN MINIMALIST SPLASH SCREEN -->
+        <!-- 1. AWESOME ANIMATED SPLASH SCREEN -->
         <div id="splash" class="screen active">
+            
+            <div class="ripple"></div>
+            <div class="ripple"></div>
+            <div class="ripple"></div>
             
             <div class="splash-logo-container">
                 <div class="splash-icon">
@@ -186,13 +232,16 @@
             </div>
             
             <h1 class="splash-title">Tea Pay</h1>
-            <p class="splash-tagline">Trusted By Local Vendors</p>
+            <p class="splash-tagline">Smart Digital Ledger</p>
             
-            <div class="splash-spinner"></div>
+            <!-- Modern Loading Bar -->
+            <div class="splash-loader-bar">
+                <div class="splash-loader-fill"></div>
+            </div>
             
         </div>
 
-        <!-- 2. Role Select (Premium Glass/Cards) -->
+        <!-- 2. Role Select -->
         <div id="role-select" class="screen">
             <div class="role-header-bg"></div>
             
@@ -200,29 +249,26 @@
                 <h1 style="color: white; font-size: 32px; font-weight: 800; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Welcome.</h1>
                 <p style="color: rgba(255,255,255,0.8); font-size: 14px; margin-bottom: 40px; font-weight: 500;">Select your account profile</p>
                 
-                <!-- Vendor Card -->
                 <div class="role-card-pro vendor-card" onclick="openSheet('vendor-auth-sheet')">
                     <div class="badge"><i class="fa-solid fa-shield-halved"></i> KYC verified</div>
                     <div class="icon-box"><i class="fa-solid fa-store"></i></div>
                     <div class="role-text">
                         <h2>Vendor</h2>
-                        <p>Manage stall, receive payments & track customer dues seamlessly.</p>
+                        <p>Manage stall, receive payments & track customer dues.</p>
                     </div>
                 </div>
 
-                <!-- Customer Card -->
                 <div class="role-card-pro customer-card" onclick="showScreen('dashboard')">
                     <div class="icon-box"><i class="fa-solid fa-user-astronaut"></i></div>
                     <div class="role-text">
                         <h2>Customer</h2>
-                        <p>Scan vendor QR, track daily tea logs, and settle bills in one tap.</p>
+                        <p>Scan QR, search vendors & settle bills instantly.</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- ================= VENDOR SCREENS ================= -->
-        
         <div id="vendor-dashboard" class="screen">
             <div class="vendor-header">
                 <div class="vendor-header-info">
@@ -233,7 +279,6 @@
                     <i class="fa-solid fa-power-off" style="font-size: 14px;"></i>
                 </div>
             </div>
-            
             <div class="stats-container">
                 <div class="stat-box">
                     <i class="fa-solid fa-sack-dollar" style="color: #10b981;"></i>
@@ -246,7 +291,6 @@
                     <h3>151</h3>
                 </div>
             </div>
-
             <div class="qr-section">
                 <div class="qr-frame">
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://iamcrchoyal.github.io/Vandana/&color=0f172a" alt="Tea Pay QR">
@@ -256,7 +300,6 @@
                     <p>Show this to your linked Tea Pay customers</p>
                 </div>
             </div>
-
             <div class="vendor-actions">
                 <div class="v-action-btn" onclick="openSheet('add-customer-sheet')">
                     <i class="fa-solid fa-user-plus" style="color: #10b981;"></i>
@@ -286,8 +329,7 @@
                     <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; margin-right: 12px; margin-top: 2px;"></i>
                     <input type="text" placeholder="Search customer name..." style="border: none; outline: none; width: 100%; font-size: 15px; font-weight: 500; color: #0f172a;">
                 </div>
-                
-                <h3 style="font-size: 13px; color: #64748b; margin-bottom: 12px; text-transform: uppercase; font-weight: 700;">Outstanding Dues</h3>
+                <h3 class="tx-list-title">Outstanding Dues</h3>
                 
                 <div class="tx-item" style="border-left: 4px solid #ef4444;" onclick="openSheet('deduct-tea-sheet')">
                     <div style="display: flex; align-items: center;">
@@ -313,42 +355,75 @@
             </div>
         </div>
 
-        <!-- ================= CUSTOMER SCREENS ================= -->
+        <!-- ================= CUSTOMER SCREENS (ULTRA PRO FINTECH) ================= -->
         
         <div id="dashboard" class="screen">
-            <div class="header-c" style="padding-bottom: 45px;">
-                <h2><img src="https://ui-avatars.com/api/?name=Ramesh+K&background=fff&color=6d28d9" style="width: 35px; border-radius: 50%;"> Hi, Ramesh</h2>
-                <i class="fa-regular fa-bell" style="font-size: 22px;"></i>
+            <!-- Sleek Fintech Header -->
+            <div class="header-fintech">
+                <div class="user-profile-mini">
+                    <img src="https://ui-avatars.com/api/?name=Ramesh+K&background=fff&color=1e1b4b" alt="User">
+                    <div>
+                        <h2>Hi, Ramesh</h2>
+                        <p>Customer Profile</p>
+                    </div>
+                </div>
+                <div style="background: rgba(255,255,255,0.15); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer;">
+                    <i class="fa-regular fa-bell" style="font-size: 20px;"></i>
+                </div>
             </div>
             
-            <div class="balance-card">
-                <p>Total Outstanding Dues</p>
-                <h2 id="total-dues">₹ 520</h2>
-                <button class="btn-primary" onclick="openSheet('payment-sheet')">Pay Dues via UPI</button>
+            <!-- Premium Dark Balance Card -->
+            <div class="premium-balance-card">
+                <div class="card-label">
+                    <span>Total Outstanding</span>
+                    <i class="fa-solid fa-circle-info" style="color: rgba(255,255,255,0.4); cursor: pointer;"></i>
+                </div>
+                <div class="card-amount"><span>₹</span>520</div>
+                <button class="btn-pay-premium" onclick="openSheet('payment-sheet')">Settle All Bills via UPI</button>
             </div>
 
-            <div class="action-box" onclick="openSheet('search-vendor-sheet')">
+            <!-- Modern Action Box -->
+            <div class="action-box-modern" onclick="openSheet('search-vendor-sheet')">
                 <div style="display: flex; align-items: center;">
-                    <div class="action-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <div class="icon-circle"><i class="fa-solid fa-magnifying-glass"></i></div>
                     <div>
                         <h4 style="font-size: 16px; color: #0f172a; font-weight: 700;">Link New Vendor</h4>
-                        <p style="font-size: 12px; color: #64748b; margin-top: 2px;">Search by Mobile Number</p>
+                        <p style="font-size: 12px; color: #64748b; margin-top: 2px;">Search by mobile number</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
             </div>
 
+            <!-- Linked Vendors List -->
             <div class="tx-list" id="customer-vendor-list">
-                <h3 style="font-size: 14px; color: #64748b; margin-bottom: 12px; font-weight: 700; text-transform: uppercase;">My Linked Vendors</h3>
+                <h3 class="tx-list-title">My Linked Vendors</h3>
+                
                 <div class="tx-item" onclick="alert('Viewing Raju Tea Stall details...')">
                     <div style="display: flex; align-items: center;">
                         <div class="tx-avatar">R</div>
                         <div>
-                            <h4 style="font-size: 15px; color: #0f172a; font-weight: 700;">Raju Tea Stall</h4>
+                            <h4 style="font-size: 16px; color: #0f172a; font-weight: 700;">Raju Tea Stall</h4>
                             <p style="font-size: 12px; color: #64748b;">+91 98765 43210</p>
                         </div>
                     </div>
-                    <div style="font-weight: 800; color: #b45309; font-size: 16px;">₹ 120</div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: 800; color: #b45309; font-size: 16px;">₹ 120</div>
+                        <div style="font-size: 10px; color: #ef4444; font-weight: 600;">DUE</div>
+                    </div>
+                </div>
+
+                <div class="tx-item">
+                    <div style="display: flex; align-items: center;">
+                        <div class="tx-avatar" style="background: #e0e7ff; color: #4338ca;">S</div>
+                        <div>
+                            <h4 style="font-size: 16px; color: #0f172a; font-weight: 700;">Sharma Ji Canteen</h4>
+                            <p style="font-size: 12px; color: #64748b;">+91 99999 88888</p>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: 800; color: #b45309; font-size: 16px;">₹ 400</div>
+                        <div style="font-size: 10px; color: #ef4444; font-weight: 600;">DUE</div>
+                    </div>
                 </div>
             </div>
             
@@ -357,7 +432,7 @@
                 <div class="nav-item" onclick="showScreen('history')"><i class="fa-solid fa-clock-rotate-left"></i><span>History</span></div>
                 <div class="scan-fab-wrapper" onclick="openScanner()">
                     <div class="scan-fab"><i class="fa-solid fa-qrcode"></i></div>
-                    <span style="font-size: 11px; font-weight: 800; color: #6d28d9; margin-top: 6px;">Scan QR</span>
+                    <span style="font-size: 11px; font-weight: 800; color: #4f46e5; margin-top: 6px;">Scan QR</span>
                 </div>
                 <div class="nav-item" onclick="openSheet('wallet-sheet')"><i class="fa-solid fa-wallet"></i><span>Wallet</span></div>
                 <div class="nav-item" onclick="showScreen('role-select')"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></div>
@@ -371,7 +446,7 @@
             <div class="tx-list" style="margin-top: 20px;">
                 <div class="tx-item" style="border-left: 4px solid #ef4444;">
                     <div style="display: flex; align-items: center;">
-                        <div class="action-icon" style="background: #fee2e2; color: #ef4444; width: 42px; height: 42px; font-size: 18px;"><i class="fa-solid fa-mug-hot"></i></div>
+                        <div class="icon-circle" style="background: #fee2e2; color: #ef4444; width: 42px; height: 42px; font-size: 18px;"><i class="fa-solid fa-mug-hot"></i></div>
                         <div>
                             <h4 style="font-size: 15px; color: #0f172a; font-weight: 700;">Raju Tea Stall</h4>
                             <p style="font-size: 12px; color: #64748b;">Today, 10:15 AM</p>
@@ -386,7 +461,7 @@
                 <div class="nav-item active-nav" onclick="showScreen('history')"><i class="fa-solid fa-clock-rotate-left"></i><span>History</span></div>
                 <div class="scan-fab-wrapper" onclick="openScanner()">
                     <div class="scan-fab"><i class="fa-solid fa-qrcode"></i></div>
-                    <span style="font-size: 11px; font-weight: 800; color: #6d28d9; margin-top: 6px;">Scan QR</span>
+                    <span style="font-size: 11px; font-weight: 800; color: #4f46e5; margin-top: 6px;">Scan QR</span>
                 </div>
                 <div class="nav-item" onclick="openSheet('wallet-sheet')"><i class="fa-solid fa-wallet"></i><span>Wallet</span></div>
                 <div class="nav-item" onclick="showScreen('role-select')"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></div>
@@ -420,7 +495,7 @@
                 <button class="btn-primary" id="search-btn" onclick="searchVendor()">Search Vendor</button>
                 
                 <div id="vendor-result" style="display: none; background: #f8fafc; border: 1px solid #e2e8f0; padding: 18px; border-radius: 16px; margin: 15px 0; text-align: left; align-items: center;">
-                    <div class="action-icon" style="background: #e0e7ff; color: #4338ca; width: 50px; height: 50px; margin-right: 15px;"><i class="fa-solid fa-store" style="font-size: 22px;"></i></div>
+                    <div class="icon-circle" style="width: 50px; height: 50px; margin-right: 15px;"><i class="fa-solid fa-store" style="font-size: 22px;"></i></div>
                     <div style="flex: 1;">
                         <h4 style="font-size: 16px; color: #0f172a; font-weight: 700;">Verma Ji Tea Stall</h4>
                         <p style="font-size: 12px; color: #10b981; font-weight: 700; margin-top: 4px;"><i class="fa-solid fa-shield-check"></i> Verified Partner</p>
@@ -446,7 +521,7 @@
         <div class="modal-overlay" id="deduct-tea-sheet">
             <div class="bottom-sheet">
                 <div class="sheet-drag"></div>
-                <div class="action-icon" style="background: #fee2e2; color: #ef4444; width: 60px; height: 60px; font-size: 28px; margin: 0 auto 15px auto;"><i class="fa-solid fa-mug-hot"></i></div>
+                <div class="icon-circle" style="background: #fee2e2; color: #ef4444; width: 60px; height: 60px; font-size: 28px; margin: 0 auto 15px auto;"><i class="fa-solid fa-mug-hot"></i></div>
                 <h3 style="color: #0f172a; margin-bottom: 5px; font-size: 22px; font-weight: 800;">Add 1 Cup for Ramesh</h3>
                 <p style="font-size: 13px; color: #64748b; margin-bottom: 25px;">This will add ₹10 to Ramesh's outstanding dues.</p>
                 <button class="btn-primary" style="background: linear-gradient(135deg, #ef4444, #dc2626);" onclick="alert('Success! ₹10 added to Ramesh\'s account.'); closeAllSheets();">Confirm (+₹10)</button>
@@ -569,7 +644,10 @@
                             <p style="font-size: 12px; color: #64748b;">+91 ${num}</p>
                         </div>
                     </div>
-                    <div style="font-weight: 800; color: #b45309; font-size: 16px;">₹ 0</div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: 800; color: #b45309; font-size: 16px;">₹ 0</div>
+                        <div style="font-size: 10px; color: #ef4444; font-weight: 600;">DUE</div>
+                    </div>
                 </div>
             `;
             vendorList.innerHTML += newVendor;

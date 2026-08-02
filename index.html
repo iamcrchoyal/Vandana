@@ -3,163 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tea Pay - UI Preview</title>
+    <title>Tea Pay - UI V2 (PhonePe Style)</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- ग्लोबल स्टाइल्स --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #e0e0e0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         
-        /* --- मोबाइल फ्रेम का डिज़ाइन --- */
+        /* Mobile Frame */
         .mobile-frame {
-            width: 360px;
-            height: 720px;
-            background-color: #ffffff;
-            border-radius: 35px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            position: relative;
-            overflow: hidden;
-            border: 8px solid #333;
+            width: 360px; height: 720px; background-color: #f4f6f8;
+            border-radius: 35px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            position: relative; overflow: hidden; border: 8px solid #333;
         }
 
-        /* --- स्क्रीन सेटिंग्स --- */
-        .screen {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: none;
-            flex-direction: column;
-            background-color: #f9f9f9;
-        }
+        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; background-color: #f4f6f8; }
         .active { display: flex; }
 
-        /* --- स्प्लैश स्क्रीन (Splash Screen) --- */
-        #splash {
-            background-color: #D35400; /* चाय का रंग (Orange/Brown) */
-            color: white;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.5s ease;
-        }
-        #splash h1 { font-size: 40px; font-weight: bold; letter-spacing: 2px; }
-        #splash p { font-size: 14px; margin-top: 10px; opacity: 0.8; }
-
-        /* --- लॉगिन स्क्रीन (Login Screen) --- */
-        #login { padding: 40px 20px; justify-content: center; background: white; }
-        .login-logo { font-size: 30px; font-weight: bold; color: #D35400; text-align: center; margin-bottom: 40px; }
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-size: 12px; color: #666; margin-bottom: 5px; }
-        .input-group input { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; }
-        .btn-primary { background-color: #D35400; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
-        .btn-bio { background-color: #333; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-size: 16px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; }
-
-        /* --- डैशबोर्ड स्क्रीन (Dashboard) --- */
-        .header { background-color: #D35400; color: white; padding: 30px 20px 20px 20px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
-        .header h2 { font-size: 20px; font-weight: 500; }
+        /* Splash Screen */
+        #splash { background-color: #5f259f; color: white; justify-content: center; align-items: center; }
+        #splash i { font-size: 60px; margin-bottom: 15px; }
+        #splash h1 { font-size: 36px; font-weight: bold; letter-spacing: 1px; }
         
-        .balance-card { background: white; margin: -20px 20px 20px 20px; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; position: relative; z-index: 10; }
-        .balance-card p { color: #888; font-size: 14px; margin-bottom: 5px; }
-        .balance-card h1 { color: #333; font-size: 36px; margin-bottom: 15px; }
-        .pay-btn { background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: bold; width: 100%; }
+        /* Login */
+        #login { padding: 40px 20px; justify-content: center; background: white; }
+        .login-logo { font-size: 30px; font-weight: bold; color: #5f259f; text-align: center; margin-bottom: 40px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .login-logo i { font-size: 40px; }
+        .input-group { margin-bottom: 20px; }
+        .input-group input { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; text-align: center; letter-spacing: 2px;}
+        .btn-primary { background-color: #5f259f; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-size: 16px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 10px rgba(95,37,159,0.3);}
+        
+        /* Dashboard */
+        /* Top Header like PhonePe */
+        .header { background-color: #5f259f; color: white; padding: 25px 20px 70px 20px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .user-info img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); }
+        .address-box p { font-size: 11px; opacity: 0.8; margin-bottom: 2px;}
+        .address-box h3 { font-size: 15px; display: flex; align-items: center; gap: 5px; }
+        .header-icons i { font-size: 22px; margin-left: 18px; cursor: pointer;}
 
-        .action-row { display: flex; justify-content: space-between; padding: 0 20px; margin-bottom: 20px; }
-        .action-btn { flex: 1; background: #fff; margin: 0 5px; padding: 15px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; font-size: 14px; color: #D35400; font-weight: bold; border: 1px solid #f0f0f0; }
+        /* Balance Card */
+        .balance-card { background: white; margin: -45px 20px 15px 20px; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center; z-index: 5; position: relative; }
+        .balance-left p { color: #666; font-size: 13px; margin-bottom: 5px; font-weight: 500;}
+        .balance-left h2 { color: #111; font-size: 26px; }
+        .pay-btn { background-color: #5f259f; color: white; border: none; padding: 10px 22px; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; box-shadow: 0 3px 8px rgba(95,37,159,0.3); }
 
-        .ledger-section { padding: 0 20px; flex: 1; overflow-y: auto; }
-        .ledger-section h3 { font-size: 16px; color: #333; margin-bottom: 15px; }
-        .tx-item { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .tx-left h4 { font-size: 14px; color: #333; margin-bottom: 3px; }
-        .tx-left p { font-size: 12px; color: #888; }
-        .tx-right { font-weight: bold; font-size: 16px; }
-        .tx-red { color: #e74c3c; }
-        .tx-green { color: #27ae60; }
+        /* Icon Grid (Quick Actions) */
+        .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px 15px; margin-bottom: 10px; background: white; margin: 0 20px 15px 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03);}
+        .action-item { text-align: center; cursor: pointer; }
+        .action-icon { width: 45px; height: 45px; background: #f3effa; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 20px; color: #5f259f; margin: 0 auto 8px auto; transition: background 0.2s; }
+        .action-item:hover .action-icon { background: #e3d5f5; }
+        .action-item span { font-size: 11px; color: #444; font-weight: 500; }
+
+        /* Transactions List */
+        .tx-list { padding: 0 20px; overflow-y: auto; height: calc(100% - 410px); padding-bottom: 90px; }
+        .tx-list h3 { font-size: 15px; margin-bottom: 12px; color: #333; font-weight: 600;}
+        .tx-item { background: white; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; box-shadow: 0 1px 5px rgba(0,0,0,0.04); }
+        .tx-icon { width: 40px; height: 40px; background: #f9f9f9; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #5f259f; font-size: 18px; margin-right: 15px; border: 1px solid #eee;}
+        .tx-details { flex: 1; }
+        .tx-details h4 { font-size: 14px; color: #222; margin-bottom: 4px; }
+        .tx-details p { font-size: 11px; color: #888; }
+        .tx-amount { font-weight: bold; font-size: 15px; }
+        .text-red { color: #d32f2f; }
+        .text-green { color: #2e7d32; }
+
+        /* Bottom Nav Bar (PhonePe Style) */
+        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 65px; background: white; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; box-shadow: 0 -3px 15px rgba(0,0,0,0.06); border-bottom-left-radius: 27px; border-bottom-right-radius: 27px; z-index: 10;}
+        .nav-item { text-align: center; color: #777; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+        .nav-item.active-nav { color: #5f259f; font-weight: 600;}
+        .nav-item i { font-size: 22px; margin-bottom: 4px; }
+        .nav-item span { font-size: 10px; }
+
+        /* Floating QR Scanner Button */
+        .qr-wrapper { flex: 1; display: flex; justify-content: center; position: relative; }
+        .qr-scanner-btn { position: absolute; bottom: 5px; width: 60px; height: 60px; background: #5f259f; border-radius: 18px; transform: rotate(45deg); display: flex; justify-content: center; align-items: center; box-shadow: 0 6px 15px rgba(95,37,159,0.4); border: 4px solid #f4f6f8; cursor: pointer; transition: transform 0.2s; }
+        .qr-scanner-btn i { color: white; font-size: 28px; transform: rotate(-45deg); } /* Un-rotate the icon */
+        .qr-scanner-btn:active { box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); }
+        .qr-label { position: absolute; bottom: -20px; font-size: 10px; color: #5f259f; font-weight: 600; width: 100px; text-align: center;}
     </style>
 </head>
 <body>
-
     <div class="mobile-frame">
         
-        <!-- 1. Splash Screen -->
+        <!-- Splash -->
         <div id="splash" class="screen active">
+            <i class="fa-solid fa-mug-hot"></i>
             <h1>Tea Pay</h1>
-            <p>Smart Ledger for Smart India</p>
         </div>
 
-        <!-- 2. Login Screen -->
+        <!-- Login -->
         <div id="login" class="screen">
-            <div class="login-logo">Tea Pay</div>
-            <div class="input-group">
-                <label>Mobile Number</label>
-                <input type="tel" value="9876543210" disabled>
+            <div class="login-logo">
+                <i class="fa-solid fa-mug-hot"></i>
+                Tea Pay
             </div>
-            <button class="btn-primary" onclick="showScreen('dashboard')">Send OTP</button>
-            <p style="text-align: center; margin: 15px 0; color: #888; font-size: 14px;">OR</p>
-            <button class="btn-bio" onclick="showScreen('dashboard')">
-                👆 Login with Fingerprint
-            </button>
+            <p style="text-align: center; color: #666; margin-bottom: 25px; font-size: 14px;">Enter your mobile number</p>
+            <div class="input-group">
+                <input type="tel" value="9876 543 210" disabled>
+            </div>
+            <button class="btn-primary" onclick="showScreen('dashboard')">Proceed Securely</button>
         </div>
 
-        <!-- 3. Dashboard Screen -->
+        <!-- Dashboard -->
         <div id="dashboard" class="screen">
-            <div class="header">
-                <h2>Hello, Ramesh 👋</h2>
-            </div>
             
+            <!-- Header (PhonePe Style) -->
+            <div class="header">
+                <div class="user-info">
+                    <img src="https://ui-avatars.com/api/?name=Ramesh+Kumar&background=fff&color=5f259f" alt="Profile">
+                    <div class="address-box">
+                        <p>Add Address</p>
+                        <h3>Home <i class="fa-solid fa-chevron-down" style="font-size: 12px;"></i></h3>
+                    </div>
+                </div>
+                <div class="header-icons">
+                    <i class="fa-solid fa-qrcode" style="font-size: 18px; border: 1px solid white; padding: 4px; border-radius: 5px;"></i>
+                    <i class="fa-regular fa-bell"></i>
+                    <i class="fa-regular fa-circle-question"></i>
+                </div>
+            </div>
+
+            <!-- Balance Card -->
             <div class="balance-card">
-                <p>Total Dues (All Vendors)</p>
-                <h1>₹ 500</h1>
-                <button class="pay-btn">Pay Now (UPI)</button>
+                <div class="balance-left">
+                    <p>Total Tea Dues</p>
+                    <h2>₹ 500</h2>
+                </div>
+                <button class="pay-btn">Settle Bill</button>
             </div>
 
-            <div class="action-row">
-                <div class="action-btn" style="background-color: #D35400; color: white;">📷 Scan QR</div>
-                <div class="action-btn">Passbook</div>
+            <!-- Quick Actions Grid -->
+            <div class="quick-actions">
+                <div class="action-item">
+                    <div class="action-icon"><i class="fa-solid fa-users"></i></div>
+                    <span>Vendors</span>
+                </div>
+                <div class="action-item">
+                    <div class="action-icon"><i class="fa-solid fa-wallet"></i></div>
+                    <span>To Bank</span>
+                </div>
+                <div class="action-item">
+                    <div class="action-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                    <span>Bills</span>
+                </div>
+                <div class="action-item">
+                    <div class="action-icon"><i class="fa-solid fa-building-columns"></i></div>
+                    <span>Balance</span>
+                </div>
             </div>
 
-            <div class="ledger-section">
-                <h3>Recent Transactions</h3>
+            <!-- Transactions -->
+            <div class="tx-list">
+                <h3>Recent Activity</h3>
                 
                 <div class="tx-item">
-                    <div class="tx-left">
+                    <div class="tx-icon"><i class="fa-solid fa-mug-saucer"></i></div>
+                    <div class="tx-details">
                         <h4>Raju Tea Stall</h4>
                         <p>Today, 10:15 AM</p>
                     </div>
-                    <div class="tx-right tx-red">- ₹ 20</div>
+                    <div class="tx-amount text-red">- ₹ 20</div>
                 </div>
 
                 <div class="tx-item">
-                    <div class="tx-left">
+                    <div class="tx-icon"><i class="fa-solid fa-store"></i></div>
+                    <div class="tx-details">
                         <h4>Dolly Chaiwala</h4>
                         <p>Yesterday, 04:30 PM</p>
                     </div>
-                    <div class="tx-right tx-red">- ₹ 30</div>
+                    <div class="tx-amount text-red">- ₹ 30</div>
                 </div>
-
+                
                 <div class="tx-item">
-                    <div class="tx-left">
-                        <h4>Raju Tea Stall</h4>
-                        <p>12 Aug, Paid via UPI</p>
+                    <div class="tx-icon"><i class="fa-brands fa-google-pay"></i></div>
+                    <div class="tx-details">
+                        <h4>Paid to Raju</h4>
+                        <p>12 Aug 2026</p>
                     </div>
-                    <div class="tx-right tx-green">+ ₹ 450</div>
+                    <div class="tx-amount text-green">+ ₹ 450</div>
+                </div>
+                
+                <div class="tx-item">
+                    <div class="tx-icon"><i class="fa-solid fa-mug-saucer"></i></div>
+                    <div class="tx-details">
+                        <h4>Sharma Ji</h4>
+                        <p>11 Aug 2026</p>
+                    </div>
+                    <div class="tx-amount text-red">- ₹ 15</div>
                 </div>
             </div>
-        </div>
 
+            <!-- Bottom Navigation Bar with Floating QR -->
+            <div class="bottom-nav">
+                <div class="nav-item active-nav">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fa-solid fa-store"></i>
+                    <span>Stores</span>
+                </div>
+                
+                <!-- Center Floating QR button -->
+                <div class="qr-wrapper">
+                    <div class="qr-scanner-btn" onclick="alert('Opening QR Camera...')">
+                        <i class="fa-solid fa-qrcode"></i>
+                    </div>
+                    <span class="qr-label">Scan & Pay</span>
+                </div>
+
+                <div class="nav-item">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Wealth</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>History</span>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <script>
-        // स्प्लैश स्क्रीन को 2 सेकंड बाद हटाकर लॉगिन स्क्रीन दिखाना
-        setTimeout(() => {
-            showScreen('login');
-        }, 2000);
-
-        // स्क्रीन बदलने का फंक्शन
-        function showScreen(screenId) {
-            // सभी स्क्रीन्स को छुपाएं
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
-            // सिर्फ चुनी हुई स्क्रीन दिखाएं
-            document.getElementById(screenId).classList.add('active');
+        // Splash screen to login transition
+        setTimeout(() => { showScreen('login'); }, 2000);
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
     </script>
 </body>

@@ -2,62 +2,77 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <!-- Full Screen App Meta Tags -->
+    <!-- 🔥 True Mobile Native App Meta Tags 🔥 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#000000">
-    
-    <title>Tea Pay - Live App</title>
+    <title>Tea Pay - Native Mobile UI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* --- Base & Typography --- */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Inter', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+        }
         
-        /* असली ऐप जैसी फीलिंग के लिए (No scrolling on body, text non-selectable) */
-        html, body {
-            width: 100%; height: 100%;
-            background-color: #f8fafc;
-            overflow: hidden;
-            user-select: none; /* Text copy नहीं होगा */
+        /* 100% Mobile Friendly Reset */
+        html, body { 
+            width: 100%; 
+            height: 100%; 
+            background-color: #f8fafc; 
+            overflow: hidden; 
+            overscroll-behavior-y: none; /* Stops pull-to-refresh bounce */
+            user-select: none;
             -webkit-user-select: none;
         }
         
-        /* फुल स्क्रीन ऐप कंटेनर */
-        .app-container {
-            width: 100vw;
-            height: 100vh;
-            /* Height adjust for mobile address bars */
-            height: 100dvh; 
-            position: relative;
-            background-color: #f8fafc;
-            overflow: hidden;
+        /* --- Full Screen App Container --- */
+        .app-container { 
+            width: 100%; 
+            height: 100dvh; /* Dynamic viewport height for mobile browsers */
+            background-color: #f8fafc; 
+            position: relative; 
+            overflow: hidden; 
         }
         
-        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; background-color: #f8fafc; overflow-y: auto; overflow-x: hidden; padding-bottom: 90px; }
+        .screen { 
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100%; 
+            height: 100%; 
+            display: none; 
+            flex-direction: column; 
+            background-color: #f8fafc; 
+            overflow-y: auto; 
+            overflow-x: hidden; 
+            padding-bottom: calc(90px + env(safe-area-inset-bottom)); 
+        }
         .active { display: flex; }
         
         @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .screen.active { animation: fadeSlideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .screen.active { animation: fadeSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 
         /* --- Reusable UI --- */
-        .btn-primary { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; border: none; padding: 16px; width: 100%; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.15); transition: transform 0.2s; }
-        .btn-primary:active { transform: scale(0.96); }
+        .btn-primary { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; border: none; padding: 16px; width: 100%; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.15); transition: transform 0.2s, box-shadow 0.2s; }
+        .btn-primary:active { transform: scale(0.96); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .btn-secondary { background-color: #f1f5f9; color: #0f172a; border: 1px solid #e2e8f0; padding: 16px; width: 100%; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s;}
         .btn-secondary:active { transform: scale(0.96); background-color: #e2e8f0; }
 
         /* ========================================================
-           🔥 SPLASH SCREEN (CRED STYLE)
+           🔥 SPLASH SCREEN
            ======================================================== */
         #splash { background: #000000; justify-content: center; align-items: center; z-index: 100; }
         .splash-content { display: flex; flex-direction: column; align-items: center; }
-        .splash-logo { width: 75px; height: 75px; background: #ffffff; border-radius: 20px; display: flex; justify-content: center; align-items: center; margin-bottom: 25px; opacity: 0; transform: scale(0.8); animation: sleekPopIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-        .splash-logo i { font-size: 38px; color: #000000; }
-        .splash-title { color: #ffffff; font-size: 36px; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; opacity: 0; transform: translateY(15px); animation: sleekFadeUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.3s; }
-        .splash-tagline { color: #64748b; font-size: 12px; font-weight: 600; margin-top: 12px; letter-spacing: 6px; text-transform: uppercase; opacity: 0; transform: translateY(10px); animation: sleekFadeUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.5s; }
+        .splash-logo { width: 70px; height: 70px; background: #ffffff; border-radius: 20px; display: flex; justify-content: center; align-items: center; margin-bottom: 25px; opacity: 0; transform: scale(0.8); animation: sleekPopIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .splash-logo i { font-size: 35px; color: #000000; }
+        .splash-title { color: #ffffff; font-size: 32px; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; opacity: 0; transform: translateY(15px); animation: sleekFadeUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.3s; }
+        .splash-tagline { color: #64748b; font-size: 11px; font-weight: 600; margin-top: 12px; letter-spacing: 6px; text-transform: uppercase; opacity: 0; transform: translateY(10px); animation: sleekFadeUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.5s; }
 
         @keyframes sleekPopIn { to { transform: scale(1); opacity: 1; } }
         @keyframes sleekFadeUp { to { transform: translateY(0); opacity: 1; } }
@@ -65,13 +80,13 @@
         /* ========================================================
            🔥 ROLE SELECTION
            ======================================================== */
-        #role-select { background: #ffffff; padding: 60px 24px; justify-content: center; align-items: flex-start; }
+        #role-select { background: #ffffff; padding: 40px 24px; justify-content: center; align-items: flex-start; }
         .role-header-text { width: 100%; margin-bottom: 40px; }
-        .role-title { font-size: 36px; font-weight: 900; color: #0f172a; margin-bottom: 8px; letter-spacing: -1px; }
-        .role-subtitle { font-size: 16px; color: #64748b; font-weight: 500; }
-        .role-card-pro { width: 100%; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 20px; padding: 24px; margin-bottom: 16px; cursor: pointer; position: relative; display: flex; align-items: center; gap: 20px; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .role-title { font-size: 32px; font-weight: 800; color: #0f172a; margin-bottom: 8px; letter-spacing: -1px; }
+        .role-subtitle { font-size: 15px; color: #64748b; font-weight: 500; }
+        .role-card-pro { width: 100%; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 20px; padding: 24px; margin-bottom: 16px; cursor: pointer; position: relative; display: flex; align-items: center; gap: 20px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
         .role-card-pro:active { transform: scale(0.97); border-color: #0f172a; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .role-card-pro .icon-box { width: 60px; height: 60px; background: #f8fafc; border-radius: 16px; display: flex; justify-content: center; align-items: center; font-size: 24px; color: #0f172a; transition: 0.3s;}
+        .role-card-pro .icon-box { width: 60px; height: 60px; background: #f8fafc; border-radius: 16px; display: flex; justify-content: center; align-items: center; font-size: 24px; color: #0f172a; }
         .role-card-pro.vendor-card:active .icon-box { background: #0f172a; color: #fff; }
         .role-card-pro.customer-card:active .icon-box { background: #4f46e5; color: #fff; }
         .role-text-box { flex: 1; }
@@ -82,7 +97,7 @@
         /* ========================================================
            CUSTOMER DASHBOARD
            ======================================================== */
-        .header-fintech { background: #1e1b4b; color: white; padding: 40px 20px 140px 20px; display: flex; justify-content: space-between; align-items: flex-start; border-radius: 0 0 30px 30px; position: relative;}
+        .header-fintech { background: #1e1b4b; color: white; padding: calc(30px + env(safe-area-inset-top)) 20px 140px 20px; display: flex; justify-content: space-between; align-items: flex-start; border-radius: 0 0 30px 30px; position: relative;}
         .user-profile-mini { display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s;}
         .user-profile-mini:active { opacity: 0.7; }
         .user-profile-mini img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); }
@@ -116,7 +131,7 @@
         /* ========================================================
            VENDOR DASHBOARD
            ======================================================== */
-        .vendor-header { background: #0f172a; color: white; padding: 40px 20px 70px 20px; display: flex; justify-content: space-between; align-items: flex-start; border-radius: 0 0 30px 30px;}
+        .vendor-header { background: #0f172a; color: white; padding: calc(30px + env(safe-area-inset-top)) 20px 70px 20px; display: flex; justify-content: space-between; align-items: flex-start; border-radius: 0 0 30px 30px;}
         .vendor-header-info h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;}
         .vendor-header-info p { font-size: 13px; color: #94a3b8; font-weight: 500;}
         .stats-container { display: flex; gap: 15px; padding: 0 20px; margin-top: -40px; position: relative; z-index: 10;}
@@ -137,16 +152,17 @@
         .v-action-btn i { font-size: 24px; margin-bottom: 10px; color: #0f172a; }
         .v-action-btn span { display: block; font-size: 13px; font-weight: 700; color: #0f172a;}
 
-        .header-c { background: #0f172a; color: white; padding: 40px 20px 25px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        /* Vendor Customers Ledger */
+        .header-c { background: #0f172a; color: white; padding: calc(30px + env(safe-area-inset-top)) 20px 25px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .header-c h2 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px;}
 
         /* --- Full Width Bottom Nav --- */
-        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 75px; background: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -10px 25px rgba(0,0,0,0.05); padding: 0 10px; z-index: 50; padding-bottom: env(safe-area-inset-bottom);}
-        .nav-item { text-align: center; color: #94a3b8; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; transition: 0.2s; }
+        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: calc(75px + env(safe-area-inset-bottom)); background: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -10px 25px rgba(0,0,0,0.05); padding: 0 10px; padding-bottom: env(safe-area-inset-bottom); z-index: 50;}
+        .nav-item { text-align: center; color: #94a3b8; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; transition: 0.2s; padding-bottom: 5px; }
         .nav-item.active-nav { color: #4f46e5; }
         .nav-item i { font-size: 22px; margin-bottom: 5px; }
         .nav-item span { font-size: 11px; font-weight: 600; }
-        .scan-fab-wrapper { position: relative; top: -25px; display: flex; flex-direction: column; align-items: center;}
+        .scan-fab-wrapper { position: relative; top: -20px; display: flex; flex-direction: column; align-items: center;}
         .scan-fab { width: 65px; height: 65px; background: linear-gradient(135deg, #4f46e5, #4338ca); border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4); border: 6px solid #f8fafc; cursor: pointer; color: white; font-size: 26px; transition: transform 0.1s;}
         .scan-fab:active { transform: scale(0.95); }
 
@@ -175,7 +191,7 @@
         .scan-corners::after { bottom: 0; right: 0; border-width: 0 4px 4px 0; border-radius: 0 0 30px 0; }
         .scan-line { width: 100%; height: 3px; background: #3b82f6; position: absolute; box-shadow: 0 0 20px 2px #3b82f6; animation: scanning 2s infinite linear; z-index: 10;}
         @keyframes scanning { 0% { top: 0; } 100% { top: 100%; } }
-        .close-scanner { position: absolute; top: 60px; left: 25px; color: white; font-size: 24px; cursor: pointer; background: rgba(255,255,255,0.2); width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px);}
+        .close-scanner { position: absolute; top: calc(40px + env(safe-area-inset-top)); left: 25px; color: white; font-size: 24px; cursor: pointer; background: rgba(255,255,255,0.2); width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px);}
     </style>
 </head>
 <body>
@@ -270,7 +286,7 @@
         </div>
 
         <div id="vendor-customers" class="screen">
-            <div class="header-c" style="background: #0f172a; padding-bottom: 25px;">
+            <div class="header-c">
                 <h2><div class="back-btn" style="background: rgba(255,255,255,0.1); width: 30px; height: 30px; margin-right: 8px; display:flex; justify-content:center; align-items:center; border-radius:50%;" onclick="showScreen('vendor-dashboard')"><i class="fa-solid fa-arrow-left" style="font-size: 14px;"></i></div> Client Ledger</h2>
             </div>
             <div class="tx-list" style="margin-top: 20px;">
@@ -359,7 +375,7 @@
                 
                 <div class="tx-item" onclick="alert('Viewing Raju Tea Stall details...')">
                     <div style="display: flex; align-items: center;">
-                        <div class="tx-avatar">R</div>
+                        <div class="icon-circle" style="background: #d1fae5; color: #059669; width: 45px; height: 45px; font-size: 18px; margin: 0 15px 0 0;"><i class="fa-solid fa-store"></i></div>
                         <div>
                             <h4 style="font-size: 16px; color: #0f172a; font-weight: 700;">Raju Tea Stall</h4>
                             <p style="font-size: 12px; color: #64748b;">+91 98765 43210</p>
@@ -373,7 +389,7 @@
 
                 <div class="tx-item">
                     <div style="display: flex; align-items: center;">
-                        <div class="tx-avatar" style="background: #e0e7ff; color: #4338ca;">S</div>
+                        <div class="icon-circle" style="background: #e0e7ff; color: #4338ca; width: 45px; height: 45px; font-size: 18px; margin: 0 15px 0 0;"><i class="fa-solid fa-store"></i></div>
                         <div>
                             <h4 style="font-size: 16px; color: #0f172a; font-weight: 700;">Sharma Ji Canteen</h4>
                             <p style="font-size: 12px; color: #64748b;">+91 99999 88888</p>
@@ -400,7 +416,7 @@
         </div>
 
         <div id="history" class="screen">
-            <div class="header-c" style="background: #1e1b4b; color: white; padding: 40px 20px 25px 20px;">
+            <div class="header-c" style="background: #1e1b4b; color: white; padding: calc(30px + env(safe-area-inset-top)) 20px 25px 20px;">
                 <h2>Transaction History</h2>
             </div>
             <div class="tx-list" style="margin-top: 20px;">
@@ -515,7 +531,6 @@
             </div>
         </div>
 
-        <!-- PhonePe Payment Mock Sheet -->
         <div class="modal-overlay" id="payment-sheet">
             <div class="bottom-sheet">
                 <div class="sheet-drag"></div>

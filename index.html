@@ -1948,9 +1948,11 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
         window.calculateGrandTotals = function() {
             let balances = {}; let todayTotalSale = 0; let todayTotalBox = 0; let currMonthSales = {}; let lastMonthSales = {}; let selectedDateString = document.getElementById('dash-date-picker').value; let todayDate = new Date(); let currentMonth = todayDate.toISOString().slice(0, 7); let lmDate = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1); let lastMonth = lmDate.toISOString().slice(0, 7);
-            // NEW: Passbook Variables
+            
+            // 💰 NEW: Passbook Variables
             let totalCashBalance = 0; 
             let totalOnlineBalance = 0;
+
             allLedgerData.forEach(entry => { 
                 let amt = parseFloat(entry.amount) || 0; let entryDateString = ""; let entryMonthString = ""; 
                 try { let d = new Date(entry.date); if (!isNaN(d)) { entryDateString = d.toISOString().split('T')[0]; entryMonthString = d.toISOString().slice(0, 7); } } catch(e){} 
@@ -1974,7 +1976,17 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     }
                 }
 
-                if (entry.details && entry.details.includes("Invoice")) { if(entryMonthString === currentMonth) { currMonthSales[entry.name] = (currMonthSales[entry.name] || 0) + amt; } if(entryMonthString === lastMonth) { lastMonthSales[entry.name] = (lastMonthSales[entry.name] || 0) + amt; } if(entryDateString === selectedDateString){ todayTotalSale += amt; let boxMatch = entry.details.match(/(\d+)\s*Box/i); if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); } } });
+                if (entry.details && entry.details.includes("Invoice")) { 
+                    if(entryMonthString === currentMonth) { currMonthSales[entry.name] = (currMonthSales[entry.name] || 0) + amt; } 
+                    if(entryMonthString === lastMonth) { lastMonthSales[entry.name] = (lastMonthSales[entry.name] || 0) + amt; } 
+                    if(entryDateString === selectedDateString){ 
+                        todayTotalSale += amt; 
+                        let boxMatch = entry.details.match(/(\d+)\s*Box/i); 
+                        if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); 
+                    } 
+                } 
+            });
+            
             window.globalBalances = balances; 
             let partyTypes = {}; 
             globalCustomers.forEach(c => { if(c.name) partyTypes[c.name.toLowerCase()] = c.type || 'Customer'; }); 
@@ -1990,12 +2002,15 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     if(bal < 0) sGive += Math.abs(bal); 
                 } 
             }
-            window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet }; updateLedgerTotalsUI(); if(document.getElementById('parties-page').classList.contains('active')) { renderCustomerList(globalCustomers); }
+            window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet }; 
+            updateLedgerTotalsUI(); 
+            if(document.getElementById('parties-page').classList.contains('active')) { renderCustomerList(globalCustomers); }
+            
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
-            // UPDATE DASHBOARD PASSBOOK CARDS UI
+
+            // 💰 UPDATE DASHBOARD PASSBOOK CARDS UI
             if(document.getElementById('dash-cash-bal')) document.getElementById('dash-cash-bal').innerText = `₹${totalCashBalance.toLocaleString('en-IN')}`;
             if(document.getElementById('dash-online-bal')) document.getElementById('dash-online-bal').innerText = `₹${totalOnlineBalance.toLocaleString('en-IN')}`;
-            
 
             // ============== SMART DYNAMIC TITLE LOGIC ==============
             let selectedDateObj = new Date(selectedDateString);
@@ -2007,17 +2022,14 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let prefix = (role === 'admin') ? "Sales" : ((role === 'supplier') ? "Supplies" : "Purchases");
             let finalTitle = isToday ? `Today's ${prefix}` : `${prefix} - ${dateDisplay}`;
 
-            // डैशबोर्ड कार्ड का नाम बदलना
             let dashLabel = document.getElementById('dash-sales-label');
             if(dashLabel) dashLabel.innerText = finalTitle;
 
-            // अंदर वाले पेज (Invoices) का नाम बदलना
             let invoicePageTitle = document.getElementById('invoices-page-title');
             if(invoicePageTitle) invoicePageTitle.innerText = finalTitle;
-            // =======================================================
 
             // ============== TARGET AND PROGRESS BAR LOGIC ==============
-            let TARGET_AMOUNT = 50000; // 🎯 आप यहाँ अपना टारगेट सेट कर सकते हैं (जैसे 50,000 या 1,00,000)
+            let TARGET_AMOUNT = 50000; 
             let activeSalesData = window.currentTopCustTab === 'current' ? currMonthSales : lastMonthSales; 
             let topCustHtml = ""; 
             let allSortedCustomers = Object.entries(activeSalesData).sort((a, b) => b[1] - a[1]); 
@@ -2030,7 +2042,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     top5.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-name scroll-text">${cust[0]}</div><div class="ua-item-count scroll-text">₹${cust[1].toLocaleString('en-IN')} <span style="color:var(--text-muted); font-size:16px; vertical-align:middle;" class="material-symbols-rounded">chevron_right</span></div></div>`; }); 
                 }
             } else {
-                // Customer View: Progress Bar
                 let myName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
                 let myIndex = allSortedCustomers.findIndex(c => c[0] === myName);
                 let myTotal = activeSalesData[myName] || 0;
@@ -2051,14 +2062,12 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     </div>
                 </div>`;
 
-                // Firework logic (Session में एक बार ही चलेगा ताकि बार-बार इरिटेट न करे)
                 if (myTotal >= TARGET_AMOUNT && !sessionStorage.getItem('target_celebrated')) {
                     setTimeout(() => { showTargetCelebration(); }, 1000);
                     sessionStorage.setItem('target_celebrated', 'true');
                 }
             }
             document.getElementById('top-customers-list').innerHTML = topCustHtml;
-            // ==========================================================
         }
         
         window.openLedgerDetail = function(name, phone) { 
@@ -2448,8 +2457,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 if(btn) { btn.style.background = 'white'; btn.style.color = 'var(--text-dark)'; btn.style.borderColor = 'var(--border)'; }
             });
 
-            document.getElementById('half-payment-container').style.display = 'none';
-            document.getElementById('pos-dynamic-qr-box').style.display = 'none';
+            if(document.getElementById('half-payment-container')) document.getElementById('half-payment-container').style.display = 'none';
+            if(document.getElementById('pos-dynamic-qr-box')) document.getElementById('pos-dynamic-qr-box').style.display = 'none';
             if(document.getElementById('bank-selection-container')) document.getElementById('bank-selection-container').style.display = 'none';
 
             if(mode === 'pending') {
@@ -2461,10 +2470,10 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 if(document.getElementById('bank-selection-container')) document.getElementById('bank-selection-container').style.display = 'block';
             } else if(mode === 'half') {
                 if(btnHalf) { btnHalf.style.background = '#fdf4e5'; btnHalf.style.color = '#b36b00'; btnHalf.style.borderColor = '#f29900'; }
-                document.getElementById('half-payment-container').style.display = 'flex';
+                if(document.getElementById('half-payment-container')) document.getElementById('half-payment-container').style.display = 'flex';
                 if(document.getElementById('bank-selection-container')) document.getElementById('bank-selection-container').style.display = 'block';
             }
-            window.updateDynamicQR();
+            if(typeof window.updateDynamicQR === 'function') window.updateDynamicQR();
         }
                 if(btnPending) { btnPending.style.background = '#fdf2f2'; btnPending.style.color = 'var(--danger)'; btnPending.style.borderColor = 'var(--danger)'; }
             } else if(mode === 'cash') {

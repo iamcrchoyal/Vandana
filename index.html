@@ -2,377 +2,298 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <!-- 🔥 Strict Native App Scaling Meta Tags 🔥 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0f172a">
-    <title>Tea Pay - UI V13 (Pro Vendor Flow & Token System)</title>
+    <title>Tea Pay - UI V14 (Ultimate Native & Pro Ledger)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- Base & Typography --- */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* 100% Strict Mobile Full Screen Lock (No random scrolling) */
+        /* 100% Strict Mobile Full Screen Lock */
         html, body { 
-            width: 100vw; height: 100vh; 
-            height: 100dvh;
-            background-color: #000000; 
-            overflow: hidden; /* ABSOLUTE LOCK */
-            user-select: none; -webkit-user-select: none;
-            touch-action: none; /* Stops pull-to-refresh & browser bounce entirely */
+            width: 100vw; height: 100vh; height: 100dvh;
+            background-color: #000000; overflow: hidden; 
+            user-select: none; -webkit-user-select: none; touch-action: none; 
         }
         
-        /* The App Container */
         .app-container { 
-            width: 100%; height: 100%; 
-            max-width: 440px; 
-            margin: 0 auto; 
-            background-color: #f8fafc; 
-            position: relative; 
-            overflow: hidden; 
-            display: flex; flex-direction: column;
-            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+            width: 100%; height: 100%; max-width: 440px; margin: 0 auto; 
+            background-color: #f8fafc; position: relative; overflow: hidden; 
+            display: flex; flex-direction: column; box-shadow: 0 0 40px rgba(0,0,0,0.5);
         }
         
-        /* Inner screens scroll independently */
+        /* Native App Screen Structure */
         .screen { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            display: none; flex-direction: column; 
-            background-color: #f8fafc; 
-            overflow-y: auto; overflow-x: hidden; 
-            padding-bottom: 100px;
+            display: none; flex-direction: column; background-color: #f8fafc; 
         }
         .active { display: flex; }
+        .scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 30px; touch-action: pan-y; }
         
         @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .screen.active { animation: fadeSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 
-        /* --- Reusable UI --- */
-        .btn-primary { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; border: none; padding: 16px; width: 100%; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.15); transition: 0.2s; }
+        /* Buttons */
+        .btn-primary { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; border: none; padding: 18px; width: 100%; border-radius: 16px; font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.15); transition: 0.2s; }
         .btn-primary:active { transform: scale(0.96); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .btn-secondary { background-color: #f1f5f9; color: #0f172a; border: 1px solid #e2e8f0; padding: 16px; width: 100%; border-radius: 16px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 12px; transition: 0.2s;}
         .btn-secondary:active { transform: scale(0.96); background-color: #e2e8f0; }
 
-        /* ========================================================
-           🔥 V13: HYBRID PREMIUM SPLASH (Amazon Dark + CRED Minimal + Flipkart Yellow)
-           ======================================================== */
-        #splash { 
-            background: linear-gradient(135deg, #131921 0%, #000000 60%, #1e1b4b 100%); /* Amazon Navy to CRED Black to Deep Purple */
-            justify-content: center; align-items: center; z-index: 100; 
-        }
+        /* Splash Screen */
+        #splash { background: linear-gradient(135deg, #131921 0%, #000000 60%, #1e1b4b 100%); justify-content: center; align-items: center; z-index: 100; }
+        .splash-glow { position: absolute; top: 20%; left: 50%; transform: translate(-50%, -50%); width: 150px; height: 150px; background: rgba(248, 206, 37, 0.15); filter: blur(40px); border-radius: 50%; }
         .splash-content { display: flex; flex-direction: column; align-items: center; position: relative;}
-        
-        /* Subtle Glow Behind Logo */
-        .splash-glow {
-            position: absolute; top: 20%; left: 50%; transform: translate(-50%, -50%);
-            width: 150px; height: 150px; background: rgba(248, 206, 37, 0.15); /* Flipkart Yellow Glow */
-            filter: blur(40px); border-radius: 50%;
-        }
-
-        .splash-logo { 
-            width: 80px; height: 80px; background: #ffffff; border-radius: 22px; 
-            display: flex; justify-content: center; align-items: center; margin-bottom: 25px; 
-            opacity: 0; transform: scale(0.8); animation: sleekPopIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; 
-            box-shadow: 0 15px 30px rgba(0,0,0,0.4), inset 0 -3px 0 rgba(0,0,0,0.1);
-            position: relative; z-index: 2;
-        }
+        .splash-logo { width: 80px; height: 80px; background: #ffffff; border-radius: 22px; display: flex; justify-content: center; align-items: center; margin-bottom: 25px; box-shadow: 0 15px 30px rgba(0,0,0,0.4); animation: popIn 0.8s forwards; }
         .splash-logo i { font-size: 40px; color: #131921; }
-        
-        .splash-title { 
-            color: #ffffff; font-size: 34px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; 
-            opacity: 0; transform: translateY(15px); animation: sleekFadeUp 0.8s forwards 0.2s; position: relative; z-index: 2;
-        }
-        .splash-title span { color: #facc15; } /* Flipkart/Amazon accent */
-        
-        .splash-tagline { 
-            color: #94a3b8; font-size: 11px; font-weight: 600; margin-top: 10px; letter-spacing: 5px; text-transform: uppercase; 
-            opacity: 0; transform: translateY(10px); animation: sleekFadeUp 0.8s forwards 0.4s; position: relative; z-index: 2;
-        }
+        .splash-title { color: #ffffff; font-size: 34px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; animation: fadeUp 0.8s forwards 0.2s; opacity: 0;}
+        .splash-title span { color: #facc15; }
+        .splash-tagline { color: #94a3b8; font-size: 11px; font-weight: 600; margin-top: 10px; letter-spacing: 5px; text-transform: uppercase; animation: fadeUp 0.8s forwards 0.4s; opacity: 0;}
+        @keyframes popIn { 0% {transform: scale(0.5); opacity:0;} 100% {transform: scale(1); opacity:1;} }
+        @keyframes fadeUp { 0% {transform: translateY(15px); opacity:0;} 100% {transform: translateY(0); opacity:1;} }
 
-        @keyframes sleekPopIn { to { transform: scale(1); opacity: 1; } }
-        @keyframes sleekFadeUp { to { transform: translateY(0); opacity: 1; } }
-
-        /* ========================================================
-           🔥 V13: PERFECT SIZED ROLE SELECTION
-           ======================================================== */
+        /* Role Selection */
         #role-select { background: #ffffff; padding: 40px 20px; justify-content: center; }
-        .role-header-text { width: 100%; margin-bottom: 30px; text-align: center;}
-        .role-title { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.5px; }
-        .role-subtitle { font-size: 14px; color: #64748b; font-weight: 500; }
-        
-        .role-card-pro { 
-            background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 20px; padding: 20px; margin-bottom: 16px; 
-            cursor: pointer; position: relative; display: flex; align-items: center; gap: 16px; transition: 0.2s; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02); 
-        }
+        .role-title { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 8px; text-align: center;}
+        .role-subtitle { font-size: 14px; color: #64748b; font-weight: 500; text-align: center; margin-bottom: 40px;}
+        .role-card-pro { background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 20px; padding: 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: 0.2s;}
         .role-card-pro:active { transform: scale(0.97); border-color: #0f172a; }
-        
-        .role-card-pro .icon-box { 
-            width: 55px; height: 55px; background: #f8fafc; border-radius: 14px; 
-            display: flex; justify-content: center; align-items: center; font-size: 24px; color: #0f172a; 
-        }
-        .role-card-pro.vendor-card:active .icon-box { background: #0f172a; color: #fff; }
-        .role-card-pro.customer-card:active .icon-box { background: #4f46e5; color: #fff; }
-        
+        .role-card-pro .icon-box { width: 55px; height: 55px; background: #f8fafc; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 24px; color: #0f172a; }
         .role-text-box h3 { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
         .role-text-box p { font-size: 12px; color: #64748b; font-weight: 500; line-height: 1.4; }
-        .kyc-tag { position: absolute; top: -10px; right: 20px; background: #0f172a; color: #ffffff; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;}
 
-        /* ========================================================
-           🔥 VENDOR DASHBOARD (ULTRA PRO)
-           ======================================================== */
-        .vendor-header { background: #0f172a; color: white; padding: 40px 20px 70px 20px; display: flex; justify-content: space-between; align-items: flex-start; border-radius: 0 0 35px 35px;}
+        /* Vendor Dashboard Header (Fixed) */
+        .vendor-header { background: #0f172a; color: white; padding: calc(20px + env(safe-area-inset-top)) 20px 40px 20px; display: flex; justify-content: space-between; align-items: flex-start; border-radius: 0 0 35px 35px; flex-shrink: 0;}
         .vendor-header-info h2 { font-size: 22px; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;}
         .vendor-header-info p { font-size: 13px; color: #94a3b8; font-weight: 500;}
         .shop-badge { background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.4);}
         
-        .stats-container { display: flex; gap: 15px; padding: 0 20px; margin-top: -35px; position: relative; z-index: 10;}
-        
-        /* Clickable Today's Collection */
+        /* Stats Container */
+        .stats-container { display: flex; gap: 15px; padding: 0 20px; margin-top: -25px; position: relative; z-index: 10;}
         .stat-box { background: white; flex: 1; padding: 18px 15px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.06); border: 1px solid #f1f5f9; cursor: pointer; transition: 0.2s;}
-        .stat-box:active { transform: scale(0.97); background: #f8fafc; border-color: #cbd5e1;}
-        .stat-box i { font-size: 20px; margin-bottom: 8px;}
-        .stat-box p { font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;}
+        .stat-box:active { transform: scale(0.97); }
+        .stat-box p { font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; margin: 8px 0 4px 0;}
         .stat-box h3 { font-size: 24px; color: #0f172a; font-weight: 900;}
-        
-        /* Premium QR Frame */
-        .qr-section { margin: 25px 20px; background: white; border-radius: 24px; padding: 30px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; text-align: center;}
-        .qr-frame { 
-            background: white; padding: 10px; border-radius: 24px; display: inline-block; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08), 0 0 0 5px #f1f5f9; 
-            border: 1px solid #e2e8f0; margin-bottom: 20px; position: relative;
-        }
-        /* QR Corners like Paytm/PhonePe */
-        .qr-frame::before, .qr-frame::after { content:''; position: absolute; width: 30px; height: 30px; border: 4px solid #0f172a; border-radius: 8px; }
-        .qr-frame::before { top: -8px; left: -8px; border-right: none; border-bottom: none; }
-        .qr-frame::after { bottom: -8px; right: -8px; border-left: none; border-top: none; }
-        
-        .qr-frame img { width: 180px; height: 180px; border-radius: 12px; display: block;}
-        .qr-text-box h3 { font-size: 18px; color: #0f172a; font-weight: 800; margin-bottom: 4px;}
-        .qr-text-box p { font-size: 12px; color: #64748b; font-weight: 600;}
 
-        /* Grid Actions */
+        /* QR Section with Download/Share */
+        .qr-section { margin: 25px 20px; background: white; border-radius: 24px; padding: 25px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; text-align: center;}
+        .qr-frame { background: white; padding: 10px; border-radius: 24px; display: inline-block; box-shadow: 0 15px 35px rgba(0,0,0,0.08), 0 0 0 5px #f1f5f9; border: 1px solid #e2e8f0; position: relative;}
+        .qr-frame img { width: 180px; height: 180px; border-radius: 12px; display: block;}
+        .qr-action-row { display: flex; gap: 10px; margin-top: 20px;}
+        .qr-action-btn { flex: 1; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; color: #0f172a; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s;}
+        .qr-action-btn:active { background: #e2e8f0; transform: scale(0.96);}
+
+        /* Actions Grid */
         .vendor-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; margin-bottom: 20px;}
-        .v-action-btn { background: white; border: 1px solid #f1f5f9; padding: 16px; border-radius: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer; transition: 0.2s;}
+        .v-action-btn { background: white; border: 1px solid #f1f5f9; padding: 16px; border-radius: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer;}
         .v-action-btn:active { transform: scale(0.95); background: #f8fafc;}
         .v-action-btn i { font-size: 24px; margin-bottom: 10px; color: #0f172a; }
         .v-action-btn span { display: block; font-size: 13px; font-weight: 800; color: #0f172a;}
-        
-        /* Special highlight for Token Transfer */
         .token-btn { border: 1.5px solid #e0e7ff; background: #fafafa;}
         .token-btn i { color: #4f46e5; }
 
-        /* ========================================================
-           🔥 LIST UI & DETAILS
-           ======================================================== */
-        .header-c { background: #0f172a; color: white; padding: 30px 20px 25px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .header-c h2 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px;}
-        .back-btn-sm { background: rgba(255,255,255,0.15); width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; margin-right: 10px;}
-
-        .tx-list { padding: 0 20px; }
-        .tx-list-title { font-size: 12px; color: #64748b; margin-bottom: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;}
-        .tx-item { background: white; padding: 16px; border-radius: 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border: 1px solid #f1f5f9; cursor: pointer; transition: 0.2s;}
-        .tx-item:active { transform: scale(0.98); }
-        .icon-circle { width: 45px; height: 45px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-weight: 800; font-size: 18px; margin-right: 15px; }
+        /* Client Ledger Page */
+        .header-c { background: #0f172a; color: white; padding: calc(20px + env(safe-area-inset-top)) 20px 20px 20px; display: flex; align-items: center; gap: 15px; border-radius: 0 0 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); flex-shrink: 0;}
+        .header-c h2 { font-size: 18px; font-weight: 700; }
+        .back-btn-sm { background: rgba(255,255,255,0.15); width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; }
         
-        .tx-details h4 { font-size: 15px; color: #0f172a; font-weight: 800; margin-bottom: 4px;}
+        .search-bar { background: white; padding: 14px 18px; border-radius: 16px; display: flex; margin: 20px; border: 2px solid #e2e8f0; align-items: center;}
+        .search-bar input { border: none; outline: none; width: 100%; font-size: 14px; font-weight: 600; color: #0f172a; padding-left: 10px; background: transparent;}
+        
+        .tx-list { padding: 0 20px; }
+        .tx-item { background: white; padding: 16px; border-radius: 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border: 1px solid #f1f5f9; cursor: pointer; transition: 0.2s;}
+        .tx-item:active { transform: scale(0.98); background: #f8fafc;}
+        .icon-circle { width: 45px; height: 45px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-weight: 800; font-size: 18px; margin-right: 15px; }
+        .tx-details h4 { font-size: 16px; color: #0f172a; font-weight: 800; margin-bottom: 2px;}
         .tx-details p { font-size: 12px; color: #64748b; font-weight: 600; }
         .tx-amount { font-weight: 800; color: #b45309; font-size: 18px; text-align: right;}
 
-        /* ========================================================
-           🔥 BOTTOM NAV (FIXED)
-           ======================================================== */
-        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 85px; background: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); padding: 0 15px; z-index: 50;}
-        .nav-item { text-align: center; color: #94a3b8; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; transition: 0.2s; padding-bottom: 10px;}
-        .nav-item.active-nav { color: #4f46e5; }
-        .nav-item i { font-size: 24px; margin-bottom: 6px; }
-        .nav-item span { font-size: 11px; font-weight: 700; }
-        
-
-        /* ========================================================
-           🔥 MODALS & BOTTOM SHEETS
-           ======================================================== */
+        /* Modals & Bottom Sheets */
         .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); z-index: 200; display: none; justify-content: center; align-items: flex-end; backdrop-filter: blur(5px);}
         .bottom-sheet { background: white; padding: 25px 24px 40px 24px; border-radius: 35px 35px 0 0; width: 100%; text-align: center; animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 -10px 30px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto;}
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .sheet-drag { width: 50px; height: 5px; background: #cbd5e1; border-radius: 5px; margin: 0 auto 25px auto; }
-        
-        .bottom-sheet h3 { font-size: 24px; font-weight: 900; color: #0f172a; margin-bottom: 8px;}
+        .sheet-drag { width: 50px; height: 5px; background: #cbd5e1; border-radius: 5px; margin: 0 auto 20px auto; }
+        .bottom-sheet h3 { font-size: 22px; font-weight: 900; color: #0f172a; margin-bottom: 8px;}
         .bottom-sheet p.sheet-desc { font-size: 13px; color: #64748b; font-weight: 600; margin-bottom: 20px;}
 
-        .input-group { text-align: left; margin-bottom: 15px; position: relative;}
-        .input-group label { display: block; font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 6px; text-transform: uppercase;}
-        .input-group input { width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; outline: none; transition: border 0.2s; font-weight: 600; background: #f8fafc;}
-        .input-group input:focus { border-color: #0f172a; background: white;}
-        
-        /* Token Transfer Credit Report Box */
-        .credit-report { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 15px; text-align: left; margin-bottom: 20px; display: none;}
-        .cr-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 10px;}
-        .cr-tag { background: #dcfce7; color: #166534; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 8px;}
-        .cr-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;}
+        /* Setup Form Inputs */
+        .input-group { text-align: left; margin-bottom: 16px;}
+        .input-group label { display: block; font-size: 12px; font-weight: 800; color: #475569; margin-bottom: 6px; text-transform: uppercase;}
+        .input-group input { width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 14px; font-size: 15px; font-weight: 600; background: #f8fafc; outline: none; transition: 0.2s;}
+        .input-group input:focus { border-color: #4f46e5; background: white;}
+        .input-group .row { display: flex; gap: 10px; }
+
+        /* Full Screen Success Popup */
+        .success-popup { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #10b981; z-index: 400; display: none; flex-direction: column; justify-content: center; align-items: center; color: white; animation: fadeIn 0.3s forwards;}
+        .success-popup i { font-size: 80px; margin-bottom: 20px; animation: popIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .success-popup h2 { font-size: 28px; font-weight: 900; margin-bottom: 10px;}
+        .success-popup .id-box { background: rgba(255,255,255,0.2); padding: 15px 30px; border-radius: 20px; font-size: 32px; font-weight: 900; letter-spacing: 2px; margin-top: 20px;}
+
+        /* Bank Level Token Report */
+        .credit-report { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 20px; text-align: left; margin-bottom: 25px; display: none;}
+        .cr-header { border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;}
+        .cr-header h4 { font-size: 18px; color: #0f172a; font-weight: 800;}
+        .cr-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px;}
         .cr-row span:first-child { color: #64748b; font-weight: 600;}
         .cr-row span:last-child { color: #0f172a; font-weight: 800;}
         
-        /* Token Input */
-        .token-input-wrapper { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 20px 0;}
-        .token-input-wrapper input { width: 100px; text-align: center; font-size: 28px; font-weight: 900; color: #b45309; padding: 10px; border: 2px solid #fcd34d; background: #fffbeb; border-radius: 16px;}
-        .token-input-wrapper i { font-size: 24px; color: #d97706; }
+        .token-input-wrapper { display: flex; justify-content: center; margin: 20px 0;}
+        .token-input-wrapper input { width: 150px; text-align: center; font-size: 36px; font-weight: 900; color: #b45309; padding: 10px; border: none; border-bottom: 3px solid #fcd34d; background: transparent; outline: none;}
 
+        /* Full Ledger View Sheet */
+        .ledger-view { text-align: left; max-height: 400px; overflow-y: auto; margin-top: 15px;}
+        .ledger-item { display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding: 15px 0;}
+        .l-left strong { color: #0f172a; font-size: 15px; font-weight: 700;}
+        .l-left span { display: block; font-size: 12px; color: #64748b; margin-top: 4px; font-weight: 600;}
+        .l-right { text-align: right; }
+        .l-right strong { font-size: 16px; font-weight: 800; }
+        
     </style>
 </head>
 <body>
     <div class="app-container">
         
-        <!-- 1. PREMIUM HYBRID SPLASH -->
+        <!-- 1. SPLASH SCREEN -->
         <div id="splash" class="screen active">
             <div class="splash-glow"></div>
             <div class="splash-content">
-                <div class="splash-logo">
-                    <i class="fa-solid fa-mug-hot"></i>
-                </div>
+                <div class="splash-logo"><i class="fa-solid fa-mug-hot"></i></div>
                 <h1 class="splash-title">Tea <span>Pay</span></h1>
                 <p class="splash-tagline">Trusted Digital Ledger</p>
             </div>
         </div>
 
-        <!-- 2. PRO ROLE SELECT -->
+        <!-- 2. ROLE SELECT -->
         <div id="role-select" class="screen">
             <div class="role-header-text">
                 <h1 class="role-title">Select Profile</h1>
                 <p class="role-subtitle">How would you like to use Tea Pay?</p>
             </div>
             
-            <div class="role-card-pro vendor-card" onclick="openSheet('vendor-auth-sheet')">
-                <div class="kyc-tag">Requires KYC</div>
+            <div class="role-card-pro vendor-card" onclick="openSheet('vendor-setup-sheet')">
+                <div class="kyc-tag">Business</div>
                 <div class="icon-box"><i class="fa-solid fa-store"></i></div>
                 <div class="role-text-box">
-                    <h3>Business / Vendor</h3>
-                    <p>Create account, generate QR, and track daily tea sales securely.</p>
+                    <h3>Tea Vendor</h3>
+                    <p>Setup shop, track sales & manage customer tokens.</p>
                 </div>
             </div>
 
-            <div class="role-card-pro customer-card" onclick="alert('Customer Dashboard functionality maintained in previous versions for focus on Vendor flow.')">
+            <div class="role-card-pro customer-card" onclick="alert('Customer flow is maintained in previous versions. Focus here is strictly Vendor Pro UI.')">
+                <div class="kyc-tag" style="background:#4f46e5;">Personal</div>
                 <div class="icon-box"><i class="fa-solid fa-user-astronaut"></i></div>
                 <div class="role-text-box">
-                    <h3>Personal / Customer</h3>
-                    <p>Scan vendors, manage daily tea consumption, and settle bills.</p>
+                    <h3>Customer</h3>
+                    <p>Scan QR, view daily log and pay bills.</p>
                 </div>
             </div>
         </div>
 
-        <!-- ================= VENDOR SCREENS ================= -->
-        
-        <!-- Vendor Dashboard -->
+        <!-- ================= VENDOR DASHBOARD ================= -->
         <div id="vendor-dashboard" class="screen">
             <div class="vendor-header">
                 <div class="vendor-header-info">
-                    <h2 id="dash-shop-name">Raju Tea Stall <i class="fa-solid fa-circle-check" style="color: #10b981;"></i></h2>
-                    <p>ID: <span id="dash-shop-id">RAJ-001</span> • <span class="shop-badge">VERIFIED</span></p>
+                    <h2 id="dash-shop-name">Shop Name <i class="fa-solid fa-circle-check" style="color: #10b981;"></i></h2>
+                    <p>ID: <span id="dash-shop-id">XXX-000</span> • <span class="shop-badge">VERIFIED</span></p>
                 </div>
             </div>
             
-            <div class="stats-container">
-                <div class="stat-box" onclick="openSheet('collection-sheet')">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                        <i class="fa-solid fa-sack-dollar" style="color: #10b981;"></i>
-                        <i class="fa-solid fa-arrow-right" style="color: #cbd5e1; font-size: 14px;"></i>
+            <div class="scroll-area">
+                <div class="stats-container">
+                    <div class="stat-box" onclick="openSheet('collection-sheet')">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <i class="fa-solid fa-sack-dollar" style="color: #10b981;"></i>
+                            <i class="fa-solid fa-arrow-right" style="color: #cbd5e1; font-size: 14px;"></i>
+                        </div>
+                        <p>Today's Collection</p>
+                        <h3>₹ 240</h3>
                     </div>
-                    <p>Today's Collection</p>
-                    <h3>₹ 240 <span style="font-size: 12px; color: #64748b; font-weight: 600;">(24 Cups)</span></h3>
+                    <div class="stat-box">
+                        <i class="fa-solid fa-users" style="color: #4f46e5;"></i>
+                        <p>Active Customers</p>
+                        <h3>151</h3>
+                    </div>
                 </div>
-                <div class="stat-box">
-                    <i class="fa-solid fa-users" style="color: #4f46e5;"></i>
-                    <p>Active Customers</p>
-                    <h3>151</h3>
+                
+                <div class="qr-section">
+                    <div class="qr-frame">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=TeaPay_SecureQR_123&color=0f172a" alt="Tea Pay QR">
+                    </div>
+                    <div class="qr-action-row">
+                        <div class="qr-action-btn" onclick="alert('QR Saved to Gallery!')"><i class="fa-solid fa-download"></i> Download</div>
+                        <div class="qr-action-btn" onclick="alert('Opening Share Intent...')"><i class="fa-solid fa-share-nodes"></i> Share</div>
+                    </div>
+                    <p style="font-size: 11px; color: #ef4444; font-weight: 700; margin-top: 15px;"><i class="fa-solid fa-triangle-exclamation"></i> Only scans via Tea Pay App</p>
                 </div>
-            </div>
-            
-            <div class="qr-section">
-                <div class="qr-frame">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=TeaPay_SecureQR_123&color=0f172a" alt="Tea Pay QR">
-                </div>
-                <div class="qr-text-box">
-                    <h3>Proprietary Network QR</h3>
-                    <p>Only scannable via Tea Pay Customer App</p>
-                </div>
-            </div>
-            
-            <div class="vendor-actions">
-                <div class="v-action-btn" onclick="openSheet('add-customer-qr-sheet')">
-                    <i class="fa-solid fa-qrcode"></i>
-                    <span>Add Customer</span>
-                </div>
-                <div class="v-action-btn" onclick="showScreen('vendor-customers')">
-                    <i class="fa-solid fa-address-book"></i>
-                    <span>Client Ledger</span>
-                </div>
-                <div class="v-action-btn token-btn" onclick="openSheet('token-transfer-sheet')">
-                    <i class="fa-solid fa-coins"></i>
-                    <span>Token Transfer</span>
-                </div>
-                <div class="v-action-btn" onclick="showScreen('role-select')">
-                    <i class="fa-solid fa-power-off" style="color: #ef4444;"></i>
-                    <span>Logout</span>
+                
+                <div class="vendor-actions">
+                    <div class="v-action-btn" onclick="showScreen('vendor-customers')">
+                        <i class="fa-solid fa-address-book" style="color: #6366f1;"></i>
+                        <span>Client Ledger</span>
+                    </div>
+                    <div class="v-action-btn token-btn" onclick="openSheet('token-transfer-sheet')">
+                        <i class="fa-solid fa-coins"></i>
+                        <span>Token Transfer</span>
+                    </div>
+                    <div class="v-action-btn" onclick="alert('Opening Stall Settings...')">
+                        <i class="fa-solid fa-gear" style="color: #64748b;"></i>
+                        <span>Settings</span>
+                    </div>
+                    <div class="v-action-btn" onclick="showScreen('role-select')">
+                        <i class="fa-solid fa-power-off" style="color: #ef4444;"></i>
+                        <span>Logout</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Vendor Customers Ledger -->
+        <!-- ================= VENDOR CLIENT LEDGER ================= -->
         <div id="vendor-customers" class="screen">
             <div class="header-c">
-                <h2><div class="back-btn-sm" onclick="showScreen('vendor-dashboard')"><i class="fa-solid fa-arrow-left"></i></div> Customer Ledger</h2>
+                <div class="back-btn-sm" onclick="showScreen('vendor-dashboard')"><i class="fa-solid fa-arrow-left"></i></div>
+                <h2>Client Ledger</h2>
             </div>
-            <div class="tx-list" style="margin-top: 25px;">
-                <div style="background: white; padding: 16px 20px; border-radius: 18px; display: flex; margin-bottom: 25px; border: 2px solid #e2e8f0;">
-                    <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; font-size: 18px; margin-right: 15px; margin-top: 2px;"></i>
-                    <input type="text" placeholder="Search customer ID or name..." style="border: none; outline: none; width: 100%; font-size: 15px; font-weight: 600; color: #0f172a;">
-                </div>
-                <h3 class="tx-list-title">Outstanding Dues</h3>
-                
-                <div class="tx-item" style="border-left: 5px solid #ef4444;">
-                    <div style="display: flex; align-items: center;">
-                        <div class="icon-circle" style="background: #fef2f2; color: #ef4444;">R</div>
-                        <div class="tx-details">
-                            <h4>Ramesh Kumar</h4>
-                            <p style="color: #ef4444;">Due: ₹ 120</p>
+            
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; font-size: 18px; margin-right: 12px;"></i>
+                <input type="text" placeholder="Search Mobile No, ID, or Name...">
+            </div>
+
+            <div class="scroll-area" style="padding-top: 0;">
+                <div class="tx-list">
+                    <div class="tx-item" style="border-left: 5px solid #ef4444;" onclick="openSheet('customer-ledger-sheet')">
+                        <div style="display: flex; align-items: center;">
+                            <div class="icon-circle" style="background: #fef2f2; color: #ef4444;">R</div>
+                            <div class="tx-details">
+                                <h4>Ramesh Kumar</h4>
+                                <p>ID: CUST-8821 • <span style="color: #ef4444;">Due: ₹ 120</span></p>
+                            </div>
                         </div>
+                        <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
                     </div>
-                    <button style="background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; padding: 12px 18px; border-radius: 14px; font-weight: 800; font-size: 15px; cursor: pointer;">+ Add Cup</button>
-                </div>
-                
-                <div class="tx-item" style="border-left: 5px solid #10b981;">
-                    <div style="display: flex; align-items: center;">
-                        <div class="icon-circle" style="background: #dcfce7; color: #166534;">A</div>
-                        <div class="tx-details">
-                            <h4>Amit Singh</h4>
-                            <p style="color: #10b981;">Cleared (₹ 0)</p>
+                    
+                    <div class="tx-item" style="border-left: 5px solid #10b981;" onclick="openSheet('customer-ledger-sheet')">
+                        <div style="display: flex; align-items: center;">
+                            <div class="icon-circle" style="background: #dcfce7; color: #166534;">A</div>
+                            <div class="tx-details">
+                                <h4>Amit Singh</h4>
+                                <p>ID: CUST-9012 • <span style="color: #10b981;">Cleared</span></p>
+                            </div>
                         </div>
+                        <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
                     </div>
-                    <button style="background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; padding: 12px 18px; border-radius: 14px; font-weight: 800; font-size: 15px; cursor: pointer;">+ Add Cup</button>
                 </div>
             </div>
         </div>
 
         <!-- ================= MODALS & BOTTOM SHEETS ================= -->
-        
-        <!-- 1. Vendor Auth / Onboarding Setup -->
-        <div class="modal-overlay" id="vendor-auth-sheet">
-            <div class="bottom-sheet">
-                <div class="sheet-drag"></div>
-                <h3>Vendor Security</h3>
-                <p class="sheet-desc">Enter 4-digit PIN to access terminal.</p>
-                <input type="tel" id="vendor-pin" placeholder="* * * *" maxlength="4" style="letter-spacing: 30px; font-weight: 900; text-align: center; font-size: 32px; padding: 20px;">
-                <button class="btn-primary" onclick="verifyVendor()">Authorize</button>
-                <p style="margin-top: 20px; font-size: 15px; color: #94a3b8; cursor: pointer; font-weight: 800;" onclick="closeAllSheets()">Cancel</p>
-            </div>
-        </div>
 
-        <!-- Vendor Onboarding Form -->
+        <!-- 1. VENDOR SETUP & OTP -->
         <div class="modal-overlay" id="vendor-setup-sheet">
-            <div class="bottom-sheet">
+            <div class="bottom-sheet" id="setup-form">
                 <div class="sheet-drag"></div>
                 <h3>Setup Shop Profile</h3>
                 <p class="sheet-desc">Create your official Tea Pay merchant account.</p>
@@ -385,94 +306,137 @@
                     <label>Owner Name</label>
                     <input type="text" id="setup-owner" placeholder="e.g. Raju Bhai">
                 </div>
-                <div class="input-group">
-                    <label>Location / City</label>
-                    <input type="text" id="setup-loc" placeholder="e.g. Jaipur, Rajasthan">
+                
+                <div class="input-group row">
+                    <div style="flex: 1;">
+                        <label>Mobile Number</label>
+                        <input type="tel" id="setup-mob" placeholder="10 Digits" maxlength="10">
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Email ID</label>
+                        <input type="email" id="setup-email" placeholder="shop@email.com">
+                    </div>
                 </div>
                 
-                <button class="btn-primary" onclick="completeVendorSetup()">Create Account & Get ID</button>
+                <button class="btn-primary" id="btn-get-otp" onclick="requestOTP()">Send OTP to Email</button>
+
+                <div id="otp-section" style="display: none; margin-top: 20px;">
+                    <div class="input-group">
+                        <label style="color: #10b981;">Enter Email OTP</label>
+                        <input type="tel" placeholder="- - - -" maxlength="4" style="text-align: center; letter-spacing: 20px; font-weight: 900; font-size: 24px;">
+                    </div>
+                    <button class="btn-primary" style="background: linear-gradient(135deg, #059669, #10b981);" onclick="completeSetup()">Verify & Create ID</button>
+                </div>
+                <p style="margin-top: 20px; font-size: 15px; color: #94a3b8; cursor: pointer; font-weight: 800;" onclick="closeAllSheets()">Cancel</p>
             </div>
         </div>
 
-        <!-- 2. Today's Collection Details -->
+        <!-- FULL SCREEN SUCCESS POPUP -->
+        <div class="success-popup" id="success-popup">
+            <i class="fa-solid fa-circle-check"></i>
+            <h2>Account Created!</h2>
+            <p style="font-weight: 600; font-size: 16px;">Your unique Vendor ID is:</p>
+            <div class="id-box" id="new-vendor-id">RAJ-0000</div>
+            <button class="btn-primary" style="background: white; color: #10b981; width: 80%; margin-top: 40px;" onclick="goToDashboard()">Go to Dashboard</button>
+        </div>
+
+        <!-- 2. CUSTOMER LEDGER FULL SHEET -->
+        <div class="modal-overlay" id="customer-ledger-sheet">
+            <div class="bottom-sheet" style="padding: 20px;">
+                <div class="sheet-drag"></div>
+                <div style="display: flex; align-items: center; gap: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px;">
+                    <div class="icon-circle" style="background: #fef2f2; color: #ef4444; width: 60px; height: 60px; font-size: 24px;">R</div>
+                    <div style="text-align: left; flex: 1;">
+                        <h3 style="margin-bottom: 2px;">Ramesh Kumar</h3>
+                        <p style="font-size: 12px; font-weight: 700; color: #64748b;">ID: CUST-8821 • 9876543210</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="font-size: 10px; font-weight: 800; color: #ef4444;">TOTAL DUE</p>
+                        <h3 style="color: #ef4444; font-size: 22px;">₹ 120</h3>
+                    </div>
+                </div>
+
+                <div class="ledger-view">
+                    <div class="ledger-item">
+                        <div class="l-left"><strong>1 Cup Tea</strong><span>Today, 10:15 AM</span></div>
+                        <div class="l-right"><strong style="color: #ef4444;">- ₹ 10</strong></div>
+                    </div>
+                    <div class="ledger-item">
+                        <div class="l-left"><strong>2 Cups Tea</strong><span>Yesterday, 04:30 PM</span></div>
+                        <div class="l-right"><strong style="color: #ef4444;">- ₹ 20</strong></div>
+                    </div>
+                    <div class="ledger-item">
+                        <div class="l-left"><strong>Bill Payment (UPI)</strong><span>12 Aug 2026</span></div>
+                        <div class="l-right"><strong style="color: #10b981;">+ ₹ 350</strong></div>
+                    </div>
+                </div>
+                <button class="btn-secondary" onclick="closeAllSheets()" style="margin-top: 20px;">Close Ledger</button>
+            </div>
+        </div>
+
+        <!-- 3. TODAY'S COLLECTION SHEET -->
         <div class="modal-overlay" id="collection-sheet">
-            <div class="bottom-sheet">
+            <div class="bottom-sheet" style="padding: 20px;">
                 <div class="sheet-drag"></div>
-                <h3 style="margin-bottom: 2px;">Today's Log</h3>
-                <p class="sheet-desc">Total Collection: <strong style="color: #10b981;">₹ 240 (24 Tokens)</strong></p>
+                <h3 style="margin-bottom: 4px;">Today's Log</h3>
+                <p class="sheet-desc">Total Collection: <strong style="color: #10b981; font-size: 16px;">₹ 240 (24 Tokens)</strong></p>
                 
-                <div style="text-align: left; max-height: 300px; overflow-y: auto;">
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding: 12px 0;">
-                        <div><strong style="color: #0f172a;">Ramesh Kumar</strong> <br><span style="font-size: 11px; color: #64748b;">10:15 AM</span></div>
-                        <div style="text-align: right;"><strong style="color: #b45309;">2 Tokens</strong> <br><span style="font-size: 11px; color: #64748b;">₹ 20</span></div>
+                <div class="ledger-view">
+                    <div class="ledger-item">
+                        <div class="l-left"><strong>Ramesh Kumar</strong><span>10:15 AM</span></div>
+                        <div class="l-right"><strong style="color: #b45309;">2 Tokens</strong><span style="font-size:12px; color:#64748b;">₹ 20</span></div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding: 12px 0;">
-                        <div><strong style="color: #0f172a;">Amit Singh</strong> <br><span style="font-size: 11px; color: #64748b;">11:30 AM</span></div>
-                        <div style="text-align: right;"><strong style="color: #b45309;">1 Token</strong> <br><span style="font-size: 11px; color: #64748b;">₹ 10</span></div>
+                    <div class="ledger-item">
+                        <div class="l-left"><strong>Amit Singh</strong><span>11:30 AM</span></div>
+                        <div class="l-right"><strong style="color: #b45309;">1 Token</strong><span style="font-size:12px; color:#64748b;">₹ 10</span></div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; padding: 12px 0;">
-                        <div><strong style="color: #0f172a;">Suresh C.</strong> <br><span style="font-size: 11px; color: #64748b;">02:45 PM</span></div>
-                        <div style="text-align: right;"><strong style="color: #b45309;">3 Tokens</strong> <br><span style="font-size: 11px; color: #64748b;">₹ 30</span></div>
+                    <div class="ledger-item">
+                        <div class="l-left"><strong>Suresh C.</strong><span>02:45 PM</span></div>
+                        <div class="l-right"><strong style="color: #b45309;">3 Tokens</strong><span style="font-size:12px; color:#64748b;">₹ 30</span></div>
                     </div>
                 </div>
                 <button class="btn-secondary" onclick="closeAllSheets()">Close</button>
             </div>
         </div>
 
-        <!-- 3. Add Customer (Proprietary QR) -->
-        <div class="modal-overlay" id="add-customer-qr-sheet">
-            <div class="bottom-sheet">
-                <div class="sheet-drag"></div>
-                <h3>Connect Customer</h3>
-                <p class="sheet-desc">Ask customer to scan this using Tea Pay App</p>
-                
-                <div style="background: white; padding: 15px; border-radius: 20px; display: inline-block; border: 2px dashed #4f46e5; margin: 15px 0;">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Connect_Customer_Request&color=4f46e5" style="border-radius: 10px; display: block;">
-                </div>
-                
-                <p style="font-size: 12px; color: #ef4444; font-weight: 700; margin-bottom: 20px;"><i class="fa-solid fa-triangle-exclamation"></i> Regular QR Scanners will not work.</p>
-                <button class="btn-secondary" onclick="closeAllSheets()">Close</button>
-            </div>
-        </div>
-
-        <!-- 4. Token Transfer System -->
+        <!-- 4. BANK-LEVEL TOKEN TRANSFER -->
         <div class="modal-overlay" id="token-transfer-sheet">
             <div class="bottom-sheet">
                 <div class="sheet-drag"></div>
-                <h3>Token Transfer</h3>
-                <p class="sheet-desc">Send advanced tokens to customer wallet.</p>
+                <h3 style="color: #4f46e5;">Token Transfer</h3>
+                <p class="sheet-desc">Securely send tokens to customer wallet.</p>
                 
                 <!-- Step 1: Search -->
                 <div id="token-step-1">
-                    <div style="position: relative;">
-                        <span style="position: absolute; left: 20px; top: 22px; color: #0f172a; font-weight: 800; font-size: 18px;">+91</span>
-                        <input type="tel" id="token-mobile" placeholder="Customer Number" maxlength="10" style="padding-left: 70px; letter-spacing: 2px;">
+                    <div class="input-group">
+                        <label>Verify Customer</label>
+                        <input type="text" id="token-search" placeholder="Mobile No or Cust ID" style="text-align: center; letter-spacing: 2px;">
                     </div>
-                    <button class="btn-primary" onclick="verifyCustomerForToken()">Verify Customer</button>
+                    <button class="btn-primary" onclick="verifyCustomerForToken()">Search Database</button>
                 </div>
 
-                <!-- Step 2: Credit Report & Transfer -->
+                <!-- Step 2: Pro Credit Report -->
                 <div id="token-step-2" style="display: none;">
-                    
                     <div class="credit-report">
                         <div class="cr-header">
-                            <h4 style="font-size: 16px; color: #0f172a; font-weight: 800;">Ramesh Kumar</h4>
-                            <span class="cr-tag">Verified Profile</span>
+                            <div>
+                                <h4 style="font-size: 18px; color: #0f172a; font-weight: 900;">Ramesh Kumar</h4>
+                                <p style="font-size: 11px; color: #64748b; font-weight: 700; margin-top: 2px;">Member since Jan 2026</p>
+                            </div>
+                            <span class="cr-tag"><i class="fa-solid fa-shield-check"></i> Verified</span>
                         </div>
-                        <div class="cr-row"><span>Account Status:</span> <span style="color: #10b981;">Excellent Payer</span></div>
-                        <div class="cr-row"><span>Current Wallet:</span> <span>15 Tokens</span></div>
-                        <div class="cr-row"><span>Past Dues:</span> <span style="color: #ef4444;">₹ 120</span></div>
+                        <div class="cr-row"><span>Payment Behavior:</span> <span style="color: #10b981;">Regular / On-Time</span></div>
+                        <div class="cr-row"><span>Last Cleared:</span> <span>₹350 (12 Aug)</span></div>
+                        <div class="cr-row"><span>Current Dues:</span> <span style="color: #ef4444;">₹ 120</span></div>
                         <div class="cr-row"><span>Max Transfer Limit:</span> <span>500 Tokens</span></div>
                     </div>
 
-                    <p style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase;">Enter Tokens to Send</p>
+                    <p style="font-size: 12px; font-weight: 800; color: #64748b; text-transform: uppercase;">Enter Tokens to Send</p>
                     <div class="token-input-wrapper">
-                        <i class="fa-solid fa-minus" style="background: #f1f5f9; padding: 10px; border-radius: 10px; cursor: pointer; color: #0f172a;"></i>
-                        <input type="tel" id="token-amount" value="50">
-                        <i class="fa-solid fa-plus" style="background: #f1f5f9; padding: 10px; border-radius: 10px; cursor: pointer; color: #0f172a;"></i>
+                        <input type="tel" id="token-amount" value="50" placeholder="0">
                     </div>
 
-                    <button class="btn-primary" style="background: linear-gradient(135deg, #d97706, #b45309);" onclick="sendTokens()">Send Tokens Instantly</button>
+                    <button class="btn-primary" style="background: linear-gradient(135deg, #4f46e5, #4338ca);" onclick="sendTokens()">Send Tokens Instantly</button>
                 </div>
                 
                 <p style="margin-top: 25px; font-size: 15px; color: #94a3b8; cursor: pointer; font-weight: 800;" onclick="closeAllSheets()">Cancel</p>
@@ -482,29 +446,20 @@
     </div>
 
     <script>
-        // Track state to show onboarding
-        let isVendorSetupDone = false;
-
-        // 1. Splash Screen Logic
+        // Start flow 
         setTimeout(() => { showScreen('role-select'); }, 2000);
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            window.scrollTo(0,0);
         }
 
         function openSheet(id) {
             document.getElementById(id).style.display = 'flex';
-            if(id === 'vendor-auth-sheet') {
-                setTimeout(() => { document.getElementById('vendor-pin').focus(); }, 100);
-            }
             if(id === 'token-transfer-sheet') {
-                // Reset token transfer modal state
                 document.getElementById('token-step-1').style.display = 'block';
                 document.getElementById('token-step-2').style.display = 'none';
-                document.getElementById('token-mobile').value = '';
-                setTimeout(() => { document.getElementById('token-mobile').focus(); }, 100);
+                document.getElementById('token-search').value = '';
             }
         }
         
@@ -512,57 +467,55 @@
             document.querySelectorAll('.modal-overlay').forEach(s => { s.style.display = 'none'; });
         }
 
-        // 2. Vendor Authentication & Onboarding
-        function verifyVendor() {
-            const pin = document.getElementById('vendor-pin').value;
-            if(pin === '1234') {
-                closeAllSheets();
-                if(!isVendorSetupDone) {
-                    openSheet('vendor-setup-sheet');
-                } else {
-                    showScreen('vendor-dashboard');
-                }
-                document.getElementById('vendor-pin').value = '';
+        // Setup Shop Logic
+        function requestOTP() {
+            const email = document.getElementById('setup-email').value;
+            const mob = document.getElementById('setup-mob').value;
+            if(email && mob.length === 10) {
+                document.getElementById('btn-get-otp').style.display = 'none';
+                document.getElementById('otp-section').style.display = 'block';
             } else {
-                alert('Invalid PIN! Access Denied.');
+                alert("Please enter a valid Mobile and Email ID.");
             }
         }
 
-        function completeVendorSetup() {
+        function completeSetup() {
             const shop = document.getElementById('setup-shop').value;
-            const owner = document.getElementById('setup-owner').value;
-            const loc = document.getElementById('setup-loc').value;
-            
-            if(shop && owner && loc) {
-                // Generate a unique ID (Mock)
+            if(shop) {
+                // Generate ID
                 const uniqueID = shop.substring(0,3).toUpperCase() + "-" + Math.floor(1000 + Math.random() * 9000);
-                
-                // Update DOM
                 document.getElementById('dash-shop-name').innerHTML = `${shop} <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>`;
                 document.getElementById('dash-shop-id').innerText = uniqueID;
                 
-                isVendorSetupDone = true;
                 closeAllSheets();
-                showScreen('vendor-dashboard');
+                // Show Full Screen Success
+                const popup = document.getElementById('success-popup');
+                popup.style.display = 'flex';
+                document.getElementById('new-vendor-id').innerText = uniqueID;
             } else {
-                alert("Please fill all details to create your secure account.");
+                alert("Shop Name is required.");
             }
         }
 
-        // 3. Token Transfer System
+        function goToDashboard() {
+            document.getElementById('success-popup').style.display = 'none';
+            showScreen('vendor-dashboard');
+        }
+
+        // Token Transfer Logic
         function verifyCustomerForToken() {
-            const mobile = document.getElementById('token-mobile').value;
-            if(mobile.length === 10) {
+            const val = document.getElementById('token-search').value;
+            if(val.length >= 4) {
                 const btn = event.target;
                 btn.innerHTML = 'Fetching Credit Report...';
                 setTimeout(() => {
-                    btn.innerHTML = 'Verify Customer';
+                    btn.innerHTML = 'Search Database';
                     document.getElementById('token-step-1').style.display = 'none';
                     document.getElementById('token-step-2').style.display = 'block';
                     document.getElementById('token-amount').focus();
                 }, 1500);
             } else {
-                alert('Enter a valid 10-digit mobile number.');
+                alert('Enter valid Customer ID or Mobile No.');
             }
         }
 

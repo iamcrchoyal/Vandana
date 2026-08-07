@@ -780,7 +780,9 @@
                         <option value="Thread">Thread</option><option value="Zari">Zari</option><option value="Nylon">Nylon</option>
                         <option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>
                     </select>
-                    <select class="form-control" id="inv-shade" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;"><option value="">Select Category First</option></select>
+                    <!-- ✨ NAYA: Select ko hata kar Input+Datalist lagaya jisse 850 colours me Search ho sake -->
+                    <input type="text" class="form-control" id="inv-shade" list="inv-shade-list" placeholder="Search or Select Shade/Item" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;" onchange="autoFillSaleRate()" onkeyup="autoFillSaleRate()">
+                    <datalist id="inv-shade-list"></datalist>
                     <div class="input-btn-group" style="margin-bottom: 16px;">
                         <input type="number" class="form-control" id="inv-qty" placeholder="Qty (Box)" style="border-radius:12px;">
                         <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">
@@ -1114,8 +1116,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.confirmationResult = null;
 
         let allLedgerData = []; let globalCustomers = []; let smartInventory = {}; let allGodownTransfers = []; let allRecycleData = []; let allPendingRequests = [];
-        let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null; 
-        window.lastGeneratedEntryData = null;
+        let itemMasterData = {}; /* ✨ NAYA: Auto-Rate yaad rakhne ke liye */
+        let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null;
         
         window.calcValue = ""; window.calcType = "Gave"; window.isEditingEntry = false;
         window.currentReportElemId = ""; window.currentReportFilename = ""; 
@@ -1352,6 +1354,11 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     renderInventoryList(); 
                     updatePosShades(); 
                     checkRestore(); 
+                });
+                
+                /* ✨ NAYA: Firebase se Item Master (Rates) ka data lana */
+                onValue(ref(db, 'ItemMaster'), (snapshot) => { 
+                    itemMasterData = snapshot.val() || {}; 
                 });
                 
                 onValue(ref(db, 'Customers'), (snapshot) => { 
@@ -2438,8 +2445,26 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
         }
 
-        window.updatePosShades = function() { let cat = document.getElementById('inv-cat').value; let shadeSelect = document.getElementById('inv-shade'); shadeSelect.innerHTML = '<option value="">Select Shade/Item</option>'; if(!cat) return; for (let key in smartInventory) { let parts = key.split("_"); if(parts[0] === cat && smartInventory[key] > 0) { shadeSelect.innerHTML += `<option value="${parts[1]}">${parts[1]} (${smartInventory[key]} Box Left)</option>`; } } }
-        window.addCartItem = function() { const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value; const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0; if (!cat || !shade) return alert("Select Category and Item first!"); if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!"); let key = cat + "_" + shade; let currentStock = smartInventory[key] || 0; if(qty > currentStock) { alert(`OUT OF STOCK! You only have ${currentStock} Box of ${shade} left.`); return; } currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty, rate, itemTotal: qty * rate }); renderCartUi(); }
+        /* ✨ NAYA: Datalist me options dalna aur Auto-rate function */
+        window.updatePosShades = function() { let cat = document.getElementById('inv-cat').value; let shadeList = document.getElementById('inv-shade-list'); document.getElementById('inv-shade').value = ''; shadeList.innerHTML = ''; if(!cat) return; for (let key in smartInventory) { let parts = key.split("_"); if(parts[0] === cat && smartInventory[key] > 0) { shadeList.innerHTML += `<option value="${parts[1]}">${smartInventory[key]} Box Left</option>`; } } }
+        
+        window.autoFillSaleRate = function() {
+            let cat = document.getElementById('inv-cat').value;
+            let shade = document.getElementById('inv-shade').value.trim();
+            if(cat && shade) {
+                let key = cat + "_" + shade;
+                if(itemMasterData[key] && itemMasterData[key].saleRate) {
+                    document.getElementById('inv-rate').value = itemMasterData[key].saleRate;
+                }
+            }
+        }
+        /* ✨ NAYA: Item add karte waqt ItemMaster me Rate save (learn) karwana */
+        window.addCartItem = function() { const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value.trim(); const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0; if (!cat || !shade) return alert("Select Category and Item first!"); if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!"); let key = cat + "_" + shade; let currentStock = smartInventory[key] || 0; if(qty > currentStock) { alert(`OUT OF STOCK! You only have ${currentStock} Box of ${shade} left.`); return; } 
+        
+        /* Firebase me Rate update karna (Taki agli baar auto-fill ho) */
+        update(ref(db, 'ItemMaster/' + key), { saleRate: rate });
+        
+        currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty, rate, itemTotal: qty * rate }); renderCartUi(); }
         // 🌟 EDITABLE CART LOGIC WITH PROFESSIONAL ICONS
         window.removeCartItem = function(index) {
             currentCart.splice(index, 1);

@@ -1445,9 +1445,12 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     checkRestore(); 
                 });
                 
-                /* Auto Purchase Rate याद रखने के लिए */
+                /* Auto Purchase Rate याद रखने के लिए और डैशबोर्ड अपडेट करने के लिए (FIXED) */
                 onValue(ref(db, 'ItemMaster'), (snapshot) => { 
-                    itemMasterData = snapshot.val() || {}; 
+                    window.itemMasterData = snapshot.val() || {}; 
+                    if (typeof renderInventoryList === 'function') {
+                        renderInventoryList(); /* जैसे ही रेट आएगा, यह डैशबोर्ड की वैल्यू को अपडेट कर देगा */
+                    }
                 });
                 
                 /* ✨ NAYA: Firebase se Item Master (Rates) ka data lana */
@@ -2425,13 +2428,14 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             document.getElementById(category.toLowerCase() + '-anim-form').classList.add('form-hidden'); 
         }
 
-        /* Auto-Fetch Purchase Rate Function */
+        /* Auto-Fetch Purchase Rate Function (FIXED) */
         window.fetchPurchaseRate = function(category, shadeId, rateId) {
             let shade = document.getElementById(shadeId).value.trim();
+            if(!window.itemMasterData) window.itemMasterData = {};
             if(category && shade) {
                 let key = category + "_" + shade;
-                if(itemMasterData[key] && itemMasterData[key].purchaseRate) {
-                    document.getElementById(rateId).value = itemMasterData[key].purchaseRate;
+                if(window.itemMasterData[key] && window.itemMasterData[key].purchaseRate) {
+                    document.getElementById(rateId).value = window.itemMasterData[key].purchaseRate;
                 }
             }
         }
@@ -2469,11 +2473,22 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let itemsCount = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
             let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
             
-            /* ✨ NAYA: Custom Limits Jo Aapne Batai */
+            /* ✨ Dashboard Value Tracking Setup */
+            let totalStockValue = 0;
+            let valueBreakdown = {};
+            if(!window.itemMasterData) window.itemMasterData = {};
+            
+            /* ✨ Custom Limits Jo Aapne Batai */
             let stockLimits = { 'Thread': 36, 'Zari': 120, 'Bobbin': 12, 'Nylon': 45, 'Cording': 38, 'Viscos': 5, 'Cotton': 300, 'Mirror Sheet': 50, 'Sequence': 50 };
             
             for (let key in smartInventory) { 
                 let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let qty = smartInventory[key]; 
+                
+                /* Value Calculation (वापस ऐड कर दिया गया) */
+                let pRate = window.itemMasterData[key] ? (window.itemMasterData[key].purchaseRate || 0) : 0;
+                let itemValue = qty * pRate;
+                totalStockValue += itemValue;
+                valueBreakdown[cat] = (valueBreakdown[cat] || 0) + itemValue;
                 
                 if (htmlMaps[cat] !== undefined) {
                     let txList = getLast5Tx(cat, shade);
@@ -2507,6 +2522,20 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                         <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Alert: Need ${limit} min!</div></div>
                     </div>`;
                 } 
+            } 
+
+            /* ✨ Dashboard UI Update Logic */
+            if(document.getElementById('total-stock-value-text')) {
+                document.getElementById('total-stock-value-text').innerText = '₹ ' + totalStockValue.toLocaleString('en-IN');
+            }
+            if(document.getElementById('value-breakdown-list')) {
+                let brkHtml = "";
+                for(let bCat in valueBreakdown) {
+                    if(valueBreakdown[bCat] > 0) {
+                        brkHtml += `<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>${bCat}:</span> <span>₹ ${valueBreakdown[bCat].toLocaleString('en-IN')}</span></div>`;
+                    }
+                }
+                document.getElementById('value-breakdown-list').innerHTML = brkHtml || "No Stock Value added yet.";
             }
             
             /* ✨ NAYA: Updating UI with Calculated Dashboard Values */

@@ -2817,6 +2817,13 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.triggerSaveAndShare = function() { 
             if (currentCart.length === 0) return alert("Cart is empty!"); 
             
+            /* ✨ NAYA: Customer Name Validation (बिना नाम के बिल नहीं बनेगा) */
+            let partyName = document.getElementById('inv-party').value.trim();
+            if (!partyName) {
+                return alert("⚠️ Error: Please enter or select a Customer Name before generating the bill!");
+            }
+            let partyPhone = document.getElementById('inv-phone').value.trim(); 
+
             let cAmt = 0;
             let oAmt = 0;
 
@@ -2838,8 +2845,18 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let totalReceived = cAmt + oAmt;
             if(totalReceived > grandInvoiceTotal) return alert("Received amount cannot be greater than Total Bill amount!");
 
-            let partyName = document.getElementById('inv-party').value.trim() || "Cash Sale"; let partyPhone = document.getElementById('inv-phone').value.trim(); 
-            if(partyName !== "Cash Sale") { let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); if(!exists) { push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); } } 
+            /* ✨ NAYA: Online Payment Professional Confirmation */
+            if (oAmt > 0) {
+                let confirmMsg = `💳 ONLINE PAYMENT CONFIRMATION\n\nHave you successfully received ₹${oAmt.toLocaleString('en-IN')} via Online Payment from ${partyName}?\n\nPress 'OK' to confirm and generate the bill.`;
+                if (!confirm(confirmMsg)) {
+                    return; // अगर यूज़र Cancel दबाता है तो बिल जनरेट नहीं होगा 
+                }
+            }
+
+            let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); 
+            if(!exists) { 
+                push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); 
+            } 
             
             let isUpdating = !!window.editingEntryKey;
             

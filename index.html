@@ -1645,7 +1645,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
-        const allPagesList = ['items-page', 'parties-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'home'];
+        /* ✨ FIXED: generic-category-page added to page list */
+        const allPagesList = ['items-page', 'parties-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'home', 'generic-category-page'];
         
         window.openPage = function(id, isBack = false) { 
             if(!isBack && window.pageStack[window.pageStack.length-1] !== id) {
@@ -2496,9 +2497,10 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         }
 
 window.renderInventoryList = function() { 
-            let htmlMaps = {};
-            let countMaps = {};
-            let itemsCount = {};
+            /* ✨ FIXED: Default categories hamesha dikhengi, chahe stock 0 ho */
+            let htmlMaps = { Thread: "", Zari: "", Nylon: "", Cording: "", Bobbin: "" };
+            let countMaps = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
+            let itemsCount = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
             let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
             
             /* ✨ Dashboard Value Tracking Setup */
@@ -2616,9 +2618,11 @@ window.renderInventoryList = function() {
                  let genListEl = document.getElementById('generic-stock-list');
                  if(genTitleEl && genListEl) {
                      let openCat = genTitleEl.innerText.replace(" Stock", "");
-                     if(htmlMaps[openCat] !== undefined) {
+                     if(htmlMaps[openCat] !== undefined && htmlMaps[openCat] !== "") {
                          genListEl.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[openCat])}, minmax(0, 1fr))`;
                          genListEl.innerHTML = htmlMaps[openCat];
+                     } else {
+                         genListEl.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px; color:gray;">No Stock Available</div>';
                      }
                  }
             }

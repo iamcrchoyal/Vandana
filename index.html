@@ -1069,14 +1069,12 @@
                 
                 <input type="number" class="form-control" id="u-purchase-rate" placeholder="Purchase Rate (₹)" style="margin-bottom: 16px; display: none;">
                 
-                <!-- ✨ NAYA: Sirf Purchase IN aur Mama Shop IN/OUT rakha, Direct OUT hata diya -->
-                <div class="in-out-btn-group" id="u-action-btns" style="display: none; flex-direction: column; gap: 10px;">
-                    <button class="btn-submit" style="background:#0a56d0; border-radius:12px; width: 100%; padding:14px; font-size:14px;" onclick="saveUnifiedStock('purchase')">🛒 Purchase IN (Direct Supplier)</button>
-                    <div style="display:flex; gap:10px; width: 100%;">
-                        <button class="btn-in" style="flex:1; padding:12px;" onclick="saveUnifiedStock('mama_in')">📥 Mama Shop IN</button>
-                        <button class="btn-out" style="flex:1; padding:12px;" onclick="saveUnifiedStock('mama_out')">📤 Mama Shop OUT</button>
-                    </div>
+                <div class="in-out-btn-group" id="u-action-btns" style="display: none;">
+                    <button class="btn-in" onclick="saveUnifiedStock(false)">➕ IN (Add)</button>
+                    <button class="btn-out" onclick="saveUnifiedStock(true)">➖ OUT (Remove)</button>
                 </div>
+            </div>
+        </div>
 
 <div class="scroll-content" style="padding-top:0;">
             <div class="stock-overview-title">STOCK OVERVIEW</div>
@@ -1647,8 +1645,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
-        /* ✨ FIXED: generic-category-page added to page list */
-        const allPagesList = ['items-page', 'parties-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'home', 'generic-category-page'];
+        const allPagesList = ['items-page', 'parties-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'home'];
         
         window.openPage = function(id, isBack = false) { 
             if(!isBack && window.pageStack[window.pageStack.length-1] !== id) {
@@ -2499,10 +2496,9 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         }
 
 window.renderInventoryList = function() { 
-            /* ✨ FIXED: Default categories hamesha dikhengi, chahe stock 0 ho */
-            let htmlMaps = { Thread: "", Zari: "", Nylon: "", Cording: "", Bobbin: "" };
-            let countMaps = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
-            let itemsCount = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
+            let htmlMaps = {};
+            let countMaps = {};
+            let itemsCount = {};
             let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
             
             /* ✨ Dashboard Value Tracking Setup */
@@ -2572,7 +2568,7 @@ window.renderInventoryList = function() {
                 document.getElementById('value-breakdown-list').innerHTML = brkHtml || "No Stock Value added yet.";
             }
 
-            /* ✨ FIXED: Dynamic Stock Overview Grid Click Event Bug Resolved */
+            /* ✨ NAYA: Dynamic Stock Overview Grid Creation (Jo category existing hogi, wo auto-add hogi) */
             let gridEl = document.getElementById('main-stock-grid');
             if(gridEl) {
                 let gridHtml = '';
@@ -2587,8 +2583,7 @@ window.renderInventoryList = function() {
                 // Un saari category ke cards banayenge jo abhi stock (countMaps) में मौजूद हैं
                 for(let cat in countMaps) {
                     let data = knownCats[cat] || { icon: '📦', bg: '#f0f4f9', color: '#444746', page: '' };
-                    /* Javascript window object reference add kiya taki scope me dikkat na aaye */
-                    let onClickStr = data.page ? `window.openPage('${data.page}')` : `window.openGenericPage('${cat}')`;
+                    let onClickStr = data.page ? `openPage('${data.page}')` : `openGenericPage('${cat}')`;
                     gridHtml += `<div class="stock-grid-card" onclick="${onClickStr}">
                                     <div class="sg-title">${cat.toUpperCase()}</div>
                                     <div class="sg-value">${countMaps[cat]}</div>
@@ -2597,7 +2592,7 @@ window.renderInventoryList = function() {
                 }
                 
                 // Last में Low stock वाला कार्ड ऐड करेंगे
-                gridHtml += `<div class="stock-grid-card" onclick="window.openPage('lowstock-page')">
+                gridHtml += `<div class="stock-grid-card" onclick="openPage('lowstock-page')">
                                 <div class="sg-title">LOW STOCK</div>
                                 <div class="sg-value">${lowstockCount}</div>
                                 <div class="sg-icon" style="background:#fdf2f2; color:var(--danger);">⚠️</div>
@@ -2621,11 +2616,9 @@ window.renderInventoryList = function() {
                  let genListEl = document.getElementById('generic-stock-list');
                  if(genTitleEl && genListEl) {
                      let openCat = genTitleEl.innerText.replace(" Stock", "");
-                     if(htmlMaps[openCat] !== undefined && htmlMaps[openCat] !== "") {
+                     if(htmlMaps[openCat] !== undefined) {
                          genListEl.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[openCat])}, minmax(0, 1fr))`;
                          genListEl.innerHTML = htmlMaps[openCat];
-                     } else {
-                         genListEl.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px; color:gray;">No Stock Available</div>';
                      }
                  }
             }
@@ -3728,20 +3721,19 @@ window.showTargetCelebration = function() {
             }
         }
 
-        /* ✨ FIXED: Unified Stock Save Logic with Mama Shop Separation */
-        window.saveUnifiedStock = function(action) {
+        /* ✨ NAYA: Unified Stock Save Logic */
+        window.saveUnifiedStock = function(isOut) {
             let cat = document.getElementById('u-cat').value;
             let shadeVal = document.getElementById('u-shade').value.trim();
             let pRate = parseFloat(document.getElementById('u-purchase-rate').value) || 0;
             
-            // Primary qty nikalna
+            // Primary qty nikalna (Jo input dikh raha hai usi ki value lenge, priority Cone -> Kg -> Meter)
             let qty = parseFloat(document.getElementById('u-cone').value) || parseFloat(document.getElementById('u-kg').value) || parseFloat(document.getElementById('u-meter').value) || 0;
 
             if(!cat || !shadeVal) return alert("Please select Category and enter Shade/Item!");
             if(qty <= 0) return alert("Please enter valid quantity!");
 
             let key = cat + "_" + shadeVal;
-            let isOut = (action === 'mama_out');
             
             // Stock update
             let itemRef = ref(db, 'Inventory/' + key);
@@ -3752,23 +3744,12 @@ window.showTargetCelebration = function() {
                 set(itemRef, newQty); 
             });
 
-            // Purchase Rate update in ItemMaster (only on 'purchase')
-            if(action === 'purchase' && pRate > 0) {
+            // Purchase Rate update in ItemMaster (only on IN)
+            if(!isOut && pRate > 0) {
                 update(ref(db, 'ItemMaster/' + key), { purchaseRate: pRate });
             }
 
-            // Godown Transfer History update (for mama shop tracking)
-            if (action === 'mama_in' || action === 'mama_out') {
-                let typeStr = action === 'mama_in' ? 'IN' : 'OUT';
-                push(ref(db, 'GodownTransfers'), { date: new Date().toISOString(), cat: cat, item: shadeVal, qty: qty, type: typeStr });
-            }
-
-            if (action === 'purchase') {
-                alert("Purchase Stock Added & Rate Saved successfully!");
-            } else {
-                alert(isOut ? "Mama Shop Stock Reduced (OUT) successfully!" : "Mama Shop Stock Added (IN) successfully!");
-            }
-
+            alert(isOut ? "Stock Reduced!" : "Stock Added with Purchase Rate!");
             document.getElementById('unified-stock-form').classList.add('form-hidden');
             
             // form reset

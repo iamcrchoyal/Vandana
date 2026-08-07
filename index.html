@@ -1076,9 +1076,10 @@
             </div>
         </div>
 
-        <div class="scroll-content" style="padding-top:0;">
+<div class="scroll-content" style="padding-top:0;">
             <div class="stock-overview-title">STOCK OVERVIEW</div>
-            <div class="stock-grid">
+            <div class="stock-grid" id="main-stock-grid">
+                <!-- Grid will be dynamically populated here by JS based on inventory -->
                 <div class="stock-grid-card" onclick="openPage('thread-stock-page')"><div class="sg-title">THREAD (थ्रेड)</div><div class="sg-value" id="stock-val-thread">0</div><div class="sg-icon" style="background:#e8f0fe; color:var(--primary);">🧵</div></div>
                 <div class="stock-grid-card" onclick="openPage('zari-stock-page')"><div class="sg-title">ZARI (जरी)</div><div class="sg-value" id="stock-val-zari">0</div><div class="sg-icon" style="background:#fff7ed; color:#f97316;">✨</div></div>
                 <div class="stock-grid-card" onclick="openPage('nylon-stock-page')"><div class="sg-title">NYLON (नायलोन)</div><div class="sg-value" id="stock-val-nylon">0</div><div class="sg-icon" style="background:#faf5ff; color:#a855f7;">🧶</div></div>
@@ -1087,7 +1088,6 @@
                 <div class="stock-grid-card" onclick="openPage('lowstock-page')"><div class="sg-title">LOW STOCK</div><div class="sg-value" id="stock-val-lowstock">0</div><div class="sg-icon" style="background:#fdf2f2; color:var(--danger);">⚠️</div></div>
             </div>
         </div>
-    </div>
 
     <!-- 🧵 THREAD STOCK PAGE (NOW WITH 3D GRID) -->
     <div class="page flex-page" id="thread-stock-page">
@@ -1188,11 +1188,27 @@
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('lowstock-page')">arrow_back</button><h2 class="page-title">Low Stock Alerts</h2></div>
         <div class="fixed-top-section">
             <div style="background:#fdf2f2; color:#b3261e; padding:12px; border-radius:12px; font-weight:600; font-size:13px; border: 1px solid #f8cbcb; display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-                <span class="material-symbols-rounded" style="font-size:20px;">warning</span> <span>Below items have 5 or less boxes left. Time to re-order!</span>
+                <span class="material-symbols-rounded" style="font-size:20px;">warning</span> <span>Below items have reached their minimum limit. Time to re-order!</span>
             </div>
         </div>
         <div class="scroll-content" style="padding-top:0; padding-bottom: 80px;"><div id="lowstock-list" class="inventory-grid"></div></div>
         <div class="bottom-action-bar" style="justify-content:center;"><button class="btn-submit" onclick="shareLowStock()" style="display:flex; align-items:center; justify-content:center; gap:8px;"><span class="material-symbols-rounded">share</span> Share Low Stock List</button></div>
+    </div>
+
+    <!-- 📦 GENERIC DYNAMIC CATEGORY PAGE -->
+    <div class="page flex-page" id="generic-category-page">
+        <div class="sub-header">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('generic-category-page')">arrow_back</button>
+            <h2 class="page-title" id="gc-title" style="flex:1;">Category Stock</h2>
+        </div>
+        <div class="fixed-top-section">
+            <div style="background:#e8f0fe; color:var(--primary); padding:12px; border-radius:12px; font-weight:600; font-size:13px; border: 1px solid #c2e7ff; display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                <span class="material-symbols-rounded" style="font-size:20px;">inventory_2</span> <span>Viewing dynamically generated stock items. To add more, use Master Inventory page.</span>
+            </div>
+        </div>
+        <div class="scroll-content" style="padding-top:0; padding-bottom: 80px;">
+            <div id="generic-stock-list" class="inventory-grid"></div>
+        </div>
     </div>
 
     <!-- ================= FIREBASE JAVASCRIPT ================= -->
@@ -2479,10 +2495,10 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             return list.slice(0, 5);
         }
 
-        window.renderInventoryList = function() { 
-            let htmlMaps = { Thread: "", Zari: "", Nylon: "", Cording: "", Bobbin: "" };
-            let countMaps = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
-            let itemsCount = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
+window.renderInventoryList = function() { 
+            let htmlMaps = {};
+            let countMaps = {};
+            let itemsCount = {};
             let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
             
             /* ✨ Dashboard Value Tracking Setup */
@@ -2496,34 +2512,36 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             for (let key in smartInventory) { 
                 let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let qty = smartInventory[key]; 
                 
-                /* Value Calculation (वापस ऐड कर दिया गया) */
+                /* ✨ NAYA: Dynamic Map Initialization (Agar koi nayi category aati hai toh ye auto-add karega) */
+                if(htmlMaps[cat] === undefined) { htmlMaps[cat] = ""; countMaps[cat] = 0; itemsCount[cat] = 0; }
+                
+                /* Value Calculation */
                 let pRate = window.itemMasterData[key] ? (window.itemMasterData[key].purchaseRate || 0) : 0;
                 let itemValue = qty * pRate;
                 totalStockValue += itemValue;
                 valueBreakdown[cat] = (valueBreakdown[cat] || 0) + itemValue;
                 
-                if (htmlMaps[cat] !== undefined) {
-                    let txList = getLast5Tx(cat, shade);
-                    let txHtml = "";
-                    if(txList.length === 0) {
-                        txHtml = `<div class="inv-tx-item" style="justify-content:center; color:gray;">No recent transactions</div>`;
-                    } else {
-                        txList.forEach(tx => {
-                            let isOut = tx.type === 'OUT' || tx.type === 'Gave';
-                            let qClass = isOut ? 'out' : 'in';
-                            let sign = isOut ? '-' : '+';
-                            let dateStr = new Date(tx.date).toLocaleDateString('en-GB', {day:'numeric', month:'short'});
-                            txHtml += `<div class="inv-tx-item"><span class="inv-tx-date">${dateStr}</span><span class="inv-tx-party">${tx.party}</span><span class="inv-tx-qty ${qClass}">${sign}${tx.qty}</span></div>`;
-                        });
-                    }
-                    /* Box ki jagah Cone ka text laga diya */
-                    htmlMaps[cat] += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)">
-                        <div class="inv-card-header"><div class="inv-card-title">${shade}</div><div class="inv-card-qty">${qty} CONE</div></div>
-                        <div class="inv-tx-list" onclick="event.stopPropagation()">${txHtml}</div>
-                    </div>`;
-                    countMaps[cat] += qty;
-                    itemsCount[cat]++;
+                let txList = getLast5Tx(cat, shade);
+                let txHtml = "";
+                if(txList.length === 0) {
+                    txHtml = `<div class="inv-tx-item" style="justify-content:center; color:gray;">No recent transactions</div>`;
+                } else {
+                    txList.forEach(tx => {
+                        let isOut = tx.type === 'OUT' || tx.type === 'Gave';
+                        let qClass = isOut ? 'out' : 'in';
+                        let sign = isOut ? '-' : '+';
+                        let dateStr = new Date(tx.date).toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+                        txHtml += `<div class="inv-tx-item"><span class="inv-tx-date">${dateStr}</span><span class="inv-tx-party">${tx.party}</span><span class="inv-tx-qty ${qClass}">${sign}${tx.qty}</span></div>`;
+                    });
                 }
+                
+                /* Box ki jagah Cone ka text laga diya */
+                htmlMaps[cat] += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)">
+                    <div class="inv-card-header"><div class="inv-card-title">${shade}</div><div class="inv-card-qty">${qty} CONE</div></div>
+                    <div class="inv-tx-list" onclick="event.stopPropagation()">${txHtml}</div>
+                </div>`;
+                countMaps[cat] += qty;
+                itemsCount[cat]++;
 
                 /* Low Stock ka hisab */
                 let limit = stockLimits[cat] || 5; 
@@ -2549,29 +2567,60 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 }
                 document.getElementById('value-breakdown-list').innerHTML = brkHtml || "No Stock Value added yet.";
             }
-            
-            /* ✨ NAYA: Updating UI with Calculated Dashboard Values */
-            if(document.getElementById('total-stock-value-text')) {
-                document.getElementById('total-stock-value-text').innerText = '₹ ' + totalStockValue.toLocaleString('en-IN');
-            }
-            if(document.getElementById('value-breakdown-list')) {
-                let brkHtml = "";
-                for(let bCat in valueBreakdown) {
-                    if(valueBreakdown[bCat] > 0) {
-                        brkHtml += `<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>${bCat}:</span> <span>₹ ${valueBreakdown[bCat].toLocaleString('en-IN')}</span></div>`;
-                    }
+
+            /* ✨ NAYA: Dynamic Stock Overview Grid Creation (Jo category existing hogi, wo auto-add hogi) */
+            let gridEl = document.getElementById('main-stock-grid');
+            if(gridEl) {
+                let gridHtml = '';
+                let knownCats = {
+                   'Thread': { icon: '🧵', bg: '#e8f0fe', color: 'var(--primary)', page: 'thread-stock-page' },
+                   'Zari': { icon: '✨', bg: '#fff7ed', color: '#f97316', page: 'zari-stock-page' },
+                   'Nylon': { icon: '🧶', bg: '#faf5ff', color: '#a855f7', page: 'nylon-stock-page' },
+                   'Cording': { icon: '🪢', bg: '#e8f0fe', color: 'var(--primary)', page: 'cording-stock-page' },
+                   'Bobbin': { icon: '🛞', bg: '#e6f4ea', color: 'var(--success)', page: 'bobbin-stock-page' }
+                };
+                
+                // Un saari category ke cards banayenge jo abhi stock (countMaps) में मौजूद हैं
+                for(let cat in countMaps) {
+                    let data = knownCats[cat] || { icon: '📦', bg: '#f0f4f9', color: '#444746', page: '' };
+                    let onClickStr = data.page ? `openPage('${data.page}')` : `openGenericPage('${cat}')`;
+                    gridHtml += `<div class="stock-grid-card" onclick="${onClickStr}">
+                                    <div class="sg-title">${cat.toUpperCase()}</div>
+                                    <div class="sg-value">${countMaps[cat]}</div>
+                                    <div class="sg-icon" style="background:${data.bg}; color:${data.color};">${data.icon}</div>
+                                 </div>`;
                 }
-                document.getElementById('value-breakdown-list').innerHTML = brkHtml || "No Stock Value added yet.";
+                
+                // Last में Low stock वाला कार्ड ऐड करेंगे
+                gridHtml += `<div class="stock-grid-card" onclick="openPage('lowstock-page')">
+                                <div class="sg-title">LOW STOCK</div>
+                                <div class="sg-value">${lowstockCount}</div>
+                                <div class="sg-icon" style="background:#fdf2f2; color:var(--danger);">⚠️</div>
+                             </div>`;
+                
+                gridEl.innerHTML = gridHtml;
             }
 
+            /* Lists update */
             for(let cat in htmlMaps) {
                 let el = document.getElementById(cat.toLowerCase() + '-stock-list');
                 if(el) {
                     el.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[cat])}, minmax(0, 1fr))`;
                     el.innerHTML = htmlMaps[cat] || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:gray;">No Stock Available</div>';
                 }
-                let valEl = document.getElementById('stock-val-' + cat.toLowerCase());
-                if(valEl) valEl.innerText = countMaps[cat];
+            }
+
+            /* Generic Page Update (अगर कोई नयी केटेगरी ओपन हुई है तो उसे भी रेंडर करेगा) */
+            if(document.getElementById('generic-category-page') && document.getElementById('generic-category-page').classList.contains('active')) {
+                 let genTitleEl = document.getElementById('gc-title');
+                 let genListEl = document.getElementById('generic-stock-list');
+                 if(genTitleEl && genListEl) {
+                     let openCat = genTitleEl.innerText.replace(" Stock", "");
+                     if(htmlMaps[openCat] !== undefined) {
+                         genListEl.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[openCat])}, minmax(0, 1fr))`;
+                         genListEl.innerHTML = htmlMaps[openCat];
+                     }
+                 }
             }
 
             let lowEl = document.getElementById('lowstock-list');
@@ -2579,7 +2628,15 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 lowEl.style.gridTemplateColumns = `repeat(${getGridCols(lowstockItemsCount)}, minmax(0, 1fr))`;
                 lowEl.innerHTML = lowstockHtml || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--success); font-weight:600;">All stocks are healthy! 🎉</div>';
             }
-            if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
+        }
+
+        /* ✨ NAYA: Function to open Dynamic Category Pages */
+        window.openGenericPage = function(cat) {
+            document.getElementById('gc-title').innerText = cat + " Stock";
+            openPage('generic-category-page');
+            if (typeof renderInventoryList === 'function') {
+                renderInventoryList();
+            }
         }
 
         window.shareLowStock = function() { let msg = "⚠️ *Low Stock Alert - Vandana Enterprises* ⚠️%0A%0A"; let hasLow = false; for (let key in smartInventory) { if(smartInventory[key] <= 5 && smartInventory[key] > 0) { let parts = key.split("_"); msg += `▪️ *${parts[1]}* (${parts[0]}) - Only ${smartInventory[key]} Box%0A`; hasLow = true; } } if(!hasLow) return alert("Everything is fully stocked! No low stock items to share."); window.open(`https://wa.me/?text=${msg}`, '_blank'); }

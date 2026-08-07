@@ -1018,21 +1018,7 @@
     <div class="page flex-page" id="items-page">
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('items-page')">arrow_back</button><h2 class="page-title">Master Inventory</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
-            <!-- ✨ NAYA: Professional Total Inventory Value Card -->
-            <div style="background: linear-gradient(135deg, #0a56d0 0%, #0842a0 100%); border-radius: 16px; padding: 20px; color: white; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(10,86,208,0.2); display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; opacity: 0.9;">Total Inventory Value</div>
-                    <div style="font-size: 28px; font-weight: 800; font-family: 'Product Sans', sans-serif;" id="master-total-value">₹ 0</div>
-                </div>
-                <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 12px;">
-                    <span class="material-symbols-rounded" style="font-size: 28px;">inventory</span>
-                </div>
-            </div>
-            
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <div class="stock-overview-title" style="margin-bottom: 0;">CATEGORY WISE STOCK</div>
-                <button class="pro-add-btn" style="background: var(--success); padding: 6px 12px;" onclick="openPage('add-purchase-page')"><span class="material-symbols-rounded" style="font-size:16px;">add_box</span> Add Purchase</button>
-            </div>
+            <div class="stock-overview-title">STOCK OVERVIEW</div>
             <div class="stock-grid">
                 <div class="stock-grid-card" onclick="openPage('thread-stock-page')"><div class="sg-title">THREAD (थ्रेड)</div><div class="sg-value" id="stock-val-thread">0</div><div class="sg-icon" style="background:#e8f0fe; color:var(--primary);">🧵</div></div>
                 <div class="stock-grid-card" onclick="openPage('zari-stock-page')"><div class="sg-title">ZARI (जरी)</div><div class="sg-value" id="stock-val-zari">0</div><div class="sg-icon" style="background:#fff7ed; color:#f97316;">✨</div></div>
@@ -2386,18 +2372,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 }
                 let valEl = document.getElementById('stock-val-' + cat.toLowerCase());
                 if(valEl) valEl.innerText = countMaps[cat];
-            }
-
-            /* ✨ NAYA: Total Inventory Value Calculate Karna */
-            let totalInventoryValue = 0;
-            for (let key in smartInventory) {
-                let qty = smartInventory[key] || 0;
-                // ItemMaster se purchase rate nikalna (Agar nahi hai to 0)
-                let pRate = (itemMasterData[key] && itemMasterData[key].purchaseRate) ? parseFloat(itemMasterData[key].purchaseRate) : 0;
-                totalInventoryValue += (qty * pRate);
-            }
-            if(document.getElementById('master-total-value')) {
-                document.getElementById('master-total-value').innerText = `₹ ${totalInventoryValue.toLocaleString('en-IN')}`;
             }
 
             let lowEl = document.getElementById('lowstock-list');

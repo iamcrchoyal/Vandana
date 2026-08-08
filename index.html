@@ -775,30 +775,18 @@
                 </div>
                 <div class="form-panel" style="border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
                     <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">📦 Add Product</label>
-                    <!-- ✨ NAYA: Unified Categories aur Dynamic Inputs in POS -->
-                    <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;" onchange="updatePosShades(); updatePosDynamicInputs();">
+                    <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;" onchange="updatePosShades()">
                         <option value="">Select Category</option>
-                        <option value="Thread">Thread</option>
-                        <option value="Zari">Jari</option>
-                        <option value="Viscos">Viscos</option>
-                        <option value="Mirror Sheet">Mirror Sheet</option>
-                        <option value="Sequence">Sequence</option>
-                        <option value="Cording">Coding</option>
-                        <option value="Nylon">Nylon</option>
-                        <option value="Bobbin">Bobin</option>
-                        <option value="Cotton">Cotton</option>
+                        <option value="Thread">Thread</option><option value="Zari">Zari</option><option value="Nylon">Nylon</option>
+                        <option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>
                     </select>
-                    
-                    <input type="text" class="form-control" id="inv-shade" list="inv-shade-list" placeholder="Search or Select Shade/Item" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd; display:none;" onchange="autoFillSaleRate()" onkeyup="autoFillSaleRate()">
+                    <!-- ✨ NAYA: Select ko hata kar Input+Datalist lagaya jisse 850 colours me Search ho sake -->
+                    <input type="text" class="form-control" id="inv-shade" list="inv-shade-list" placeholder="Search or Select Shade/Item" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;" onchange="autoFillSaleRate()" onkeyup="autoFillSaleRate()">
                     <datalist id="inv-shade-list"></datalist>
-
-                    <div class="input-btn-group" id="inv-unit-group" style="margin-bottom: 12px; display:none;">
-                        <input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px; display:none;">
-                        <input type="number" class="form-control" id="inv-meter" placeholder="Meter" style="border-radius:12px; display:none;">
-                        <input type="number" class="form-control" id="inv-kg" placeholder="Kg" style="border-radius:12px; display:none;">
+                    <div class="input-btn-group" style="margin-bottom: 16px;">
+                        <input type="number" class="form-control" id="inv-qty" placeholder="Qty (Box)" style="border-radius:12px;">
+                        <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">
                     </div>
-                    
-                    <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="margin-bottom: 16px; border-radius:12px; display:none;">
                     <button class="btn-submit" style="background:linear-gradient(135deg, #0a56d0 0%, #0842a0 100%); display:flex; align-items:center; justify-content:center; gap:8px; border-radius:16px; font-size:15px; box-shadow:0 4px 12px rgba(10,86,208,0.25); padding:14px;" onclick="addCartItem()"><span class="material-symbols-rounded" style="font-size:22px;">add_shopping_cart</span> Add Product</button>
                 </div>
                 
@@ -2658,72 +2646,26 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 }
             }
         }
-
-        /* ✨ NAYA: POS me Category ke hisab se inputs toggle karna */
-        window.updatePosDynamicInputs = function() {
-            let cat = document.getElementById('inv-cat').value;
-            let shade = document.getElementById('inv-shade');
-            let unitGroup = document.getElementById('inv-unit-group');
-            let iCone = document.getElementById('inv-cone');
-            let iMeter = document.getElementById('inv-meter');
-            let iKg = document.getElementById('inv-kg');
-            let rate = document.getElementById('inv-rate');
-
-            shade.style.display = 'none'; unitGroup.style.display = 'none';
-            iCone.style.display = 'none'; iMeter.style.display = 'none'; iKg.style.display = 'none';
-            rate.style.display = 'none';
-
-            if(!cat) return;
-
-            shade.style.display = 'block'; unitGroup.style.display = 'flex'; rate.style.display = 'block';
-
-            if (cat === 'Thread' || cat === 'Zari' || cat === 'Viscos' || cat === 'Cotton') {
-                iCone.style.display = 'block';
-            } else if (cat === 'Mirror Sheet' || cat === 'Sequence') {
-                iCone.style.display = 'block'; iMeter.style.display = 'block';
-            } else if (cat === 'Cording' || cat === 'Nylon' || cat === 'Bobbin') {
-                iCone.style.display = 'block'; iKg.style.display = 'block';
-            }
-        }
-
-        /* ✨ NAYA: Dynamic Unit ke sath Cart me item add karna */
-        window.addCartItem = function() { 
-            const cat = document.getElementById('inv-cat').value; 
-            const shade = document.getElementById('inv-shade').value.trim(); 
-            
-            let cone = parseFloat(document.getElementById('inv-cone').value) || 0;
-            let kg = parseFloat(document.getElementById('inv-kg').value) || 0;
-            let meter = parseFloat(document.getElementById('inv-meter').value) || 0;
-            
-            // Primary Quantity set karna
-            let qty = cone;
-            if (cone === 0 && kg > 0) qty = kg;
-            if (cone === 0 && meter > 0) qty = meter;
-
-            const rate = parseFloat(document.getElementById('inv-rate').value) || 0; 
-            
-            if (!cat || !shade) return alert("Select Category and Item first!"); 
-            if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!"); 
-            
-            let key = cat + "_" + shade; 
-            let currentStock = smartInventory[key] || 0; 
-            if(qty > currentStock) { alert(`OUT OF STOCK! You only have ${currentStock} left.`); return; } 
-            
-            /* Firebase me Sale Rate update (Learn mode) */
-            update(ref(db, 'ItemMaster/' + key), { saleRate: rate });
-            
-            currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty, rate, itemTotal: qty * rate }); 
-            renderCartUi(); 
+        /* ✨ NAYA: Item add karte waqt ItemMaster me Rate save (learn) karwana */
+        window.addCartItem = function() { const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value.trim(); const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0; if (!cat || !shade) return alert("Select Category and Item first!"); if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!"); let key = cat + "_" + shade; let currentStock = smartInventory[key] || 0; if(qty > currentStock) { alert(`OUT OF STOCK! You only have ${currentStock} Box of ${shade} left.`); return; } 
+        
+        /* Firebase me Rate update karna (Taki agli baar auto-fill ho) */
+        update(ref(db, 'ItemMaster/' + key), { saleRate: rate });
+        
+        currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty, rate, itemTotal: qty * rate }); renderCartUi(); }
+        // 🌟 EDITABLE CART LOGIC WITH PROFESSIONAL ICONS
+        window.removeCartItem = function(index) {
+            currentCart.splice(index, 1);
+            renderCartUi();
         };
 
         window.editCartItem = function(index) {
             let item = currentCart[index];
             document.getElementById('inv-cat').value = item.cat;
             updatePosShades(); 
-            updatePosDynamicInputs(); // Naya function call kiya form show karne ke liye
             setTimeout(() => { document.getElementById('inv-shade').value = item.shade; }, 150);
             
-            document.getElementById('inv-cone').value = item.qty;
+            document.getElementById('inv-qty').value = item.qty;
             document.getElementById('inv-rate').value = item.rate;
             
             currentCart.splice(index, 1);
@@ -2753,11 +2695,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             if(currentCart.length === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted); font-weight:500;">🛒 Cart is empty. Add a product above.</td></tr>`;
             
             document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`; 
-            document.getElementById('inv-cone').value=''; 
-            document.getElementById('inv-kg').value=''; 
-            document.getElementById('inv-meter').value=''; 
+            document.getElementById('inv-qty').value=''; 
             document.getElementById('inv-rate').value=''; 
-            document.getElementById('inv-shade').value=''; 
             let btn = document.getElementById('save-bill-btn'); 
             if(btn) { 
                 btn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">update</span> Update Bill` : `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">receipt_long</span> Generate Bill`; 
@@ -2817,13 +2756,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.triggerSaveAndShare = function() { 
             if (currentCart.length === 0) return alert("Cart is empty!"); 
             
-            /* ✨ NAYA: Customer Name Validation (बिना नाम के बिल नहीं बनेगा) */
-            let partyName = document.getElementById('inv-party').value.trim();
-            if (!partyName) {
-                return alert("⚠️ Error: Please enter or select a Customer Name before generating the bill!");
-            }
-            let partyPhone = document.getElementById('inv-phone').value.trim(); 
-
             let cAmt = 0;
             let oAmt = 0;
 
@@ -2845,18 +2777,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let totalReceived = cAmt + oAmt;
             if(totalReceived > grandInvoiceTotal) return alert("Received amount cannot be greater than Total Bill amount!");
 
-            /* ✨ NAYA: Online Payment Professional Confirmation */
-            if (oAmt > 0) {
-                let confirmMsg = `💳 ONLINE PAYMENT CONFIRMATION\n\nHave you successfully received ₹${oAmt.toLocaleString('en-IN')} via Online Payment from ${partyName}?\n\nPress 'OK' to confirm and generate the bill.`;
-                if (!confirm(confirmMsg)) {
-                    return; // अगर यूज़र Cancel दबाता है तो बिल जनरेट नहीं होगा 
-                }
-            }
-
-            let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); 
-            if(!exists) { 
-                push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); 
-            } 
+            let partyName = document.getElementById('inv-party').value.trim() || "Cash Sale"; let partyPhone = document.getElementById('inv-phone').value.trim(); 
+            if(partyName !== "Cash Sale") { let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); if(!exists) { push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); } } 
             
             let isUpdating = !!window.editingEntryKey;
             

@@ -1079,17 +1079,10 @@
 
     <!-- 🧵 THREAD STOCK PAGE (NOW WITH 3D GRID) -->
     <div class="page flex-page" id="thread-stock-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('thread-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Thread Stock</h2><button class="pro-add-btn" onclick="document.getElementById('thread-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add Stock</button></div>
+        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('thread-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Thread Stock</h2><button class="pro-add-btn" onclick="document.getElementById('thread-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
         <div class="fixed-top-section">
             <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-thread" placeholder="Search Shade Number..." onkeyup="filterStockList('search-thread', 'thread-stock-list')"></div>
-            <div class="form-panel anim-form form-hidden" id="thread-anim-form" style="margin-bottom:10px;">
-                <div class="input-btn-group" style="margin-bottom: 12px;">
-                    <input type="text" class="form-control" id="thread-shade-input" placeholder="Shade No." onkeyup="fetchPurchaseRate('Thread', 'thread-shade-input', 'thread-rate-input')" onchange="fetchPurchaseRate('Thread', 'thread-shade-input', 'thread-rate-input')">
-                    <input type="number" class="form-control" id="thread-cone-input" placeholder="Cone">
-                </div>
-                <input type="number" class="form-control" id="thread-rate-input" placeholder="Purchase Rate (₹)" style="margin-bottom: 12px;">
-                <div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-cone-input', null, 'thread-rate-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-cone-input', null, 'thread-rate-input', true)">➖ OUT</button></div>
-            </div>
+            <div class="form-panel anim-form form-hidden" id="thread-anim-form" style="margin-bottom:10px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="thread-shade-input" placeholder="Shade No."><input type="number" class="form-control" id="thread-box-input" placeholder="Boxes"></div><div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Thread', 'thread-shade-input', 'thread-box-input', true)">➖ OUT</button></div></div>
         </div>
         <div class="scroll-content" style="padding-top:0;">
             <div id="thread-stock-list" class="inventory-grid"></div>
@@ -1098,75 +1091,40 @@
 
     <!-- ✨ ZARI STOCK PAGE -->
     <div class="page flex-page" id="zari-stock-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('zari-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Zari Stock</h2><button class="pro-add-btn" onclick="document.getElementById('zari-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add Stock</button></div>
+        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('zari-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Zari Stock</h2><button class="pro-add-btn" onclick="document.getElementById('zari-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
         <div class="fixed-top-section">
             <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-zari" placeholder="Search Item..." onkeyup="filterStockList('search-zari', 'zari-stock-list')"></div>
-            <div class="form-panel anim-form form-hidden" id="zari-anim-form" style="margin-bottom:10px;">
-                <select class="form-control" id="zari-item-select" style="margin-bottom: 12px;" onchange="fetchPurchaseRate('Zari', 'zari-item-select', 'zari-rate-input')">
-                    <option value="">Select Item...</option><option value="Water 20">Water 20</option><option value="Ice Silver">Ice Silver</option><option value="Sike Water 150">Sike Water 150</option><option value="Sike Water 180">Sike Water 180</option><option value="S B C H Yellow">S B C H Yellow</option><option value="Water 10">Water 10</option><option value="Chandan">Chandan</option><option value="J Gold 77">J Gold 77</option>
-                </select>
-                <div class="input-btn-group" style="margin-bottom: 12px;">
-                    <input type="number" class="form-control" id="zari-cone-input" placeholder="Cone">
-                    <input type="number" class="form-control" id="zari-rate-input" placeholder="Purchase Rate (₹)">
-                </div>
-                <div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Zari', 'zari-item-select', 'zari-cone-input', null, 'zari-rate-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Zari', 'zari-item-select', 'zari-cone-input', null, 'zari-rate-input', true)">➖ OUT</button></div>
-            </div>
+            <div class="form-panel anim-form form-hidden" id="zari-anim-form" style="margin-bottom:10px;"><select class="form-control" id="zari-item-select" style="margin-bottom: 12px;"><option value="Water 20">Water 20</option><option value="Ice Silver">Ice Silver</option><option value="Sike Water 150">Sike Water 150</option><option value="Sike Water 180">Sike Water 180</option><option value="S B C H Yellow">S B C H Yellow</option><option value="Water 10">Water 10</option><option value="Chandan">Chandan</option><option value="J Gold 77">J Gold 77</option></select><input type="number" class="form-control" id="zari-box-input" placeholder="Boxes" style="margin-bottom: 12px;"><div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Zari', 'zari-item-select', 'zari-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Zari', 'zari-item-select', 'zari-box-input', true)">➖ OUT</button></div></div>
         </div>
         <div class="scroll-content" style="padding-top:0;"><div id="zari-stock-list" class="inventory-grid"></div></div>
     </div>
 
     <!-- 🪢 CORDING STOCK PAGE -->
     <div class="page flex-page" id="cording-stock-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('cording-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Cording Stock</h2><button class="pro-add-btn" onclick="document.getElementById('cording-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add Stock</button></div>
+        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('cording-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Cording Stock</h2><button class="pro-add-btn" onclick="document.getElementById('cording-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
         <div class="fixed-top-section">
             <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-cording" placeholder="Search Item..." onkeyup="filterStockList('search-cording', 'cording-stock-list')"></div>
-            <div class="form-panel anim-form form-hidden" id="cording-anim-form" style="margin-bottom:10px;">
-                <select class="form-control" id="cording-item-select" style="margin-bottom: 12px;" onchange="fetchPurchaseRate('Cording', 'cording-item-select', 'cording-rate-input')">
-                    <option value="">Select Item...</option><option value="Cotton Cording">Cotton Cording</option><option value="I Very 3 Taar">I Very 3 Taar</option><option value="M 17 Taar">M 17 Taar</option><option value="Anmol Two 5 Taar">Anmol Two 5 Taar</option><option value="Anmol One 4 Taar">Anmol One 4 Taar</option><option value="R Water 3 Taar">R Water 3 Taar</option><option value="R Water 4 Taar">R Water 4 Taar</option>
-                </select>
-                <div class="input-btn-group" style="margin-bottom: 12px;">
-                    <input type="number" class="form-control" id="cording-cone-input" placeholder="Cone">
-                    <input type="number" class="form-control" id="cording-kg-input" placeholder="Kg">
-                </div>
-                <input type="number" class="form-control" id="cording-rate-input" placeholder="Purchase Rate (₹)" style="margin-bottom: 12px;">
-                <div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Cording', 'cording-item-select', 'cording-cone-input', 'cording-kg-input', 'cording-rate-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Cording', 'cording-item-select', 'cording-cone-input', 'cording-kg-input', 'cording-rate-input', true)">➖ OUT</button></div>
-            </div>
+            <div class="form-panel anim-form form-hidden" id="cording-anim-form" style="margin-bottom:10px;"><select class="form-control" id="cording-item-select" style="margin-bottom: 12px;"><option value="Cotton Cording">Cotton Cording</option><option value="I Very 3 Taar">I Very 3 Taar</option><option value="M 17 Taar">M 17 Taar</option><option value="Anmol Two 5 Taar">Anmol Two 5 Taar</option><option value="Anmol One 4 Taar">Anmol One 4 Taar</option><option value="R Water 3 Taar">R Water 3 Taar</option><option value="R Water 4 Taar">R Water 4 Taar</option></select><input type="number" class="form-control" id="cording-box-input" placeholder="Boxes" style="margin-bottom: 12px;"><div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Cording', 'cording-item-select', 'cording-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Cording', 'cording-item-select', 'cording-box-input', true)">➖ OUT</button></div></div>
         </div>
         <div class="scroll-content" style="padding-top:0;"><div id="cording-stock-list" class="inventory-grid"></div></div>
     </div>
 
     <!-- 🧶 NYLON STOCK PAGE -->
     <div class="page flex-page" id="nylon-stock-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('nylon-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Nylon Stock</h2><button class="pro-add-btn" onclick="document.getElementById('nylon-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add Stock</button></div>
+        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('nylon-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Nylon Stock</h2><button class="pro-add-btn" onclick="document.getElementById('nylon-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
         <div class="fixed-top-section">
             <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-nylon" placeholder="Search Item..." onkeyup="filterStockList('search-nylon', 'nylon-stock-list')"></div>
-            <div class="form-panel anim-form form-hidden" id="nylon-anim-form" style="margin-bottom:10px;">
-                <input type="text" class="form-control" id="nylon-item-input" placeholder="Item Name / Shade" style="margin-bottom: 12px;" onkeyup="fetchPurchaseRate('Nylon', 'nylon-item-input', 'nylon-rate-input')" onchange="fetchPurchaseRate('Nylon', 'nylon-item-input', 'nylon-rate-input')">
-                <div class="input-btn-group" style="margin-bottom: 12px;">
-                    <input type="number" class="form-control" id="nylon-cone-input" placeholder="Cone">
-                    <input type="number" class="form-control" id="nylon-kg-input" placeholder="Kg">
-                </div>
-                <input type="number" class="form-control" id="nylon-rate-input" placeholder="Purchase Rate (₹)" style="margin-bottom: 12px;">
-                <div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Nylon', 'nylon-item-input', 'nylon-cone-input', 'nylon-kg-input', 'nylon-rate-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Nylon', 'nylon-item-input', 'nylon-cone-input', 'nylon-kg-input', 'nylon-rate-input', true)">➖ OUT</button></div>
-            </div>
+            <div class="form-panel anim-form form-hidden" id="nylon-anim-form" style="margin-bottom:10px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="nylon-item-input" placeholder="Item Name / Shade"><input type="number" class="form-control" id="nylon-box-input" placeholder="Boxes"></div><div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Nylon', 'nylon-item-input', 'nylon-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Nylon', 'nylon-item-input', 'nylon-box-input', true)">➖ OUT</button></div></div>
         </div>
         <div class="scroll-content" style="padding-top:0;"><div id="nylon-stock-list" class="inventory-grid"></div></div>
     </div>
 
     <!-- 🛞 BOBBIN STOCK PAGE -->
     <div class="page flex-page" id="bobbin-stock-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('bobbin-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Bobbin Stock</h2><button class="pro-add-btn" onclick="document.getElementById('bobbin-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add Stock</button></div>
+        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('bobbin-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Bobbin Stock</h2><button class="pro-add-btn" onclick="document.getElementById('bobbin-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
         <div class="fixed-top-section">
             <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-bobbin" placeholder="Search Item..." onkeyup="filterStockList('search-bobbin', 'bobbin-stock-list')"></div>
-            <div class="form-panel anim-form form-hidden" id="bobbin-anim-form" style="margin-bottom:10px;">
-                <input type="text" class="form-control" id="bobbin-item-input" placeholder="Item Name" style="margin-bottom: 12px;" onkeyup="fetchPurchaseRate('Bobbin', 'bobbin-item-input', 'bobbin-rate-input')" onchange="fetchPurchaseRate('Bobbin', 'bobbin-item-input', 'bobbin-rate-input')">
-                <div class="input-btn-group" style="margin-bottom: 12px;">
-                    <input type="number" class="form-control" id="bobbin-cone-input" placeholder="Cone">
-                    <input type="number" class="form-control" id="bobbin-kg-input" placeholder="Kg">
-                </div>
-                <input type="number" class="form-control" id="bobbin-rate-input" placeholder="Purchase Rate (₹)" style="margin-bottom: 12px;">
-                <div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Bobbin', 'bobbin-item-input', 'bobbin-cone-input', 'bobbin-kg-input', 'bobbin-rate-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Bobbin', 'bobbin-item-input', 'bobbin-cone-input', 'bobbin-kg-input', 'bobbin-rate-input', true)">➖ OUT</button></div>
-            </div>
+            <div class="form-panel anim-form form-hidden" id="bobbin-anim-form" style="margin-bottom:10px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="bobbin-item-input" placeholder="Item Name"><input type="number" class="form-control" id="bobbin-box-input" placeholder="Boxes"></div><div class="in-out-btn-group"><button class="btn-in" onclick="addSpecificStock('Bobbin', 'bobbin-item-input', 'bobbin-box-input', false)">➕ IN</button><button class="btn-out" onclick="addSpecificStock('Bobbin', 'bobbin-item-input', 'bobbin-box-input', true)">➖ OUT</button></div></div>
         </div>
         <div class="scroll-content" style="padding-top:0;"><div id="bobbin-stock-list" class="inventory-grid"></div></div>
     </div>
@@ -1443,14 +1401,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     renderInventoryList(); 
                     updatePosShades(); 
                     checkRestore(); 
-                });
-                
-                /* Auto Purchase Rate याद रखने के लिए और डैशबोर्ड अपडेट करने के लिए (FIXED) */
-                onValue(ref(db, 'ItemMaster'), (snapshot) => { 
-                    window.itemMasterData = snapshot.val() || {}; 
-                    if (typeof renderInventoryList === 'function') {
-                        renderInventoryList(); /* जैसे ही रेट आएगा, यह डैशबोर्ड की वैल्यू को अपडेट कर देगा */
-                    }
                 });
                 
                 /* ✨ NAYA: Firebase se Item Master (Rates) ka data lana */
@@ -2392,53 +2342,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             
         window.openInvoicesPage = function() { let listContainer = document.getElementById('invoices-list-container'); listContainer.innerHTML = ''; let selectedDateString = document.getElementById('dash-date-picker').value; let todayInvoices = allLedgerData.filter(entry => { let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){} return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice"); }); if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } else { todayInvoices.forEach(entry => { listContainer.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; cursor:pointer;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--success); font-weight:800; font-size: 16px; font-family:'Product Sans', sans-serif;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;"><span>${entry.details}</span><span style="color:var(--primary); font-weight:600; display:flex; align-items:center;"><span class="material-symbols-rounded" style="font-size:16px;">visibility</span> View</span></div></div>`; }); } navTo('invoices-page', null); }
 
-        window.addSpecificStock = function(category, shadeId, coneId, kgId, rateId, isOut = false) { 
-            let shade = document.getElementById(shadeId).value.trim(); 
-            let cone = parseFloat(document.getElementById(coneId).value) || 0; 
-            let kg = kgId ? (parseFloat(document.getElementById(kgId).value) || 0) : 0; 
-            let pRate = parseFloat(document.getElementById(rateId).value) || 0; 
-            
-            /* Primary qty: Cone को मानेंगे, नहीं तो Kg को */
-            let qty = cone;
-            if (cone === 0 && kg > 0) qty = kg; 
-            
-            if(!shade || qty <= 0) return alert("Please enter Detail and valid Cone/Kg Quantity!"); 
-            
-            let key = category + "_" + shade; 
-            let itemRef = ref(db, 'Inventory/' + key); 
-            
-            get(itemRef).then((snap) => { 
-                let currentQty = snap.val() || 0; 
-                let newQty = isOut ? currentQty - qty : currentQty + qty; 
-                if(newQty < 0) newQty = 0; 
-                set(itemRef, newQty); 
-            }); 
-            
-            /* Purchase Rate को ItemMaster में सेव करना */
-            if(!isOut && pRate > 0) {
-                update(ref(db, 'ItemMaster/' + key), { purchaseRate: pRate });
-            }
-
-            if(document.getElementById(shadeId).tagName !== 'SELECT') { document.getElementById(shadeId).value = ''; } 
-            document.getElementById(coneId).value = ''; 
-            if(kgId) document.getElementById(kgId).value = '';
-            document.getElementById(rateId).value = '';
-            
-            alert(isOut ? "Stock Reduced (OUT) Successfully!" : "Stock Added with Purchase Rate!"); 
-            document.getElementById(category.toLowerCase() + '-anim-form').classList.add('form-hidden'); 
-        }
-
-        /* Auto-Fetch Purchase Rate Function (FIXED) */
-        window.fetchPurchaseRate = function(category, shadeId, rateId) {
-            let shade = document.getElementById(shadeId).value.trim();
-            if(!window.itemMasterData) window.itemMasterData = {};
-            if(category && shade) {
-                let key = category + "_" + shade;
-                if(window.itemMasterData[key] && window.itemMasterData[key].purchaseRate) {
-                    document.getElementById(rateId).value = window.itemMasterData[key].purchaseRate;
-                }
-            }
-        }
+        window.addSpecificStock = function(category, shadeId, qtyId, isOut = false) { let shade = document.getElementById(shadeId).value; let qty = parseInt(document.getElementById(qtyId).value); if(!shade || isNaN(qty)) return alert("Please enter Detail and Box Quantity!"); let key = category + "_" + shade; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then((snap) => { let currentQty = snap.val() || 0; let newQty = isOut ? currentQty - qty : currentQty + qty; if(newQty < 0) newQty = 0; set(itemRef, newQty); }); if(document.getElementById(shadeId).tagName !== 'SELECT') { document.getElementById(shadeId).value = ''; } document.getElementById(qtyId).value = ''; alert(isOut ? "Stock Reduced (OUT) Successfully!" : "Stock Added (IN) Successfully!"); document.getElementById(category.toLowerCase() + '-anim-form').classList.add('form-hidden'); }
         window.filterStockList = function(inputId, listId) { let filter = document.getElementById(inputId).value.toUpperCase(); let rows = document.querySelectorAll('#' + listId + ' .stock-row'); rows.forEach(row => { let name = row.getAttribute('data-name'); row.style.display = name.includes(filter) ? '' : 'none'; }); }
         
         function getGridCols(count) {
@@ -2473,19 +2377,22 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let itemsCount = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
             let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
             
-            /* ✨ Dashboard Value Tracking Setup */
+            /* ✨ NAYA: Total Stock Value and Breakdown Trackers */
             let totalStockValue = 0;
             let valueBreakdown = {};
-            if(!window.itemMasterData) window.itemMasterData = {};
             
-            /* ✨ Custom Limits Jo Aapne Batai */
-            let stockLimits = { 'Thread': 36, 'Zari': 120, 'Bobbin': 12, 'Nylon': 45, 'Cording': 38, 'Viscos': 5, 'Cotton': 300, 'Mirror Sheet': 50, 'Sequence': 50 };
+            /* ✨ NAYA: Custom Low Stock Limits */
+            let stockLimits = {
+                'Thread': 36, 'Zari': 120, 'Bobbin': 12, 'Nylon': 45, 
+                'Cording': 38, 'Viscos': 5, 'Cotton': 300, 
+                'Mirror Sheet': 50, 'Sequence': 50
+            };
             
             for (let key in smartInventory) { 
                 let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let qty = smartInventory[key]; 
                 
-                /* Value Calculation (वापस ऐड कर दिया गया) */
-                let pRate = window.itemMasterData[key] ? (window.itemMasterData[key].purchaseRate || 0) : 0;
+                /* Value Calculation */
+                let pRate = itemMasterData[key] ? (itemMasterData[key].purchaseRate || 0) : 0;
                 let itemValue = qty * pRate;
                 totalStockValue += itemValue;
                 valueBreakdown[cat] = (valueBreakdown[cat] || 0) + itemValue;
@@ -2504,39 +2411,25 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                             txHtml += `<div class="inv-tx-item"><span class="inv-tx-date">${dateStr}</span><span class="inv-tx-party">${tx.party}</span><span class="inv-tx-qty ${qClass}">${sign}${tx.qty}</span></div>`;
                         });
                     }
-                    /* Box ki jagah Cone ka text laga diya */
                     htmlMaps[cat] += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)">
-                        <div class="inv-card-header"><div class="inv-card-title">${shade}</div><div class="inv-card-qty">${qty} CONE</div></div>
+                        <div class="inv-card-header"><div class="inv-card-title">${shade}</div><div class="inv-card-qty">${qty} BOX</div></div>
                         <div class="inv-tx-list" onclick="event.stopPropagation()">${txHtml}</div>
                     </div>`;
                     countMaps[cat] += qty;
                     itemsCount[cat]++;
                 }
 
-                /* Low Stock ka hisab */
-                let limit = stockLimits[cat] || 5; 
+                /* ✨ NAYA: Dynamic Custom Threshold applied */
+                let limit = stockLimits[cat] || 5; // Default 5 agar list me nahi hai
+                
                 if(qty < limit && qty > 0) { 
                     lowstockCount++; lowstockItemsCount++;
                     lowstockHtml += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)" style="border-color:#f8cbcb;">
                         <div class="inv-card-header"><div class="inv-card-title">${shade} <span style="font-size:10px;color:gray;">(${cat})</span></div><div class="inv-card-qty" style="color:var(--danger); background:#fdf2f2;">${qty} (Low)</div></div>
-                        <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Alert: Need ${limit} min!</div></div>
+                        <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Alert: Need ${limit} minimum!</div></div>
                     </div>`;
                 } 
             } 
-
-            /* ✨ Dashboard UI Update Logic */
-            if(document.getElementById('total-stock-value-text')) {
-                document.getElementById('total-stock-value-text').innerText = '₹ ' + totalStockValue.toLocaleString('en-IN');
-            }
-            if(document.getElementById('value-breakdown-list')) {
-                let brkHtml = "";
-                for(let bCat in valueBreakdown) {
-                    if(valueBreakdown[bCat] > 0) {
-                        brkHtml += `<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>${bCat}:</span> <span>₹ ${valueBreakdown[bCat].toLocaleString('en-IN')}</span></div>`;
-                    }
-                }
-                document.getElementById('value-breakdown-list').innerHTML = brkHtml || "No Stock Value added yet.";
-            }
             
             /* ✨ NAYA: Updating UI with Calculated Dashboard Values */
             if(document.getElementById('total-stock-value-text')) {

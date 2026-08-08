@@ -780,7 +780,7 @@
                         <option value="Thread">Thread</option><option value="Zari">Zari</option><option value="Nylon">Nylon</option>
                         <option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>
                     </select>
-                    <select class="form-control" id="inv-shade" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;"><option value="">Select Category First</option></select>
+                    <select class="form-control" id="inv-shade" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;" onchange="fetchLastRateForPOS()"><option value="">Select Category First</option></select>
                     <div class="input-btn-group" id="pos-dynamic-inputs" style="margin-bottom: 16px;">
                         <input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px;">
                         <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">
@@ -1014,27 +1014,57 @@
 
     <!-- ================= MASTER INVENTORY PAGE ================= -->
     <div class="page flex-page" id="items-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('items-page')">arrow_back</button><h2 class="page-title">Master Inventory</h2></div>
+        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('items-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Master Inventory</h2><button class="pro-add-btn" onclick="openNewCategoryModal()"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add Category</button></div>
         <div class="scroll-content" style="padding-top:16px;">
+            <div class="form-panel" style="background:linear-gradient(135deg, #0a56d0 0%, #0842a0 100%); border:none; border-radius:16px; margin-bottom:16px; padding:20px; display:flex; justify-content:space-between; align-items:center; box-shadow: 0 4px 15px rgba(10,86,208,0.2);">
+                <span style="font-weight:600; color:white; font-size:14px; opacity:0.9;">Total Stock Value:</span>
+                <span style="font-size:26px; font-weight:700; color:white; font-family:'Product Sans', sans-serif;" id="master-total-value">₹ 0</span>
+            </div>
             <div class="stock-overview-title">STOCK OVERVIEW</div>
-            <div class="stock-grid">
-                <div class="stock-grid-card" onclick="openPage('thread-stock-page')"><div class="sg-title">THREAD (थ्रेड)</div><div class="sg-value" id="stock-val-thread">0</div><div class="sg-icon" style="background:#e8f0fe; color:var(--primary);">🧵</div></div>
-                <div class="stock-grid-card" onclick="openPage('zari-stock-page')"><div class="sg-title">ZARI (जरी)</div><div class="sg-value" id="stock-val-zari">0</div><div class="sg-icon" style="background:#fff7ed; color:#f97316;">✨</div></div>
-                <div class="stock-grid-card" onclick="openPage('nylon-stock-page')"><div class="sg-title">NYLON (नायलोन)</div><div class="sg-value" id="stock-val-nylon">0</div><div class="sg-icon" style="background:#faf5ff; color:#a855f7;">🧶</div></div>
-                <div class="stock-grid-card" onclick="openPage('cording-stock-page')"><div class="sg-title">CORDING (कोडिंग)</div><div class="sg-value" id="stock-val-cording">0</div><div class="sg-icon" style="background:#e8f0fe; color:var(--primary);">🪢</div></div>
-                <div class="stock-grid-card" onclick="openPage('bobbin-stock-page')"><div class="sg-title">BOBBIN (बोबिन)</div><div class="sg-value" id="stock-val-bobbin">0</div><div class="sg-icon" style="background:#e6f4ea; color:var(--success);">🛞</div></div>
-                <div class="stock-grid-card" onclick="openPage('lowstock-page')"><div class="sg-title">LOW STOCK</div><div class="sg-value" id="stock-val-lowstock">0</div><div class="sg-icon" style="background:#fdf2f2; color:var(--danger);">⚠️</div></div>
+            <div class="stock-grid" id="master-stock-grid">
+                <!-- Dynamically Generated Grid Here -->
             </div>
         </div>
+    </div>
+
+    <!-- 🆕 NEW CATEGORY MODAL -->
+    <div id="new-cat-modal" class="report-modal-overlay">
+        <div class="report-modal-box">
+            <h3 style="margin-bottom: 20px; font-family: 'Product Sans', sans-serif; color:var(--text-dark);">Add New Category</h3>
+            <div class="form-group">
+                <label class="form-label">Category Name</label>
+                <input type="text" id="new-cat-name" class="form-control" placeholder="e.g. Fabric, Buttons...">
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger);" onclick="document.getElementById('new-cat-modal').style.display='none'">Cancel</button>
+                <button class="btn-submit" style="flex:1;" onclick="saveNewCategory()">Save Category</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📄 DYNAMIC CATEGORY PAGE TEMPLATE -->
+    <div class="page flex-page" id="dynamic-stock-page">
+        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('dynamic-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;" id="dyn-cat-title">Category Stock</h2><button class="pro-add-btn" onclick="document.getElementById('dyn-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
+        <div class="fixed-top-section">
+            <div class="form-panel" style="background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;"><span style="font-weight:600; color:var(--primary); font-size:14px;">Total Value:</span><span style="font-size:20px; font-weight:700; color:var(--primary);" id="dyn-cat-val">₹ 0</span></div>
+            <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-dyn" placeholder="Search Item..." onkeyup="filterStockList('search-dyn', 'dyn-stock-list')"></div>
+            <div class="form-panel anim-form form-hidden" id="dyn-anim-form" style="margin-bottom:10px;">
+                <input type="text" class="form-control" id="dyn-type" placeholder="Item Name / Type" style="margin-bottom:12px;" onblur="fetchLastRate('dyn-type', 'dyn-rate')">
+                <div class="input-btn-group" style="margin-bottom: 12px;">
+                    <input type="number" class="form-control" id="dyn-cone" placeholder="Cone/Pcs">
+                    <input type="number" class="form-control" id="dyn-kg" placeholder="KG (Optional)">
+                </div>
+                <input type="number" class="form-control" id="dyn-rate" placeholder="Purchase Rate (₹)" style="margin-bottom: 12px;">
+                <div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock(window.currentDynCat, 'dyn-type', 'dyn-cone', 'dyn-kg', 'dyn-rate')">➕ Add IN Stock</button></div>
+            </div>
+        </div>
+        <div class="scroll-content" style="padding-top:0;"><div id="dyn-stock-list" class="inventory-grid"></div></div>
     </div>
 
     <!-- 🧵 THREAD STOCK PAGE (NOW WITH 3D GRID) -->
     <div class="page flex-page" id="thread-stock-page">
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('thread-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Thread Stock</h2><button class="pro-add-btn" onclick="document.getElementById('thread-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
-        <div class="fixed-top-section">
-            <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-thread" placeholder="Search Shade Number..." onkeyup="filterStockList('search-thread', 'thread-stock-list')"></div>
-            <div class="form-panel anim-form form-hidden" id="thread-anim-form" style="margin-bottom:10px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="thread-box-no" placeholder="Box No."><input type="number" class="form-control" id="thread-cone" placeholder="Cone"></div><div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock('Thread', 'thread-box-no', 'thread-cone', null)">➕ Add IN Stock</button></div></div>
-        </div>
+        thread-stock-list')"></div>
         <div class="scroll-content" style="padding-top:0;">
             <div id="thread-stock-list" class="inventory-grid"></div>
         </div>
@@ -1044,8 +1074,9 @@
     <div class="page flex-page" id="zari-stock-page">
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('zari-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Zari Stock</h2><button class="pro-add-btn" onclick="document.getElementById('zari-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
         <div class="fixed-top-section">
+            <div class="form-panel" style="background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;"><span style="font-weight:600; color:var(--primary); font-size:14px;">Total Zari Value:</span><span style="font-size:20px; font-weight:700; color:var(--primary);" id="val-Zari">₹ 0</span></div>
             <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-zari" placeholder="Search Item..." onkeyup="filterStockList('search-zari', 'zari-stock-list')"></div>
-            <div class="form-panel anim-form form-hidden" id="zari-anim-form" style="margin-bottom:10px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="zari-box-no" placeholder="Box No."><input type="number" class="form-control" id="zari-cone" placeholder="Cone"></div><div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock('Zari', 'zari-box-no', 'zari-cone', null)">➕ Add IN Stock</button></div></div>
+            <div class="form-panel anim-form form-hidden" id="zari-anim-form" style="margin-bottom:10px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="zari-box-no" placeholder="Box No." onblur="fetchLastRate('zari-box-no', 'zari-rate')"><input type="number" class="form-control" id="zari-cone" placeholder="Cone"></div><input type="number" class="form-control" id="zari-rate" placeholder="Purchase Rate (₹)" style="margin-bottom: 12px;"><div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock('Zari', 'zari-box-no', 'zari-cone', null, 'zari-rate')">➕ Add IN Stock</button></div></div>
         </div>
         <div class="scroll-content" style="padding-top:0;"><div id="zari-stock-list" class="inventory-grid"></div></div>
     </div>
@@ -1054,8 +1085,9 @@
     <div class="page flex-page" id="cording-stock-page">
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('cording-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Cording Stock</h2><button class="pro-add-btn" onclick="document.getElementById('cording-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
         <div class="fixed-top-section">
+            <div class="form-panel" style="background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;"><span style="font-weight:600; color:var(--primary); font-size:14px;">Total Cording Value:</span><span style="font-size:20px; font-weight:700; color:var(--primary);" id="val-Cording">₹ 0</span></div>
             <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-cording" placeholder="Search Item..." onkeyup="filterStockList('search-cording', 'cording-stock-list')"></div>
-            <div class="form-panel anim-form form-hidden" id="cording-anim-form" style="margin-bottom:10px;"><input type="text" class="form-control" id="cording-type" placeholder="Type" style="margin-bottom:12px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="number" class="form-control" id="cording-cone" placeholder="Cone"><input type="number" class="form-control" id="cording-kg" placeholder="KG"></div><div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock('Cording', 'cording-type', 'cording-cone', 'cording-kg')">➕ Add IN Stock</button></div></div>
+            <div class="form-panel anim-form form-hidden" id="cording-anim-form" style="margin-bottom:10px;"><input type="text" class="form-control" id="cording-type" placeholder="Type" style="margin-bottom:12px;" onblur="fetchLastRate('cording-type', 'cording-rate')"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="number" class="form-control" id="cording-cone" placeholder="Cone"><input type="number" class="form-control" id="cording-kg" placeholder="KG"></div><input type="number" class="form-control" id="cording-rate" placeholder="Purchase Rate (₹)" style="margin-bottom: 12px;"><div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock('Cording', 'cording-type', 'cording-cone', 'cording-kg', 'cording-rate')">➕ Add IN Stock</button></div></div>
         </div>
         <div class="scroll-content" style="padding-top:0;"><div id="cording-stock-list" class="inventory-grid"></div></div>
     </div>
@@ -1064,8 +1096,9 @@
     <div class="page flex-page" id="nylon-stock-page">
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('nylon-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Nylon Stock</h2><button class="pro-add-btn" onclick="document.getElementById('nylon-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
         <div class="fixed-top-section">
+            <div class="form-panel" style="background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;"><span style="font-weight:600; color:var(--primary); font-size:14px;">Total Nylon Value:</span><span style="font-size:20px; font-weight:700; color:var(--primary);" id="val-Nylon">₹ 0</span></div>
             <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-nylon" placeholder="Search Item..." onkeyup="filterStockList('search-nylon', 'nylon-stock-list')"></div>
-            <div class="form-panel anim-form form-hidden" id="nylon-anim-form" style="margin-bottom:10px;"><input type="text" class="form-control" id="nylon-type" placeholder="Type" style="margin-bottom:12px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="number" class="form-control" id="nylon-cone" placeholder="Cone"><input type="number" class="form-control" id="nylon-kg" placeholder="KG"></div><div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock('Nylon', 'nylon-type', 'nylon-cone', 'nylon-kg')">➕ Add IN Stock</button></div></div>
+            <div class="form-panel anim-form form-hidden" id="nylon-anim-form" style="margin-bottom:10px;"><input type="text" class="form-control" id="nylon-type" placeholder="Type" style="margin-bottom:12px;" onblur="fetchLastRate('nylon-type', 'nylon-rate')"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="number" class="form-control" id="nylon-cone" placeholder="Cone"><input type="number" class="form-control" id="nylon-kg" placeholder="KG"></div><input type="number" class="form-control" id="nylon-rate" placeholder="Purchase Rate (₹)" style="margin-bottom: 12px;"><div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock('Nylon', 'nylon-type', 'nylon-cone', 'nylon-kg', 'nylon-rate')">➕ Add IN Stock</button></div></div>
         </div>
         <div class="scroll-content" style="padding-top:0;"><div id="nylon-stock-list" class="inventory-grid"></div></div>
     </div>
@@ -1074,8 +1107,9 @@
     <div class="page flex-page" id="bobbin-stock-page">
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('bobbin-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Bobbin Stock</h2><button class="pro-add-btn" onclick="document.getElementById('bobbin-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
         <div class="fixed-top-section">
+            <div class="form-panel" style="background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;"><span style="font-weight:600; color:var(--primary); font-size:14px;">Total Bobbin Value:</span><span style="font-size:20px; font-weight:700; color:var(--primary);" id="val-Bobbin">₹ 0</span></div>
             <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-bobbin" placeholder="Search Item..." onkeyup="filterStockList('search-bobbin', 'bobbin-stock-list')"></div>
-            <div class="form-panel anim-form form-hidden" id="bobbin-anim-form" style="margin-bottom:10px;"><input type="text" class="form-control" id="bobbin-type" placeholder="Type" style="margin-bottom:12px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="number" class="form-control" id="bobbin-cone" placeholder="Cone"><input type="number" class="form-control" id="bobbin-kg" placeholder="KG"></div><div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock('Bobbin', 'bobbin-type', 'bobbin-cone', 'bobbin-kg')">➕ Add IN Stock</button></div></div>
+            <div class="form-panel anim-form form-hidden" id="bobbin-anim-form" style="margin-bottom:10px;"><input type="text" class="form-control" id="bobbin-type" placeholder="Type" style="margin-bottom:12px;" onblur="fetchLastRate('bobbin-type', 'bobbin-rate')"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="number" class="form-control" id="bobbin-cone" placeholder="Cone"><input type="number" class="form-control" id="bobbin-kg" placeholder="KG"></div><input type="number" class="form-control" id="bobbin-rate" placeholder="Purchase Rate (₹)" style="margin-bottom: 12px;"><div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock('Bobbin', 'bobbin-type', 'bobbin-cone', 'bobbin-kg', 'bobbin-rate')">➕ Add IN Stock</button></div></div>
         </div>
         <div class="scroll-content" style="padding-top:0;"><div id="bobbin-stock-list" class="inventory-grid"></div></div>
     </div>
@@ -1353,6 +1387,9 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     updatePosShades(); 
                     checkRestore(); 
                 });
+
+                 onValue(ref(db, 'ItemRates'), (snapshot) => { window.itemRates = snapshot.val() || {}; if(typeof renderInventoryList==='function') renderInventoryList(); });
+                onValue(ref(db, 'Categories'), (snapshot) => { window.dynamicCategories = Object.keys(snapshot.val() || {}); if(typeof renderMasterInventoryBoxes==='function') renderMasterInventoryBoxes(); });
                 
                 onValue(ref(db, 'Customers'), (snapshot) => { 
                     let data = snapshot.val() || {}; 
@@ -2288,13 +2325,64 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             
         window.openInvoicesPage = function() { let listContainer = document.getElementById('invoices-list-container'); listContainer.innerHTML = ''; let selectedDateString = document.getElementById('dash-date-picker').value; let todayInvoices = allLedgerData.filter(entry => { let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){} return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice"); }); if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } else { todayInvoices.forEach(entry => { listContainer.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; cursor:pointer;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--success); font-weight:800; font-size: 16px; font-family:'Product Sans', sans-serif;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;"><span>${entry.details}</span><span style="color:var(--primary); font-weight:600; display:flex; align-items:center;"><span class="material-symbols-rounded" style="font-size:16px;">visibility</span> View</span></div></div>`; }); } navTo('invoices-page', null); }
 
-        window.addSpecificStock = function(category, id1, id2, id3) { 
+        window.dynamicCategories = [];
+        window.itemRates = {};
+
+        // 1. Add New Category System
+        window.openNewCategoryModal = function() { document.getElementById('new-cat-modal').style.display = 'flex'; }
+        window.saveNewCategory = function() {
+            let catName = document.getElementById('new-cat-name').value.trim();
+            if(!catName) return alert("Enter category name!");
+            set(ref(db, 'Categories/' + catName), true).then(() => {
+                document.getElementById('new-cat-modal').style.display = 'none';
+                document.getElementById('new-cat-name').value = '';
+                alert("Category Added Successfully!");
+            });
+        }
+        window.openDynamicCategory = function(catName) {
+            window.currentDynCat = catName;
+            document.getElementById('dyn-cat-title').innerText = catName + " Stock";
+            document.getElementById('dyn-cat-val').innerText = "₹ 0"; 
+            openPage('dynamic-stock-page');
+            renderInventoryList();
+        }
+
+        // 2. Auto-fetch Purchase Rate 
+        window.fetchLastRate = function(idInput, rateInput) {
+            let cat = window.currentDynCat || ""; 
+            if(idInput.includes('thread')) cat = 'Thread';
+            else if(idInput.includes('zari')) cat = 'Zari';
+            else if(idInput.includes('cording')) cat = 'Cording';
+            else if(idInput.includes('nylon')) cat = 'Nylon';
+            else if(idInput.includes('bobbin')) cat = 'Bobbin';
+
+            let identifier = document.getElementById(idInput).value.trim();
+            if(!identifier) return;
+            let key = cat + "_" + identifier;
+            if(window.itemRates[key]) document.getElementById(rateInput).value = window.itemRates[key];
+        }
+
+        window.fetchLastRateForPOS = function() {
+            let cat = document.getElementById('inv-cat').value;
+            let shade = document.getElementById('inv-shade').value;
+            let rateInput = document.getElementById('inv-rate');
+            if(cat && shade && rateInput) {
+                let key = cat + "_" + shade;
+                if(window.itemRates[key]) rateInput.value = window.itemRates[key];
+                else rateInput.value = "";
+            }
+        }
+
+        // 3. Add Stock Function (Saves Rate to DB)
+        window.addSpecificStock = function(category, id1, id2, id3, idRate) { 
             let identifier = document.getElementById(id1).value.trim(); 
             let cone = parseFloat(document.getElementById(id2).value) || 0; 
             let kg = id3 ? (parseFloat(document.getElementById(id3).value) || 0) : 0; 
+            let rate = idRate ? (parseFloat(document.getElementById(idRate).value) || 0) : 0;
             
-            if(!identifier || cone <= 0) return alert("Please enter valid Type/Box No. and Cone!"); 
-            
+            if(!identifier || cone <= 0) return alert("Please enter valid Box No. / Type and Cone!"); 
+            if(rate <= 0) return alert("Please enter Purchase Rate (₹)!");
+
             let key = category + "_" + identifier; 
             let itemRef = ref(db, 'Inventory/' + key); 
             
@@ -2304,12 +2392,44 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 set(itemRef, { cone: cur.cone + cone, kg: cur.kg + kg }); 
             }); 
             
+            // Save Latest Rate to Firebase
+            set(ref(db, 'ItemRates/' + key), rate);
+
             if(document.getElementById(id1).tagName !== 'SELECT') document.getElementById(id1).value = ''; 
             document.getElementById(id2).value = ''; 
             if(id3) document.getElementById(id3).value = ''; 
+            if(idRate) document.getElementById(idRate).value = '';
             
             alert("Stock Added (IN) Successfully!"); 
-            document.getElementById(category.toLowerCase() + '-anim-form').classList.add('form-hidden'); 
+            let formId = category === window.currentDynCat ? 'dyn-anim-form' : category.toLowerCase() + '-anim-form';
+            document.getElementById(formId).classList.add('form-hidden'); 
+        }
+
+        // 4. Render Master Grid With Dynamic Categories
+        window.renderMasterInventoryBoxes = function() {
+            let grid = document.getElementById('master-stock-grid');
+            if(!grid) return;
+            let html = `
+                <div class="stock-grid-card" onclick="openPage('thread-stock-page')"><div class="sg-title">THREAD</div><div class="sg-value" id="stock-val-thread">0</div><div class="sg-icon" style="background:#e8f0fe; color:var(--primary);">🧵</div></div>
+                <div class="stock-grid-card" onclick="openPage('zari-stock-page')"><div class="sg-title">ZARI</div><div class="sg-value" id="stock-val-zari">0</div><div class="sg-icon" style="background:#fff7ed; color:#f97316;">✨</div></div>
+                <div class="stock-grid-card" onclick="openPage('nylon-stock-page')"><div class="sg-title">NYLON</div><div class="sg-value" id="stock-val-nylon">0</div><div class="sg-icon" style="background:#faf5ff; color:#a855f7;">🧶</div></div>
+                <div class="stock-grid-card" onclick="openPage('cording-stock-page')"><div class="sg-title">CORDING</div><div class="sg-value" id="stock-val-cording">0</div><div class="sg-icon" style="background:#e8f0fe; color:var(--primary);">🪢</div></div>
+                <div class="stock-grid-card" onclick="openPage('bobbin-stock-page')"><div class="sg-title">BOBBIN</div><div class="sg-value" id="stock-val-bobbin">0</div><div class="sg-icon" style="background:#e6f4ea; color:var(--success);">🛞</div></div>
+            `;
+            window.dynamicCategories.forEach(cat => {
+                html += `<div class="stock-grid-card" onclick="openDynamicCategory('${cat}')"><div class="sg-title">${cat.toUpperCase()}</div><div class="sg-value" id="stock-val-${cat.toLowerCase()}">0</div><div class="sg-icon" style="background:#f4f4f4; color:#333;">📦</div></div>`;
+            });
+            html += `<div class="stock-grid-card" onclick="openPage('lowstock-page')"><div class="sg-title">LOW STOCK</div><div class="sg-value" id="stock-val-lowstock">0</div><div class="sg-icon" style="background:#fdf2f2; color:var(--danger);">⚠️</div></div>`;
+            grid.innerHTML = html;
+            
+            // Add Category Options to POS Dropdown automatically
+            let invCatSelect = document.getElementById('inv-cat');
+            if(invCatSelect) {
+                invCatSelect.innerHTML = `<option value="">Select Category</option>
+                <option value="Thread">Thread</option><option value="Zari">Zari</option><option value="Nylon">Nylon</option><option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>`;
+                window.dynamicCategories.forEach(c => invCatSelect.innerHTML += `<option value="${c}">${c}</option>`);
+            }
+            renderInventoryList();
         }
         window.filterStockList = function(inputId, listId) { let filter = document.getElementById(inputId).value.toUpperCase(); let rows = document.querySelectorAll('#' + listId + ' .stock-row'); rows.forEach(row => { let name = row.getAttribute('data-name'); row.style.display = name.includes(filter) ? '' : 'none'; }); }
         
@@ -2340,9 +2460,86 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         }
 
         window.renderInventoryList = function() { 
+            let masterTotalValue = 0;
+            let categoryValueMap = { Thread:0, Zari:0, Nylon:0, Cording:0, Bobbin:0 };
             let htmlMaps = { Thread: "", Zari: "", Nylon: "", Cording: "", Bobbin: "" };
             let countMaps = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
             let itemsCount = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
+            
+            // Add dynamic categories into maps
+            window.dynamicCategories.forEach(c => {
+                categoryValueMap[c] = 0; htmlMaps[c] = ""; countMaps[c] = 0; itemsCount[c] = 0;
+            });
+
+            let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
+            
+            for (let key in smartInventory) { 
+                let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let data = smartInventory[key]; 
+                let coneQty = typeof data === 'object' ? data.cone : data;
+                let kgQty = typeof data === 'object' ? data.kg : 0;
+                let displayQty = typeof data === 'object' ? (kgQty > 0 ? `${coneQty} Cone, ${kgQty} KG` : `${coneQty} Cone`) : `${coneQty} Box`;
+                
+                // Value Calculation
+                let rate = window.itemRates[key] || 0;
+                let val = kgQty > 0 ? (kgQty * rate) : (coneQty * rate);
+                if(categoryValueMap[cat] !== undefined) categoryValueMap[cat] += val;
+                masterTotalValue += val;
+
+                if (htmlMaps[cat] !== undefined) {
+                    let txList = getLast5Tx(cat, shade);
+                    let txHtml = "";
+                    if(txList.length === 0) {
+                        txHtml = `<div class="inv-tx-item" style="justify-content:center; color:gray;">No recent transactions</div>`;
+                    } else {
+                        txList.forEach(tx => {
+                            let isOut = tx.type === 'OUT' || tx.type === 'Gave';
+                            let qClass = isOut ? 'out' : 'in';
+                            let sign = isOut ? '-' : '+';
+                            let dateStr = new Date(tx.date).toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+                            txHtml += `<div class="inv-tx-item"><span class="inv-tx-date">${dateStr}</span><span class="inv-tx-party">${tx.party}</span><span class="inv-tx-qty ${qClass}">${sign}${tx.qty}</span></div>`;
+                        });
+                    }
+                    htmlMaps[cat] += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)">
+                        <div class="inv-card-header"><div class="inv-card-title">${shade}</div><div class="inv-card-qty" style="font-size:11px;">${displayQty}</div></div>
+                        <div class="inv-tx-list" onclick="event.stopPropagation()">${txHtml}</div>
+                    </div>`;
+                    countMaps[cat] += coneQty;
+                    itemsCount[cat]++;
+                }
+
+                if(coneQty <= 5 && coneQty > 0) { 
+                    lowstockCount++; lowstockItemsCount++;
+                    lowstockHtml += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)" style="border-color:#f8cbcb;">
+                        <div class="inv-card-header"><div class="inv-card-title">${shade} <span style="font-size:10px;color:gray;">(${cat})</span></div><div class="inv-card-qty" style="color:var(--danger); background:#fdf2f2; font-size:11px;">${displayQty}</div></div>
+                        <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Time to re-order!</div></div>
+                    </div>`;
+                } 
+            } 
+            
+            // Update Dashboard Values UI
+            if(document.getElementById('master-total-value')) document.getElementById('master-total-value').innerText = `₹ ${masterTotalValue.toLocaleString('en-IN')}`;
+            ['Thread','Zari','Nylon','Cording','Bobbin'].forEach(c => {
+                if(document.getElementById('val-'+c)) document.getElementById('val-'+c).innerText = `₹ ${categoryValueMap[c].toLocaleString('en-IN')}`;
+            });
+            if(document.getElementById('dyn-cat-val')) document.getElementById('dyn-cat-val').innerText = `₹ ${(categoryValueMap[window.currentDynCat] || 0).toLocaleString('en-IN')}`;
+
+            for(let cat in htmlMaps) {
+                let el = document.getElementById(cat.toLowerCase() + '-stock-list') || (cat === window.currentDynCat ? document.getElementById('dyn-stock-list') : null);
+                if(el) {
+                    el.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[cat])}, minmax(0, 1fr))`;
+                    el.innerHTML = htmlMaps[cat] || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:gray;">No Stock Available</div>';
+                }
+                let valEl = document.getElementById('stock-val-' + cat.toLowerCase());
+                if(valEl) valEl.innerText = countMaps[cat];
+            }
+
+            let lowEl = document.getElementById('lowstock-list');
+            if(lowEl) {
+                lowEl.style.gridTemplateColumns = `repeat(${getGridCols(lowstockItemsCount)}, minmax(0, 1fr))`;
+                lowEl.innerHTML = lowstockHtml || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--success); font-weight:600;">All stocks are healthy! 🎉</div>';
+            }
+            if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
+        }
             let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
             
             for (let key in smartInventory) { 
@@ -2640,8 +2837,13 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let totalReceived = cAmt + oAmt;
             if(totalReceived > grandInvoiceTotal) return alert("Received amount cannot be greater than Total Bill amount!");
 
-            let partyName = document.getElementById('inv-party').value.trim() || "Cash Sale"; let partyPhone = document.getElementById('inv-phone').value.trim(); 
-            if(partyName !== "Cash Sale") { let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); if(!exists) { push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); } } 
+            let partyName = document.getElementById('inv-party').value.trim(); 
+            let partyPhone = document.getElementById('inv-phone').value.trim(); 
+            if(!partyName || !partyPhone) {
+                return alert("कृपया कस्टमर का नाम और मोबाइल नंबर दर्ज करें! इसके बिना बिल जनरेट नहीं होगा।");
+            }
+            let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); 
+            if(!exists) { push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); } 
             
             let isUpdating = !!window.editingEntryKey;
             

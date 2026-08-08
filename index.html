@@ -1016,56 +1016,23 @@
 
     <!-- ================= MASTER INVENTORY PAGE ================= -->
     <div class="page flex-page" id="items-page">
-        <div class="sub-header">
-            <button class="back-btn material-symbols-rounded" onclick="closePage('items-page')">arrow_back</button>
-            <h2 class="page-title" style="flex:1;">Master Inventory</h2>
-            <button class="pro-add-btn" onclick="document.getElementById('unified-stock-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add Stock</button>
-        </div>
-        
-        <div class="fixed-top-section" style="padding-top:10px;">
-            <!-- Owner Dashboard for Total Value -->
-            <div id="owner-value-dashboard" style="background: linear-gradient(135deg, #0a56d0 0%, #0842a0 100%); padding: 20px; border-radius: 16px; color: white; margin-bottom: 16px; box-shadow: 0 4px 15px rgba(10,86,208,0.3); cursor: pointer;" onclick="toggleValueBreakdown()">
-                <div style="font-size: 13px; font-weight: 600; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px;">Total Stock Value</div>
-                <div style="font-size: 32px; font-weight: 800; font-family: 'Product Sans', sans-serif; margin-top: 4px;" id="total-stock-value-text">₹ 0</div>
-                <div id="value-breakdown-list" style="display: none; margin-top: 16px; border-top: 1px dashed rgba(255,255,255,0.3); padding-top: 12px; font-size: 13px; font-weight: 500;">
-                    <!-- Breakdown will load here -->
+        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('items-page')">arrow_back</button><h2 class="page-title">Master Inventory</h2></div>
+        <div class="scroll-content" style="padding-top:16px;">
+            <!-- ✨ NAYA: Professional Total Inventory Value Card -->
+            <div style="background: linear-gradient(135deg, #0a56d0 0%, #0842a0 100%); border-radius: 16px; padding: 20px; color: white; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(10,86,208,0.2); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; opacity: 0.9;">Total Inventory Value</div>
+                    <div style="font-size: 28px; font-weight: 800; font-family: 'Product Sans', sans-serif;" id="master-total-value">₹ 0</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 12px;">
+                    <span class="material-symbols-rounded" style="font-size: 28px;">inventory</span>
                 </div>
             </div>
-
-            <!-- Unified Dynamic Stock Form -->
-            <div class="form-panel anim-form form-hidden" id="unified-stock-form" style="margin-bottom:16px;">
-                <select class="form-control" id="u-cat" style="margin-bottom: 12px; font-weight: 600;" onchange="updateDynamicStockInputs()">
-                    <option value="">Select Category...</option>
-                    <option value="Thread">Thread</option>
-                    <option value="Zari">Jari</option>
-                    <option value="Viscos">Viscos</option>
-                    <option value="Mirror Sheet">Mirror Sheet</option>
-                    <option value="Sequence">Sequence</option>
-                    <option value="Cording">Coding</option>
-                    <option value="Nylon">Nylon</option>
-                    <option value="Bobbin">Bobin</option>
-                    <option value="Cotton">Cotton</option>
-                </select>
-                
-                <input type="text" class="form-control" id="u-shade" placeholder="Shade No. / Item Name" style="margin-bottom: 12px; display: none;">
-                
-                <div class="input-btn-group" style="margin-bottom: 12px; display: none;" id="u-unit-group">
-                    <input type="number" class="form-control" id="u-cone" placeholder="Cone" style="display: none;">
-                    <input type="number" class="form-control" id="u-meter" placeholder="Meter" style="display: none;">
-                    <input type="number" class="form-control" id="u-kg" placeholder="Kg" style="display: none;">
-                </div>
-                
-                <input type="number" class="form-control" id="u-purchase-rate" placeholder="Purchase Rate (₹)" style="margin-bottom: 16px; display: none;">
-                
-                <div class="in-out-btn-group" id="u-action-btns" style="display: none;">
-                    <button class="btn-in" onclick="saveUnifiedStock(false)">➕ IN (Add)</button>
-                    <button class="btn-out" onclick="saveUnifiedStock(true)">➖ OUT (Remove)</button>
-                </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div class="stock-overview-title" style="margin-bottom: 0;">CATEGORY WISE STOCK</div>
+                <button class="pro-add-btn" style="background: var(--success); padding: 6px 12px;" onclick="openPage('add-purchase-page')"><span class="material-symbols-rounded" style="font-size:16px;">add_box</span> Add Purchase</button>
             </div>
-        </div>
-
-        <div class="scroll-content" style="padding-top:0;">
-            <div class="stock-overview-title">STOCK OVERVIEW</div>
             <div class="stock-grid">
                 <div class="stock-grid-card" onclick="openPage('thread-stock-page')"><div class="sg-title">THREAD (थ्रेड)</div><div class="sg-value" id="stock-val-thread">0</div><div class="sg-icon" style="background:#e8f0fe; color:var(--primary);">🧵</div></div>
                 <div class="stock-grid-card" onclick="openPage('zari-stock-page')"><div class="sg-title">ZARI (जरी)</div><div class="sg-value" id="stock-val-zari">0</div><div class="sg-icon" style="background:#fff7ed; color:#f97316;">✨</div></div>
@@ -2377,25 +2344,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let itemsCount = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
             let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
             
-            /* ✨ NAYA: Total Stock Value and Breakdown Trackers */
-            let totalStockValue = 0;
-            let valueBreakdown = {};
-            
-            /* ✨ NAYA: Custom Low Stock Limits */
-            let stockLimits = {
-                'Thread': 36, 'Zari': 120, 'Bobbin': 12, 'Nylon': 45, 
-                'Cording': 38, 'Viscos': 5, 'Cotton': 300, 
-                'Mirror Sheet': 50, 'Sequence': 50
-            };
-            
             for (let key in smartInventory) { 
                 let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let qty = smartInventory[key]; 
-                
-                /* Value Calculation */
-                let pRate = itemMasterData[key] ? (itemMasterData[key].purchaseRate || 0) : 0;
-                let itemValue = qty * pRate;
-                totalStockValue += itemValue;
-                valueBreakdown[cat] = (valueBreakdown[cat] || 0) + itemValue;
                 
                 if (htmlMaps[cat] !== undefined) {
                     let txList = getLast5Tx(cat, shade);
@@ -2419,32 +2369,15 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     itemsCount[cat]++;
                 }
 
-                /* ✨ NAYA: Dynamic Custom Threshold applied */
-                let limit = stockLimits[cat] || 5; // Default 5 agar list me nahi hai
-                
-                if(qty < limit && qty > 0) { 
+                if(qty <= 5 && qty > 0) { 
                     lowstockCount++; lowstockItemsCount++;
                     lowstockHtml += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)" style="border-color:#f8cbcb;">
-                        <div class="inv-card-header"><div class="inv-card-title">${shade} <span style="font-size:10px;color:gray;">(${cat})</span></div><div class="inv-card-qty" style="color:var(--danger); background:#fdf2f2;">${qty} (Low)</div></div>
-                        <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Alert: Need ${limit} minimum!</div></div>
+                        <div class="inv-card-header"><div class="inv-card-title">${shade} <span style="font-size:10px;color:gray;">(${cat})</span></div><div class="inv-card-qty" style="color:var(--danger); background:#fdf2f2;">${qty} BOX</div></div>
+                        <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Time to re-order!</div></div>
                     </div>`;
                 } 
             } 
             
-            /* ✨ NAYA: Updating UI with Calculated Dashboard Values */
-            if(document.getElementById('total-stock-value-text')) {
-                document.getElementById('total-stock-value-text').innerText = '₹ ' + totalStockValue.toLocaleString('en-IN');
-            }
-            if(document.getElementById('value-breakdown-list')) {
-                let brkHtml = "";
-                for(let bCat in valueBreakdown) {
-                    if(valueBreakdown[bCat] > 0) {
-                        brkHtml += `<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>${bCat}:</span> <span>₹ ${valueBreakdown[bCat].toLocaleString('en-IN')}</span></div>`;
-                    }
-                }
-                document.getElementById('value-breakdown-list').innerHTML = brkHtml || "No Stock Value added yet.";
-            }
-
             for(let cat in htmlMaps) {
                 let el = document.getElementById(cat.toLowerCase() + '-stock-list');
                 if(el) {
@@ -2453,6 +2386,18 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 }
                 let valEl = document.getElementById('stock-val-' + cat.toLowerCase());
                 if(valEl) valEl.innerText = countMaps[cat];
+            }
+
+            /* ✨ NAYA: Total Inventory Value Calculate Karna */
+            let totalInventoryValue = 0;
+            for (let key in smartInventory) {
+                let qty = smartInventory[key] || 0;
+                // ItemMaster se purchase rate nikalna (Agar nahi hai to 0)
+                let pRate = (itemMasterData[key] && itemMasterData[key].purchaseRate) ? parseFloat(itemMasterData[key].purchaseRate) : 0;
+                totalInventoryValue += (qty * pRate);
+            }
+            if(document.getElementById('master-total-value')) {
+                document.getElementById('master-total-value').innerText = `₹ ${totalInventoryValue.toLocaleString('en-IN')}`;
             }
 
             let lowEl = document.getElementById('lowstock-list');
@@ -3443,89 +3388,6 @@ window.showTargetCelebration = function() {
             remove(ref(db, 'PendingRequests/' + key)).then(() => {
                 alert("रिक्वेस्ट रिजेक्ट कर दी गई है! ❌");
             }).catch(err => alert("Error: " + err.message));
-        }
-
-        /* ✨ NAYA: Dynamic Stock Inputs Logic */
-        window.updateDynamicStockInputs = function() {
-            let cat = document.getElementById('u-cat').value;
-            let shade = document.getElementById('u-shade');
-            let unitGroup = document.getElementById('u-unit-group');
-            let uCone = document.getElementById('u-cone');
-            let uMeter = document.getElementById('u-meter');
-            let uKg = document.getElementById('u-kg');
-            let rate = document.getElementById('u-purchase-rate');
-            let btns = document.getElementById('u-action-btns');
-
-            // Reset sab kuch hide
-            shade.style.display = 'none'; unitGroup.style.display = 'none';
-            uCone.style.display = 'none'; uMeter.style.display = 'none'; uKg.style.display = 'none';
-            rate.style.display = 'none'; btns.style.display = 'none';
-
-            if(!cat) return;
-
-            shade.style.display = 'block';
-            unitGroup.style.display = 'flex';
-            rate.style.display = 'block';
-            btns.style.display = 'flex';
-
-            if (cat === 'Thread' || cat === 'Zari' || cat === 'Viscos' || cat === 'Cotton') {
-                uCone.style.display = 'block'; // Sirf Cone
-            } else if (cat === 'Mirror Sheet' || cat === 'Sequence') {
-                uCone.style.display = 'block';
-                uMeter.style.display = 'block'; // Meter & Cone
-            } else if (cat === 'Cording' || cat === 'Nylon' || cat === 'Bobbin') {
-                uCone.style.display = 'block';
-                uKg.style.display = 'block'; // Cone & Kg
-            }
-        }
-
-        /* ✨ NAYA: Unified Stock Save Logic */
-        window.saveUnifiedStock = function(isOut) {
-            let cat = document.getElementById('u-cat').value;
-            let shadeVal = document.getElementById('u-shade').value.trim();
-            let pRate = parseFloat(document.getElementById('u-purchase-rate').value) || 0;
-            
-            // Primary qty nikalna (Jo input dikh raha hai usi ki value lenge, priority Cone -> Kg -> Meter)
-            let qty = parseFloat(document.getElementById('u-cone').value) || parseFloat(document.getElementById('u-kg').value) || parseFloat(document.getElementById('u-meter').value) || 0;
-
-            if(!cat || !shadeVal) return alert("Please select Category and enter Shade/Item!");
-            if(qty <= 0) return alert("Please enter valid quantity!");
-
-            let key = cat + "_" + shadeVal;
-            
-            // Stock update
-            let itemRef = ref(db, 'Inventory/' + key);
-            get(itemRef).then((snap) => { 
-                let currentQty = snap.val() || 0; 
-                let newQty = isOut ? currentQty - qty : currentQty + qty; 
-                if(newQty < 0) newQty = 0; 
-                set(itemRef, newQty); 
-            });
-
-            // Purchase Rate update in ItemMaster (only on IN)
-            if(!isOut && pRate > 0) {
-                update(ref(db, 'ItemMaster/' + key), { purchaseRate: pRate });
-            }
-
-            alert(isOut ? "Stock Reduced!" : "Stock Added with Purchase Rate!");
-            document.getElementById('unified-stock-form').classList.add('form-hidden');
-            
-            // form reset
-            document.getElementById('u-shade').value = '';
-            document.getElementById('u-cone').value = '';
-            document.getElementById('u-kg').value = '';
-            document.getElementById('u-meter').value = '';
-            document.getElementById('u-purchase-rate').value = '';
-        }
-
-        /* ✨ NAYA: Toggle Dashboard Breakdown */
-        window.toggleValueBreakdown = function() {
-            let list = document.getElementById('value-breakdown-list');
-            if (list.style.display === 'none') {
-                list.style.display = 'block';
-            } else {
-                list.style.display = 'none';
-            }
         }
         
            </script>

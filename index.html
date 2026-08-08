@@ -776,9 +776,7 @@
                 <div class="form-panel" style="border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
                     <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">📦 Add Product</label>
                     <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;" onchange="updatePosShades()">
-                        <option value="">Select Category</option>
-                        <option value="Thread">Thread</option><option value="Zari">Zari</option><option value="Nylon">Nylon</option>
-                        <option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>
+                        <!-- JS Will Auto Fill Categories Here -->
                     </select>
                     <select class="form-control" id="inv-shade" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;"><option value="">Select Category First</option></select>
                     <div class="input-btn-group" id="pos-dynamic-inputs" style="margin-bottom: 16px;">
@@ -1012,72 +1010,81 @@
         </div>
     </div>
 
-    <!-- ================= MASTER INVENTORY PAGE ================= -->
+    <!-- ================= NEW DYNAMIC MASTER INVENTORY ================= -->
     <div class="page flex-page" id="items-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('items-page')">arrow_back</button><h2 class="page-title">Master Inventory</h2></div>
+        <div class="sub-header">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('items-page')">arrow_back</button>
+            <h2 class="page-title" style="flex:1;">Master Inventory</h2>
+            <button class="pro-add-btn" onclick="document.getElementById('add-category-modal').style.display='flex'"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Category</button>
+        </div>
         <div class="scroll-content" style="padding-top:16px;">
-            <div class="stock-overview-title">STOCK OVERVIEW</div>
-            <div class="stock-grid">
-                <div class="stock-grid-card" onclick="openPage('thread-stock-page')"><div class="sg-title">THREAD (थ्रेड)</div><div class="sg-value" id="stock-val-thread">0</div><div class="sg-icon" style="background:#e8f0fe; color:var(--primary);">🧵</div></div>
-                <div class="stock-grid-card" onclick="openPage('zari-stock-page')"><div class="sg-title">ZARI (जरी)</div><div class="sg-value" id="stock-val-zari">0</div><div class="sg-icon" style="background:#fff7ed; color:#f97316;">✨</div></div>
-                <div class="stock-grid-card" onclick="openPage('nylon-stock-page')"><div class="sg-title">NYLON (नायलोन)</div><div class="sg-value" id="stock-val-nylon">0</div><div class="sg-icon" style="background:#faf5ff; color:#a855f7;">🧶</div></div>
-                <div class="stock-grid-card" onclick="openPage('cording-stock-page')"><div class="sg-title">CORDING (कोडिंग)</div><div class="sg-value" id="stock-val-cording">0</div><div class="sg-icon" style="background:#e8f0fe; color:var(--primary);">🪢</div></div>
-                <div class="stock-grid-card" onclick="openPage('bobbin-stock-page')"><div class="sg-title">BOBBIN (बोबिन)</div><div class="sg-value" id="stock-val-bobbin">0</div><div class="sg-icon" style="background:#e6f4ea; color:var(--success);">🛞</div></div>
-                <div class="stock-grid-card" onclick="openPage('lowstock-page')"><div class="sg-title">LOW STOCK</div><div class="sg-value" id="stock-val-lowstock">0</div><div class="sg-icon" style="background:#fdf2f2; color:var(--danger);">⚠️</div></div>
+            <div style="background:linear-gradient(135deg, #0a56d0, #0842a0); border-radius:16px; padding:20px; color:white; margin-bottom:20px; box-shadow:0 4px 15px rgba(10,86,208,0.2);">
+                <div style="font-size:12px; font-weight:600; opacity:0.9; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Total Inventory Value</div>
+                <div style="font-size:32px; font-weight:700; font-family:'Product Sans', sans-serif;" id="master-total-value">₹ 0</div>
+            </div>
+            <div class="stock-overview-title">STOCK CATEGORIES</div>
+            <div class="stock-grid" id="dynamic-category-grid">
+                <!-- JS Will Auto Fill Dynamic Categories Here -->
             </div>
         </div>
     </div>
 
-    <!-- 🧵 THREAD STOCK PAGE (NOW WITH 3D GRID) -->
-    <div class="page flex-page" id="thread-stock-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('thread-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Thread Stock</h2><button class="pro-add-btn" onclick="document.getElementById('thread-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
+    <!-- 📦 NEW DYNAMIC SINGLE CATEGORY PAGE -->
+    <div class="page flex-page" id="category-stock-page">
+        <div class="sub-header">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('category-stock-page')">arrow_back</button>
+            <h2 class="page-title" style="flex:1;" id="cat-page-title">Category Stock</h2>
+            <button class="pro-add-btn" onclick="document.getElementById('cat-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button>
+        </div>
         <div class="fixed-top-section">
-            <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-thread" placeholder="Search Shade Number..." onkeyup="filterStockList('search-thread', 'thread-stock-list')"></div>
-            <div class="form-panel anim-form form-hidden" id="thread-anim-form" style="margin-bottom:10px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="thread-box-no" placeholder="Box No."><input type="number" class="form-control" id="thread-cone" placeholder="Cone"></div><div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock('Thread', 'thread-box-no', 'thread-cone', null)">➕ Add IN Stock</button></div></div>
+            <!-- Professional Dashboard Card inside Category -->
+            <div style="display:flex; gap:10px; margin-bottom:16px;">
+                <div style="flex:1; background:white; border:1px solid var(--border); border-radius:12px; padding:12px; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">Total Qty</div>
+                    <div style="font-size:18px; font-weight:700; color:var(--primary); font-family:'Product Sans', sans-serif;" id="cat-total-qty">0</div>
+                </div>
+                <div style="flex:1; background:white; border:1px solid var(--border); border-radius:12px; padding:12px; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">Stock Value</div>
+                    <div style="font-size:18px; font-weight:700; color:var(--success); font-family:'Product Sans', sans-serif;" id="cat-total-val">₹ 0</div>
+                </div>
+            </div>
+
+            <div class="search-bar-container" style="margin: 0 0 16px 0;">
+                <span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span>
+                <input type="text" id="search-cat-item" placeholder="Search Item..." onkeyup="filterStockList('search-cat-item', 'cat-stock-list')">
+            </div>
+            
+            <div class="form-panel anim-form form-hidden" id="cat-anim-form" style="margin-bottom:10px; background:#f8fafd; border:1px solid #c2e7ff;">
+                <input type="text" class="form-control" id="cat-item-name" placeholder="Item Name / Box No. / Shade" style="margin-bottom:12px;" onblur="autoFetchPurchaseRate()">
+                <div class="input-btn-group" style="margin-bottom: 12px;" id="cat-qty-inputs">
+                    <!-- Dynamic Qty inputs -->
+                </div>
+                <div class="input-btn-group" style="margin-bottom: 12px;">
+                    <input type="number" class="form-control" id="cat-purchase-rate" placeholder="Purchase Rate (₹)">
+                </div>
+                <div class="in-out-btn-group">
+                    <button class="btn-in" style="width:100%; background:var(--primary); color:white;" onclick="addGenericStock()">➕ Add Stock IN</button>
+                </div>
+            </div>
         </div>
         <div class="scroll-content" style="padding-top:0;">
-            <div id="thread-stock-list" class="inventory-grid"></div>
+            <div id="cat-stock-list" class="inventory-grid"></div>
         </div>
     </div>
 
-    <!-- ✨ ZARI STOCK PAGE -->
-    <div class="page flex-page" id="zari-stock-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('zari-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Zari Stock</h2><button class="pro-add-btn" onclick="document.getElementById('zari-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
-        <div class="fixed-top-section">
-            <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-zari" placeholder="Search Item..." onkeyup="filterStockList('search-zari', 'zari-stock-list')"></div>
-            <div class="form-panel anim-form form-hidden" id="zari-anim-form" style="margin-bottom:10px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="text" class="form-control" id="zari-box-no" placeholder="Box No."><input type="number" class="form-control" id="zari-cone" placeholder="Cone"></div><div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock('Zari', 'zari-box-no', 'zari-cone', null)">➕ Add IN Stock</button></div></div>
+    <!-- 🏷️ ADD NEW CATEGORY MODAL -->
+    <div id="add-category-modal" class="report-modal-overlay">
+        <div class="report-modal-box">
+            <h3 style="margin-bottom: 20px; font-family: 'Product Sans', sans-serif;">Add New Category</h3>
+            <div class="form-group">
+                <label class="form-label">Category Name</label>
+                <input type="text" id="new-cat-name" class="form-control" placeholder="e.g. Fabric, Buttons">
+            </div>
+            <div style="display:flex; gap:10px; margin-top:24px;">
+                <button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger);" onclick="document.getElementById('add-category-modal').style.display='none'">Cancel</button>
+                <button class="btn-submit" style="flex:1;" onclick="saveNewCategory()">Save</button>
+            </div>
         </div>
-        <div class="scroll-content" style="padding-top:0;"><div id="zari-stock-list" class="inventory-grid"></div></div>
-    </div>
-
-    <!-- 🪢 CORDING STOCK PAGE -->
-    <div class="page flex-page" id="cording-stock-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('cording-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Cording Stock</h2><button class="pro-add-btn" onclick="document.getElementById('cording-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
-        <div class="fixed-top-section">
-            <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-cording" placeholder="Search Item..." onkeyup="filterStockList('search-cording', 'cording-stock-list')"></div>
-            <div class="form-panel anim-form form-hidden" id="cording-anim-form" style="margin-bottom:10px;"><input type="text" class="form-control" id="cording-type" placeholder="Type" style="margin-bottom:12px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="number" class="form-control" id="cording-cone" placeholder="Cone"><input type="number" class="form-control" id="cording-kg" placeholder="KG"></div><div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock('Cording', 'cording-type', 'cording-cone', 'cording-kg')">➕ Add IN Stock</button></div></div>
-        </div>
-        <div class="scroll-content" style="padding-top:0;"><div id="cording-stock-list" class="inventory-grid"></div></div>
-    </div>
-
-    <!-- 🧶 NYLON STOCK PAGE -->
-    <div class="page flex-page" id="nylon-stock-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('nylon-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Nylon Stock</h2><button class="pro-add-btn" onclick="document.getElementById('nylon-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
-        <div class="fixed-top-section">
-            <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-nylon" placeholder="Search Item..." onkeyup="filterStockList('search-nylon', 'nylon-stock-list')"></div>
-            <div class="form-panel anim-form form-hidden" id="nylon-anim-form" style="margin-bottom:10px;"><input type="text" class="form-control" id="nylon-type" placeholder="Type" style="margin-bottom:12px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="number" class="form-control" id="nylon-cone" placeholder="Cone"><input type="number" class="form-control" id="nylon-kg" placeholder="KG"></div><div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock('Nylon', 'nylon-type', 'nylon-cone', 'nylon-kg')">➕ Add IN Stock</button></div></div>
-        </div>
-        <div class="scroll-content" style="padding-top:0;"><div id="nylon-stock-list" class="inventory-grid"></div></div>
-    </div>
-
-    <!-- 🛞 BOBBIN STOCK PAGE -->
-    <div class="page flex-page" id="bobbin-stock-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('bobbin-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Bobbin Stock</h2><button class="pro-add-btn" onclick="document.getElementById('bobbin-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
-        <div class="fixed-top-section">
-            <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-bobbin" placeholder="Search Item..." onkeyup="filterStockList('search-bobbin', 'bobbin-stock-list')"></div>
-            <div class="form-panel anim-form form-hidden" id="bobbin-anim-form" style="margin-bottom:10px;"><input type="text" class="form-control" id="bobbin-type" placeholder="Type" style="margin-bottom:12px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="number" class="form-control" id="bobbin-cone" placeholder="Cone"><input type="number" class="form-control" id="bobbin-kg" placeholder="KG"></div><div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock('Bobbin', 'bobbin-type', 'bobbin-cone', 'bobbin-kg')">➕ Add IN Stock</button></div></div>
-        </div>
-        <div class="scroll-content" style="padding-top:0;"><div id="bobbin-stock-list" class="inventory-grid"></div></div>
     </div>
 
     <!-- ⚠️ LOW STOCK PAGE -->
@@ -2288,31 +2295,34 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             
         window.openInvoicesPage = function() { let listContainer = document.getElementById('invoices-list-container'); listContainer.innerHTML = ''; let selectedDateString = document.getElementById('dash-date-picker').value; let todayInvoices = allLedgerData.filter(entry => { let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){} return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice"); }); if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } else { todayInvoices.forEach(entry => { listContainer.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; cursor:pointer;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--success); font-weight:800; font-size: 16px; font-family:'Product Sans', sans-serif;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;"><span>${entry.details}</span><span style="color:var(--primary); font-weight:600; display:flex; align-items:center;"><span class="material-symbols-rounded" style="font-size:16px;">visibility</span> View</span></div></div>`; }); } navTo('invoices-page', null); }
 
-        window.addSpecificStock = function(category, id1, id2, id3) { 
-            let identifier = document.getElementById(id1).value.trim(); 
-            let cone = parseFloat(document.getElementById(id2).value) || 0; 
-            let kg = id3 ? (parseFloat(document.getElementById(id3).value) || 0) : 0; 
-            
-            if(!identifier || cone <= 0) return alert("Please enter valid Type/Box No. and Cone!"); 
-            
-            let key = category + "_" + identifier; 
-            let itemRef = ref(db, 'Inventory/' + key); 
-            
-            get(itemRef).then((snap) => { 
-                let cur = snap.val() || { cone: 0, kg: 0 }; 
-                if(typeof cur === 'number') cur = { cone: cur, kg: 0 }; 
-                set(itemRef, { cone: cur.cone + cone, kg: cur.kg + kg }); 
-            }); 
-            
-            if(document.getElementById(id1).tagName !== 'SELECT') document.getElementById(id1).value = ''; 
-            document.getElementById(id2).value = ''; 
-            if(id3) document.getElementById(id3).value = ''; 
-            
-            alert("Stock Added (IN) Successfully!"); 
-            document.getElementById(category.toLowerCase() + '-anim-form').classList.add('form-hidden'); 
+        window.customCategories = ['Thread', 'Zari', 'Nylon', 'Cording', 'Bobbin']; 
+        window.currentOpenCategory = "";
+
+        // 🔥 Save New Dynamic Category
+        window.saveNewCategory = function() {
+            let catName = document.getElementById('new-cat-name').value.trim();
+            if(!catName) return alert("Category Name is required!");
+            let safeName = catName.charAt(0).toUpperCase() + catName.slice(1);
+            push(ref(db, 'CustomCategories'), safeName);
+            document.getElementById('add-category-modal').style.display = 'none';
+            document.getElementById('new-cat-name').value = '';
+            alert("New Category Added!");
         }
+
+        // 🔥 Fetch Categories on Load
+        onValue(ref(db, 'CustomCategories'), (snap) => {
+            let data = snap.val();
+            window.customCategories = ['Thread', 'Zari', 'Nylon', 'Cording', 'Bobbin']; 
+            if(data) {
+                for(let key in data) {
+                    if(!window.customCategories.includes(data[key])) window.customCategories.push(data[key]);
+                }
+            }
+            if(typeof window.renderInventoryList === 'function') window.renderInventoryList();
+        });
+
         window.filterStockList = function(inputId, listId) { let filter = document.getElementById(inputId).value.toUpperCase(); let rows = document.querySelectorAll('#' + listId + ' .stock-row'); rows.forEach(row => { let name = row.getAttribute('data-name'); row.style.display = name.includes(filter) ? '' : 'none'; }); }
-        
+
         function getGridCols(count) {
             if(count === 4) return 2;
             if(count === 6 || count === 9) return 3;
@@ -2321,11 +2331,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
 
         function getLast5Tx(cat, item) {
             let list = [];
-            allGodownTransfers.forEach(t => {
-                if(t.cat === cat && t.item === item) {
-                    list.push({ date: t.date, type: t.type, qty: t.qty, party: 'Godown' });
-                }
-            });
             allLedgerData.forEach(e => {
                 if(e.cart && e.type === 'Gave') {
                     e.cart.forEach(c => {
@@ -2339,139 +2344,209 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             return list.slice(0, 5);
         }
 
-        window.renderInventoryList = function() { 
-            let htmlMaps = { Thread: "", Zari: "", Nylon: "", Cording: "", Bobbin: "" };
-            let countMaps = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
-            let itemsCount = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
-            let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
+        // 🔥 Open Generic Category Page
+        window.openGenericCategory = function(catName) {
+            window.currentOpenCategory = catName;
+            document.getElementById('cat-page-title').innerText = catName + " Stock";
             
+            // Adjust Inputs Based on Category
+            let qtyInputs = document.getElementById('cat-qty-inputs');
+            if(catName === 'Thread' || catName === 'Zari') {
+                qtyInputs.innerHTML = `<input type="number" class="form-control" id="cat-cone" placeholder="Cone">`;
+            } else {
+                qtyInputs.innerHTML = `<input type="number" class="form-control" id="cat-cone" placeholder="Cone"><input type="number" class="form-control" id="cat-kg" placeholder="KG">`;
+            }
+            
+            window.renderGenericCategoryData();
+            openPage('category-stock-page');
+        }
+
+        // 🔥 Render Specific Category Details & Value
+        window.renderGenericCategoryData = function() {
+            let cat = window.currentOpenCategory;
+            let html = "";
+            let totalQty = 0;
+            let totalVal = 0;
+            let itemsCount = 0;
+
             for (let key in smartInventory) { 
-                let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let data = smartInventory[key]; 
+                let parts = key.split("_"); 
+                if(parts[0] === cat) { 
+                    let shade = parts[1] || "";
+                    let data = smartInventory[key];
+                    let coneQty = typeof data === 'object' ? data.cone : data;
+                    let kgQty = typeof data === 'object' ? data.kg : 0;
+                    let pRate = typeof data === 'object' ? (data.rate || 0) : 0;
+                    
+                    if(coneQty > 0 || kgQty > 0) {
+                        let displayQty = kgQty > 0 ? `${coneQty} Cone, ${kgQty} KG` : `${coneQty} Cone`;
+                        let itemTotalVal = kgQty > 0 ? (kgQty * pRate) : (coneQty * pRate);
+                        totalQty += coneQty;
+                        totalVal += itemTotalVal;
+                        itemsCount++;
+
+                        let txList = getLast5Tx(cat, shade);
+                        let txHtml = "";
+                        if(txList.length === 0) {
+                            txHtml = `<div class="inv-tx-item" style="justify-content:center; color:gray;">No recent transactions</div>`;
+                        } else {
+                            txList.forEach(tx => {
+                                let isOut = tx.type === 'OUT' || tx.type === 'Gave';
+                                let qClass = isOut ? 'out' : 'in';
+                                let sign = isOut ? '-' : '+';
+                                let dateStr = new Date(tx.date).toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+                                txHtml += `<div class="inv-tx-item"><span class="inv-tx-date">${dateStr}</span><span class="inv-tx-party">${tx.party}</span><span class="inv-tx-qty ${qClass}">${sign}${tx.qty}</span></div>`;
+                            });
+                        }
+
+                        html += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)">
+                            <div class="inv-card-header">
+                                <div class="inv-card-title">${shade}</div>
+                                <div class="inv-card-qty" style="font-size:11px;">${displayQty}</div>
+                                <div style="font-size:10px; color:var(--success); margin-top:4px; font-weight:600;">Value: ₹${itemTotalVal.toLocaleString('en-IN')} (Rate: ₹${pRate})</div>
+                            </div>
+                            <div class="inv-tx-list" onclick="event.stopPropagation()">${txHtml}</div>
+                        </div>`;
+                    }
+                } 
+            }
+
+            let el = document.getElementById('cat-stock-list');
+            if(el) {
+                el.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount)}, minmax(0, 1fr))`;
+                el.innerHTML = html || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:gray;">No Stock Available</div>';
+            }
+            document.getElementById('cat-total-qty').innerText = totalQty;
+            document.getElementById('cat-total-val').innerText = `₹ ${totalVal.toLocaleString('en-IN')}`;
+        }
+
+        // 🔥 Render Master Dashboard with Total Value
+        window.renderInventoryList = function() { 
+            let masterTotalValue = 0;
+            let htmlMap = {};
+            let lowstockHtml = ""; 
+            let lowstockItemsCount = 0; 
+            let lowstockCount = 0;
+
+            window.customCategories.forEach(c => htmlMap[c] = {qty: 0, val: 0});
+
+            for (let key in smartInventory) { 
+                let parts = key.split("_"); 
+                let cat = parts[0]; 
+                let shade = parts[1] || "";
+                let data = smartInventory[key]; 
                 let coneQty = typeof data === 'object' ? data.cone : data;
                 let kgQty = typeof data === 'object' ? data.kg : 0;
-                let displayQty = typeof data === 'object' ? (kgQty > 0 ? `${coneQty} Cone, ${kgQty} KG` : `${coneQty} Cone`) : `${coneQty} Box`;
-
-                if (htmlMaps[cat] !== undefined) {
-                    let txList = getLast5Tx(cat, shade);
-                    let txHtml = "";
-                    if(txList.length === 0) {
-                        txHtml = `<div class="inv-tx-item" style="justify-content:center; color:gray;">No recent transactions</div>`;
-                    } else {
-                        txList.forEach(tx => {
-                            let isOut = tx.type === 'OUT' || tx.type === 'Gave';
-                            let qClass = isOut ? 'out' : 'in';
-                            let sign = isOut ? '-' : '+';
-                            let dateStr = new Date(tx.date).toLocaleDateString('en-GB', {day:'numeric', month:'short'});
-                            txHtml += `<div class="inv-tx-item"><span class="inv-tx-date">${dateStr}</span><span class="inv-tx-party">${tx.party}</span><span class="inv-tx-qty ${qClass}">${sign}${tx.qty}</span></div>`;
-                        });
-                    }
-                    htmlMaps[cat] += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)">
-                        <div class="inv-card-header"><div class="inv-card-title">${shade}</div><div class="inv-card-qty" style="font-size:11px;">${displayQty}</div></div>
-                        <div class="inv-tx-list" onclick="event.stopPropagation()">${txHtml}</div>
-                    </div>`;
-                    countMaps[cat] += coneQty;
-                    itemsCount[cat]++;
+                let pRate = typeof data === 'object' ? (data.rate || 0) : 0;
+                
+                if(htmlMap[cat] !== undefined && (coneQty > 0 || kgQty > 0)) {
+                    let itemVal = kgQty > 0 ? (kgQty * pRate) : (coneQty * pRate);
+                    htmlMap[cat].qty += coneQty;
+                    htmlMap[cat].val += itemVal;
+                    masterTotalValue += itemVal;
                 }
 
                 if(coneQty <= 5 && coneQty > 0) { 
                     lowstockCount++; lowstockItemsCount++;
+                    let displayQty = kgQty > 0 ? `${coneQty} Cone, ${kgQty} KG` : `${coneQty} Box`;
                     lowstockHtml += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)" style="border-color:#f8cbcb;">
                         <div class="inv-card-header"><div class="inv-card-title">${shade} <span style="font-size:10px;color:gray;">(${cat})</span></div><div class="inv-card-qty" style="color:var(--danger); background:#fdf2f2; font-size:11px;">${displayQty}</div></div>
                         <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Time to re-order!</div></div>
                     </div>`;
                 } 
             } 
-            
-            for(let cat in htmlMaps) {
-                let el = document.getElementById(cat.toLowerCase() + '-stock-list');
-                if(el) {
-                    el.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[cat])}, minmax(0, 1fr))`;
-                    el.innerHTML = htmlMaps[cat] || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:gray;">No Stock Available</div>';
-                }
-                let valEl = document.getElementById('stock-val-' + cat.toLowerCase());
-                if(valEl) valEl.innerText = countMaps[cat];
+
+            // Auto-fill Billing POS Categories
+            let invCatSelect = document.getElementById('inv-cat');
+            if(invCatSelect) {
+                let oldVal = invCatSelect.value;
+                invCatSelect.innerHTML = '<option value="">Select Category</option>';
+                window.customCategories.forEach(c => { invCatSelect.innerHTML += `<option value="${c}">${c}</option>`; });
+                invCatSelect.value = oldVal;
             }
+
+            let masterGrid = document.getElementById('dynamic-category-grid');
+            if(masterGrid) {
+                let masterHtml = "";
+                window.customCategories.forEach(cat => {
+                    let cData = htmlMap[cat];
+                    let icon = cat==='Thread'?'🧵':(cat==='Zari'?'✨':(cat==='Nylon'?'🧶':(cat==='Cording'?'🪢':(cat==='Bobbin'?'🛞':'📦'))));
+                    masterHtml += `<div class="stock-grid-card" onclick="openGenericCategory('${cat}')">
+                        <div class="sg-title">${cat.toUpperCase()}</div>
+                        <div class="sg-value">${cData.qty}</div>
+                        <div style="font-size:11px; color:var(--success); font-weight:600; margin-top:4px;">Val: ₹${cData.val.toLocaleString('en-IN')}</div>
+                        <div class="sg-icon" style="background:#e8f0fe; color:var(--primary);">${icon}</div>
+                    </div>`;
+                });
+                masterHtml += `<div class="stock-grid-card" onclick="openPage('lowstock-page')">
+                    <div class="sg-title">LOW STOCK</div>
+                    <div class="sg-value" id="stock-val-lowstock">${lowstockCount}</div>
+                    <div class="sg-icon" style="background:#fdf2f2; color:var(--danger);">⚠️</div>
+                </div>`;
+                masterGrid.innerHTML = masterHtml;
+            }
+
+            let masterValEl = document.getElementById('master-total-value');
+            if(masterValEl) masterValEl.innerText = `₹ ${masterTotalValue.toLocaleString('en-IN')}`;
 
             let lowEl = document.getElementById('lowstock-list');
             if(lowEl) {
                 lowEl.style.gridTemplateColumns = `repeat(${getGridCols(lowstockItemsCount)}, minmax(0, 1fr))`;
                 lowEl.innerHTML = lowstockHtml || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--success); font-weight:600;">All stocks are healthy! 🎉</div>';
             }
-            if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
+            if(window.currentOpenCategory) window.renderGenericCategoryData();
         }
 
-        window.shareLowStock = function() { let msg = "⚠️ *Low Stock Alert - Vandana Enterprises* ⚠️%0A%0A"; let hasLow = false; for (let key in smartInventory) { if(smartInventory[key] <= 5 && smartInventory[key] > 0) { let parts = key.split("_"); msg += `▪️ *${parts[1]}* (${parts[0]}) - Only ${smartInventory[key]} Box%0A`; hasLow = true; } } if(!hasLow) return alert("Everything is fully stocked! No low stock items to share."); window.open(`https://wa.me/?text=${msg}`, '_blank'); }
-
-        let currentCart = []; let grandInvoiceTotal = 0; let invoiceBoxCount = 0;
-        
-        // 🌟 NEW PAYMENT MODES & DYNAMIC QR LOGIC
-        window.setPaymentMode = function(mode) {
-            window.currentPaymentMode = mode;
-            let btnPending = document.getElementById('pm-pending');
-            let btnCash = document.getElementById('pm-cash');
-            let btnOnline = document.getElementById('pm-online');
-            let btnHalf = document.getElementById('pm-half');
-            
-            [btnPending, btnCash, btnOnline, btnHalf].forEach(btn => {
-                if(btn) { btn.style.background = 'white'; btn.style.color = 'var(--text-dark)'; btn.style.borderColor = 'var(--border)'; }
-            });
-
-            document.getElementById('half-payment-container').style.display = 'none';
-            document.getElementById('pos-dynamic-qr-box').style.display = 'none';
-
-            if(mode === 'pending') {
-                if(btnPending) { btnPending.style.background = '#fdf2f2'; btnPending.style.color = 'var(--danger)'; btnPending.style.borderColor = 'var(--danger)'; }
-            } else if(mode === 'cash') {
-                if(btnCash) { btnCash.style.background = '#e6f4ea'; btnCash.style.color = 'var(--success)'; btnCash.style.borderColor = 'var(--success)'; }
-            } else if(mode === 'online') {
-                if(btnOnline) { btnOnline.style.background = '#e8f0fe'; btnOnline.style.color = 'var(--primary)'; btnOnline.style.borderColor = 'var(--primary)'; }
-            } else if(mode === 'half') {
-                if(btnHalf) { btnHalf.style.background = '#fdf4e5'; btnHalf.style.color = '#b36b00'; btnHalf.style.borderColor = '#f29900'; }
-                document.getElementById('half-payment-container').style.display = 'flex';
-            }
-            window.updateDynamicQR();
-        }
-
-        window.updateDynamicQR = function() {
-            let qrBox = document.getElementById('pos-dynamic-qr-box');
-            let upiId = localStorage.getItem('v_adminUpi');
-            let onlineAmt = 0;
-
-            if(window.currentPaymentMode === 'online') {
-                onlineAmt = grandInvoiceTotal;
-            } else if(window.currentPaymentMode === 'half') {
-                let cashVal = parseFloat(document.getElementById('inv-cash-amt').value) || 0;
-                let onlineVal = parseFloat(document.getElementById('inv-online-amt').value);
-                
-                // If user only typed Cash, auto calculate Online remaining
-                if(isNaN(onlineVal) && cashVal > 0 && cashVal < grandInvoiceTotal) {
-                    onlineAmt = grandInvoiceTotal - cashVal;
-                } else {
-                    onlineAmt = onlineVal || 0;
+        // 🔥 Auto Fetch Purchase Rate Logic
+        window.autoFetchPurchaseRate = function() {
+            let cat = window.currentOpenCategory;
+            let itemName = document.getElementById('cat-item-name').value.trim();
+            if(cat && itemName) {
+                let key = cat + "_" + itemName;
+                if(smartInventory[key] && typeof smartInventory[key] === 'object') {
+                    if(smartInventory[key].rate) document.getElementById('cat-purchase-rate').value = smartInventory[key].rate;
                 }
             }
-
-            if(upiId && onlineAmt > 0) {
-                let safeAmount = parseFloat(onlineAmt).toFixed(2);
-                let safeName = encodeURIComponent(localStorage.getItem('v_adminName') || "Vandana Enterprises");
-                let upiString = `upi://pay?pa=${upiId}&pn=${safeName}&am=${safeAmount}&cu=INR`;
-                document.getElementById('pos-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=H&margin=0&data=${encodeURIComponent(upiString)}`;
-                document.getElementById('pos-qr-amount-text').innerText = `₹${safeAmount}`;
-                qrBox.style.display = 'block';
-            } else {
-                qrBox.style.display = 'none';
-            }
         }
 
+        // 🔥 Generic IN Add Logic with Rate Saving
+        window.addGenericStock = function() {
+            let cat = window.currentOpenCategory;
+            let itemName = document.getElementById('cat-item-name').value.trim();
+            let cone = parseFloat(document.getElementById('cat-cone').value) || 0;
+            let kg = document.getElementById('cat-kg') ? parseFloat(document.getElementById('cat-kg').value) || 0 : 0;
+            let rate = parseFloat(document.getElementById('cat-purchase-rate').value) || 0;
+
+            if(!itemName || cone <= 0) return alert("Please enter Item Name and Cone Qty!");
+            
+            let key = cat + "_" + itemName;
+            let itemRef = ref(db, 'Inventory/' + key);
+            get(itemRef).then((snap) => {
+                let cur = snap.val() || { cone: 0, kg: 0, rate: 0 };
+                if(typeof cur === 'number') cur = { cone: cur, kg: 0, rate: 0 };
+                set(itemRef, { cone: cur.cone + cone, kg: cur.kg + kg, rate: rate > 0 ? rate : cur.rate });
+            });
+
+            document.getElementById('cat-item-name').value = '';
+            document.getElementById('cat-cone').value = '';
+            if(document.getElementById('cat-kg')) document.getElementById('cat-kg').value = '';
+            document.getElementById('cat-purchase-rate').value = '';
+            alert("Stock Added Successfully!");
+            document.getElementById('cat-anim-form').classList.add('form-hidden');
+        }
+
+        // 🔥 POS Logic with Dynamic Inputs and Auto-Fill Rate
         window.updatePosShades = function() { 
             let cat = document.getElementById('inv-cat').value; 
             let shadeSelect = document.getElementById('inv-shade'); 
             let qtyGroup = document.getElementById('pos-dynamic-inputs');
             
             shadeSelect.innerHTML = '<option value="">Select Item / Type</option>'; 
+            document.getElementById('inv-rate').value = ''; // Reset rate
+
             if(!cat) return; 
 
-            // Dynamic Inputs Swap
+            // Switch POS Inputs based on category
             if(cat === 'Thread' || cat === 'Zari') {
                 qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px;"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">`;
             } else {
@@ -2490,6 +2565,19 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     }
                 } 
             } 
+            
+            // Auto fill Selling Rate based on last saved Purchase Rate
+            shadeSelect.onchange = function() {
+                let selectedShade = this.value;
+                if(selectedShade) {
+                    let key = cat + "_" + selectedShade;
+                    if(smartInventory[key] && smartInventory[key].rate) {
+                        document.getElementById('inv-rate').value = smartInventory[key].rate;
+                    } else {
+                        document.getElementById('inv-rate').value = '';
+                    }
+                }
+            };
         }
 
         window.addCartItem = function() { 
@@ -2511,7 +2599,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             } 
 
             let displayQty = kg > 0 ? `${cone} Cone, ${kg} KG` : `${cone} Cone`;
-            let itemTotal = kg > 0 ? (kg * rate) : (cone * rate); // If KG is provided, rate applies to KG, else Cone
+            let itemTotal = kg > 0 ? (kg * rate) : (cone * rate);
 
             currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty: displayQty, rawCone: cone, rawKg: kg, rate: rate, itemTotal: itemTotal }); 
             renderCartUi(); 
@@ -2640,8 +2728,13 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let totalReceived = cAmt + oAmt;
             if(totalReceived > grandInvoiceTotal) return alert("Received amount cannot be greater than Total Bill amount!");
 
-            let partyName = document.getElementById('inv-party').value.trim() || "Cash Sale"; let partyPhone = document.getElementById('inv-phone').value.trim(); 
-            if(partyName !== "Cash Sale") { let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); if(!exists) { push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); } } 
+            let partyName = document.getElementById('inv-party').value.trim();
+            let partyPhone = document.getElementById('inv-phone').value.trim(); 
+            
+            if(!partyName) return alert("कृपया कस्टमर का नाम या नंबर डालें! (बिना कस्टमर के बिल सेव नहीं होगा)");
+            
+            let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); 
+            if(!exists) { push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); } 
             
             let isUpdating = !!window.editingEntryKey;
             
@@ -2654,9 +2747,9 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     let newCone = cur.cone - item.rawCone;
                     let newKg = cur.kg - (item.rawKg || 0);
                     if(newCone < 0) newCone = 0; if(newKg < 0) newKg = 0;
-                    set(itemRef, {cone: newCone, kg: newKg}); 
+                    set(itemRef, {cone: newCone, kg: newKg, rate: cur.rate}); // Rate remain same during deduct
                 }); 
-            }); 
+            });
             
             let maxInv = 0;
             allLedgerData.forEach(e => { if(e.billNo && e.billNo.startsWith('VE ')) { let num = parseInt(e.billNo.replace('VE ', '')); if(!isNaN(num) && num > maxInv) maxInv = num; } });

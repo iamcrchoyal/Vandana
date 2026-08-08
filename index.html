@@ -780,9 +780,7 @@
                         <option value="Thread">Thread</option><option value="Zari">Zari</option><option value="Nylon">Nylon</option>
                         <option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>
                     </select>
-                    <!-- ✨ NAYA: Select ko hata kar Input+Datalist lagaya jisse 850 colours me Search ho sake -->
-                    <input type="text" class="form-control" id="inv-shade" list="inv-shade-list" placeholder="Search or Select Shade/Item" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;" onchange="autoFillSaleRate()" onkeyup="autoFillSaleRate()">
-                    <datalist id="inv-shade-list"></datalist>
+                    <select class="form-control" id="inv-shade" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;"><option value="">Select Category First</option></select>
                     <div class="input-btn-group" style="margin-bottom: 16px;">
                         <input type="number" class="form-control" id="inv-qty" placeholder="Qty (Box)" style="border-radius:12px;">
                         <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">
@@ -1018,21 +1016,7 @@
     <div class="page flex-page" id="items-page">
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('items-page')">arrow_back</button><h2 class="page-title">Master Inventory</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
-            <!-- ✨ NAYA: Professional Total Inventory Value Card -->
-            <div style="background: linear-gradient(135deg, #0a56d0 0%, #0842a0 100%); border-radius: 16px; padding: 20px; color: white; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(10,86,208,0.2); display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; opacity: 0.9;">Total Inventory Value</div>
-                    <div style="font-size: 28px; font-weight: 800; font-family: 'Product Sans', sans-serif;" id="master-total-value">₹ 0</div>
-                </div>
-                <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 12px;">
-                    <span class="material-symbols-rounded" style="font-size: 28px;">inventory</span>
-                </div>
-            </div>
-            
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <div class="stock-overview-title" style="margin-bottom: 0;">CATEGORY WISE STOCK</div>
-                <button class="pro-add-btn" style="background: var(--success); padding: 6px 12px;" onclick="openPage('add-purchase-page')"><span class="material-symbols-rounded" style="font-size:16px;">add_box</span> Add Purchase</button>
-            </div>
+            <div class="stock-overview-title">STOCK OVERVIEW</div>
             <div class="stock-grid">
                 <div class="stock-grid-card" onclick="openPage('thread-stock-page')"><div class="sg-title">THREAD (थ्रेड)</div><div class="sg-value" id="stock-val-thread">0</div><div class="sg-icon" style="background:#e8f0fe; color:var(--primary);">🧵</div></div>
                 <div class="stock-grid-card" onclick="openPage('zari-stock-page')"><div class="sg-title">ZARI (जरी)</div><div class="sg-value" id="stock-val-zari">0</div><div class="sg-icon" style="background:#fff7ed; color:#f97316;">✨</div></div>
@@ -1130,8 +1114,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         window.confirmationResult = null;
 
         let allLedgerData = []; let globalCustomers = []; let smartInventory = {}; let allGodownTransfers = []; let allRecycleData = []; let allPendingRequests = [];
-        let itemMasterData = {}; /* ✨ NAYA: Auto-Rate yaad rakhne ke liye */
-        let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null;
+        let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null; 
+        window.lastGeneratedEntryData = null;
         
         window.calcValue = ""; window.calcType = "Gave"; window.isEditingEntry = false;
         window.currentReportElemId = ""; window.currentReportFilename = ""; 
@@ -1368,11 +1352,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     renderInventoryList(); 
                     updatePosShades(); 
                     checkRestore(); 
-                });
-                
-                /* ✨ NAYA: Firebase se Item Master (Rates) ka data lana */
-                onValue(ref(db, 'ItemMaster'), (snapshot) => { 
-                    itemMasterData = snapshot.val() || {}; 
                 });
                 
                 onValue(ref(db, 'Customers'), (snapshot) => { 
@@ -2388,18 +2367,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 if(valEl) valEl.innerText = countMaps[cat];
             }
 
-            /* ✨ NAYA: Total Inventory Value Calculate Karna */
-            let totalInventoryValue = 0;
-            for (let key in smartInventory) {
-                let qty = smartInventory[key] || 0;
-                // ItemMaster se purchase rate nikalna (Agar nahi hai to 0)
-                let pRate = (itemMasterData[key] && itemMasterData[key].purchaseRate) ? parseFloat(itemMasterData[key].purchaseRate) : 0;
-                totalInventoryValue += (qty * pRate);
-            }
-            if(document.getElementById('master-total-value')) {
-                document.getElementById('master-total-value').innerText = `₹ ${totalInventoryValue.toLocaleString('en-IN')}`;
-            }
-
             let lowEl = document.getElementById('lowstock-list');
             if(lowEl) {
                 lowEl.style.gridTemplateColumns = `repeat(${getGridCols(lowstockItemsCount)}, minmax(0, 1fr))`;
@@ -2471,26 +2438,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
         }
 
-        /* ✨ NAYA: Datalist me options dalna aur Auto-rate function */
-        window.updatePosShades = function() { let cat = document.getElementById('inv-cat').value; let shadeList = document.getElementById('inv-shade-list'); document.getElementById('inv-shade').value = ''; shadeList.innerHTML = ''; if(!cat) return; for (let key in smartInventory) { let parts = key.split("_"); if(parts[0] === cat && smartInventory[key] > 0) { shadeList.innerHTML += `<option value="${parts[1]}">${smartInventory[key]} Box Left</option>`; } } }
-        
-        window.autoFillSaleRate = function() {
-            let cat = document.getElementById('inv-cat').value;
-            let shade = document.getElementById('inv-shade').value.trim();
-            if(cat && shade) {
-                let key = cat + "_" + shade;
-                if(itemMasterData[key] && itemMasterData[key].saleRate) {
-                    document.getElementById('inv-rate').value = itemMasterData[key].saleRate;
-                }
-            }
-        }
-        /* ✨ NAYA: Item add karte waqt ItemMaster me Rate save (learn) karwana */
-        window.addCartItem = function() { const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value.trim(); const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0; if (!cat || !shade) return alert("Select Category and Item first!"); if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!"); let key = cat + "_" + shade; let currentStock = smartInventory[key] || 0; if(qty > currentStock) { alert(`OUT OF STOCK! You only have ${currentStock} Box of ${shade} left.`); return; } 
-        
-        /* Firebase me Rate update karna (Taki agli baar auto-fill ho) */
-        update(ref(db, 'ItemMaster/' + key), { saleRate: rate });
-        
-        currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty, rate, itemTotal: qty * rate }); renderCartUi(); }
+        window.updatePosShades = function() { let cat = document.getElementById('inv-cat').value; let shadeSelect = document.getElementById('inv-shade'); shadeSelect.innerHTML = '<option value="">Select Shade/Item</option>'; if(!cat) return; for (let key in smartInventory) { let parts = key.split("_"); if(parts[0] === cat && smartInventory[key] > 0) { shadeSelect.innerHTML += `<option value="${parts[1]}">${parts[1]} (${smartInventory[key]} Box Left)</option>`; } } }
+        window.addCartItem = function() { const cat = document.getElementById('inv-cat').value; const shade = document.getElementById('inv-shade').value; const qty = parseFloat(document.getElementById('inv-qty').value) || 0; const rate = parseFloat(document.getElementById('inv-rate').value) || 0; if (!cat || !shade) return alert("Select Category and Item first!"); if (qty <= 0 || rate <= 0) return alert("Enter valid Qty & Rate!"); let key = cat + "_" + shade; let currentStock = smartInventory[key] || 0; if(qty > currentStock) { alert(`OUT OF STOCK! You only have ${currentStock} Box of ${shade} left.`); return; } currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty, rate, itemTotal: qty * rate }); renderCartUi(); }
         // 🌟 EDITABLE CART LOGIC WITH PROFESSIONAL ICONS
         window.removeCartItem = function(index) {
             currentCart.splice(index, 1);

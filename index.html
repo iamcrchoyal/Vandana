@@ -358,14 +358,14 @@
             
             <div style="background:#fdf2f2; padding:15px; border-radius:8px; border:1px solid #f8cbcb; margin-bottom:20px;">
                 <h3 style="margin:0 0 5px 0; font-size:14px; color:#b3261e;">CONSIGNEE (Sent To):</h3>
-                <p style="margin:0; font-size:18px; font-weight:bold; color:#1f1f1f;">Mama Ji Shop (Inter-Shop Transfer)</p>
+                <p style="margin:0; font-size:18px; font-weight:bold; color:#1f1f1f;">ShivKrupa Thread</p>
             </div>
 
             <table style="width:100%; border-collapse:collapse; margin-bottom:30px; font-size:14px;">
                 <thead>
                     <tr style="background:#b3261e; color:white;">
                         <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Item & Category</th>
-                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:center;">Qty (Boxes)</th>
+                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:center;">Qty (Cone)</th>
                         <th style="padding:10px; border:1px solid #e0e2e0; text-align:right;">Rate</th>
                         <th style="padding:10px; border:1px solid #e0e2e0; text-align:right;">Total Amount</th>
                     </tr>
@@ -771,27 +771,6 @@
         </div>
         <div class="fixed-top-section">
             
-            <div style="background:white; padding:16px; border-radius:16px; margin-bottom:12px; border:1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.03); display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                    <div style="font-size:12px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">OVERALL TOTAL DUE</div>
-                    <div id="gd-overall-due" style="font-size:22px; font-weight:800; font-family:'Product Sans', sans-serif;">₹ 0</div>
-                </div>
-                <button class="btn-submit" style="background:#5f259f; font-size:12px; padding:8px 16px; border-radius:20px; display:flex; align-items:center; gap:4px;" onclick="document.getElementById('gd-payment-panel').classList.toggle('form-hidden')">
-                    <span class="material-symbols-rounded" style="font-size:16px;">payments</span> Settle Payment
-                </button>
-            </div>
-
-            <div class="form-panel anim-form form-hidden" id="gd-payment-panel" style="margin-bottom:10px; background:#faf5ff; border-color:#d8b4fe !important;">
-                <div style="font-size:13px; font-weight:700; color:#5f259f; margin-bottom:12px;">💰 Settle Payment</div>
-                <input type="date" id="gd-pay-date" class="form-control" style="margin-bottom:12px;">
-                <input type="number" id="gd-pay-amount" class="form-control" placeholder="Amount (₹)" style="margin-bottom:12px;">
-                <input type="text" id="gd-pay-details" class="form-control" placeholder="Payment Details (Cash/UPI)" style="margin-bottom:12px;">
-                <div style="display:flex; gap:10px;">
-                    <button class="btn-submit" style="background:var(--success); flex:1; border-radius:12px; font-size:13px;" onclick="processGdPayment('IN')">Received (Got)</button>
-                    <button class="btn-submit" style="background:var(--danger); flex:1; border-radius:12px; font-size:13px;" onclick="processGdPayment('OUT')">Paid (Gave)</button>
-                </div>
-            </div>
-
             <div class="form-panel anim-form form-hidden" id="gd-form-panel" style="margin-bottom:10px;">
                 <input type="hidden" id="gd-edit-key" value="">
                 <input type="date" id="gd-date" class="form-control" style="margin-bottom:12px; font-family:'Product Sans', sans-serif;">
@@ -801,7 +780,7 @@
                 </select>
                 <input type="text" id="gd-item" class="form-control" placeholder="Item Name / Shade No." style="margin-bottom:12px;">
                 <div class="input-btn-group" style="margin-bottom: 16px;">
-                    <input type="number" id="gd-qty" class="form-control" placeholder="Total Boxes">
+                    <input type="number" id="gd-qty" class="form-control" placeholder="Total Cones">
                     <input type="number" id="gd-rate" class="form-control" placeholder="Rate (₹)">
                 </div>
                 <div style="display:flex; gap:10px;">
@@ -812,11 +791,11 @@
 
             <div style="background:#f8fafd; border:1px solid #c2e7ff; border-radius:12px; padding:12px; margin-bottom:12px; display:flex; justify-content:space-between; text-align:center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
                 <div style="flex:1; border-right:1px solid #c2e7ff;">
-                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">MONTH IN</div>
+                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">THIS MONTH IN</div>
                     <div style="font-size:16px; font-weight:700; color:var(--success); font-family:'Product Sans', sans-serif;" id="gd-month-in">₹0</div>
                 </div>
                 <div style="flex:1; border-right:1px solid #c2e7ff;">
-                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">MONTH OUT</div>
+                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">THIS MONTH OUT</div>
                     <div style="font-size:16px; font-weight:700; color:var(--danger); font-family:'Product Sans', sans-serif;" id="gd-month-out">₹0</div>
                 </div>
                 <div style="flex:1;">
@@ -1995,10 +1974,10 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             document.getElementById('gd-rate').value = ''; 
             document.getElementById('gd-form-panel').classList.add('form-hidden'); 
         }
-        window.currentGdFilterMode = 'month';
+       window.currentGdFilterMode = 'month';
 
         window.updateMonthLabel = function() {
-            let val = document.getElementById('godown-date-picker').value; // format YYYY-MM
+            let val = document.getElementById('godown-date-picker').value; 
             if(val) {
                 let [yyyy, mm] = val.split('-');
                 let monthName = new Date(yyyy, parseInt(mm)-1, 1).toLocaleString('default', { month: 'short' });
@@ -2006,25 +1985,37 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
         }
 
+        // Toggle Logic for Custom Filter
         window.toggleGdFilter = function(mode) {
-            window.currentGdFilterMode = mode;
             let btnMonth = document.getElementById('btn-gd-month');
             let btnCustom = document.getElementById('btn-gd-custom');
+            let customBox = document.getElementById('gd-custom-filter-box');
 
-            if(mode === 'month') {
-                document.getElementById('gd-custom-filter-box').style.display = 'none';
+            if(mode === 'custom') {
+                if (customBox.style.display === 'block') {
+                    // Turn Off Custom (Switch to Month)
+                    window.currentGdFilterMode = 'month';
+                    customBox.style.display = 'none';
+                    btnCustom.style.borderColor = 'var(--border)'; btnCustom.style.color = 'var(--text-muted)';
+                    btnMonth.style.borderColor = 'var(--primary)'; btnMonth.style.color = 'var(--primary)';
+                } else {
+                    // Turn On Custom
+                    window.currentGdFilterMode = 'custom';
+                    customBox.style.display = 'block';
+                    btnCustom.style.borderColor = 'var(--primary)'; btnCustom.style.color = 'var(--primary)';
+                    btnMonth.style.borderColor = 'var(--border)'; btnMonth.style.color = 'var(--text-muted)';
+                    
+                    if(!document.getElementById('gd-from').value) {
+                        let d = new Date(); d.setDate(1);
+                        document.getElementById('gd-from').value = d.toISOString().split('T')[0];
+                        document.getElementById('gd-to').value = new Date().toISOString().split('T')[0];
+                    }
+                }
+            } else {
+                window.currentGdFilterMode = 'month';
+                customBox.style.display = 'none';
                 btnMonth.style.borderColor = 'var(--primary)'; btnMonth.style.color = 'var(--primary)';
                 btnCustom.style.borderColor = 'var(--border)'; btnCustom.style.color = 'var(--text-muted)';
-            } else {
-                document.getElementById('gd-custom-filter-box').style.display = 'block';
-                btnCustom.style.borderColor = 'var(--primary)'; btnCustom.style.color = 'var(--primary)';
-                btnMonth.style.borderColor = 'var(--border)'; btnMonth.style.color = 'var(--text-muted)';
-                
-                if(!document.getElementById('gd-from').value) {
-                    let d = new Date(); d.setDate(1);
-                    document.getElementById('gd-from').value = d.toISOString().split('T')[0];
-                    document.getElementById('gd-to').value = new Date().toISOString().split('T')[0];
-                }
             }
             renderGodownHistory();
         }
@@ -2041,34 +2032,9 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let searchQuery = document.getElementById('gd-search-history').value.toLowerCase().trim();
             
             let monthIn = 0; let monthOut = 0;
-            let overallIn = 0; let overallOut = 0;
-
             let filteredTransfers = [];
 
-            // 1. Calculate OVERALL TOTAL DUE (For all time)
-            allGodownTransfers.forEach(t => {
-                let amt = parseFloat(t.amount) || 0;
-                if(t.type === 'IN') overallIn += amt; // Maal aaya (We owe them)
-                if(t.type === 'OUT') overallOut += amt; // Maal bheja (They owe us)
-                if(t.type === 'Payment_IN') overallOut += amt; // Humne payment liya
-                if(t.type === 'Payment_OUT') overallIn += amt; // Humne payment diya
-            });
-            
-            let overallDue = overallIn - overallOut;
-            let oDueEl = document.getElementById('gd-overall-due');
-            oDueEl.innerText = "₹ " + Math.abs(overallDue).toLocaleString('en-IN');
-            if(overallDue > 0) {
-                oDueEl.style.color = "var(--danger)"; // You owe Mama Ji
-                oDueEl.previousElementSibling.innerText = "OVERALL DUE TO SHOP";
-            } else if (overallDue < 0) {
-                oDueEl.style.color = "var(--success)"; // Mama Ji owes you
-                oDueEl.previousElementSibling.innerText = "OVERALL ADVANCE / RECEIVABLE";
-            } else {
-                oDueEl.style.color = "var(--text-dark)";
-                oDueEl.previousElementSibling.innerText = "OVERALL ACCOUNT SETTLED";
-            }
-
-            // 2. Filter for List & Month Tracker
+            // 1. Filter for List & Month Tracker
             if (mode === 'month') {
                 let filterMonth = document.getElementById('godown-date-picker').value; 
                 if(!filterMonth) {
@@ -2119,7 +2085,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 }
             }
 
-            // 3. Update This Month Tracker UI
+            // 2. Update This Month Tracker UI
             document.getElementById('gd-month-in').innerText = "₹ " + monthIn.toLocaleString('en-IN');
             document.getElementById('gd-month-out').innerText = "₹ " + monthOut.toLocaleString('en-IN');
             
@@ -2130,7 +2096,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             else if (netBal < 0) { balEl.style.color = "var(--success)"; } 
             else { balEl.style.color = "var(--primary)"; }
 
-            // 4. Render List HTML
+            // 3. Render List HTML
             let html = ""; 
             if(filteredTransfers.length === 0) { 
                 html = '<div style="text-align:center; padding:30px; color:gray;">No entries found.</div>'; 
@@ -2138,51 +2104,35 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 filteredTransfers.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
                 filteredTransfers.forEach(t => { 
+                    if(t.type.includes('Payment')) return; // Ignore payments if any still exist in DB
+
                     let d = new Date(t.date); 
                     let dateStr = isNaN(d) ? t.date : d.toLocaleDateString('en-GB', {day:'numeric', month:'short'}) + " " + d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}); 
                     
-                    if (t.type.includes('Payment')) {
-                        // PAYMENT ENTRY UI
-                        let isPayIN = t.type === 'Payment_IN';
-                        let pColor = isPayIN ? 'var(--success)' : 'var(--danger)';
-                        let pTitle = isPayIN ? 'Received from Shop' : 'Paid to Shop';
-                        html += `
-                        <div class="entry-card" style="padding:14px; border:1px solid ${pColor}; margin-bottom:10px; background:#f8fafd; flex-direction:column;">
-                            <div style="display:flex; justify-content:space-between;">
-                                <div><div style="font-weight:700; color:${pColor}; font-size:14px;">💳 ${pTitle}</div><div style="font-size:11px; color:var(--text-muted);">${dateStr}</div></div>
-                                <div style="font-size:16px; font-weight:800; color:${pColor};">₹${(t.amount||0).toLocaleString('en-IN')}</div>
-                            </div>
-                            <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">${t.item || 'Settlement'}</div>
-                            <div style="display:flex; justify-content:flex-end; margin-top:8px;">
-                                <button class="btn-outline material-symbols-rounded" style="padding:4px 8px; font-size:16px; color:var(--danger); border-color:var(--danger);" onclick="deleteGdTransfer('${t.key}', '${t.type}', '${t.cat}', '${t.item}', ${t.qty})">delete</button>
-                            </div>
-                        </div>`;
-                    } else {
-                        // STOCK TRANSFER UI
-                        let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)'; 
-                        let icon = t.type === 'IN' ? '🟢 IN' : '🔴 OUT'; 
-                        let amountStr = t.amount ? `<span style="font-size:14px; color:var(--text-dark); font-weight:700;">₹${t.amount.toLocaleString('en-IN')}</span> <span style="font-size:10px; color:gray;">(@₹${t.rate})</span>` : "";
-                        let challanBtn = t.type === 'OUT' ? `<button class="btn-submit material-symbols-rounded" style="padding:4px 8px; font-size:16px; background:var(--primary);" onclick="shareGdChallan('${t.key}')">share</button>` : '';
+                    // STOCK TRANSFER UI
+                    let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)'; 
+                    let icon = t.type === 'IN' ? '🟢 IN' : '🔴 OUT'; 
+                    let amountStr = t.amount ? `<span style="font-size:14px; color:var(--text-dark); font-weight:700;">₹${t.amount.toLocaleString('en-IN')}</span> <span style="font-size:10px; color:gray;">(@₹${t.rate})</span>` : "";
+                    let challanBtn = t.type === 'OUT' ? `<button class="btn-submit material-symbols-rounded" style="padding:4px 8px; font-size:16px; background:var(--primary);" onclick="shareGdChallan('${t.key}')">share</button>` : '';
 
-                        html += `
-                        <div class="entry-card" style="padding:14px; border:1px solid var(--border); margin-bottom:10px; flex-direction:column;">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                                <div>
-                                    <div style="font-weight:700; color:var(--text-dark); font-size:15px;">${t.item} <span style="font-size:11px; color:gray;">(${t.cat})</span></div>
-                                    <div style="font-size:11px; color:var(--text-muted);">${dateStr}</div>
-                                </div>
-                                <div style="text-align:right;">
-                                    <div style="color:${color}; font-weight:800; font-size:14px;">${icon} ${t.qty} BOX</div>
-                                    ${amountStr}
-                                </div>
+                    html += `
+                    <div class="entry-card" style="padding:14px; border:1px solid var(--border); margin-bottom:10px; flex-direction:column;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                            <div>
+                                <div style="font-weight:700; color:var(--text-dark); font-size:15px;">${t.item} <span style="font-size:11px; color:gray;">(${t.cat})</span></div>
+                                <div style="font-size:11px; color:var(--text-muted);">${dateStr}</div>
                             </div>
-                            <div style="display:flex; justify-content:flex-end; gap:8px;">
-                                ${challanBtn}
-                                <button class="btn-outline material-symbols-rounded" style="padding:4px 8px; font-size:16px; color:var(--primary); border-color:var(--primary);" onclick="editGdTransfer('${t.key}')">edit</button>
-                                <button class="btn-outline material-symbols-rounded" style="padding:4px 8px; font-size:16px; color:var(--danger); border-color:var(--danger);" onclick="deleteGdTransfer('${t.key}', '${t.type}', '${t.cat}', '${t.item}', ${t.qty})">delete</button>
+                            <div style="text-align:right;">
+                                <div style="color:${color}; font-weight:800; font-size:14px;">${icon} ${t.qty} Cone</div>
+                                ${amountStr}
                             </div>
-                        </div>`; 
-                    }
+                        </div>
+                        <div style="display:flex; justify-content:flex-end; gap:8px;">
+                            ${challanBtn}
+                            <button class="btn-outline material-symbols-rounded" style="padding:4px 8px; font-size:16px; color:var(--primary); border-color:var(--primary);" onclick="editGdTransfer('${t.key}')">edit</button>
+                            <button class="btn-outline material-symbols-rounded" style="padding:4px 8px; font-size:16px; color:var(--danger); border-color:var(--danger);" onclick="deleteGdTransfer('${t.key}', '${t.type}', '${t.cat}', '${t.item}', ${t.qty})">delete</button>
+                        </div>
+                    </div>`; 
                 }); 
             } 
             document.getElementById('godown-history-list').innerHTML = html; 
@@ -3894,19 +3844,17 @@ window.showTargetCelebration = function() {
         window.deleteGdTransfer = function(key, type, cat, item, qty) {
             if(!confirm("Are you sure you want to delete this entry?")) return;
             
-            if(!type.includes('Payment')) {
-                // Adjust inventory back
-                let invKey = cat + "_" + item;
-                let itemRef = ref(db, 'Inventory/' + invKey);
-                get(itemRef).then(snap => {
-                    let cur = snap.val() || {cone:0, kg:0};
-                    if(typeof cur === 'number') cur = {cone:cur, kg:0};
-                    // Reverse action: If it was OUT, add back. If it was IN, remove it.
-                    let newConeQty = type === 'OUT' ? cur.cone + qty : cur.cone - qty;
-                    if(newConeQty < 0) newConeQty = 0;
-                    set(itemRef, {cone: newConeQty, kg: cur.kg});
-                });
-            }
+            // Adjust inventory back
+            let invKey = cat + "_" + item;
+            let itemRef = ref(db, 'Inventory/' + invKey);
+            get(itemRef).then(snap => {
+                let cur = snap.val() || {cone:0, kg:0};
+                if(typeof cur === 'number') cur = {cone:cur, kg:0};
+                // Reverse action: If it was OUT, add back. If it was IN, remove it.
+                let newConeQty = type === 'OUT' ? cur.cone + qty : cur.cone - qty;
+                if(newConeQty < 0) newConeQty = 0;
+                set(itemRef, {cone: newConeQty, kg: cur.kg});
+            });
             
             remove(ref(db, 'GodownTransfers/' + key)).then(() => {
                 alert("Entry Deleted!");
@@ -3936,7 +3884,6 @@ window.showTargetCelebration = function() {
             document.getElementById('gd-rate').value = entry.rate;
 
             document.getElementById('gd-form-panel').classList.remove('form-hidden');
-            document.getElementById('gd-payment-panel').classList.add('form-hidden');
 
             if(entry.type === 'IN') {
                 document.getElementById('gd-btn-out').style.display = 'none';
@@ -3958,12 +3905,12 @@ window.showTargetCelebration = function() {
             let d = new Date(entry.date);
             document.getElementById('pdf-gd-date').innerText = isNaN(d) ? entry.date : d.toLocaleDateString('en-GB');
             document.getElementById('pdf-gd-item').innerHTML = `<strong style="font-size:14px; color:#1f1f1f;">${entry.cat}</strong><br><span style="font-size:12px; color:#718096;">Shade / Color: ${entry.item}</span>`;
-            document.getElementById('pdf-gd-qty').innerText = entry.qty + " Box";
+            document.getElementById('pdf-gd-qty').innerText = entry.qty + " Cone";
             document.getElementById('pdf-gd-rate').innerText = "₹" + entry.rate;
             document.getElementById('pdf-gd-amount').innerText = "₹" + (entry.amount || 0).toLocaleString('en-IN');
 
             let elem = document.getElementById('pdf-gd-challan-template');
-            let opt = { margin: 0.4, filename: `Challan_${entry.item}_${entry.qty}Box.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
+            let opt = { margin: 0.4, filename: `Challan_${entry.item}_${entry.qty}Cone.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
             
             try {
                 alert("Preparing Challan PDF... Please wait.");

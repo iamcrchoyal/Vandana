@@ -345,43 +345,6 @@
 
     <!-- HIDDEN PDF TEMPLATES FOR REPORTS & INVOICE -->
     <div id="pdf-report-container" style="position:fixed; left:-9999px; top:0;">
-        <div id="pdf-challan-template" style="background:white; padding:30px; font-family:'Product Sans', sans-serif; color:black; width:100%; max-width:700px; box-sizing:border-box;">
-            <div style="text-align:center; border-bottom:2px solid #1f1f1f; padding-bottom:15px; margin-bottom:20px;">
-                <h1 style="margin:0; font-size:26px; color:#0a56d0;" id="ch-admin-name">Vandana Enterprises</h1>
-                <h2 style="margin:5px 0 0 0; font-size:18px; color:#444746;">DELIVERY CHALLAN / SHOP TRANSFER</h2>
-            </div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:30px;">
-                <div>
-                    <p style="margin:0; font-size:14px; color:#718096;">To:</p>
-                    <p style="margin:4px 0 0 0; font-size:18px; font-weight:bold;">Partner Shop</p>
-                </div>
-                <div style="text-align:right;">
-                    <p style="margin:0; font-size:14px; color:#718096;">Date:</p>
-                    <p style="margin:4px 0 0 0; font-size:16px; font-weight:bold;" id="ch-date">--</p>
-                </div>
-            </div>
-            <table style="width:100%; border-collapse:collapse; margin-bottom:20px; font-size:15px;">
-                <thead>
-                    <tr style="background:#f0f4f9; border:1px solid #e0e2e0;">
-                        <th style="padding:12px; text-align:left;">Item Details</th>
-                        <th style="padding:12px; text-align:center;">Quantity</th>
-                        <th style="padding:12px; text-align:right;">Rate</th>
-                        <th style="padding:12px; text-align:right;">Total Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="padding:12px; border:1px solid #e0e2e0; font-weight:bold;" id="ch-item">--</td>
-                        <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-weight:bold;" id="ch-qty">--</td>
-                        <td style="padding:12px; border:1px solid #e0e2e0; text-align:right;" id="ch-rate">--</td>
-                        <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:bold; color:var(--primary);" id="ch-amt">--</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div style="margin-top:50px; text-align:right; font-size:14px; font-weight:bold; color:#444746;">
-                Authorized Signatory
-            </div>
-        </div>
         <!-- ====== 📄 NEW SAAS STYLE SINGLE INVOICE TEMPLATE (WITH QR & NO OVERLAP) ====== -->
         <div id="pdf-invoice-template" style="background:white; padding:40px; font-family:'Product Sans', 'Inter', sans-serif; color:black; width:100%; max-width:720px; min-height:1020px; margin: 0 auto; box-sizing:border-box; border:1px solid #e0e2e0; display:flex; flex-direction:column;">
             
@@ -785,49 +748,31 @@
                 </div>
             </div>
 
-            <div style="background:white; border:1px solid var(--border); border-radius:16px; padding:16px; margin-bottom:12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #e0e2e0;">
-                    <div>
-                        <div style="font-size:11px; color:var(--text-muted); font-weight:600;">OVERALL TOTAL DUE</div>
-                        <div style="font-size:20px; font-weight:700; color:var(--danger); font-family:'Product Sans', sans-serif;" id="gd-total-due">₹0</div>
-                    </div>
-                    <button class="btn-submit" style="background:var(--success); font-size:12px; padding:8px 16px; border-radius:12px; display:flex; gap:6px; align-items:center; box-shadow: 0 2px 5px rgba(20,108,46,0.3);" onclick="settleShopPayment()">
-                        <span class="material-symbols-rounded" style="font-size:16px;">payments</span> Settle Payment
-                    </button>
+            <div style="background:#f8fafd; border:1px solid #c2e7ff; border-radius:12px; padding:12px; margin-bottom:12px; display:flex; justify-content:space-between; text-align:center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <div style="flex:1; border-right:1px solid #c2e7ff;">
+                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">TOTAL IN</div>
+                    <div style="font-size:16px; font-weight:700; color:var(--success); font-family:'Product Sans', sans-serif;" id="gd-month-in">₹0</div>
                 </div>
-                <div style="display:flex; justify-content:space-between; text-align:center;">
-                    <div style="flex:1; border-right:1px solid #f0f4f9;">
-                        <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">THIS MONTH IN</div>
-                        <div style="font-size:14px; font-weight:700; color:var(--text-dark); font-family:'Product Sans', sans-serif;" id="gd-month-in">₹0</div>
-                    </div>
-                    <div style="flex:1; border-right:1px solid #f0f4f9;">
-                        <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">THIS MONTH OUT</div>
-                        <div style="font-size:14px; font-weight:700; color:var(--text-dark); font-family:'Product Sans', sans-serif;" id="gd-month-out">₹0</div>
-                    </div>
-                    <div style="flex:1;">
-                        <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">MONTH NET DUE</div>
-                        <div style="font-size:14px; font-weight:700; color:var(--primary); font-family:'Product Sans', sans-serif;" id="gd-month-bal">₹0</div>
-                    </div>
+                <div style="flex:1; border-right:1px solid #c2e7ff;">
+                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">TOTAL OUT</div>
+                    <div style="font-size:16px; font-weight:700; color:var(--danger); font-family:'Product Sans', sans-serif;" id="gd-month-out">₹0</div>
                 </div>
-            </div>
-
-            <div class="search-bar-container" style="margin: 0 0 12px 0; border-radius:12px; padding:6px 16px;">
-                <span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span>
-                <input type="text" id="gd-search" placeholder="Search Item or Category..." onkeyup="renderGodownHistory()" style="font-size:14px;">
+                <div style="flex:1;">
+                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">NET DUE</div>
+                    <div style="font-size:16px; font-weight:700; color:var(--primary); font-family:'Product Sans', sans-serif;" id="gd-month-bal">₹0</div>
+                </div>
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; padding:5px 0 10px 0;">
-                <h3 class="section-title" style="margin:0; font-size: 15px; font-weight: 600;">Transfer History <span id="gd-active-month-text" style="font-size:11px; color:var(--primary); font-weight:bold; background:#e8f0fe; padding:2px 6px; border-radius:4px;"></span></h3>
-                <div style="display:flex; gap:8px; position:relative;">
-                    <button class="btn-outline" style="padding:6px 10px; font-size:12px; border-radius:8px; display:flex; align-items:center; gap:4px; border-color:var(--primary); color:var(--primary);" id="btn-gd-month" onclick="toggleGdFilter('month')">
-                        <span class="material-symbols-rounded" style="font-size:16px;">calendar_view_month</span> Month
-                    </button>
-                    <input type="month" id="godown-date-picker" onchange="window.currentGdFilterMode='month'; renderGodownHistory()" style="position:absolute; top:0; left:0; width:0; height:0; opacity:0; pointer-events:none;">
-                    
-                    <button class="btn-outline" style="padding:6px 10px; font-size:12px; border-radius:8px; display:flex; align-items:center; gap:4px; border-color:var(--border); color:var(--text-muted);" id="btn-gd-custom" onclick="toggleGdFilter('custom')">
-                        <span class="material-symbols-rounded" style="font-size:16px;">date_range</span> Custom
-                    </button>
+                <h3 class="section-title" style="margin:0; font-size: 15px; font-weight: 600;">Transfer History</h3>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn-outline" style="padding:6px 10px; font-size:12px; border-radius:8px; display:flex; align-items:center; gap:4px; border-color:var(--primary); color:var(--primary);" id="btn-gd-month" onclick="toggleGdFilter('month')"><span class="material-symbols-rounded" style="font-size:16px;">calendar_view_month</span> Month</button>
+                    <button class="btn-outline" style="padding:6px 10px; font-size:12px; border-radius:8px; display:flex; align-items:center; gap:4px; border-color:var(--border); color:var(--text-muted);" id="btn-gd-custom" onclick="toggleGdFilter('custom')"><span class="material-symbols-rounded" style="font-size:16px;">date_range</span> Custom</button>
                 </div>
+            </div>
+
+            <div id="gd-month-filter-box" style="display:block; margin-bottom:12px; text-align:right;">
+                <input type="month" style="padding:6px 12px; font-size:14px; border:1px solid var(--border); border-radius:8px; font-family:'Product Sans', sans-serif; background: white;" id="godown-date-picker" onchange="renderGodownHistory()">
             </div>
 
             <div id="gd-custom-filter-box" style="display:none; background:white; border: 1px solid var(--border); padding:12px; border-radius:12px; margin-bottom:12px; box-shadow:0 2px 5px rgba(0,0,0,0.02);">
@@ -1929,6 +1874,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             
             if(!item || isNaN(qty) || qty <= 0 || rate <= 0) return alert("Please enter valid Item Name, Quantity, and Rate!"); 
             
+            // 🌟 NEW DATE LOGIC
             let dateVal = document.getElementById('gd-date').value;
             let finalDateTime;
             if(dateVal) {
@@ -1941,71 +1887,33 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             }
 
             let totalAmount = qty * rate;
+            let key = cat + "_" + item; 
+            let itemRef = ref(db, 'Inventory/' + key); 
             
-            // 🌟 EDIT LOGIC
-            if(window.editingGdKey) {
-                let oldEntry = window.editingGdOldEntry;
-                let oldInvKey = oldEntry.cat + "_" + oldEntry.item;
+            get(itemRef).then((snap) => { 
+                let cur = snap.val() || { cone: 0, kg: 0 }; 
+                if(typeof cur === 'number') cur = { cone: cur, kg: 0 };
                 
-                // Revert Old Stock & Apply New Stock Safely
-                get(ref(db, 'Inventory/' + oldInvKey)).then((snap) => {
-                    let cur = snap.val() || {cone:0, kg:0};
-                    if(typeof cur === 'number') cur = {cone:cur, kg:0};
-                    let revertedCone = oldEntry.type === 'OUT' ? cur.cone + oldEntry.qty : cur.cone - oldEntry.qty;
-                    if(revertedCone < 0) revertedCone = 0;
-                    
-                    if(oldInvKey === cat + "_" + item) {
-                         let finalCone = type === 'OUT' ? revertedCone - qty : revertedCone + qty;
-                         if(finalCone < 0) finalCone = 0;
-                         set(ref(db, 'Inventory/' + oldInvKey), { cone: finalCone, kg: cur.kg });
-                    } else {
-                         set(ref(db, 'Inventory/' + oldInvKey), { cone: revertedCone, kg: cur.kg });
-                         get(ref(db, 'Inventory/' + cat + "_" + item)).then((snap2) => {
-                             let cur2 = snap2.val() || {cone:0, kg:0};
-                             if(typeof cur2 === 'number') cur2 = {cone:cur2, kg:0};
-                             let finalCone2 = type === 'OUT' ? cur2.cone - qty : cur2.cone + qty;
-                             if(finalCone2 < 0) finalCone2 = 0;
-                             set(ref(db, 'Inventory/' + cat + "_" + item), { cone: finalCone2, kg: cur2.kg });
-                         });
-                    }
-                });
-
-                update(ref(db, 'GodownTransfers/' + window.editingGdKey), {
-                    date: finalDateTime, cat: cat, item: item, qty: qty, rate: rate, amount: totalAmount, type: type
-                });
-
-                window.editingGdKey = null;
-                window.editingGdOldEntry = null;
-                alert("Entry Updated Successfully! ✅");
-            } else {
-                // NORMAL ADD LOGIC
-                let key = cat + "_" + item; 
-                let itemRef = ref(db, 'Inventory/' + key); 
-                get(itemRef).then((snap) => { 
-                    let cur = snap.val() || { cone: 0, kg: 0 }; 
-                    if(typeof cur === 'number') cur = { cone: cur, kg: 0 };
-                    let newConeQty = type === 'OUT' ? cur.cone - qty : cur.cone + qty; 
-                    if(newConeQty < 0) newConeQty = 0; 
-                    set(itemRef, { cone: newConeQty, kg: cur.kg }); 
-                }); 
+                let newConeQty = type === 'OUT' ? cur.cone - qty : cur.cone + qty; 
+                if(newConeQty < 0) newConeQty = 0; 
                 
-                let newRef = push(ref(db, 'GodownTransfers'), { 
-                    date: finalDateTime, cat: cat, item: item, qty: qty, rate: rate, amount: totalAmount, type: type 
-                }); 
-                
-                // 🌟 CHALLAN PDF LOGIC
-                if(type === 'OUT') {
-                    if(confirm("Stock Sent to Shop! Do you want to share the Delivery Challan?")) {
-                        printShopChallan(newRef.key, {date: finalDateTime, cat: cat, item: item, qty: qty, rate: rate, amount: totalAmount});
-                    }
-                } else {
-                    alert(`Stock Received from Shop!`); 
-                }
-            }
-
+                set(itemRef, { cone: newConeQty, kg: cur.kg }); 
+            }); 
+            
+            push(ref(db, 'GodownTransfers'), { 
+                date: finalDateTime, 
+                cat: cat, 
+                item: item, 
+                qty: qty, 
+                rate: rate,
+                amount: totalAmount,
+                type: type 
+            }); 
+            
             document.getElementById('gd-item').value = ''; 
             document.getElementById('gd-qty').value = ''; 
             document.getElementById('gd-rate').value = ''; 
+            alert(type === 'IN' ? `Stock Received from Shop!` : `Stock Sent to Shop!`); 
             document.getElementById('gd-form-panel').classList.add('form-hidden'); 
         }
         window.currentGdFilterMode = 'month';
@@ -2016,48 +1924,41 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let btnCustom = document.getElementById('btn-gd-custom');
 
             if(mode === 'month') {
+                document.getElementById('gd-month-filter-box').style.display = 'block';
                 document.getElementById('gd-custom-filter-box').style.display = 'none';
+                
+                // Style updates
                 btnMonth.style.borderColor = 'var(--primary)'; btnMonth.style.color = 'var(--primary)';
                 btnCustom.style.borderColor = 'var(--border)'; btnCustom.style.color = 'var(--text-muted)';
-                // 🌟 Hidden Date Picker Trigger
-                document.getElementById('godown-date-picker').showPicker();
             } else {
+                document.getElementById('gd-month-filter-box').style.display = 'none';
                 document.getElementById('gd-custom-filter-box').style.display = 'block';
+                
+                // Style updates
                 btnCustom.style.borderColor = 'var(--primary)'; btnCustom.style.color = 'var(--primary)';
                 btnMonth.style.borderColor = 'var(--border)'; btnMonth.style.color = 'var(--text-muted)';
                 
+                // Set default dates for Custom (First day of month to Today)
                 if(!document.getElementById('gd-from').value) {
                     let d = new Date(); d.setDate(1);
                     document.getElementById('gd-from').value = d.toISOString().split('T')[0];
                     document.getElementById('gd-to').value = new Date().toISOString().split('T')[0];
                 }
-                renderGodownHistory();
             }
+            renderGodownHistory();
+        }
+
+        window.openGdCustomReport = function() {
+            let fromD = document.getElementById('gd-from').value;
+            let toD = document.getElementById('gd-to').value;
+            if(!fromD || !toD) return alert('Please select From Date and To Date!');
+            generateStockReport(fromD, toD);
         }
 
         window.renderGodownHistory = function() { 
             let mode = window.currentGdFilterMode || 'month';
-            let overallIn = 0; let overallOut = 0;
             let monthIn = 0; let monthOut = 0;
             let filteredTransfers = [];
-            
-            // 🌟 Search Logic
-            let searchText = document.getElementById('gd-search') ? document.getElementById('gd-search').value.toLowerCase() : "";
-
-            // Calculate Overall First (Total Due)
-            allGodownTransfers.forEach(t => {
-                let amt = parseFloat(t.amount) || 0;
-                if(t.type === 'IN' || t.type === 'PAY_IN') overallIn += amt;
-                if(t.type === 'OUT' || t.type === 'PAY_OUT') overallOut += amt;
-            });
-            let totalNetBal = overallIn - overallOut;
-            let totalBalEl = document.getElementById('gd-total-due');
-            if(totalBalEl) {
-                totalBalEl.innerText = "₹ " + Math.abs(totalNetBal).toLocaleString('en-IN');
-                if(totalNetBal > 0) { totalBalEl.style.color = "var(--danger)"; } // Owe them
-                else if (totalNetBal < 0) { totalBalEl.style.color = "var(--success)"; } // They Owe Us
-                else { totalBalEl.style.color = "var(--text-dark)"; }
-            }
 
             if (mode === 'month') {
                 let filterMonth = document.getElementById('godown-date-picker').value; 
@@ -2066,102 +1967,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     filterMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
                     document.getElementById('godown-date-picker').value = filterMonth;
                 }
-                
-                // Show Active Month Text
-                let [yyyy, mm] = filterMonth.split('-');
-                let mName = new Date(yyyy, parseInt(mm)-1, 1).toLocaleString('default', { month: 'short', year: 'numeric' });
-                if(document.getElementById('gd-active-month-text')) document.getElementById('gd-active-month-text').innerText = `(${mName})`;
-
-                filteredTransfers = allGodownTransfers.filter(t => { 
-                    let tMonth = ""; 
-                    try { tMonth = new Date(t.date).toISOString().slice(0, 7); } catch(e){} 
-                    let matchesMonth = (tMonth === filterMonth);
-                    let matchesSearch = t.item.toLowerCase().includes(searchText) || t.cat.toLowerCase().includes(searchText);
-                    
-                    if(matchesMonth) {
-                        let amt = parseFloat(t.amount) || 0;
-                        if(t.type === 'IN' || t.type === 'PAY_IN') monthIn += amt;
-                        if(t.type === 'OUT' || t.type === 'PAY_OUT') monthOut += amt;
-                    }
-                    return matchesMonth && matchesSearch; 
-                }); 
-            } else {
-                if(document.getElementById('gd-active-month-text')) document.getElementById('gd-active-month-text').innerText = `(Custom Date)`;
-                let fromD = document.getElementById('gd-from').value;
-                let toD = document.getElementById('gd-to').value;
-                if(fromD && toD) {
-                    let fromTime = new Date(fromD).getTime(); 
-                    let toTime = new Date(toD + "T23:59:59").getTime();
-                    filteredTransfers = allGodownTransfers.filter(t => { 
-                        let tTime = new Date(t.date).getTime();
-                        let matchesDate = (tTime >= fromTime && tTime <= toTime);
-                        let matchesSearch = t.item.toLowerCase().includes(searchText) || t.cat.toLowerCase().includes(searchText);
-                        
-                        if(matchesDate) {
-                            let amt = parseFloat(t.amount) || 0;
-                            if(t.type === 'IN' || t.type === 'PAY_IN') monthIn += amt;
-                            if(t.type === 'OUT' || t.type === 'PAY_OUT') monthOut += amt;
-                        }
-                        return matchesDate && matchesSearch;
-                    });
-                }
-            }
-
-            // Update Month Tracker UI
-            document.getElementById('gd-month-in').innerText = "₹ " + monthIn.toLocaleString('en-IN');
-            document.getElementById('gd-month-out').innerText = "₹ " + monthOut.toLocaleString('en-IN');
-            
-            let netBal = monthIn - monthOut;
-            let balEl = document.getElementById('gd-month-bal');
-            balEl.innerText = "₹ " + Math.abs(netBal).toLocaleString('en-IN');
-            if(netBal > 0) { balEl.style.color = "var(--danger)"; } 
-            else if (netBal < 0) { balEl.style.color = "var(--success)"; } 
-            else { balEl.style.color = "var(--primary)"; }
-
-            let html = ""; 
-            if(filteredTransfers.length === 0) { 
-                html = '<tr><td style="text-align:center; padding:16px; color:gray;">No records found.</td></tr>'; 
-            } else { 
-                filteredTransfers.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-
-                filteredTransfers.forEach(t => { 
-                    let d = new Date(t.date); 
-                    let dateStr = isNaN(d) ? t.date : d.toLocaleDateString('en-GB', {day:'numeric', month:'short'}) + " " + d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}); 
-                    let color = (t.type === 'IN' || t.type === 'PAY_IN') ? 'var(--success)' : 'var(--danger)'; 
-                    
-                    let icon = ''; let qtyText = '';
-                    if(t.type === 'IN') { icon = '🟢 IN'; qtyText = `${t.qty} BOX`; }
-                    else if(t.type === 'OUT') { icon = '🔴 OUT'; qtyText = `${t.qty} BOX`; }
-                    else if(t.type === 'PAY_IN') { icon = '💰 REC'; qtyText = `Payment`; }
-                    else if(t.type === 'PAY_OUT') { icon = '💸 PAID'; qtyText = `Payment`; }
-
-                    let amountStr = t.amount ? `<br><span style="font-size:13px; color:var(--text-dark); font-weight:700;">₹${t.amount.toLocaleString('en-IN')} ${t.rate > 0 ? `(@₹${t.rate})` : ''}</span>` : "";
-                    
-                    // 🌟 EDIT / DELETE / SHARE BUTTONS
-                    let actionBtns = ``;
-                    if(t.type === 'OUT') {
-                        actionBtns += `<button style="background:#e8f0fe; color:var(--primary); border:none; padding:4px 8px; border-radius:6px; font-size:16px; display:flex; cursor:pointer;" onclick="printShopChallan('${t.key}')" class="material-symbols-rounded">receipt_long</button>`;
-                    }
-                    actionBtns += `<button style="background:#fdf2f2; color:var(--danger); border:none; padding:4px 8px; border-radius:6px; font-size:16px; display:flex; cursor:pointer;" onclick="deleteShopTransfer('${t.key}')" class="material-symbols-rounded">delete</button>`;
-                    if(t.type !== 'PAY_IN' && t.type !== 'PAY_OUT') {
-                        actionBtns += `<button style="background:#e6f4ea; color:var(--success); border:none; padding:4px 8px; border-radius:6px; font-size:16px; display:flex; cursor:pointer;" onclick="editShopTransfer('${t.key}')" class="material-symbols-rounded">edit</button>`;
-                    }
-
-                    html += `<tr>
-                                <td>
-                                    <div style="font-weight:600; color:var(--text-dark); font-size:14px;">${t.item} <span style="font-size:11px; color:var(--text-muted);">(${t.cat})</span></div>
-                                    <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">${dateStr}</div>
-                                    <div style="display:flex; gap:6px; margin-top:8px;">${actionBtns}</div>
-                                </td>
-                                <td style="text-align:right;">
-                                    <div style="color:${color}; font-weight:700; font-size:13px;">${icon} ${qtyText}</div>
-                                    ${amountStr}
-                                </td>
-                            </tr>`; 
-                }); 
-            } 
-            document.getElementById('godown-history-list').innerHTML = html; 
-        }
                 filteredTransfers = allGodownTransfers.filter(t => { 
                     let tMonth = ""; 
                     try { tMonth = new Date(t.date).toISOString().slice(0, 7); } catch(e){} 
@@ -3907,96 +3712,6 @@ window.showTargetCelebration = function() {
                     }
                 }
             }).catch(err => alert("Error: " + err.message));
-        }
-
-        // 🌟 FEATURE: Delete Transfer and Revert Stock
-        window.deleteShopTransfer = function(key) {
-            if(!confirm("Are you sure you want to delete this entry? Stock will be automatically reverted.")) return;
-            let entry = allGodownTransfers.find(t => t.key === key);
-            if(!entry) return;
-            
-            // Revert Inventory if it's not a payment
-            if(entry.type !== 'PAY_IN' && entry.type !== 'PAY_OUT') {
-                let invKey = entry.cat + "_" + entry.item;
-                let itemRef = ref(db, 'Inventory/' + invKey);
-                get(itemRef).then(snap => {
-                    let cur = snap.val() || { cone: 0, kg: 0 };
-                    if(typeof cur === 'number') cur = { cone: cur, kg: 0 };
-                    // Reverse logic: If it was OUT (minus), now add it back.
-                    let newCone = entry.type === 'OUT' ? cur.cone + entry.qty : cur.cone - entry.qty;
-                    if(newCone < 0) newCone = 0;
-                    set(itemRef, { cone: newCone, kg: cur.kg });
-                });
-            }
-            remove(ref(db, 'GodownTransfers/' + key));
-            alert("Entry Deleted and Stock Reverted!");
-        }
-
-        // 🌟 FEATURE: Edit Transfer
-        window.editShopTransfer = function(key) {
-            let entry = allGodownTransfers.find(t => t.key === key);
-            if(!entry) return;
-            
-            document.getElementById('gd-form-panel').classList.remove('form-hidden');
-            document.getElementById('gd-date').value = new Date(entry.date).toISOString().split('T')[0];
-            document.getElementById('gd-cat').value = entry.cat;
-            document.getElementById('gd-item').value = entry.item;
-            document.getElementById('gd-qty').value = entry.qty;
-            document.getElementById('gd-rate').value = entry.rate;
-            
-            window.editingGdKey = key;
-            window.editingGdOldEntry = entry;
-            alert("You are now editing this entry. Change the values and click 'Shop IN' or 'Shop OUT' to save.");
-        }
-
-        // 🌟 FEATURE: Payment Settlement
-        window.settleShopPayment = function() {
-            let amount = prompt("Enter Amount Paid / Received:");
-            amount = parseFloat(amount);
-            if(isNaN(amount) || amount <= 0) return alert("Invalid Amount!");
-            
-            let pType = prompt("Did you 'PAY' to Mama Ji or 'RECEIVE' from him? \n(Type 'P' for Pay, 'R' for Receive)").toUpperCase();
-            if(pType !== 'P' && pType !== 'R') return alert("Invalid Input! Transaction Cancelled.");
-
-            push(ref(db, 'GodownTransfers'), { 
-                date: new Date().toISOString(), 
-                cat: 'PAYMENT', 
-                item: pType === 'P' ? 'Cash Paid to Shop' : 'Cash Received from Shop', 
-                qty: 0, 
-                rate: 0,
-                amount: amount,
-                type: pType === 'P' ? 'PAY_OUT' : 'PAY_IN' 
-            }); 
-            alert("Payment Settled Successfully! ✅");
-        }
-
-        // 🌟 FEATURE: Share Delivery Challan
-        window.printShopChallan = function(key, passEntry = null) {
-            let entry = passEntry || allGodownTransfers.find(t => t.key === key);
-            if(!entry) return;
-            
-            document.getElementById('ch-admin-name').innerText = localStorage.getItem('v_adminName') || "Vandana Enterprises";
-            let d = new Date(entry.date); 
-            document.getElementById('ch-date').innerText = isNaN(d) ? entry.date : d.toLocaleDateString('en-GB');
-            document.getElementById('ch-item').innerText = `${entry.item} (${entry.cat})`;
-            document.getElementById('ch-qty').innerText = `${entry.qty} Box`;
-            document.getElementById('ch-rate').innerText = `₹${entry.rate}`;
-            document.getElementById('ch-amt').innerText = `₹${entry.amount.toLocaleString('en-IN')}`;
-
-            let elem = document.getElementById('pdf-challan-template');
-            let opt = { margin: 0.4, filename: `Challan_${entry.item}_${Date.now()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
-            
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) && navigator.canShare) {
-                alert("Generating Challan for WhatsApp... Please wait 2 seconds.");
-                setTimeout(async () => {
-                    let pdfBlob = await html2pdf().set(opt).from(elem).output('blob'); 
-                    let file = new File([pdfBlob], opt.filename, { type: 'application/pdf' }); 
-                    await navigator.share({ files: [file], title: 'Shop Transfer Challan', text: `Please find attached the Delivery Challan for ${entry.qty} Box ${entry.item}.` }); 
-                }, 500);
-            } else {
-                alert("Downloading Delivery Challan PDF...");
-                html2pdf().set(opt).from(elem).save();
-            }
         }
             
            </script>

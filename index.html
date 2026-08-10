@@ -526,6 +526,7 @@
             <li onclick="openAbsentCustomers(); closeSidebar();"><i class="material-symbols-rounded">person_off</i> Absent Today</li>
             <li onclick="openReportModal('stock'); closeSidebar();"><i class="material-symbols-rounded">bar_chart</i> Stock Report</li>
             <li onclick="navTo('recycle-page', null); closeSidebar();"><i class="material-symbols-rounded">delete</i> Recycle Bin</li>
+            <li onclick="navTo('manage-users-page', null); closeSidebar();" id="manage-users-nav" style="display:none;"><i class="material-symbols-rounded">group</i> Manage Users</li>
             <li onclick="navTo('admin-profile-page', null); closeSidebar();"><i class="material-symbols-rounded">settings</i> Settings</li>
             
             <!-- ====== नया लॉगआउट बटन ====== -->
@@ -1167,11 +1168,13 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     const userRef = ref(db, 'AppUsers/' + user.uid);
                     
                     get(userRef).then((snapshot) => {
-                        let assignedRole = (user.email === MASTER_ADMIN_EMAIL) ? "admin" : "pending";
+                        let assignedRole = "pending";
                         let finalPhone = "";
                         let finalAddress = "";
 
                         if (!snapshot.exists()) {
+                            // Master admin logic is just for fallback, rest depends on database
+                            if (user.email === MASTER_ADMIN_EMAIL) assignedRole = "admin";
                             // नया अकाउंट
                             set(userRef, {
                                 name: userName,
@@ -1185,7 +1188,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                         } else {
                             // पुराना अकाउंट 
                             let userData = snapshot.val();
-                            if (user.email !== MASTER_ADMIN_EMAIL) assignedRole = userData.role || "pending"; 
+                            assignedRole = userData.role || "pending";
+                            if (user.email === MASTER_ADMIN_EMAIL) assignedRole = "admin"; 
                             
                             // डेटाबेस से पुराना नंबर और पता निकाल लें
                             finalPhone = userData.phone || "";
@@ -1361,6 +1365,15 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                     setupPOSAutocomplete(); 
                     checkRestore(); 
                 });
+
+                window.allAppUsers = [];
+                onValue(ref(db, 'AppUsers'), (snapshot) => { 
+                    let data = snapshot.val() || {}; 
+                    window.allAppUsers = Object.keys(data).map(key => ({ uid: key, ...data[key] })); 
+                    if(document.getElementById('manage-users-page') && document.getElementById('manage-users-page').classList.contains('active')) {
+                        if(typeof renderManageUsers === 'function') renderManageUsers();
+                    }
+                });
                 
                 onValue(ref(db, 'GodownTransfers'), (snapshot) => { 
                     let data = snapshot.val() || {}; 
@@ -1513,7 +1526,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
-        const allPagesList = ['items-page', 'parties-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'home'];
+        const allPagesList = ['items-page', 'parties-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'home'];
         
         window.openPage = function(id, isBack = false) { 
             if(!isBack && window.pageStack[window.pageStack.length-1] !== id) {
@@ -3114,6 +3127,10 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             // 9. 🔥 एडमिन के लिए प्रोफाइल मोडल का "Manage Your Account" बटन छुपाएं
             let pmManageBtn = document.getElementById('pm-manage-btn');
             if (pmManageBtn) pmManageBtn.style.display = isAdmin ? 'none' : 'flex';
+
+            // 10. 🔥 एडमिन के लिए "Manage Users" बटन दिखाएं
+            let manageUsersNav = document.getElementById('manage-users-nav');
+            if(manageUsersNav) manageUsersNav.style.display = isAdmin ? 'flex' : 'none';
         }
         // ====================================================================
 window.showTargetCelebration = function() {
@@ -3425,7 +3442,70 @@ window.showTargetCelebration = function() {
                 alert("रिक्वेस्ट रिजेक्ट कर दी गई है! ❌");
             }).catch(err => alert("Error: " + err.message));
         }
-        
+
+           window.renderManageUsers = function() {
+            let container = document.getElementById('manage-users-list');
+            if(!container) return;
+            if(window.allAppUsers.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px 20px; color:gray;">कोई यूजर नहीं मिला।</div>`;
+                return;
+            }
+            let html = "";
+            window.allAppUsers.forEach(u => {
+                let badgeColor = u.role === 'admin' ? 'var(--primary)' : (u.role === 'pending' ? 'var(--warning)' : 'var(--success)');
+                html += `
+                <div class="entry-card" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <img src="${u.photo || 'https://www.svgrepo.com/show/384674/account-avatar-profile-user-11.svg'}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+                            <div>
+                                <div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${u.name}</div>
+                                <div style="font-size:11px; color:var(--text-muted);">${u.email} <br> 📱 ${u.phone || 'N/A'}</div>
+                            </div>
+                        </div>
+                        <div style="background:${badgeColor}; color:white; padding:4px 8px; border-radius:8px; font-size:11px; font-weight:bold; text-transform:uppercase;">${u.role}</div>
+                    </div>
+                    <div style="margin-bottom:12px; font-size:12px; color:var(--text-muted);">
+                        <strong>Address:</strong> ${u.address || 'N/A'}
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <select class="form-control" id="role-${u.uid}" style="flex:1; padding:8px; font-size:13px; border-radius:8px;">
+                            <option value="pending" ${u.role === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Customer" ${u.role === 'Customer' ? 'selected' : ''}>Customer</option>
+                            <option value="supplier" ${u.role === 'supplier' ? 'selected' : ''}>Supplier</option>
+                            <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+                        </select>
+                        <button class="btn-submit" style="background:var(--primary-dark); padding:8px 16px; border-radius:8px; font-size:13px;" onclick="updateUserRole('${u.uid}', '${u.name}')">Update</button>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        window.updateUserRole = function(uid, name) {
+            let newRole = document.getElementById(`role-${uid}`).value;
+            if(!confirm(`क्या आप सच में ${name} का रोल ${newRole} करना चाहते हैं?`)) return;
+            
+            update(ref(db, 'AppUsers/' + uid), { role: newRole }).then(() => {
+                alert(`${name} का रोल सफलतापूर्वक अपडेट हो गया है! ✅`);
+                if(newRole === 'Customer' || newRole === 'supplier') {
+                    // Automatically add them to Customers list if not present
+                    let exists = globalCustomers.find(c => c.name.toLowerCase() === name.toLowerCase());
+                    if(!exists) {
+                        let userObj = window.allAppUsers.find(u => u.uid === uid);
+                        push(ref(db, 'Customers'), {
+                            name: userObj.name,
+                            phone: userObj.phone || "",
+                            address: userObj.address || "",
+                            date: new Date().toISOString(),
+                            status: "Active",
+                            type: newRole === 'supplier' ? 'Supplier' : 'Customer'
+                        });
+                    }
+                }
+            }).catch(err => alert("Error: " + err.message));
+        }
+            
            </script>
             
 <div class="page flex-page" id="payment-screen-page" style="background: #ffffff; z-index: 99999;">
@@ -3479,6 +3559,19 @@ window.showTargetCelebration = function() {
             setTimeout(() => { toast.style.display = 'none'; }, 4000);
         }
     </script>
+<div class="page flex-page" id="manage-users-page">
+        <div class="sub-header">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('manage-users-page')">arrow_back</button>
+            <h2 class="page-title">Manage Users</h2>
+        </div>
+        <div class="fixed-top-section">
+            <div style="background:#e8f0fe; color:var(--primary-dark); padding:12px; border-radius:12px; font-weight:600; font-size:13px; border: 1px solid #c2e7ff; display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                <span class="material-symbols-rounded" style="font-size:20px;">group_add</span> <span>Approve or Reject new users here.</span>
+            </div>
+        </div>
+        <div class="scroll-content" id="manage-users-list" style="padding-top:0px;"></div>
+    </div>
+
     
 </body>
 </html>

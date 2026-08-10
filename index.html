@@ -517,7 +517,7 @@
         <ul class="sidebar-menu">
             <li class="active" onclick="navTo('home', null); closeSidebar();"><i class="material-symbols-rounded">space_dashboard</i> Dashboard</li>
             <li onclick="navTo('items-page', null); closeSidebar();"><i class="material-symbols-rounded">inventory_2</i> Master Inventory</li>
-            <li onclick="navTo('godown-page', null); closeSidebar();"><i class="material-symbols-rounded">local_shipping</i> Godown Transfer</li>
+            <li onclick="navTo('godown-page', null); closeSidebar();"><i class="material-symbols-rounded">storefront</i> Shop-to-Shop</li>
             <li onclick="navTo('pos-page', null); closeSidebar();"><i class="material-symbols-rounded">receipt_long</i> Billing & Invoice</li>
             <li onclick="navTo('parties-page', null); closeSidebar();"><i class="material-symbols-rounded">menu_book</i> Ledger Book</li>
         </ul>
@@ -599,10 +599,10 @@
                     <div style="font-size:16px; font-weight:600; color:var(--text-dark); font-family: 'Product Sans', sans-serif;">Quick Bill</div>
                     <div style="font-size:14px; color:var(--primary); font-weight:700; margin-top:4px;">Open</div>
                 </div>
-                <div class="dash-card" onclick="navTo('godown-page', null)">
-                    <div class="card-header" style="margin-bottom:0; font-size:16px;">Godown Transfer</div>
-                    <div style="font-size:40px; margin:8px 0;" class="material-symbols-rounded">local_shipping</div>
-                    <div style="font-size:16px; font-weight:600; color:var(--text-dark); font-family: 'Product Sans', sans-serif;">Stock Sync</div>
+                 null)">
+                    <div class="card-header" style="margin-bottom:0; font-size:16px;">Shop Transfer</div>
+                    <div style="font-size:40px; margin:8px 0;" class="material-symbols-rounded">storefront</div>
+                    <div style="font-size:16px; font-weight:600; color:var(--text-dark); font-family: 'Product Sans', sans-serif;">Inter-Shop</div>
                     <div style="font-size:14px; color:var(--primary); font-weight:700; margin-top:4px;">View</div>
                 </div>
             </div>
@@ -727,8 +727,8 @@
     <div class="page flex-page" id="godown-page">
         <div class="sub-header">
             <button class="back-btn material-symbols-rounded" onclick="closePage('godown-page')">arrow_back</button>
-            <h2 class="page-title" style="flex:1;">Godown Transfer</h2>
-            <button class="pro-add-btn" onclick="document.getElementById('gd-form-panel').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Transfer</button>
+            <h2 class="page-title" style="flex:1;">Shop-to-Shop Transfer</h2>
+            <button class="pro-add-btn" onclick="document.getElementById('gd-form-panel').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Entry</button>
         </div>
         <div class="fixed-top-section">
             <div class="form-panel anim-form form-hidden" id="gd-form-panel" style="margin-bottom:10px;">
@@ -737,21 +737,39 @@
                     <option value="Nylon">Nylon (नायलोन)</option><option value="Cording">Cording (कोडिंग)</option><option value="Bobbin">Bobbin (बोबिन)</option>
                 </select>
                 <input type="text" id="gd-item" class="form-control" placeholder="Item Name / Shade No." style="margin-bottom:12px;">
-                <input type="number" id="gd-qty" class="form-control" placeholder="Total Boxes" style="margin-bottom:16px;">
+                <div class="input-btn-group" style="margin-bottom: 16px;">
+                    <input type="number" id="gd-qty" class="form-control" placeholder="Total Boxes">
+                    <input type="number" id="gd-rate" class="form-control" placeholder="Rate (₹)">
+                </div>
                 <div style="display:flex; gap:10px;">
-                    <button class="btn-submit" style="background:#146c2e; flex:1; border-radius:12px;" onclick="processGodown('IN')">🟢 Receive IN</button>
-                    <button class="btn-submit" style="background:#b3261e; flex:1; border-radius:12px;" onclick="processGodown('OUT')">🔴 Return OUT</button>
+                    <button class="btn-submit" style="background:#146c2e; flex:1; border-radius:12px;" onclick="processGodown('IN')">🟢 Shop IN</button>
+                    <button class="btn-submit" style="background:#b3261e; flex:1; border-radius:12px;" onclick="processGodown('OUT')">🔴 Shop OUT</button>
                 </div>
             </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">
-                <h3 class="section-title" style="margin:0;">Transfer History</h3>
-                <input type="date" style="padding:4px 12px; font-size:14px; border:1px solid var(--border); border-radius:8px; font-family:'Product Sans', sans-serif;" id="godown-date-picker" onchange="renderGodownHistory()">
+
+            <div style="background:#f8fafd; border:1px solid #c2e7ff; border-radius:12px; padding:12px; margin-bottom:12px; display:flex; justify-content:space-between; text-align:center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <div style="flex:1; border-right:1px solid #c2e7ff;">
+                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">MONTH IN</div>
+                    <div style="font-size:16px; font-weight:700; color:var(--success); font-family:'Product Sans', sans-serif;" id="gd-month-in">₹0</div>
+                </div>
+                <div style="flex:1; border-right:1px solid #c2e7ff;">
+                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">MONTH OUT</div>
+                    <div style="font-size:16px; font-weight:700; color:var(--danger); font-family:'Product Sans', sans-serif;" id="gd-month-out">₹0</div>
+                </div>
+                <div style="flex:1;">
+                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">NET DUE</div>
+                    <div style="font-size:16px; font-weight:700; color:var(--primary); font-family:'Product Sans', sans-serif;" id="gd-month-bal">₹0</div>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:5px 0 10px 0;">
+                <h3 class="section-title" style="margin:0; font-size: 15px; font-weight: 600;">Transfer History</h3>
+                <input type="month" style="padding:4px 12px; font-size:14px; border:1px solid var(--border); border-radius:8px; font-family:'Product Sans', sans-serif; background: white;" id="godown-date-picker" onchange="renderGodownHistory()">
             </div>
         </div>
         <div class="scroll-content" style="padding-top:0;">
             <table class="invoice-table">
-                <thead><tr><th>Date & Details</th><th>Qty / Type</th></tr></thead>
-                <tbody id="godown-history-list"><tr><td colspan="2" style="text-align:center; padding:16px;">No transfers yet.</td></tr></tbody>
+                <tbody id="godown-history-list"><tr><td style="text-align:center; padding:16px; color: gray;">No transfers yet.</td></tr></tbody>
             </table>
         </div>
     </div>
@@ -1827,8 +1845,108 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             document.getElementById('cust-crop-modal').style.display = 'none'; 
             if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Profile photo updated successfully!");
         }
-        window.processGodown = function(type) { let cat = document.getElementById('gd-cat').value; let item = document.getElementById('gd-item').value; let qty = parseInt(document.getElementById('gd-qty').value); if(!item || isNaN(qty) || qty <= 0) return alert("Please enter Item Name and Valid Quantity!"); let key = cat + "_" + item; let itemRef = ref(db, 'Inventory/' + key); get(itemRef).then((snap) => { let currentQty = snap.val() || 0; let newQty = type === 'OUT' ? currentQty - qty : currentQty + qty; if(newQty < 0) newQty = 0; set(itemRef, newQty); }); push(ref(db, 'GodownTransfers'), { date: new Date().toISOString(), cat: cat, item: item, qty: qty, type: type }); document.getElementById('gd-item').value = ''; document.getElementById('gd-qty').value = ''; alert(type === 'IN' ? `Stock Received!` : `Stock Returned!`); document.getElementById('gd-form-panel').classList.add('form-hidden'); }
-        window.renderGodownHistory = function() { let filterDate = document.getElementById('godown-date-picker').value; let filteredTransfers = allGodownTransfers.filter(t => { let tDate = ""; try { tDate = new Date(t.date).toISOString().split('T')[0]; } catch(e){} return tDate === filterDate; }); let html = ""; if(filteredTransfers.length === 0) { html = '<tr><td colspan="2" style="text-align:center; padding:16px;">No transfers on this date.</td></tr>'; } else { filteredTransfers.forEach(t => { let d = new Date(t.date); let timeStr = isNaN(d) ? t.date : t.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}); let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)'; let icon = t.type === 'IN' ? '🟢 IN' : '🔴 OUT'; html += `<tr><td><div style="font-weight:600; color:var(--text-dark);">${t.item} <span style="font-size:10px; color:var(--text-muted);">(${t.cat})</span></div><div style="font-size:11px; color:var(--text-muted);">${timeStr}</div></td><td style="color:${color}; font-weight:700;">${icon} <br>${t.qty} BOX</td></tr>`; }); } document.getElementById('godown-history-list').innerHTML = html; }
+        window.processGodown = function(type) { 
+            let cat = document.getElementById('gd-cat').value; 
+            let item = document.getElementById('gd-item').value; 
+            let qty = parseInt(document.getElementById('gd-qty').value); 
+            let rate = parseFloat(document.getElementById('gd-rate').value) || 0;
+            
+            if(!item || isNaN(qty) || qty <= 0 || rate <= 0) return alert("Please enter valid Item Name, Quantity, and Rate!"); 
+            
+            let totalAmount = qty * rate;
+            let key = cat + "_" + item; 
+            let itemRef = ref(db, 'Inventory/' + key); 
+            
+            // स्टॉक अपडेट करना (बिना पुराने डेटाबेस स्ट्रक्चर को तोड़े)
+            get(itemRef).then((snap) => { 
+                let cur = snap.val() || { cone: 0, kg: 0 }; 
+                if(typeof cur === 'number') cur = { cone: cur, kg: 0 };
+                
+                let newConeQty = type === 'OUT' ? cur.cone - qty : cur.cone + qty; 
+                if(newConeQty < 0) newConeQty = 0; 
+                
+                set(itemRef, { cone: newConeQty, kg: cur.kg }); 
+            }); 
+            
+            // हिस्ट्री सेव करना
+            push(ref(db, 'GodownTransfers'), { 
+                date: new Date().toISOString(), 
+                cat: cat, 
+                item: item, 
+                qty: qty, 
+                rate: rate,
+                amount: totalAmount,
+                type: type 
+            }); 
+            
+            document.getElementById('gd-item').value = ''; 
+            document.getElementById('gd-qty').value = ''; 
+            document.getElementById('gd-rate').value = ''; 
+            alert(type === 'IN' ? `Stock Received from Shop!` : `Stock Sent to Shop!`); 
+            document.getElementById('gd-form-panel').classList.add('form-hidden'); 
+        }
+        window.renderGodownHistory = function() { 
+            let filterMonth = document.getElementById('godown-date-picker').value; 
+            if(!filterMonth) {
+                let today = new Date();
+                filterMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+                document.getElementById('godown-date-picker').value = filterMonth;
+            }
+
+            let monthIn = 0; let monthOut = 0;
+
+            let filteredTransfers = allGodownTransfers.filter(t => { 
+                let tMonth = ""; 
+                try { tMonth = new Date(t.date).toISOString().slice(0, 7); } catch(e){} 
+                if(tMonth === filterMonth) {
+                    let amt = parseFloat(t.amount) || 0;
+                    if(t.type === 'IN') monthIn += amt;
+                    if(t.type === 'OUT') monthOut += amt;
+                    return true;
+                }
+                return false; 
+            }); 
+
+            // Update Tracker UI
+            document.getElementById('gd-month-in').innerText = "₹ " + monthIn.toLocaleString('en-IN');
+            document.getElementById('gd-month-out').innerText = "₹ " + monthOut.toLocaleString('en-IN');
+            
+            let netBal = monthIn - monthOut;
+            let balEl = document.getElementById('gd-month-bal');
+            balEl.innerText = "₹ " + Math.abs(netBal).toLocaleString('en-IN');
+            if(netBal > 0) {
+                balEl.style.color = "var(--danger)"; // You have to give money
+            } else if (netBal < 0) {
+                balEl.style.color = "var(--success)"; // You will get money
+            } else {
+                balEl.style.color = "var(--primary)";
+            }
+
+            let html = ""; 
+            if(filteredTransfers.length === 0) { 
+                html = '<tr><td style="text-align:center; padding:16px; color:gray;">No transfers in this month.</td></tr>'; 
+            } else { 
+                filteredTransfers.forEach(t => { 
+                    let d = new Date(t.date); 
+                    let dateStr = isNaN(d) ? t.date : d.toLocaleDateString('en-GB', {day:'numeric', month:'short'}) + " " + d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}); 
+                    let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)'; 
+                    let icon = t.type === 'IN' ? '🟢 IN' : '🔴 OUT'; 
+                    let amountStr = t.amount ? `<br><span style="font-size:12px; color:var(--text-dark);">₹${t.amount.toLocaleString('en-IN')} (@₹${t.rate})</span>` : "";
+                    
+                    html += `<tr>
+                                <td>
+                                    <div style="font-weight:600; color:var(--text-dark); font-size:14px;">${t.item} <span style="font-size:11px; color:var(--text-muted);">(${t.cat})</span></div>
+                                    <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">${dateStr}</div>
+                                </td>
+                                <td style="text-align:right;">
+                                    <div style="color:${color}; font-weight:700; font-size:14px;">${icon} ${t.qty} BOX</div>
+                                    ${amountStr}
+                                </td>
+                            </tr>`; 
+                }); 
+            } 
+            document.getElementById('godown-history-list').innerHTML = html; 
+        }
 
         window.showCelebration = function(name) { document.getElementById('celeb-name').innerText = name; document.getElementById('celebration-modal').style.display = 'flex'; var duration = 4000; var animationEnd = Date.now() + duration; var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000 }; function randomInRange(min, max) { return Math.random() * (max - min) + min; } var interval = setInterval(function() { var timeLeft = animationEnd - Date.now(); if (timeLeft <= 0) return clearInterval(interval); var particleCount = 50 * (timeLeft / duration); confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 } })); }, 250); }
 
@@ -2336,7 +2454,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let list = [];
             allGodownTransfers.forEach(t => {
                 if(t.cat === cat && t.item === item) {
-                    list.push({ date: t.date, type: t.type, qty: t.qty, party: 'Godown' });
+                    list.push({ date: t.date, type: t.type, qty: t.qty, party: 'Shop Transfer' });
                 }
             });
             allLedgerData.forEach(e => {

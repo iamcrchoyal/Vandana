@@ -732,6 +732,7 @@
         </div>
         <div class="fixed-top-section">
             <div class="form-panel anim-form form-hidden" id="gd-form-panel" style="margin-bottom:10px;">
+                <input type="date" id="gd-date" class="form-control" style="margin-bottom:12px; font-family:'Product Sans', sans-serif;">
                 <select id="gd-cat" class="form-control" style="margin-bottom:12px;">
                     <option value="Thread">Thread (थ्रेड)</option><option value="Zari">Zari (जरी)</option>
                     <option value="Nylon">Nylon (नायलोन)</option><option value="Cording">Cording (कोडिंग)</option><option value="Bobbin">Bobbin (बोबिन)</option>
@@ -749,11 +750,11 @@
 
             <div style="background:#f8fafd; border:1px solid #c2e7ff; border-radius:12px; padding:12px; margin-bottom:12px; display:flex; justify-content:space-between; text-align:center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
                 <div style="flex:1; border-right:1px solid #c2e7ff;">
-                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">MONTH IN</div>
+                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">TOTAL IN</div>
                     <div style="font-size:16px; font-weight:700; color:var(--success); font-family:'Product Sans', sans-serif;" id="gd-month-in">₹0</div>
                 </div>
                 <div style="flex:1; border-right:1px solid #c2e7ff;">
-                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">MONTH OUT</div>
+                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">TOTAL OUT</div>
                     <div style="font-size:16px; font-weight:700; color:var(--danger); font-family:'Product Sans', sans-serif;" id="gd-month-out">₹0</div>
                 </div>
                 <div style="flex:1;">
@@ -764,7 +765,30 @@
 
             <div style="display:flex; justify-content:space-between; align-items:center; padding:5px 0 10px 0;">
                 <h3 class="section-title" style="margin:0; font-size: 15px; font-weight: 600;">Transfer History</h3>
-                <input type="month" style="padding:4px 12px; font-size:14px; border:1px solid var(--border); border-radius:8px; font-family:'Product Sans', sans-serif; background: white;" id="godown-date-picker" onchange="renderGodownHistory()">
+                <div style="display:flex; gap:8px;">
+                    <button class="btn-outline" style="padding:6px 10px; font-size:12px; border-radius:8px; display:flex; align-items:center; gap:4px; border-color:var(--primary); color:var(--primary);" id="btn-gd-month" onclick="toggleGdFilter('month')"><span class="material-symbols-rounded" style="font-size:16px;">calendar_view_month</span> Month</button>
+                    <button class="btn-outline" style="padding:6px 10px; font-size:12px; border-radius:8px; display:flex; align-items:center; gap:4px; border-color:var(--border); color:var(--text-muted);" id="btn-gd-custom" onclick="toggleGdFilter('custom')"><span class="material-symbols-rounded" style="font-size:16px;">date_range</span> Custom</button>
+                </div>
+            </div>
+
+            <div id="gd-month-filter-box" style="display:block; margin-bottom:12px; text-align:right;">
+                <input type="month" style="padding:6px 12px; font-size:14px; border:1px solid var(--border); border-radius:8px; font-family:'Product Sans', sans-serif; background: white;" id="godown-date-picker" onchange="renderGodownHistory()">
+            </div>
+
+            <div id="gd-custom-filter-box" style="display:none; background:white; border: 1px solid var(--border); padding:12px; border-radius:12px; margin-bottom:12px; box-shadow:0 2px 5px rgba(0,0,0,0.02);">
+                <div style="display:flex; gap:10px; margin-bottom:12px;">
+                    <div style="flex:1;">
+                        <label style="font-size:11px; color:var(--text-muted); font-weight:600;">From Date</label>
+                        <input type="date" id="gd-from" class="form-control" style="padding:8px;" onchange="renderGodownHistory()">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="font-size:11px; color:var(--text-muted); font-weight:600;">To Date</label>
+                        <input type="date" id="gd-to" class="form-control" style="padding:8px;" onchange="renderGodownHistory()">
+                    </div>
+                </div>
+                <button class="btn-submit" style="width:100%; background:var(--primary-dark); font-size:13px; padding:10px; display:flex; align-items:center; justify-content:center; gap:6px; border-radius:12px;" onclick="openGdCustomReport()">
+                    <span class="material-symbols-rounded" style="font-size:18px;">picture_as_pdf</span> Generate Report & Share
+                </button>
             </div>
         </div>
         <div class="scroll-content" style="padding-top:0;">
@@ -1267,10 +1291,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let todayStr = new Date().toISOString().split('T')[0];
             if(document.getElementById('dash-date-picker')) document.getElementById('dash-date-picker').value = todayStr;
             if(document.getElementById('calc-date')) document.getElementById('calc-date').value = todayStr;
-            if(document.getElementById('godown-date-picker')) document.getElementById('godown-date-picker').value = todayStr;
-            if(document.getElementById('rep-from')) document.getElementById('rep-from').value = todayStr;
-            if(document.getElementById('rep-to')) document.getElementById('rep-to').value = todayStr;
-            if(document.getElementById('inv-date')) document.getElementById('inv-date').value = todayStr;
+            if(document.getElementById('gd-date')) document.getElementById('gd-date').value = todayStr;
             
             try {
                 let savedStack = sessionStorage.getItem('v_pageStack');
@@ -1853,11 +1874,22 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             
             if(!item || isNaN(qty) || qty <= 0 || rate <= 0) return alert("Please enter valid Item Name, Quantity, and Rate!"); 
             
+            // 🌟 NEW DATE LOGIC
+            let dateVal = document.getElementById('gd-date').value;
+            let finalDateTime;
+            if(dateVal) {
+                let [year, month, day] = dateVal.split('-');
+                let dObj = new Date(); 
+                dObj.setFullYear(year, parseInt(month) - 1, day);
+                finalDateTime = dObj.toISOString();
+            } else {
+                finalDateTime = new Date().toISOString();
+            }
+
             let totalAmount = qty * rate;
             let key = cat + "_" + item; 
             let itemRef = ref(db, 'Inventory/' + key); 
             
-            // स्टॉक अपडेट करना (बिना पुराने डेटाबेस स्ट्रक्चर को तोड़े)
             get(itemRef).then((snap) => { 
                 let cur = snap.val() || { cone: 0, kg: 0 }; 
                 if(typeof cur === 'number') cur = { cone: cur, kg: 0 };
@@ -1868,9 +1900,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
                 set(itemRef, { cone: newConeQty, kg: cur.kg }); 
             }); 
             
-            // हिस्ट्री सेव करना
             push(ref(db, 'GodownTransfers'), { 
-                date: new Date().toISOString(), 
+                date: finalDateTime, 
                 cat: cat, 
                 item: item, 
                 qty: qty, 
@@ -1885,27 +1916,87 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             alert(type === 'IN' ? `Stock Received from Shop!` : `Stock Sent to Shop!`); 
             document.getElementById('gd-form-panel').classList.add('form-hidden'); 
         }
-        window.renderGodownHistory = function() { 
-            let filterMonth = document.getElementById('godown-date-picker').value; 
-            if(!filterMonth) {
-                let today = new Date();
-                filterMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
-                document.getElementById('godown-date-picker').value = filterMonth;
-            }
+        window.currentGdFilterMode = 'month';
 
-            let monthIn = 0; let monthOut = 0;
+        window.toggleGdFilter = function(mode) {
+            window.currentGdFilterMode = mode;
+            let btnMonth = document.getElementById('btn-gd-month');
+            let btnCustom = document.getElementById('btn-gd-custom');
 
-            let filteredTransfers = allGodownTransfers.filter(t => { 
-                let tMonth = ""; 
-                try { tMonth = new Date(t.date).toISOString().slice(0, 7); } catch(e){} 
-                if(tMonth === filterMonth) {
-                    let amt = parseFloat(t.amount) || 0;
-                    if(t.type === 'IN') monthIn += amt;
-                    if(t.type === 'OUT') monthOut += amt;
-                    return true;
+            if(mode === 'month') {
+                document.getElementById('gd-month-filter-box').style.display = 'block';
+                document.getElementById('gd-custom-filter-box').style.display = 'none';
+                
+                // Style updates
+                btnMonth.style.borderColor = 'var(--primary)'; btnMonth.style.color = 'var(--primary)';
+                btnCustom.style.borderColor = 'var(--border)'; btnCustom.style.color = 'var(--text-muted)';
+            } else {
+                document.getElementById('gd-month-filter-box').style.display = 'none';
+                document.getElementById('gd-custom-filter-box').style.display = 'block';
+                
+                // Style updates
+                btnCustom.style.borderColor = 'var(--primary)'; btnCustom.style.color = 'var(--primary)';
+                btnMonth.style.borderColor = 'var(--border)'; btnMonth.style.color = 'var(--text-muted)';
+                
+                // Set default dates for Custom (First day of month to Today)
+                if(!document.getElementById('gd-from').value) {
+                    let d = new Date(); d.setDate(1);
+                    document.getElementById('gd-from').value = d.toISOString().split('T')[0];
+                    document.getElementById('gd-to').value = new Date().toISOString().split('T')[0];
                 }
-                return false; 
-            }); 
+            }
+            renderGodownHistory();
+        }
+
+        window.openGdCustomReport = function() {
+            let fromD = document.getElementById('gd-from').value;
+            let toD = document.getElementById('gd-to').value;
+            if(!fromD || !toD) return alert('Please select From Date and To Date!');
+            generateStockReport(fromD, toD);
+        }
+
+        window.renderGodownHistory = function() { 
+            let mode = window.currentGdFilterMode || 'month';
+            let monthIn = 0; let monthOut = 0;
+            let filteredTransfers = [];
+
+            if (mode === 'month') {
+                let filterMonth = document.getElementById('godown-date-picker').value; 
+                if(!filterMonth) {
+                    let today = new Date();
+                    filterMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+                    document.getElementById('godown-date-picker').value = filterMonth;
+                }
+                filteredTransfers = allGodownTransfers.filter(t => { 
+                    let tMonth = ""; 
+                    try { tMonth = new Date(t.date).toISOString().slice(0, 7); } catch(e){} 
+                    if(tMonth === filterMonth) {
+                        let amt = parseFloat(t.amount) || 0;
+                        if(t.type === 'IN') monthIn += amt;
+                        if(t.type === 'OUT') monthOut += amt;
+                        return true;
+                    }
+                    return false; 
+                }); 
+            } else {
+                // Custom Mode Logic
+                let fromD = document.getElementById('gd-from').value;
+                let toD = document.getElementById('gd-to').value;
+                if(fromD && toD) {
+                    let fromTime = new Date(fromD).getTime(); 
+                    let toTime = new Date(toD + "T23:59:59").getTime();
+                    filteredTransfers = allGodownTransfers.filter(t => { 
+                        let tTime = new Date(t.date).getTime();
+                        if(tTime >= fromTime && tTime <= toTime) {
+                            let amt = parseFloat(t.amount) || 0;
+                            if(t.type === 'IN') monthIn += amt;
+                            if(t.type === 'OUT') monthOut += amt;
+                            return true;
+                        }
+                        return false;
+                    });
+                }
+            }
 
             // Update Tracker UI
             document.getElementById('gd-month-in').innerText = "₹ " + monthIn.toLocaleString('en-IN');
@@ -1914,18 +2005,17 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let netBal = monthIn - monthOut;
             let balEl = document.getElementById('gd-month-bal');
             balEl.innerText = "₹ " + Math.abs(netBal).toLocaleString('en-IN');
-            if(netBal > 0) {
-                balEl.style.color = "var(--danger)"; // You have to give money
-            } else if (netBal < 0) {
-                balEl.style.color = "var(--success)"; // You will get money
-            } else {
-                balEl.style.color = "var(--primary)";
-            }
+            if(netBal > 0) { balEl.style.color = "var(--danger)"; } 
+            else if (netBal < 0) { balEl.style.color = "var(--success)"; } 
+            else { balEl.style.color = "var(--primary)"; }
 
             let html = ""; 
             if(filteredTransfers.length === 0) { 
-                html = '<tr><td style="text-align:center; padding:16px; color:gray;">No transfers in this month.</td></tr>'; 
+                html = '<tr><td style="text-align:center; padding:16px; color:gray;">No transfers found.</td></tr>'; 
             } else { 
+                // Sort Newest First
+                filteredTransfers.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
                 filteredTransfers.forEach(t => { 
                     let d = new Date(t.date); 
                     let dateStr = isNaN(d) ? t.date : d.toLocaleDateString('en-GB', {day:'numeric', month:'short'}) + " " + d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}); 

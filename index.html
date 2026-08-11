@@ -844,9 +844,11 @@
         </div>
         <div class="scroll-content" style="padding-top:0;">
             <div id="godown-history-list"></div>
+            <div style="text-align:center; padding:10px 0 30px 0;">
+                <button class="btn-outline" id="godown-load-more-btn" onclick="loadMoreGodown()" style="display:none; font-size:13px; border-radius:16px; background:#e8f0fe; color:var(--primary); border:none; box-shadow:0 2px 4px rgba(0,0,0,0.05); padding:10px 20px;">⬇️ पुरानी एंट्रीज़ लोड करें (Load More)</button>
+            </div>
         </div>
     </div>
-
     <!-- 🧾 SALE INVOICE PAGE -->
     <div class="page flex-page" id="pos-page">
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('pos-page')">arrow_back</button><h2 class="page-title">Create Invoice</h2></div>
@@ -1481,15 +1483,34 @@
                     }
                 });
                 
-                // LIMIT TO LAST 300 ENTRIES TO KEEP APP FAST
-                const godownQuery = query(ref(db, 'GodownTransfers'), limitToLast(300));
-                onValue(godownQuery, (snapshot) => { 
-                    let data = snapshot.val() || {}; 
-                    allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
-                    renderGodownHistory(); 
-                    renderInventoryList(); 
-                    checkRestore(); 
-                });
+                // LIMIT TO LAST 300 ENTRIES & LOAD MORE LOGIC
+                window.godownLimit = 300;
+                window.godownUnsubscribe = null;
+
+                window.initGodownListener = function() {
+                    if(window.godownUnsubscribe) window.godownUnsubscribe(); // पुराना कनेक्शन बंद करें
+                    const godownQuery = query(ref(db, 'GodownTransfers'), limitToLast(window.godownLimit));
+                    window.godownUnsubscribe = onValue(godownQuery, (snapshot) => { 
+                        let data = snapshot.val() || {}; 
+                        allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
+                        renderGodownHistory(); 
+                        renderInventoryList(); 
+                        checkRestore(); 
+                        // अगर डेटा 300 या लिमिट के बराबर है, तो Load More बटन दिखाएं
+                        let btn = document.getElementById('godown-load-more-btn');
+                        if(btn) btn.style.display = (allGodownTransfers.length >= window.godownLimit) ? 'inline-block' : 'none';
+                    });
+                }
+                window.initGodownListener(); // पहली बार डेटा लोड करें
+
+                // बटन क्लिक होने पर चलने वाला फंक्शन
+                window.loadMoreGodown = function() {
+                    window.godownLimit += 300; // लिमिट 300 और बढ़ाएं
+                    let btn = document.getElementById('godown-load-more-btn');
+                    if(btn) btn.innerText = "लोड हो रहा है...";
+                    window.initGodownListener();
+                    setTimeout(() => { if(btn) btn.innerText = "⬇️ पुरानी एंट्रीज़ लोड करें (Load More)"; }, 1000);
+                }
                 
                 onValue(ref(db, 'Ledger'), (snapshot) => { 
                     let data = snapshot.val() || {}; 
@@ -2282,7 +2303,21 @@
             closePage('customer-profile-page'); 
         }
         window.addCustomerToCloud = function() { let name = document.getElementById('new-party-name').value.trim(); let phone = document.getElementById('new-party-phone').value; let address = document.getElementById('new-party-address').value; if(!name) return alert("Please enter Name!"); push(ref(db, 'Customers'), { name, phone, address, date: new Date().toISOString(), status: "Active", type: currentTabType }); closePage('add-party-page'); document.getElementById('new-party-name').value = ''; document.getElementById('new-party-phone').value = ''; document.getElementById('new-party-address').value = ''; }
-        window.deleteCurrentCustomer = function() { if(confirm(`WARNING: Are you sure you want to permanently delete ${currentPartyName}?`)) { remove(ref(db, 'Customers/' + currentPartyKey)); closePage('customer-profile-page'); closePage('ledger-deep-page'); alert("Deleted!"); } }
+        window.deleteCurrentCustomer = function() { 
+            if(confirm(`WARNING: क्या आप सच में ${currentPartyName} और उनके सारे बिल/एंट्री हमेशा के लिए डिलीट करना चाहते हैं?`)) { 
+                // 1. Customer को डिलीट करें
+                remove(ref(db, 'Customers/' + currentPartyKey)); 
+
+                // 2. कस्टमर का लेजर, बिल, रिक्वेस्ट और रीसायकल बिन का डेटा साफ़ करें
+                allLedgerData.forEach(entry => { if(entry.name === currentPartyName) remove(ref(db, 'Ledger/' + entry.key)); });
+                allPendingRequests.forEach(req => { if(req.name === currentPartyName) remove(ref(db, 'PendingRequests/' + req.key)); });
+                allRecycleData.forEach(delItem => { if(delItem.name === currentPartyName) remove(ref(db, 'RecycleBin/' + delItem.key)); });
+
+                closePage('customer-profile-page'); 
+                closePage('ledger-deep-page'); 
+                alert("कस्टमर और उनका सारा डेटा हमेशा के लिए डिलीट हो गया!"); 
+            } 
+        }
 
         window.switchPartyTab = function(type) { currentTabType = type; document.getElementById('tab-customers').classList.toggle('active', type === 'Customer'); document.getElementById('tab-suppliers').classList.toggle('active', type === 'Supplier'); let btnText = type === 'Customer' ? 'Add Customer' : 'Add Supplier'; document.getElementById('fab-text').innerText = btnText; updateLedgerTotalsUI(); renderCustomerList(globalCustomers); }
         window.updateLedgerTotalsUI = function() { if(currentTabType === 'Customer') { document.getElementById('lbl-give').innerText = "Total You Give"; document.getElementById('total-give-all').innerText = "₹ " + window.ledgerTotals.custGive.toLocaleString(); document.getElementById('lbl-get').innerText = "Total You Get"; document.getElementById('total-get-all').innerText = "₹ " + window.ledgerTotals.custGet.toLocaleString(); } else { document.getElementById('lbl-give').innerText = "Total You Give"; document.getElementById('total-give-all').innerText = "₹ " + window.ledgerTotals.supGive.toLocaleString(); document.getElementById('lbl-get').innerText = "Total You Get"; document.getElementById('total-get-all').innerText = "₹ " + window.ledgerTotals.supGet.toLocaleString(); } }

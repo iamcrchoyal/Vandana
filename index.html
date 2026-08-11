@@ -4026,37 +4026,43 @@ window.showTargetCelebration = function() {
 
     // ================= CASH & BANK BOOK LOGIC =================
 
-    // 1. टैब बदलना (Cash या Bank)
+    // 1. Tab badalna (Cash ya Bank)
     window.switchCbTab = function(tabName) {
         window.currentCbTab = tabName;
         document.getElementById('tab-cashbook').classList.toggle('active', tabName === 'Cash');
         document.getElementById('tab-bankbook').classList.toggle('active', tabName === 'Bank');
-        renderCashBankList();
+        if(typeof window.renderCashBankList === 'function') window.renderCashBankList();
     }
 
-    // 2. लिस्ट और बैलेंस दिखाना
+    // 2. List aur Balance dikhana
     window.renderCashBankList = function() {
         let cashBal = 0; 
         let bankBal = 0;
         
-        // पूरा बैलेंस जोड़ना-घटाना
-        allCashBankData.forEach(e => {
-            let amt = parseFloat(e.amount) || 0;
-            if(e.account === 'Cash') {
-                if(e.type === 'IN') cashBal += amt; else cashBal -= amt;
-            } else if(e.account === 'Bank') {
-                if(e.type === 'IN') bankBal += amt; else bankBal -= amt;
-            }
-        });
+        if(typeof allCashBankData !== 'undefined') {
+            allCashBankData.forEach(e => {
+                let amt = parseFloat(e.amount) || 0;
+                if(e.account === 'Cash') {
+                    if(e.type === 'IN') cashBal += amt; else cashBal -= amt;
+                } else if(e.account === 'Bank') {
+                    if(e.type === 'IN') bankBal += amt; else bankBal -= amt;
+                }
+            });
+        }
         
-        document.getElementById('cb-cash-bal').innerText = "₹ " + cashBal.toLocaleString('en-IN');
-        document.getElementById('cb-bank-bal').innerText = "₹ " + bankBal.toLocaleString('en-IN');
+        let cashEl = document.getElementById('cb-cash-bal');
+        let bankEl = document.getElementById('cb-bank-bal');
+        if(cashEl) cashEl.innerText = "₹ " + cashBal.toLocaleString('en-IN');
+        if(bankEl) bankEl.innerText = "₹ " + bankBal.toLocaleString('en-IN');
 
-        // लिस्ट बनाना
-        let filteredList = allCashBankData.filter(e => e.account === window.currentCbTab);
+        let filteredList = [];
+        if(typeof allCashBankData !== 'undefined') {
+            filteredList = allCashBankData.filter(e => e.account === (window.currentCbTab || 'Cash'));
+        }
+
         let html = "";
         if(filteredList.length === 0) {
-            html = "<div style='text-align:center; padding:40px; color:gray; font-size:14px;'>कोई एंट्री नहीं मिली।</div>";
+            html = "<div style='text-align:center; padding:40px; color:gray; font-size:14px;'>Koi entry nahi mili.</div>";
         } else {
             filteredList.forEach(e => {
                 let color = e.type === 'IN' ? 'var(--success)' : 'var(--danger)';
@@ -4076,17 +4082,18 @@ window.showTargetCelebration = function() {
                 </div>`;
             });
         }
-        document.getElementById('cb-list-container').innerHTML = html;
+        let listContainer = document.getElementById('cb-list-container');
+        if(listContainer) listContainer.innerHTML = html;
     }
 
-    // 3. नई एंट्री (पैसा आया या गया) जोड़ना
+    // 3. Nayi Entry (Paisa aaya ya gaya) add karna
     window.openCbEntry = function(type) {
-        let amountStr = prompt("अमाउंट (कितने रुपये?):", "");
+        let amountStr = prompt("Amount (Kitne Rupaye?):", "");
         if(!amountStr) return;
         let amount = parseFloat(amountStr);
-        if(isNaN(amount) || amount <= 0) return alert("कृपया सही अमाउंट डालें!");
+        if(isNaN(amount) || amount <= 0) return alert("Kripya sahi amount dalein!");
         
-        let details = prompt("डिटेल्स (किस चीज़ के पैसे हैं? जैसे- चाय, भाड़ा, बैंक जमा):", "");
+        let details = prompt("Details (Kis cheez ke paise hain? Jaise- Chai, Bhada, Bank Jama):", "");
         if(details === null) return;
         
         let finalDateTime = new Date().toISOString();
@@ -4097,20 +4104,20 @@ window.showTargetCelebration = function() {
             amount: amount,
             details: details || (type === 'IN' ? 'Money Added' : 'Money Deducted')
         }).then(() => {
-            if(typeof window.showSaaSToast === 'function') window.showSaaSToast("एंट्री सेव हो गई! ✅");
-            else alert("एंट्री सेव हो गई!");
+            if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Entry save ho gayi! ✅");
+            else alert("Entry save ho gayi!");
         });
     }
 
-    // 4. पुरानी एंट्री डिलीट करना
+    // 4. Purani entry delete karna
     window.deleteCbEntry = function(key) {
-        if(confirm("क्या आप सच में इस एंट्री को डिलीट करना चाहते हैं?")) {
+        if(confirm("Kya aap sach me is entry ko delete karna chahte hain?")) {
             remove(ref(db, 'CashBank/' + key));
         }
     }
     // ==============================================================
 
-       </script>
+           </script>
             
 <div class="page flex-page" id="payment-screen-page" style="background: #ffffff; z-index: 99999;">
         <div class="sub-header" style="background: #ffffff; border-bottom: none; box-shadow: 0 2px 4px rgba(0,0,0,0.03);">

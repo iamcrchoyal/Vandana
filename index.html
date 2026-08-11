@@ -1184,7 +1184,7 @@
     <!-- ================= FIREBASE JAVASCRIPT ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue, get, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, onValue, get, set, push, update, remove, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getStorage, ref as storageRef, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
@@ -1462,7 +1462,9 @@
                     }
                 });
                 
-                onValue(ref(db, 'GodownTransfers'), (snapshot) => { 
+                // LIMIT TO LAST 300 ENTRIES TO KEEP APP FAST
+                const godownQuery = query(ref(db, 'GodownTransfers'), limitToLast(300));
+                onValue(godownQuery, (snapshot) => { 
                     let data = snapshot.val() || {}; 
                     allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
                     renderGodownHistory(); 
@@ -1481,7 +1483,9 @@
                     checkRestore(); 
                 });
                 
-                onValue(ref(db, 'RecycleBin'), (snapshot) => { 
+                // LIMIT TO LAST 100 ENTRIES FOR RECYCLE BIN
+                const recycleQuery = query(ref(db, 'RecycleBin'), limitToLast(100));
+                onValue(recycleQuery, (snapshot) => { 
                     let data = snapshot.val() || {}; 
                     allRecycleData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
                     renderRecycleBin(); 
@@ -1501,8 +1505,9 @@
                     }
                 };
 
-                // नया: Pending Requests को डेटाबेस से लाना
-                onValue(ref(db, 'PendingRequests'), (snapshot) => { 
+                // नया: Pending Requests को डेटाबेस से लाना (LIMIT 100)
+                const pendingQuery = query(ref(db, 'PendingRequests'), limitToLast(100));
+                onValue(pendingQuery, (snapshot) => { 
                     let data = snapshot.val() || {}; 
                     allPendingRequests = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
                     

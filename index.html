@@ -68,7 +68,8 @@
         .card-subtext { font-size: 12px; color: var(--text-muted); font-family: 'Inter', sans-serif;}
 
         .dash-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; width: 100%; box-sizing: border-box; }
-        .dash-card { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(255,255,255,0.8); border-radius: 20px; padding: 16px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.03); cursor: pointer; width: 100%; box-sizing: border-box; min-height: 120px;}
+.dash-card { background: #ffffff; border: 1px solid var(--border); border-radius: 20px; padding: 18px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03); cursor: pointer; width: 100%; box-sizing: border-box; min-height: 130px; transition: all 0.2s ease; }
+.dash-card:active { transform: scale(0.97); }
         
         .bottom-nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; display: flex; justify-content: space-around; padding: 10px 16px; padding-bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 4000; border-top: 1px solid rgba(0,0,0,0.05); transition: transform 0.3s ease-in-out;}
         .bottom-nav-bar.hidden-by-scroll { transform: translateY(100%); }
@@ -635,19 +636,27 @@
                 <div class="card-subtext">Tap to view today's generated bills</div>
             </div>
             <div class="dash-card-grid" id="admin-action-cards">
-                <div class="dash-card" onclick="navTo('pos-page', null)">
-                    <div class="card-header" style="margin-bottom:0; font-size:16px;">Sale Invoice</div>
-                    <div style="font-size:40px; margin:8px 0;" class="material-symbols-rounded">receipt_long</div>
-                    <div style="font-size:16px; font-weight:600; color:var(--text-dark); font-family: 'Product Sans', sans-serif;">Quick Bill</div>
-                    <div style="font-size:14px; color:var(--primary); font-weight:700; margin-top:4px;">Open</div>
-                </div>
-                 null)">
-                    <div class="card-header" style="margin-bottom:0; font-size:16px;">Shop Transfer</div>
-                    <div style="font-size:40px; margin:8px 0;" class="material-symbols-rounded">storefront</div>
-                    <div style="font-size:16px; font-weight:600; color:var(--text-dark); font-family: 'Product Sans', sans-serif;">Inter-Shop</div>
-                    <div style="font-size:14px; color:var(--primary); font-weight:700; margin-top:4px;">View</div>
-                </div>
-            </div>
+				<div class="dash-card" onclick="navTo('pos-page', null)">
+					<div style="width:48px; height:48px; border-radius:16px; background:#e8f0fe; color:var(--primary); display:flex; align-items:center; justify-content:center; margin-bottom:10px;">
+						<span class="material-symbols-rounded" style="font-size:26px;">receipt_long</span>
+					</div>
+					<div class="card-header" style="margin-bottom:2px; font-size:15px; font-weight:700;">Sale Invoice</div>
+					<div style="font-size:12px; color:var(--text-muted); font-weight:500;">Quick Billing & POS</div>
+					<div style="font-size:12px; color:var(--primary); font-weight:700; margin-top:8px; display:flex; align-items:center; gap:2px;">
+						Open <span class="material-symbols-rounded" style="font-size:16px;">arrow_forward</span>
+					</div>
+				</div>
+				<div class="dash-card" onclick="navTo('godown-page', null)">
+					<div style="width:48px; height:48px; border-radius:16px; background:#fdf2f2; color:var(--danger); display:flex; align-items:center; justify-content:center; margin-bottom:10px;">
+						<span class="material-symbols-rounded" style="font-size:26px;">storefront</span>
+					</div>
+					<div class="card-header" style="margin-bottom:2px; font-size:15px; font-weight:700;">Shop Transfer</div>
+					<div style="font-size:12px; color:var(--text-muted); font-weight:500;">Inter-Shop Transfer</div>
+					<div style="font-size:12px; color:var(--danger); font-weight:700; margin-top:8px; display:flex; align-items:center; gap:2px;">
+						View <span class="material-symbols-rounded" style="font-size:16px;">arrow_forward</span>
+					</div>
+				</div>
+			</div>
             <div id="top-customers-container" style="background: rgba(255, 255, 255, 0.9); border-radius: 20px; padding: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid rgba(255,255,255,0.8); width: 100%; box-sizing: border-box;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
                     <div style="font-size: 14px; font-weight: 500; color: var(--text-dark); font-family: 'Inter', sans-serif; display:flex; align-items:center; gap:8px;" id="tc-title">Top Customers 🏆 <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span></div>

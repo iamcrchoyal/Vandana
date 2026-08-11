@@ -563,6 +563,7 @@
             <li onclick="navTo('godown-page', null); closeSidebar();"><i class="material-symbols-rounded">storefront</i> Shop-to-Shop</li>
             <li onclick="navTo('pos-page', null); closeSidebar();"><i class="material-symbols-rounded">receipt_long</i> Billing & Invoice</li>
             <li onclick="navTo('parties-page', null); closeSidebar();"><i class="material-symbols-rounded">menu_book</i> Ledger Book</li>
+            <li onclick="navTo('cashbook-page', null); closeSidebar();" id="nav-cashbook"><i class="material-symbols-rounded">account_balance</i> Cash & Bank Book</li>
         </ul>
         <div style="border-top:1px solid var(--border); margin: 10px 0;"></div>
         <ul class="sidebar-menu">
@@ -940,6 +941,39 @@
                     <button class="btn-submit" style="flex:1; background:var(--success); display:flex; align-items:center; justify-content:center; gap:6px;" onclick="shareLastGeneratedInvoice()"><span class="material-symbols-rounded" style="font-size:18px;">share</span> Share PDF</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+	<!-- 💰 CASH & BANK BOOK PAGE -->
+    <div class="page flex-page" id="cashbook-page">
+        <div class="sub-header">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('cashbook-page')">arrow_back</button>
+            <h2 class="page-title" style="flex:1;">Cash & Bank Book</h2>
+            <button class="pro-add-btn" onclick="alert('Add Bank Feature Coming Soon!')" style="background:var(--primary-dark);"><span class="material-symbols-rounded" style="font-size:16px;">add_card</span> Add Bank</button>
+        </div>
+        <div class="fixed-top-section">
+            <!-- Summary Cards -->
+            <div style="display:flex; gap:10px; margin-bottom:16px;">
+                <div style="flex:1; background:#e6f4ea; border:1px solid #cce8d6; border-radius:16px; padding:16px; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+                    <div style="font-size:11px; color:#146c2e; font-weight:600; text-transform:uppercase; margin-bottom:4px;">Cash in Hand (गल्ला)</div>
+                    <div style="font-size:22px; font-weight:700; color:#146c2e; font-family:'Product Sans', sans-serif;" id="cb-cash-bal">₹ 0</div>
+                </div>
+                <div style="flex:1; background:#e8f0fe; border:1px solid #c2e7ff; border-radius:16px; padding:16px; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+                    <div style="font-size:11px; color:#0a56d0; font-weight:600; text-transform:uppercase; margin-bottom:4px;">Total Bank Balance</div>
+                    <div style="font-size:22px; font-weight:700; color:#0a56d0; font-family:'Product Sans', sans-serif;" id="cb-bank-bal">₹ 0</div>
+                </div>
+            </div>
+            <div class="ajio-tab-container" style="margin-bottom:12px;">
+                <div class="kb-tab active" id="cb-tab-tx" onclick="alert('Transaction History Loading...')">TRANSACTIONS</div>
+                <div class="kb-tab" id="cb-tab-banks" onclick="alert('Bank Accounts Loading...')">BANK ACCOUNTS</div>
+            </div>
+        </div>
+        <div class="scroll-content" id="cb-scroll-area" style="padding-top:0; padding-bottom: 80px;">
+            <div style="text-align:center; padding:40px 20px; color:gray; font-size:13px;">Data is syncing with Firebase...</div>
+        </div>
+        <div class="bottom-action-bar" style="z-index: 9999;">
+            <button class="btn-l-gave" style="background:#fdf2f2; color:var(--danger);" onclick="alert('Money OUT Feature Coming!')">🔴 Money OUT</button>
+            <button class="btn-l-got" style="background:#e6f4ea; color:var(--success);" onclick="alert('Money IN Feature Coming!')">🟢 Money IN</button>
         </div>
     </div>
 
@@ -1667,7 +1701,7 @@
             if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
-        const allPagesList = ['items-page', 'parties-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'home'];
+        const allPagesList = ['items-page', 'parties-page', 'cashbook-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'home'];
         
         window.openPage = function(id, isBack = false) { 
             if(!isBack && window.pageStack[window.pageStack.length-1] !== id) {
@@ -3516,10 +3550,10 @@
             let cpDeleteBar = document.getElementById('cp-delete-bar');
             if(cpDeleteBar) cpDeleteBar.style.display = isAdmin ? 'flex' : 'none';
 
-            // 8. 🔥 साइडबार से "Recycle Bin", "Absent Today" और "Stock Report" छुपाएं
+            // 8. 🔥 साइडबार से "Recycle Bin", "Absent Today", "Stock Report" और "Cash Book" छुपाएं
             document.querySelectorAll('.sidebar-menu li').forEach(li => {
                 let onclickText = li.getAttribute('onclick') || "";
-                if(onclickText.includes('recycle-page') || onclickText.includes('openAbsentCustomers') || onclickText.includes('stock')) {
+                if(onclickText.includes('recycle-page') || onclickText.includes('openAbsentCustomers') || onclickText.includes('stock') || onclickText.includes('cashbook-page')) {
                     li.style.display = isAdmin ? 'flex' : 'none';
                 }
             });

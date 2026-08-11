@@ -1185,7 +1185,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, get, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getStorage, ref as storageRef, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAGcWUM4lqJKmV2Zz2Em3WtI-D0fcQeuzQ",
@@ -1200,6 +1201,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const auth = getAuth(app); // OTP के लिए नया ताला
+        const storage = getStorage(app); // Firebase Cloud Storage चालू कियाा
         window.confirmationResult = null;
 
         let allLedgerData = []; let globalCustomers = []; let smartInventory = {}; let allGodownTransfers = []; let allRecycleData = []; let allPendingRequests = [];
@@ -1869,14 +1871,25 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 }); 
             let dataUrl = canvas.toDataURL('image/jpeg', 0.8);
             
-            localStorage.setItem('v_adminPic', dataUrl); 
-            
-            // 🔥 FIREBASE PHOTO SAVE
-            update(ref(db, 'BusinessProfile'), { pic: dataUrl }).then(() => {
-                loadAdminProfile(); 
-                if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
-                document.getElementById('crop-modal').style.display = 'none'; 
-                if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Profile Photo Updated!");
+            document.getElementById('crop-modal').style.display = 'none'; 
+            if (typeof window.showSaaSToast === 'function') window.showSaaSToast("फोटो क्लाउड पर सेव हो रही है... कृपया रुकें!");
+            else alert("फोटो क्लाउड पर सेव हो रही है... कृपया रुकें!");
+
+            // 🔥 FIREBASE CLOUD STORAGE UPLOAD
+            const imageRef = storageRef(storage, 'ProfileImages/admin_pic_' + Date.now() + '.jpg');
+            uploadString(imageRef, dataUrl, 'data_url').then((snapshot) => {
+                getDownloadURL(snapshot.ref).then((downloadURL) => {
+                    localStorage.setItem('v_adminPic', downloadURL); 
+                    
+                    // 🔥 FIREBASE REALTIME DB SAVE (सिर्फ छोटा लिंक सेव होगा)
+                    update(ref(db, 'BusinessProfile'), { pic: downloadURL }).then(() => {
+                        loadAdminProfile(); 
+                        if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
+                        if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Profile Photo Updated!");
+                    });
+                });
+            }).catch((error) => {
+                alert("Photo upload failed: " + error.message);
             });
         }
 
@@ -1886,31 +1899,42 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signO
             if(!custCropper) return; 
             let dataUrl = custCropper.getCroppedCanvas({ width: 300, height: 300 }).toDataURL('image/jpeg', 0.8); 
             
-            // 1. Firebase me photo save karna
-            if (currentPartyKey) {
-                update(ref(db, 'Customers/' + currentPartyKey), { pic: dataUrl });
-            }
-            if (auth.currentUser) {
-                update(ref(db, 'AppUsers/' + auth.currentUser.uid), { photo: dataUrl });
-            }
-
-            // 2. Teeno jagah photo TURANT auto-update karna
-            document.getElementById('cp-avatar').innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; 
-            document.getElementById('cp-mini-avatar').innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; 
-            
-            if (document.getElementById('pm-avatar-img')) {
-                document.getElementById('pm-avatar-img').src = dataUrl;
-                document.getElementById('pm-avatar-img').style.display = 'block';
-                document.getElementById('pm-avatar-text').style.display = 'none';
-            }
-            if (document.getElementById('top-avatar-img')) {
-                document.getElementById('top-avatar-img').src = dataUrl;
-                document.getElementById('top-avatar-img').style.display = 'block';
-                document.getElementById('top-avatar-text').style.display = 'none';
-            }
-
             document.getElementById('cust-crop-modal').style.display = 'none'; 
-            if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Profile photo updated successfully!");
+            if (typeof window.showSaaSToast === 'function') window.showSaaSToast("फोटो क्लाउड पर सेव हो रही है... कृपया रुकें!");
+            else alert("फोटो क्लाउड पर सेव हो रही है... कृपया रुकें!");
+
+            // 🔥 FIREBASE CLOUD STORAGE UPLOAD
+            const imageRef = storageRef(storage, 'ProfileImages/cust_' + Date.now() + '.jpg');
+            uploadString(imageRef, dataUrl, 'data_url').then((snapshot) => {
+                getDownloadURL(snapshot.ref).then((downloadURL) => {
+                    // 1. Firebase me photo save karna (Sirफ लिंक सेव होगा)
+                    if (currentPartyKey) {
+                        update(ref(db, 'Customers/' + currentPartyKey), { pic: downloadURL });
+                    }
+                    if (auth.currentUser) {
+                        update(ref(db, 'AppUsers/' + auth.currentUser.uid), { photo: downloadURL });
+                    }
+
+                    // 2. Teeno jagah photo TURANT auto-update karna
+                    document.getElementById('cp-avatar').innerHTML = `<img src="${downloadURL}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; 
+                    document.getElementById('cp-mini-avatar').innerHTML = `<img src="${downloadURL}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`; 
+                    
+                    if (document.getElementById('pm-avatar-img')) {
+                        document.getElementById('pm-avatar-img').src = downloadURL;
+                        document.getElementById('pm-avatar-img').style.display = 'block';
+                        document.getElementById('pm-avatar-text').style.display = 'none';
+                    }
+                    if (document.getElementById('top-avatar-img')) {
+                        document.getElementById('top-avatar-img').src = downloadURL;
+                        document.getElementById('top-avatar-img').style.display = 'block';
+                        document.getElementById('top-avatar-text').style.display = 'none';
+                    }
+
+                    if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Profile photo updated successfully!");
+                });
+            }).catch((error) => {
+                alert("Photo upload failed: " + error.message);
+            });
         }
         window.processGodown = function(type) { 
             let editKey = document.getElementById('gd-edit-key').value;

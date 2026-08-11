@@ -563,6 +563,7 @@
             <li onclick="navTo('godown-page', null); closeSidebar();"><i class="material-symbols-rounded">storefront</i> Shop-to-Shop</li>
             <li onclick="navTo('pos-page', null); closeSidebar();"><i class="material-symbols-rounded">receipt_long</i> Billing & Invoice</li>
             <li onclick="navTo('parties-page', null); closeSidebar();"><i class="material-symbols-rounded">menu_book</i> Ledger Book</li>
+            <li onclick="navTo('cash-bank-page', null); closeSidebar();"><i class="material-symbols-rounded">account_balance</i> Cash & Bank</li>
         </ul>
         <div style="border-top:1px solid var(--border); margin: 10px 0;"></div>
         <ul class="sidebar-menu">
@@ -1667,7 +1668,7 @@
             if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
-        const allPagesList = ['items-page', 'parties-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'home'];
+        const allPagesList = ['items-page', 'parties-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'cash-bank-page', 'home'];
         
         window.openPage = function(id, isBack = false) { 
             if(!isBack && window.pageStack[window.pageStack.length-1] !== id) {
@@ -4083,6 +4084,33 @@ window.showTargetCelebration = function() {
         <div class="scroll-content" id="manage-users-list" style="padding-top:0px;"></div>
     </div>
 
-    
+        <div class="page flex-page" id="cash-bank-page">
+        <div class="fixed-top-section" style="padding:0;">
+            <div class="sub-header">
+                <button class="back-btn material-symbols-rounded" onclick="closePage('cash-bank-page')">arrow_back</button>
+                <h2 class="page-title">Cash & Bank Book</h2>
+            </div>
+            <div class="ledger-summary-section" style="padding: 16px;">
+                <div class="kb-summary-card" style="margin-bottom: 10px;">
+                    <div class="kb-summary-split">
+                        <div class="kb-summary-box"><div class="kb-summary-label">CASH IN HAND</div><div class="kb-summary-val" style="color:var(--success);" id="cb-cash-bal">₹ 0</div></div>
+                        <div class="kb-summary-box"><div class="kb-summary-label">BANK BALANCE</div><div class="kb-summary-val" style="color:var(--primary);" id="cb-bank-bal">₹ 0</div></div>
+                    </div>
+                </div>
+                <div class="ajio-tab-container" style="margin-bottom:0; border-radius:12px;">
+                    <div class="kb-tab active" id="tab-cashbook" onclick="switchCbTab('Cash')">CASH IN HAND</div>
+                    <div class="kb-tab" id="tab-bankbook" onclick="switchCbTab('Bank')">BANK ACCOUNTS</div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-content" id="cb-list-container" style="padding-top:10px; background:var(--bg-color);">
+            <div style="text-align:center; padding:30px; color:gray;">Loading Data...</div>
+        </div>
+        <div class="bottom-action-bar" style="padding: 12px 16px; gap: 8px; z-index: 9999;">
+            <button class="btn-l-gave" onclick="openCbEntry('OUT')" style="border-radius:12px; font-size:14px;">🔴 CASH OUT</button>
+            <button class="btn-l-got" onclick="openCbEntry('IN')" style="border-radius:12px; font-size:14px;">🟢 CASH IN</button>
+        </div>
+    </div>
+
 </body>
 </html>

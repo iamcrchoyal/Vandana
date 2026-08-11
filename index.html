@@ -239,6 +239,9 @@
         .inv-tx-party { font-weight: 600; color: var(--text-dark); flex: 1; margin: 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         .inv-tx-qty.in { color: var(--success); font-weight: 700; background:#e6f4ea; padding:2px 6px; border-radius:4px;}
         .inv-tx-qty.out { color: var(--danger); font-weight: 700; background:#fdf2f2; padding:2px 6px; border-radius:4px;}
+        
+        /* ================= OFFLINE BANNER CSS ================= */
+        #offline-banner { display: none; position: fixed; top: 0; left: 0; width: 100%; background: var(--danger); color: white; text-align: center; padding: 12px; font-weight: 600; z-index: 9999999; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
@@ -1201,8 +1204,24 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const auth = getAuth(app); // OTP के लिए नया ताला
-        const storage = getStorage(app); // Firebase Cloud Storage चालू कियाा
-        window.confirmationResult = null;
+        const storage = getStorage(app); // Firebase Cloud Storage चालू किया
+
+        // ================= OFFLINE SUPPORT LOGIC =================
+        window.addEventListener('offline', function() {
+            document.getElementById('offline-banner').style.display = 'block';
+        });
+        window.addEventListener('online', function() {
+            document.getElementById('offline-banner').style.display = 'none';
+            if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Internet Connection Restored! (इंटरनेट वापस आ गया)");
+        });
+
+        // Firebase Connection State Check
+        onValue(ref(db, '.info/connected'), (snap) => {
+            if (snap.val() === false && !navigator.onLine) {
+                document.getElementById('offline-banner').style.display = 'block';
+            }
+        });
+        // =========================================================
 
         let allLedgerData = []; let globalCustomers = []; let smartInventory = {}; let allGodownTransfers = []; let allRecycleData = []; let allPendingRequests = [];
         let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null; 

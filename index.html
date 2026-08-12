@@ -981,7 +981,7 @@
             <div style="text-align:center; padding:40px 20px; color:gray; font-size:13px;">Loading...</div>
         </div>
         <div class="bottom-action-bar" style="z-index: 9999;">
-            <button class="btn-l-gave" style="background:#fdf2f2; color:var(--danger);" onclick="openCbEntryModal('OUT')">🔴 Money OUT</button>
+            <button class="btn-l-gave" style="background:#fdf2f2; color:var(--danger);" onclick="openCbEntryModal('OUT')">🔴 Money OUT / Expense</button>
             <button class="btn-l-got" style="background:#e6f4ea; color:var(--success);" onclick="openCbEntryModal('IN')">🟢 Money IN</button>
         </div>
 
@@ -999,9 +999,16 @@
                         <option value="Cash">Cash (गल्ला)</option>
                         </select>
                 </div>
+                <div class="form-group" style="margin-bottom:12px;" id="cb-category-group">
+                    <label class="form-label">Category</label>
+                    <select id="cb-entry-category" class="form-control" style="background:#fdf2f2; border-color:#f8cbcb; color:var(--danger);">
+                        <option value="Expense">Expense (खर्चा - किराया, चाय आदि)</option>
+                        <option value="General">General / Other Payment</option>
+                    </select>
+                </div>
                 <div class="form-group" style="margin-bottom:20px;">
                     <label class="form-label">Details / Remarks</label>
-                    <input type="text" id="cb-entry-details" class="form-control" placeholder="Reason for transaction">
+                    <input type="text" id="cb-entry-details" class="form-control" placeholder="Reason (e.g. Train ticket, Tea)">
                 </div>
                 <div style="display:flex; gap:10px;">
                     <button class="btn-outline" style="flex:1; border-color:var(--border);" onclick="document.getElementById('cb-entry-modal').style.display='none'">Cancel</button>
@@ -2574,7 +2581,15 @@
                 currentEntryData = null; 
             } else { 
                 if(isAdmin) {
-                    push(ref(db, 'Ledger'), { date: finalIsoString, name: currentPartyName, type: window.calcType, amount: amount, details: entryDetails }); 
+                    push(ref(db, 'Ledger'), { date: finalIsoString, name: currentPartyName, type: window.calcType, amount: amount, details: entryDetails }).then(() => {
+                        // 🌟 AUTO SYNC TO CASH/BANK BOOK
+                        // Agar admin ne "Gave" (paise diye) to Bank se OUT hoga. Agar "Got" (paise aaye) to IN hoga.
+                        let syncType = window.calcType === 'Got' ? 'IN' : 'OUT';
+                        
+                        // Payment mode is defaulted to 'Cash'. You can edit this entry manually from Cashbook if you used bank.
+                        let defaultBank = cbBanks.length > 0 ? cbBanks[0].key : 'Cash';
+                        addAutoCashBankEntry(syncType, amount, defaultBank, `Ledger Entry: ${currentPartyName} - ${entryDetails}`);
+                    });
                 } else {
                     push(ref(db, 'PendingRequests'), { date: finalIsoString, name: currentPartyName, type: window.calcType, amount: amount, details: entryDetails, requestedBy: window.currentUserName, status: 'Pending' });
                     alert("आपकी रिक्वेस्ट एडमिन को भेज दी गई है!");
@@ -3185,18 +3200,21 @@
                 if(cAmt > 0) {
                     let cashEntry = { date: finalDateTime, name: partyName, type: "Got", amount: cAmt, details: `Cash Received (Bill #${tempBillNo})` };
                     paymentPromises.push(push(ref(db, 'Ledger'), cashEntry));
+                    // 🌟 AUTO SYNC TO CASH BOOK
+                    addAutoCashBankEntry('IN', cAmt, 'Cash', `Cash Invoice: ${partyName} (#${tempBillNo})`);
                 }
                 // Add exact Online Entry
                 if(oAmt > 0) {
                     let onlineEntry = { date: finalDateTime, name: partyName, type: "Got", amount: oAmt, details: `Online Payment Received (Bill #${tempBillNo})` };
                     paymentPromises.push(push(ref(db, 'Ledger'), onlineEntry));
+                    // 🌟 AUTO SYNC TO BANK BOOK (Default first bank automatically)
+                    let defaultBank = cbBanks.length > 0 ? cbBanks[0].key : 'Cash';
+                    addAutoCashBankEntry('IN', oAmt, defaultBank, `Online Invoice: ${partyName} (#${tempBillNo})`);
                 }
 
                 Promise.all(paymentPromises).then(() => {
                     if(typeof window.autoAdjustBillNumbers === 'function') window.autoAdjustBillNumbers(); 
                 });
-            });
-
             window.editingBillNo = null; 
             window.editingEntryDate = null;
             document.getElementById('billing-form-area').style.display = 'none'; 
@@ -3887,7 +3905,7 @@ window.showTargetCelebration = function() {
         }
 
         window.approveRequest = function(key) {
-            if(!confirm("क्या आप इस रिक्वेस्ट को अप्रूव करके लेजर में डालना चाहते हैं?")) return;
+            if(!confirm("क्या आप इस रिक्वेस्ट को अप्रूव करके लेजर और बैंक में डालना चाहते हैं?")) return;
             let req = allPendingRequests.find(r => r.key === key);
             if(!req) return;
             
@@ -3898,9 +3916,15 @@ window.showTargetCelebration = function() {
             
             // 1. Move to Ledger
             push(ref(db, 'Ledger'), newEntry).then(() => {
+                // 🌟 AUTO SYNC TO BANK BOOK (Customer requests via App are usually Online/UPI)
+                // We default it to your first added Bank account.
+                let defaultBank = cbBanks.length > 0 ? cbBanks[0].key : 'Cash';
+                let syncType = newEntry.type === 'Got' ? 'IN' : 'OUT';
+                addAutoCashBankEntry(syncType, parseFloat(newEntry.amount), defaultBank, `App Payment: ${newEntry.name}`);
+
                 // 2. Remove from PendingRequests
                 remove(ref(db, 'PendingRequests/' + key));
-                alert("रिक्वेस्ट सफलतापूर्वक लेजर में ऐड हो गई है! ✅");
+                alert("रिक्वेस्ट सफलतापूर्वक लेजर और बैंक में जुड़ गई है! ✅");
             }).catch(err => alert("Error: " + err.message));
         }
 
@@ -4161,12 +4185,13 @@ window.showTargetCelebration = function() {
                         let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)';
                         let sign = t.type === 'IN' ? '+' : '-';
                         let icon = t.mode === 'Cash' ? 'payments' : 'account_balance';
+                        let badge = t.category === 'Expense' ? `<span style="background:#fdf2f2; color:var(--danger); padding:2px 6px; border-radius:4px; font-size:10px; margin-left:6px; border:1px solid #f8cbcb;">Expense</span>` : '';
                         
                         html += `
                         <div class="entry-card" style="padding:14px; border:1px solid var(--border); margin-bottom:10px; align-items:center; display:flex;">
                             <div style="width:36px; height:36px; background:#f0f4f9; color:var(--text-muted); border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:18px; margin-right:12px;" class="material-symbols-rounded">${icon}</div>
                             <div style="flex:1;">
-                                <div style="font-weight:600; font-size:14px; color:var(--text-dark);">${t.details || 'Entry'}</div>
+                                <div style="font-weight:600; font-size:14px; color:var(--text-dark);">${t.details || 'Entry'} ${badge}</div>
                                 <div style="font-size:11px; color:var(--text-muted);">${dateStr} • ${t.mode}</div>
                             </div>
                             <div style="text-align:right;">
@@ -4203,6 +4228,90 @@ window.showTargetCelebration = function() {
                 remove(ref(db, 'CashBankBook/Banks/' + key));
             }
         }
+
+        window.openCbEntryModal = function(type) {
+            document.getElementById('cb-entry-type').value = type;
+            let title = document.getElementById('cb-entry-title');
+            let btn = document.getElementById('cb-entry-save-btn');
+            
+            if(type === 'IN') {
+                title.innerText = "Money IN (पैसे आये)";
+                title.style.color = "var(--success)";
+                btn.style.background = "var(--success)";
+                document.getElementById('cb-category-group').style.display = 'none'; // No Expense for IN
+            } else {
+                title.innerText = "Money OUT / Expense";
+                title.style.color = "var(--danger)";
+                btn.style.background = "var(--danger)";
+                document.getElementById('cb-category-group').style.display = 'block'; // Show Expense for OUT
+            }
+
+            document.getElementById('cb-entry-amount').value = '';
+            document.getElementById('cb-entry-details').value = '';
+            
+            let modeSelect = document.getElementById('cb-entry-mode');
+            let modeHtml = `<option value="Cash">Cash (गल्ला)</option>`;
+            cbBanks.forEach(b => {
+                modeHtml += `<option value="${b.key}">${b.name} (Bank)</option>`;
+            });
+            modeSelect.innerHTML = modeHtml;
+
+            document.getElementById('cb-entry-modal').style.display = 'flex';
+        }
+
+        window.saveCbEntry = function() {
+            let type = document.getElementById('cb-entry-type').value;
+            let amount = parseFloat(document.getElementById('cb-entry-amount').value);
+            let modeKey = document.getElementById('cb-entry-mode').value;
+            let category = type === 'OUT' ? document.getElementById('cb-entry-category').value : 'General';
+            let details = document.getElementById('cb-entry-details').value.trim();
+
+            if(isNaN(amount) || amount <= 0) return alert("Please enter a valid amount!");
+            if(!details) details = type === 'IN' ? 'Money Received' : 'Money Sent';
+
+            addAutoCashBankEntry(type, amount, modeKey, details, category);
+
+            document.getElementById('cb-entry-modal').style.display = 'none';
+            switchCbTab('tx');
+            alert("Entry Saved Successfully!");
+        }
+
+        window.deleteCbTransaction = function(txKey, type, amount, modeKey) {
+            if(!confirm("Are you sure you want to delete this transaction?")) return;
+            
+            if(modeKey && modeKey !== 'Cash') {
+                let bank = cbBanks.find(b => b.key === modeKey);
+                if(bank) {
+                    let newBal = type === 'IN' ? (bank.balance - amount) : (bank.balance + amount);
+                    update(ref(db, 'CashBankBook/Banks/' + bank.key), { balance: newBal });
+                }
+            }
+            remove(ref(db, 'CashBankBook/Transactions/' + txKey));
+        }
+
+        // 🌟 GLOBAL FUNCTION TO AUTO-SYNC ALL PAYMENTS
+        window.addAutoCashBankEntry = function(type, amount, modeKey, details, category = 'General') {
+            let modeName = "Cash";
+            if(modeKey !== 'Cash') {
+                let bank = cbBanks.find(b => b.key === modeKey);
+                if(bank) {
+                    modeName = bank.name;
+                    let newBal = type === 'IN' ? (bank.balance + amount) : (bank.balance - amount);
+                    update(ref(db, 'CashBankBook/Banks/' + bank.key), { balance: newBal });
+                }
+            }
+
+            push(ref(db, 'CashBankBook/Transactions'), {
+                date: new Date().toISOString(),
+                type: type,
+                amount: amount,
+                mode: modeName,
+                modeKey: modeKey,
+                details: details,
+                category: category
+            });
+        }
+        // ==========================================================
 
         window.openCbEntryModal = function(type) {
             document.getElementById('cb-entry-type').value = type;

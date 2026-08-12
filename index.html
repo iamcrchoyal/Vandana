@@ -1168,13 +1168,15 @@
             <div class="amount-input-box"><span class="amount-symbol" id="calc-symbol" style="font-size:24px; font-weight:600; margin-right:8px;">₹</span><input type="text" id="calc-amount" readonly placeholder="0" style="color:var(--danger);"></div>
             <div id="calc-hidden-area">
                 <input type="date" style="border:1px solid var(--border); padding:10px 14px; border-radius:8px; font-family:'Product Sans', sans-serif; width:100%; box-sizing:border-box; margin-bottom:10px; color:var(--text-dark);" id="calc-date">
-                                <select id="calc-payment-mode" class="calc-details-input" style="display:block; margin:0 0 10px 0; width:100%; box-sizing:border-box;">
+                
+                <select id="calc-payment-mode" style="border:1px solid var(--border); background:#f8fafd; padding:10px 14px; border-radius:8px; font-family:'Product Sans', sans-serif; font-weight:600; width:100%; box-sizing:border-box; margin-bottom:10px; color:var(--primary); outline:none;">
                     <option value="Cash">Cash (गल्ला)</option>
                 </select>
+
                 <input type="text" class="calc-details-input" id="calc-details" style="display:block; margin:0 0 10px 0; width:100%; box-sizing:border-box;" placeholder="Enter details (Items, bill no., etc.)">
             </div>
         </div>
-        <div class="calculator-footer" style="position:fixed; bottom:0; left:0; width:100%; background:var(--bg-color); z-index:9999; padding-bottom:env(safe-area-inset-bottom);">
+        <div class="calculator-footer" style="position:fixed; bottom:0; left:0; width:100%; background:var(--bg-color); z-index:9999; padding-bottom:env(safe-area-bottom);">
             <button class="btn-submit" id="calc-save-btn" onclick="saveCalculatorEntry()" style="border-radius:0; padding:14px; font-size:16px; letter-spacing:0.5px; font-family:'Product Sans', sans-serif;">SAVE ENTRY</button>
             <div class="calc-grid">
                 <button class="calc-btn light-blue" onclick="calcPress('C')">C</button><button class="calc-btn light-blue">M+</button><button class="calc-btn light-blue">M-</button><button class="calc-btn light-blue material-symbols-rounded" onclick="calcPress('BACK')">backspace</button>
@@ -2562,10 +2564,12 @@
 
             let isAdmin = (window.currentUserRole === 'admin');
             let entryDetails = document.getElementById('calc-details').value || "App Entry";
-            let calcModeKey = document.getElementById('calc-payment-mode') ? document.getElementById('calc-payment-mode').value : "Cash"; // 🌟 NEW: Get Selected Mode
+            
+            // 🌟 PAYMENT MODE FETCH
+            let modeSelectElem = document.getElementById('calc-payment-mode');
+            let calcModeKey = modeSelectElem ? modeSelectElem.value : "Cash"; 
 
             if(window.isEditingEntry && currentEntryData) { 
-                // 🌟 अगर पुरानी डेट चेंज नहीं की गई है, तो उसका ओरिजिनल टाइम ही रखें
                 let oldDateStr = new Date(currentEntryData.date).toISOString().split('T')[0];
                 if (oldDateStr === dateVal) {
                     finalIsoString = currentEntryData.date; 
@@ -2581,7 +2585,7 @@
                     // 1. Save to Ledger
                     push(ref(db, 'Ledger'), { date: finalIsoString, name: currentPartyName, type: window.calcType, amount: amount, details: entryDetails }); 
                     
-                    // 2. 🌟 NEW: AUTO-SYNC WITH CASHBOOK & BANK
+                    // 2. 🌟 AUTO-SYNC WITH CASHBOOK & BANK
                     let modeName = "Cash";
                     if(calcModeKey !== 'Cash') {
                         let bank = cbBanks.find(b => b.key === calcModeKey);
@@ -2593,6 +2597,7 @@
                             update(ref(db, 'CashBankBook/Banks/' + bank.key), { balance: newBal });
                         }
                     }
+                    
                     let cbType = window.calcType === 'Got' ? 'IN' : 'OUT';
                     push(ref(db, 'CashBankBook/Transactions'), {
                         date: finalIsoString,
@@ -2602,7 +2607,6 @@
                         modeKey: calcModeKey,
                         details: `${currentPartyName} - ${entryDetails}`
                     });
-                    // ==========================================================
 
                 } else {
                     push(ref(db, 'PendingRequests'), { date: finalIsoString, name: currentPartyName, type: window.calcType, amount: amount, details: entryDetails, requestedBy: window.currentUserName, status: 'Pending' });

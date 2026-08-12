@@ -1168,6 +1168,9 @@
             <div class="amount-input-box"><span class="amount-symbol" id="calc-symbol" style="font-size:24px; font-weight:600; margin-right:8px;">₹</span><input type="text" id="calc-amount" readonly placeholder="0" style="color:var(--danger);"></div>
             <div id="calc-hidden-area">
                 <input type="date" style="border:1px solid var(--border); padding:10px 14px; border-radius:8px; font-family:'Product Sans', sans-serif; width:100%; box-sizing:border-box; margin-bottom:10px; color:var(--text-dark);" id="calc-date">
+                                <select id="calc-payment-mode" class="calc-details-input" style="display:block; margin:0 0 10px 0; width:100%; box-sizing:border-box;">
+                    <option value="Cash">Cash (गल्ला)</option>
+                </select>
                 <input type="text" class="calc-details-input" id="calc-details" style="display:block; margin:0 0 10px 0; width:100%; box-sizing:border-box;" placeholder="Enter details (Items, bill no., etc.)">
             </div>
         </div>
@@ -2559,6 +2562,7 @@
 
             let isAdmin = (window.currentUserRole === 'admin');
             let entryDetails = document.getElementById('calc-details').value || "App Entry";
+            let calcModeKey = document.getElementById('calc-payment-mode') ? document.getElementById('calc-payment-mode').value : "Cash"; // 🌟 NEW: Get Selected Mode
 
             if(window.isEditingEntry && currentEntryData) { 
                 // 🌟 अगर पुरानी डेट चेंज नहीं की गई है, तो उसका ओरिजिनल टाइम ही रखें
@@ -2574,7 +2578,32 @@
                 currentEntryData = null; 
             } else { 
                 if(isAdmin) {
+                    // 1. Save to Ledger
                     push(ref(db, 'Ledger'), { date: finalIsoString, name: currentPartyName, type: window.calcType, amount: amount, details: entryDetails }); 
+                    
+                    // 2. 🌟 NEW: AUTO-SYNC WITH CASHBOOK & BANK
+                    let modeName = "Cash";
+                    if(calcModeKey !== 'Cash') {
+                        let bank = cbBanks.find(b => b.key === calcModeKey);
+                        if(bank) {
+                            modeName = bank.name;
+                            // YOU GOT (पैसा आया) -> Bank Balance + होगा
+                            // YOU GAVE (पैसा दिया) -> Bank Balance - होगा
+                            let newBal = window.calcType === 'Got' ? (bank.balance + amount) : (bank.balance - amount);
+                            update(ref(db, 'CashBankBook/Banks/' + bank.key), { balance: newBal });
+                        }
+                    }
+                    let cbType = window.calcType === 'Got' ? 'IN' : 'OUT';
+                    push(ref(db, 'CashBankBook/Transactions'), {
+                        date: finalIsoString,
+                        type: cbType,
+                        amount: amount,
+                        mode: modeName,
+                        modeKey: calcModeKey,
+                        details: `${currentPartyName} - ${entryDetails}`
+                    });
+                    // ==========================================================
+
                 } else {
                     push(ref(db, 'PendingRequests'), { date: finalIsoString, name: currentPartyName, type: window.calcType, amount: amount, details: entryDetails, requestedBy: window.currentUserName, status: 'Pending' });
                     alert("आपकी रिक्वेस्ट एडमिन को भेज दी गई है!");
@@ -2686,7 +2715,38 @@
 
         window.editCurrentEntryAmount = function() { if(!currentEntryData) return; window.isEditingEntry = true; window.calcType = currentEntryData.type; window.calcValue = currentEntryData.amount.toString(); document.getElementById('calc-amount').value = window.calcValue; document.getElementById('calc-details').value = currentEntryData.details || ""; document.getElementById('calc-hidden-area').classList.add('show'); document.getElementById('calc-save-btn').innerText = "UPDATE ENTRY"; let d = new Date(currentEntryData.date); if(!isNaN(d)) document.getElementById('calc-date').value = d.toISOString().split('T')[0]; closePage('entry-details-page'); openCalculator(window.calcType, true); }
         
-        window.openCalculator = function(type, skipReset = false) { if(!skipReset) { window.calcType = type; window.calcValue = ""; document.getElementById('calc-amount').value = ""; document.getElementById('calc-details').value = ""; document.getElementById('calc-hidden-area').classList.remove('show'); document.getElementById('calc-save-btn').innerText = "SAVE ENTRY"; window.isEditingEntry = false; } let color = type === 'Gave' ? 'var(--danger)' : 'var(--success)'; document.getElementById('calc-header').style.color = color; document.getElementById('calc-back-btn').style.color = color; document.getElementById('calc-symbol').style.color = color; document.getElementById('calc-amount').style.color = color; document.getElementById('calc-save-btn').style.backgroundColor = color; updateCalcTitle(); openPage('calculator-page'); }
+        window.openCalculator = function(type, skipReset = false) { 
+            if(!skipReset) { 
+                window.calcType = type; 
+                window.calcValue = ""; 
+                document.getElementById('calc-amount').value = ""; 
+                document.getElementById('calc-details').value = ""; 
+                document.getElementById('calc-hidden-area').classList.remove('show'); 
+                document.getElementById('calc-save-btn').innerText = "SAVE ENTRY"; 
+                window.isEditingEntry = false; 
+            } 
+            
+            // 🌟 NEW: POPULATE BANKS IN DROPDOWN
+            let modeSelect = document.getElementById('calc-payment-mode');
+            if(modeSelect) {
+                let modeHtml = `<option value="Cash">Cash (गल्ला)</option>`;
+                if(typeof cbBanks !== 'undefined') {
+                    cbBanks.forEach(b => {
+                        modeHtml += `<option value="${b.key}">${b.name} (Bank)</option>`;
+                    });
+                }
+                modeSelect.innerHTML = modeHtml;
+            }
+
+            let color = type === 'Gave' ? 'var(--danger)' : 'var(--success)'; 
+            document.getElementById('calc-header').style.color = color; 
+            document.getElementById('calc-back-btn').style.color = color; 
+            document.getElementById('calc-symbol').style.color = color; 
+            document.getElementById('calc-amount').style.color = color; 
+            document.getElementById('calc-save-btn').style.backgroundColor = color; 
+            updateCalcTitle(); 
+            openPage('calculator-page'); 
+        }
         window.calcPress = function(val) { if(val === 'C') window.calcValue = ""; else if(val === 'BACK') window.calcValue = window.calcValue.slice(0, -1); else if(val === '=') { try { window.calcValue = eval(window.calcValue).toString(); } catch(e){} } else window.calcValue += val; document.getElementById('calc-amount').value = window.calcValue; if(parseFloat(window.calcValue) > 0) { document.getElementById('calc-hidden-area').classList.add('show'); } else { document.getElementById('calc-hidden-area').classList.remove('show'); } updateCalcTitle(); }
         function updateCalcTitle() { document.getElementById('calc-title-text').innerText = `You ${window.calcType.toLowerCase()} ₹ ${window.calcValue || "0"} to ${currentPartyName}`; }
         

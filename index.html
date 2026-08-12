@@ -949,10 +949,19 @@
         <div class="sub-header">
             <button class="back-btn material-symbols-rounded" onclick="closePage('cashbook-page')">arrow_back</button>
             <h2 class="page-title" style="flex:1;">Cash & Bank Book</h2>
-            <button class="pro-add-btn" onclick="alert('Add Bank Feature Coming Soon!')" style="background:var(--primary-dark);"><span class="material-symbols-rounded" style="font-size:16px;">add_card</span> Add Bank</button>
+            <button class="pro-add-btn" onclick="document.getElementById('cb-bank-form').classList.toggle('form-hidden')" style="background:var(--primary-dark);"><span class="material-symbols-rounded" style="font-size:16px;">add_card</span> Add Bank</button>
         </div>
         <div class="fixed-top-section">
-            <!-- Summary Cards -->
+            <div class="form-panel anim-form form-hidden" id="cb-bank-form" style="margin-bottom:10px; border-color:var(--primary-dark) !important;">
+                <div class="form-group" style="margin-bottom:12px;">
+                    <input type="text" id="cb-new-bank-name" class="form-control" placeholder="Bank Name (e.g. SBI, HDFC)">
+                </div>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <input type="number" id="cb-new-bank-bal" class="form-control" placeholder="Opening Balance (₹)">
+                </div>
+                <button class="btn-submit" style="background:var(--primary-dark); width:100%;" onclick="saveNewBank()">💾 Save Bank Account</button>
+            </div>
+            
             <div style="display:flex; gap:10px; margin-bottom:16px;">
                 <div style="flex:1; background:#e6f4ea; border:1px solid #cce8d6; border-radius:16px; padding:16px; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.02);">
                     <div style="font-size:11px; color:#146c2e; font-weight:600; text-transform:uppercase; margin-bottom:4px;">Cash in Hand (गल्ला)</div>
@@ -964,16 +973,41 @@
                 </div>
             </div>
             <div class="ajio-tab-container" style="margin-bottom:12px;">
-                <div class="kb-tab active" id="cb-tab-tx" onclick="alert('Transaction History Loading...')">TRANSACTIONS</div>
-                <div class="kb-tab" id="cb-tab-banks" onclick="alert('Bank Accounts Loading...')">BANK ACCOUNTS</div>
+                <div class="kb-tab active" id="cb-tab-tx" onclick="switchCbTab('tx')">TRANSACTIONS</div>
+                <div class="kb-tab" id="cb-tab-banks" onclick="switchCbTab('banks')">BANK ACCOUNTS</div>
             </div>
         </div>
         <div class="scroll-content" id="cb-scroll-area" style="padding-top:0; padding-bottom: 80px;">
-            <div style="text-align:center; padding:40px 20px; color:gray; font-size:13px;">Data is syncing with Firebase...</div>
+            <div style="text-align:center; padding:40px 20px; color:gray; font-size:13px;">Loading...</div>
         </div>
         <div class="bottom-action-bar" style="z-index: 9999;">
-            <button class="btn-l-gave" style="background:#fdf2f2; color:var(--danger);" onclick="alert('Money OUT Feature Coming!')">🔴 Money OUT</button>
-            <button class="btn-l-got" style="background:#e6f4ea; color:var(--success);" onclick="alert('Money IN Feature Coming!')">🟢 Money IN</button>
+            <button class="btn-l-gave" style="background:#fdf2f2; color:var(--danger);" onclick="openCbEntryModal('OUT')">🔴 Money OUT</button>
+            <button class="btn-l-got" style="background:#e6f4ea; color:var(--success);" onclick="openCbEntryModal('IN')">🟢 Money IN</button>
+        </div>
+
+        <div id="cb-entry-modal" class="report-modal-overlay" style="z-index: 10000;">
+            <div class="report-modal-box" style="width:90%; max-width:350px; padding:24px;">
+                <h3 id="cb-entry-title" style="margin-bottom: 16px; font-family: 'Product Sans', sans-serif; color:var(--success);">Money IN</h3>
+                <input type="hidden" id="cb-entry-type">
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label class="form-label">Amount (₹)</label>
+                    <input type="number" id="cb-entry-amount" class="form-control" placeholder="0" style="font-size:24px; font-weight:700;">
+                </div>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label class="form-label">Payment Mode</label>
+                    <select id="cb-entry-mode" class="form-control" style="background:#f8fafd; border-color:#c2e7ff;">
+                        <option value="Cash">Cash (गल्ला)</option>
+                        </select>
+                </div>
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label class="form-label">Details / Remarks</label>
+                    <input type="text" id="cb-entry-details" class="form-control" placeholder="Reason for transaction">
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-outline" style="flex:1; border-color:var(--border);" onclick="document.getElementById('cb-entry-modal').style.display='none'">Cancel</button>
+                    <button class="btn-submit" id="cb-entry-save-btn" style="flex:1; background:var(--success);" onclick="saveCbEntry()">Save</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -4050,6 +4084,200 @@ window.showTargetCelebration = function() {
             } catch(e) { console.error(e); alert("Error generating PDF."); }
         }
 
+		// ================= CASH & BANK BOOK LOGIC =================
+        let cbTransactions = [];
+        let cbBanks = [];
+        let totalCashBal = 0;
+        let totalBankBal = 0;
+        let currentCbTab = 'tx';
+
+        onValue(ref(db, 'CashBankBook/Banks'), (snapshot) => {
+            let data = snapshot.val() || {};
+            cbBanks = Object.keys(data).map(key => ({ key: key, ...data[key] }));
+            updateCbDashboard();
+            if(document.getElementById('cashbook-page').classList.contains('active')) renderCbTab();
+        });
+
+        onValue(ref(db, 'CashBankBook/Transactions'), (snapshot) => {
+            let data = snapshot.val() || {};
+            cbTransactions = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse();
+            updateCbDashboard();
+            if(document.getElementById('cashbook-page').classList.contains('active')) renderCbTab();
+        });
+
+        function updateCbDashboard() {
+            totalBankBal = 0;
+            cbBanks.forEach(b => totalBankBal += (parseFloat(b.balance) || 0));
+
+            totalCashBal = 0;
+            cbTransactions.forEach(t => {
+                if(t.mode === 'Cash') {
+                    if(t.type === 'IN') totalCashBal += parseFloat(t.amount);
+                    if(t.type === 'OUT') totalCashBal -= parseFloat(t.amount);
+                }
+            });
+            
+            if(document.getElementById('cb-cash-bal')) document.getElementById('cb-cash-bal').innerText = "₹ " + totalCashBal.toLocaleString('en-IN');
+            if(document.getElementById('cb-bank-bal')) document.getElementById('cb-bank-bal').innerText = "₹ " + totalBankBal.toLocaleString('en-IN');
+        }
+
+        window.switchCbTab = function(tab) {
+            currentCbTab = tab;
+            document.getElementById('cb-tab-tx').classList.toggle('active', tab === 'tx');
+            document.getElementById('cb-tab-banks').classList.toggle('active', tab === 'banks');
+            renderCbTab();
+        }
+
+        window.renderCbTab = function() {
+            let area = document.getElementById('cb-scroll-area');
+            let html = "";
+            if(currentCbTab === 'banks') {
+                if(cbBanks.length === 0) {
+                    html = `<div style="text-align:center; padding:40px 20px; color:gray;">No bank accounts added yet.</div>`;
+                } else {
+                    cbBanks.forEach(b => {
+                        html += `
+                        <div class="entry-card" style="padding:16px; border:1px solid var(--border); margin-bottom:12px; align-items:center; display:flex;">
+                            <div style="width:40px; height:40px; background:#e8f0fe; color:var(--primary-dark); border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:20px; margin-right:12px;" class="material-symbols-rounded">account_balance</div>
+                            <div style="flex:1;">
+                                <div style="font-weight:700; font-size:15px; color:var(--text-dark);">${b.name}</div>
+                                <div style="font-size:11px; color:var(--text-muted);">Bank Account</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="color:var(--primary-dark); font-weight:800; font-size:16px;">₹${parseFloat(b.balance).toLocaleString('en-IN')}</div>
+                                <button onclick="deleteCbBank('${b.key}')" style="background:transparent; border:none; color:var(--danger); font-size:12px; margin-top:4px; cursor:pointer;">Delete</button>
+                            </div>
+                        </div>`;
+                    });
+                }
+            } else {
+                if(cbTransactions.length === 0) {
+                    html = `<div style="text-align:center; padding:40px 20px; color:gray;">No transactions found.</div>`;
+                } else {
+                    let sortedTx = [...cbTransactions].sort((a,b) => new Date(b.date) - new Date(a.date));
+                    sortedTx.forEach(t => {
+                        let d = new Date(t.date);
+                        let dateStr = isNaN(d) ? t.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
+                        let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)';
+                        let sign = t.type === 'IN' ? '+' : '-';
+                        let icon = t.mode === 'Cash' ? 'payments' : 'account_balance';
+                        
+                        html += `
+                        <div class="entry-card" style="padding:14px; border:1px solid var(--border); margin-bottom:10px; align-items:center; display:flex;">
+                            <div style="width:36px; height:36px; background:#f0f4f9; color:var(--text-muted); border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:18px; margin-right:12px;" class="material-symbols-rounded">${icon}</div>
+                            <div style="flex:1;">
+                                <div style="font-weight:600; font-size:14px; color:var(--text-dark);">${t.details || 'Entry'}</div>
+                                <div style="font-size:11px; color:var(--text-muted);">${dateStr} • ${t.mode}</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="color:${color}; font-weight:700; font-size:15px;">${sign}₹${parseFloat(t.amount).toLocaleString('en-IN')}</div>
+                                <button onclick="deleteCbTransaction('${t.key}', '${t.type}', ${t.amount}, '${t.modeKey}')" style="background:transparent; border:none; color:var(--danger); font-size:20px; margin-top:4px; cursor:pointer;" class="material-symbols-rounded">delete</button>
+                            </div>
+                        </div>`;
+                    });
+                }
+            }
+            area.innerHTML = html;
+        }
+
+        window.saveNewBank = function() {
+            let name = document.getElementById('cb-new-bank-name').value.trim();
+            let bal = parseFloat(document.getElementById('cb-new-bank-bal').value) || 0;
+            if(!name) return alert("Please enter Bank Name!");
+            
+            push(ref(db, 'CashBankBook/Banks'), {
+                name: name,
+                balance: bal,
+                createdAt: new Date().toISOString()
+            }).then(() => {
+                document.getElementById('cb-new-bank-name').value = '';
+                document.getElementById('cb-new-bank-bal').value = '';
+                document.getElementById('cb-bank-form').classList.add('form-hidden');
+                switchCbTab('banks');
+                alert("Bank Account Added!");
+            });
+        }
+
+        window.deleteCbBank = function(key) {
+            if(confirm("Are you sure you want to delete this Bank Account?")) {
+                remove(ref(db, 'CashBankBook/Banks/' + key));
+            }
+        }
+
+        window.openCbEntryModal = function(type) {
+            document.getElementById('cb-entry-type').value = type;
+            let title = document.getElementById('cb-entry-title');
+            let btn = document.getElementById('cb-entry-save-btn');
+            
+            if(type === 'IN') {
+                title.innerText = "Money IN (पैसे आये)";
+                title.style.color = "var(--success)";
+                btn.style.background = "var(--success)";
+            } else {
+                title.innerText = "Money OUT (पैसे गए)";
+                title.style.color = "var(--danger)";
+                btn.style.background = "var(--danger)";
+            }
+
+            document.getElementById('cb-entry-amount').value = '';
+            document.getElementById('cb-entry-details').value = '';
+            
+            let modeSelect = document.getElementById('cb-entry-mode');
+            let modeHtml = `<option value="Cash">Cash (गल्ला)</option>`;
+            cbBanks.forEach(b => {
+                modeHtml += `<option value="${b.key}">${b.name} (Bank)</option>`;
+            });
+            modeSelect.innerHTML = modeHtml;
+
+            document.getElementById('cb-entry-modal').style.display = 'flex';
+        }
+
+        window.saveCbEntry = function() {
+            let type = document.getElementById('cb-entry-type').value;
+            let amount = parseFloat(document.getElementById('cb-entry-amount').value);
+            let modeKey = document.getElementById('cb-entry-mode').value;
+            let details = document.getElementById('cb-entry-details').value.trim();
+
+            if(isNaN(amount) || amount <= 0) return alert("Please enter a valid amount!");
+            if(!details) details = type === 'IN' ? 'Money Received' : 'Money Sent';
+
+            let modeName = "Cash";
+            
+            if(modeKey !== 'Cash') {
+                let bank = cbBanks.find(b => b.key === modeKey);
+                if(bank) {
+                    modeName = bank.name;
+                    let newBal = type === 'IN' ? (bank.balance + amount) : (bank.balance - amount);
+                    update(ref(db, 'CashBankBook/Banks/' + bank.key), { balance: newBal });
+                }
+            }
+
+            push(ref(db, 'CashBankBook/Transactions'), {
+                date: new Date().toISOString(),
+                type: type,
+                amount: amount,
+                mode: modeName,
+                modeKey: modeKey,
+                details: details
+            }).then(() => {
+                document.getElementById('cb-entry-modal').style.display = 'none';
+                switchCbTab('tx');
+            });
+        }
+
+        window.deleteCbTransaction = function(txKey, type, amount, modeKey) {
+            if(!confirm("Are you sure you want to delete this transaction?")) return;
+            
+            if(modeKey && modeKey !== 'Cash') {
+                let bank = cbBanks.find(b => b.key === modeKey);
+                if(bank) {
+                    let newBal = type === 'IN' ? (bank.balance - amount) : (bank.balance + amount);
+                    update(ref(db, 'CashBankBook/Banks/' + bank.key), { balance: newBal });
+                }
+            }
+            remove(ref(db, 'CashBankBook/Transactions/' + txKey));
+        }
+        // ==========================================================
         
            </script>
             

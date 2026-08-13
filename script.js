@@ -1868,13 +1868,30 @@ window.triggerSaveAndShare = function() {
 
     savePromise.then(() => {
         let paymentPromises = [];
+        
         if(cAmt > 0) {
             let cashEntry = { date: finalDateTime, name: partyName, type: "Got", amount: cAmt, details: `Cash Received (Bill #${tempBillNo})` };
             paymentPromises.push(push(ref(db, 'Ledger'), cashEntry));
+            
+            // 🌟 SYNC WITH CASHBOOK (गल्ले में पैसा डालें)
+            paymentPromises.push(push(ref(db, 'CashBankBook/Transactions'), {
+                date: finalDateTime, type: 'IN', amount: cAmt, mode: 'Cash', modeKey: 'Cash', details: `Bill #${tempBillNo} - ${partyName}`
+            }));
         }
+        
         if(oAmt > 0) {
             let onlineEntry = { date: finalDateTime, name: partyName, type: "Got", amount: oAmt, details: `Online Payment Received (Bill #${tempBillNo})` };
             paymentPromises.push(push(ref(db, 'Ledger'), onlineEntry));
+            
+            // 🌟 SYNC WITH CASHBOOK (बैंक में पैसा डालें - पहले उपलब्ध बैंक में)
+            if(typeof cbBanks !== 'undefined' && cbBanks.length > 0) {
+                let firstBank = cbBanks[0];
+                paymentPromises.push(push(ref(db, 'CashBankBook/Transactions'), {
+                    date: finalDateTime, type: 'IN', amount: oAmt, mode: firstBank.name, modeKey: firstBank.key, details: `Bill #${tempBillNo} - ${partyName}`
+                }));
+                let newBal = firstBank.balance + oAmt;
+                paymentPromises.push(update(ref(db, 'CashBankBook/Banks/' + firstBank.key), { balance: newBal }));
+            }
         }
 
         Promise.all(paymentPromises).then(() => {
@@ -2696,6 +2713,21 @@ let cbBanks = [];
 let totalCashBal = 0;
 let totalBankBal = 0;
 let currentCbTab = 'tx';
+window.openingCash = 0;
+
+onValue(ref(db, 'CashBankBook/OpeningCash'), (snapshot) => {
+    window.openingCash = parseFloat(snapshot.val()) || 0;
+    updateCbDashboard();
+});
+
+window.setOpeningCash = function() {
+    let amt = prompt("गल्ले का शुरुआती बैलेंस (Opening Cash) दर्ज करें:", window.openingCash || 0);
+    if(amt !== null && !isNaN(amt)) {
+        set(ref(db, 'CashBankBook/OpeningCash'), parseFloat(amt)).then(() => {
+            alert("Opening Cash Set Successfully!");
+        });
+    }
+}
 
 onValue(ref(db, 'CashBankBook/Banks'), (snapshot) => {
     let data = snapshot.val() || {};
@@ -2715,7 +2747,7 @@ function updateCbDashboard() {
     totalBankBal = 0;
     cbBanks.forEach(b => totalBankBal += (parseFloat(b.balance) || 0));
 
-    totalCashBal = 0;
+    totalCashBal = window.openingCash || 0;
     cbTransactions.forEach(t => {
         if(t.mode === 'Cash') {
             if(t.type === 'IN') totalCashBal += parseFloat(t.amount);

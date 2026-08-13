@@ -735,10 +735,11 @@
             </div>
             
             <div style="display:flex; gap:10px; margin-bottom:16px;">
-                <div style="flex:1; background:#e6f4ea; border:1px solid #cce8d6; border-radius:16px; padding:16px; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.02);">
-                    <div style="font-size:11px; color:#146c2e; font-weight:600; text-transform:uppercase; margin-bottom:4px;">Cash in Hand (गल्ला)</div>
-                    <div style="font-size:22px; font-weight:700; color:#146c2e; font-family:'Product Sans', sans-serif;" id="cb-cash-bal">₹ 0</div>
-                </div>
+                <div style="flex:1; background:#e6f4ea; border:1px solid #cce8d6; border-radius:16px; padding:16px; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.02); position:relative;">
+    <span class="material-symbols-rounded" style="position:absolute; top:8px; right:8px; font-size:16px; color:#146c2e; cursor:pointer;" onclick="setOpeningCash()" title="Set Opening Balance">edit</span>
+    <div style="font-size:11px; color:#146c2e; font-weight:600; text-transform:uppercase; margin-bottom:4px;">Cash in Hand (गल्ला)</div>
+    <div style="font-size:22px; font-weight:700; color:#146c2e; font-family:'Product Sans', sans-serif;" id="cb-cash-bal">₹ 0</div>
+</div>
                 <div style="flex:1; background:#e8f0fe; border:1px solid #c2e7ff; border-radius:16px; padding:16px; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.02);">
                     <div style="font-size:11px; color:#0a56d0; font-weight:600; text-transform:uppercase; margin-bottom:4px;">Total Bank Balance</div>
                     <div style="font-size:22px; font-weight:700; color:#0a56d0; font-family:'Product Sans', sans-serif;" id="cb-bank-bal">₹ 0</div>

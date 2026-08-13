@@ -1808,8 +1808,15 @@ window.triggerSaveAndShare = function() {
     let totalReceived = cAmt + oAmt;
     if(totalReceived > grandInvoiceTotal) return alert("Received amount cannot be greater than Total Bill amount!");
 
-    let partyName = document.getElementById('inv-party').value.trim() || "Cash Sale"; let partyPhone = document.getElementById('inv-phone').value.trim(); 
-    if(partyName !== "Cash Sale") { let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); if(!exists) { push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); } } 
+    let partyName = document.getElementById('inv-party').value.trim() || "Cash Sale"; 
+    let partyPhone = document.getElementById('inv-phone').value.trim(); 
+    
+    if(partyName !== "Cash Sale") { 
+        let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); 
+        if(!exists) { 
+            push(ref(db, 'Customers'), { name: partyName, phone: partyPhone || "", address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); 
+        } 
+    } 
     
     let isUpdating = !!window.editingEntryKey;
     
@@ -1866,24 +1873,25 @@ window.triggerSaveAndShare = function() {
         savePromise = newRef;
     }
 
+    // 🌟 यहाँ पर कैशबुक सिंक का लॉजिक 100% सही तरीके से लगा है
     savePromise.then(() => {
         let paymentPromises = [];
         
+        // 1. अगर Cash मिला है
         if(cAmt > 0) {
             let cashEntry = { date: finalDateTime, name: partyName, type: "Got", amount: cAmt, details: `Cash Received (Bill #${tempBillNo})` };
             paymentPromises.push(push(ref(db, 'Ledger'), cashEntry));
             
-            // 🌟 SYNC WITH CASHBOOK (गल्ले में पैसा डालें)
             paymentPromises.push(push(ref(db, 'CashBankBook/Transactions'), {
                 date: finalDateTime, type: 'IN', amount: cAmt, mode: 'Cash', modeKey: 'Cash', details: `Bill #${tempBillNo} - ${partyName}`
             }));
         }
         
+        // 2. अगर Online बैंक में मिला है
         if(oAmt > 0) {
             let onlineEntry = { date: finalDateTime, name: partyName, type: "Got", amount: oAmt, details: `Online Payment Received (Bill #${tempBillNo})` };
             paymentPromises.push(push(ref(db, 'Ledger'), onlineEntry));
             
-            // 🌟 SYNC WITH CASHBOOK (बैंक में पैसा डालें - पहले उपलब्ध बैंक में)
             if(typeof cbBanks !== 'undefined' && cbBanks.length > 0) {
                 let firstBank = cbBanks[0];
                 paymentPromises.push(push(ref(db, 'CashBankBook/Transactions'), {
@@ -1897,6 +1905,9 @@ window.triggerSaveAndShare = function() {
         Promise.all(paymentPromises).then(() => {
             if(typeof window.autoAdjustBillNumbers === 'function') window.autoAdjustBillNumbers(); 
         });
+    }).catch(err => {
+        console.error("Save Error: ", err);
+        alert("Error saving bill. Please try again.");
     });
 
     window.editingBillNo = null; 

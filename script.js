@@ -1922,7 +1922,7 @@ window.triggerSaveAndShare = function() {
             if(typeof window.autoAdjustBillNumbers === 'function') window.autoAdjustBillNumbers(); 
         });
     });
-    .catch(err => {
+    }).catch(err => {
         console.error("Save Error: ", err);
         alert("Error saving bill. Please try again.");
     });

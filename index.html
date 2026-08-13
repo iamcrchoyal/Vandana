@@ -684,10 +684,17 @@
                         <button id="pm-online" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('online')">📱 Online</button>
                         <button id="pm-half" class="btn-outline" style="flex:1; min-width:45%; padding:12px; font-size:13px; border-radius:12px; font-weight:700;" onclick="setPaymentMode('half')">🌗 Split / Half</button>
                     </div>
+                    <div id="online-bank-select-container" style="display:none; margin-bottom:12px; background:#e8f0fe; padding:10px 12px; border-radius:12px; border:1px solid #c2e7ff;">
+                        <label class="form-label" style="font-size:11px; font-weight:700; color:var(--primary-dark); margin-bottom:6px;">🏦 पैसा किस बैंक में आया?</label>
+                        <select id="inv-online-bank" class="form-control" style="border-color:var(--primary); background:white; font-weight:600; color:var(--primary-dark); box-shadow:0 2px 4px rgba(10,86,208,0.05);">
+                            <!-- Banks will load here -->
+                        </select>
+                    </div>
+
                     <div id="half-payment-container" style="display:none; margin-bottom:16px; background:#fdf4e5; padding:12px; border-radius:12px; border:1px solid #f29900;">
                         <div class="input-btn-group">
-                            <input type="number" class="form-control" id="inv-cash-amt" placeholder="Cash Paid (₹)" style="border-radius:10px; border-color:#f29900;" onkeyup="updateDynamicQR()">
-                            <input type="number" class="form-control" id="inv-online-amt" placeholder="Online Paid (₹)" style="border-radius:10px; border-color:#f29900;" onkeyup="updateDynamicQR()">
+                            <input type="number" class="form-control" id="inv-cash-amt" placeholder="Cash Paid (गल्ले में) ₹" style="border-radius:10px; border-color:#f29900;" onkeyup="updateDynamicQR()">
+                            <input type="number" class="form-control" id="inv-online-amt" placeholder="Online Paid (बैंक में) ₹" style="border-radius:10px; border-color:#f29900;" onkeyup="updateDynamicQR()">
                         </div>
                     </div>
                     

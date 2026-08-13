@@ -1590,16 +1590,28 @@ window.setPaymentMode = function(mode) {
 
     document.getElementById('half-payment-container').style.display = 'none';
     document.getElementById('pos-dynamic-qr-box').style.display = 'none';
+    let bankSelectContainer = document.getElementById('online-bank-select-container');
+    if(bankSelectContainer) bankSelectContainer.style.display = 'none';
 
     if(mode === 'pending') {
         if(btnPending) { btnPending.style.background = '#fdf2f2'; btnPending.style.color = 'var(--danger)'; btnPending.style.borderColor = 'var(--danger)'; }
     } else if(mode === 'cash') {
         if(btnCash) { btnCash.style.background = '#e6f4ea'; btnCash.style.color = 'var(--success)'; btnCash.style.borderColor = 'var(--success)'; }
-    } else if(mode === 'online') {
-        if(btnOnline) { btnOnline.style.background = '#e8f0fe'; btnOnline.style.color = 'var(--primary)'; btnOnline.style.borderColor = 'var(--primary)'; }
-    } else if(mode === 'half') {
-        if(btnHalf) { btnHalf.style.background = '#fdf4e5'; btnHalf.style.color = '#b36b00'; btnHalf.style.borderColor = '#f29900'; }
-        document.getElementById('half-payment-container').style.display = 'flex';
+    } else if(mode === 'online' || mode === 'half') {
+        if(mode === 'online' && btnOnline) { btnOnline.style.background = '#e8f0fe'; btnOnline.style.color = 'var(--primary)'; btnOnline.style.borderColor = 'var(--primary)'; }
+        if(mode === 'half' && btnHalf) { btnHalf.style.background = '#fdf4e5'; btnHalf.style.color = '#b36b00'; btnHalf.style.borderColor = '#f29900'; document.getElementById('half-payment-container').style.display = 'flex'; }
+        
+        // Load Banks dynamically
+        if(bankSelectContainer) {
+            let bankHtml = "";
+            if(typeof cbBanks !== 'undefined' && cbBanks.length > 0) {
+                cbBanks.forEach(b => bankHtml += `<option value="${b.key}">${b.name}</option>`);
+            } else {
+                bankHtml = `<option value="">No Bank Added - Please add bank in Cashbook</option>`;
+            }
+            document.getElementById('inv-online-bank').innerHTML = bankHtml;
+            bankSelectContainer.style.display = 'block';
+        }
     }
     window.updateDynamicQR();
 }
@@ -1874,37 +1886,42 @@ window.triggerSaveAndShare = function() {
     }
 
     // 🌟 यहाँ पर कैशबुक सिंक का लॉजिक 100% सही तरीके से लगा है
+    // Get Selected Bank for POS
+    let selectedBankKey = document.getElementById('inv-online-bank') ? document.getElementById('inv-online-bank').value : '';
+    let selectedBankObj = typeof cbBanks !== 'undefined' ? cbBanks.find(b => b.key === selectedBankKey) : null;
+    let bankName = selectedBankObj ? selectedBankObj.name : "Bank";
+
     savePromise.then(() => {
         let paymentPromises = [];
-        
-        // 1. अगर Cash मिला है
         if(cAmt > 0) {
+            // 1. Ledger Entry
             let cashEntry = { date: finalDateTime, name: partyName, type: "Got", amount: cAmt, details: `Cash Received (Bill #${tempBillNo})` };
             paymentPromises.push(push(ref(db, 'Ledger'), cashEntry));
             
+            // 2. Cashbook Entry (गल्ले में)
             paymentPromises.push(push(ref(db, 'CashBankBook/Transactions'), {
-                date: finalDateTime, type: 'IN', amount: cAmt, mode: 'Cash', modeKey: 'Cash', details: `Bill #${tempBillNo} - ${partyName}`
+                date: finalDateTime, type: 'IN', amount: cAmt, mode: 'Cash', modeKey: 'Cash', details: `Bill Payment - ${partyName} (#${tempBillNo})`
             }));
         }
-        
-        // 2. अगर Online बैंक में मिला है
         if(oAmt > 0) {
+            // 1. Ledger Entry
             let onlineEntry = { date: finalDateTime, name: partyName, type: "Got", amount: oAmt, details: `Online Payment Received (Bill #${tempBillNo})` };
             paymentPromises.push(push(ref(db, 'Ledger'), onlineEntry));
-            
-            if(typeof cbBanks !== 'undefined' && cbBanks.length > 0) {
-                let firstBank = cbBanks[0];
+
+            // 2. Cashbook Entry (बैंक में)
+            if (selectedBankObj) {
                 paymentPromises.push(push(ref(db, 'CashBankBook/Transactions'), {
-                    date: finalDateTime, type: 'IN', amount: oAmt, mode: firstBank.name, modeKey: firstBank.key, details: `Bill #${tempBillNo} - ${partyName}`
+                    date: finalDateTime, type: 'IN', amount: oAmt, mode: bankName, modeKey: selectedBankKey, details: `Online Bill Payment - ${partyName} (#${tempBillNo})`
                 }));
-                let newBal = firstBank.balance + oAmt;
-                paymentPromises.push(update(ref(db, 'CashBankBook/Banks/' + firstBank.key), { balance: newBal }));
+                let newBal = (parseFloat(selectedBankObj.balance) || 0) + oAmt;
+                paymentPromises.push(update(ref(db, 'CashBankBook/Banks/' + selectedBankKey), { balance: newBal }));
             }
         }
 
         Promise.all(paymentPromises).then(() => {
             if(typeof window.autoAdjustBillNumbers === 'function') window.autoAdjustBillNumbers(); 
         });
+    });
     }).catch(err => {
         console.error("Save Error: ", err);
         alert("Error saving bill. Please try again.");
@@ -2494,6 +2511,14 @@ window.renderPendingRequests = function() {
         return;
     }
     
+    // Create Bank Options
+    let bankOptionsHtml = `<option value="Cash">Cash (गल्ला)</option>`;
+    if(typeof cbBanks !== 'undefined') {
+        cbBanks.forEach(b => {
+            bankOptionsHtml += `<option value="${b.key}">${b.name} (Bank)</option>`;
+        });
+    }
+
     let html = "";
     allPendingRequests.forEach(req => {
         let d = new Date(req.date);
@@ -2517,9 +2542,17 @@ window.renderPendingRequests = function() {
                 <strong>Details:</strong> ${req.details || 'N/A'} <br>
                 <span style="font-size:11px; color:#0a56d0;">(Sent by: ${req.requestedBy || 'Unknown'})</span>
             </div>
+            
+            <div style="margin-bottom:12px; background:#f0f4f9; padding:10px; border-radius:12px; border:1px solid #c2e7ff;">
+                <label style="font-size:11px; font-weight:700; color:var(--primary-dark); margin-bottom:6px; display:block;">🏦 पैसा कहाँ जमा करना है?</label>
+                <select id="approve-mode-${req.key}" class="form-control" style="padding:10px; border-radius:8px; border-color:var(--primary); font-size:13px; background:white; font-weight:600; color:var(--primary-dark);">
+                    ${bankOptionsHtml}
+                </select>
+            </div>
+
             <div style="display:flex; gap:10px;">
                 <button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger); padding:10px; border-radius:12px; font-size:13px; font-weight:600;" onclick="rejectRequest('${req.key}')">❌ Reject</button>
-                <button class="btn-submit" style="flex:1; background:var(--success); padding:10px; border-radius:12px; font-size:13px; font-weight:600;" onclick="approveRequest('${req.key}')">✅ Approve</button>
+                <button class="btn-submit" style="flex:1; background:var(--success); padding:10px; border-radius:12px; font-size:13px; font-weight:600; box-shadow:0 4px 10px rgba(20, 108, 46, 0.2);" onclick="approveRequest('${req.key}')">✅ Approve</button>
             </div>
         </div>`;
     });
@@ -2527,18 +2560,51 @@ window.renderPendingRequests = function() {
 }
 
 window.approveRequest = function(key) {
-    if(!confirm("क्या आप इस रिक्वेस्ट को अप्रूव करके लेजर में डालना चाहते हैं?")) return;
+    if(!confirm("क्या आप इस रिक्वेस्ट को अप्रूव करके लेजर और कैशबुक में जोड़ना चाहते हैं?")) return;
     let req = allPendingRequests.find(r => r.key === key);
     if(!req) return;
-    
+
+    let modeSelect = document.getElementById(`approve-mode-${key}`);
+    let selectedModeKey = modeSelect ? modeSelect.value : 'Cash';
+    let modeName = "Cash";
+
     let newEntry = { ...req };
     delete newEntry.key;
     delete newEntry.status;
     delete newEntry.requestedBy;
     
-    push(ref(db, 'Ledger'), newEntry).then(() => {
-        remove(ref(db, 'PendingRequests/' + key));
-        alert("रिक्वेस्ट सफलतापूर्वक लेजर में ऐड हो गई है! ✅");
+    let promises = [];
+    
+    // 1. Add to Ledger
+    promises.push(push(ref(db, 'Ledger'), newEntry));
+
+    // 2. Add to Cashbook & Update Bank Balance
+    let amt = parseFloat(req.amount) || 0;
+    let cbType = req.type === 'Got' ? 'IN' : 'OUT'; // Customer pays, so it's 'Got' (Money IN)
+    
+    if (selectedModeKey !== 'Cash') {
+        let bank = typeof cbBanks !== 'undefined' ? cbBanks.find(b => b.key === selectedModeKey) : null;
+        if (bank) {
+            modeName = bank.name;
+            let newBal = req.type === 'Got' ? (bank.balance + amt) : (bank.balance - amt);
+            promises.push(update(ref(db, 'CashBankBook/Banks/' + bank.key), { balance: newBal }));
+        }
+    }
+    
+    promises.push(push(ref(db, 'CashBankBook/Transactions'), {
+        date: req.date || new Date().toISOString(),
+        type: cbType,
+        amount: amt,
+        mode: modeName,
+        modeKey: selectedModeKey,
+        details: `Customer Online Payment - ${req.name}`
+    }));
+
+    // 3. Remove from PendingRequests
+    promises.push(remove(ref(db, 'PendingRequests/' + key)));
+
+    Promise.all(promises).then(() => {
+        alert("रिक्वेस्ट सफलतापूर्वक अप्रूव और कैशबुक में ऐड हो गई है! ✅");
     }).catch(err => alert("Error: " + err.message));
 }
 

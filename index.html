@@ -2905,9 +2905,7 @@
         window.filterStockList = function(inputId, listId) { let filter = document.getElementById(inputId).value.toUpperCase(); let rows = document.querySelectorAll('#' + listId + ' .stock-row'); rows.forEach(row => { let name = row.getAttribute('data-name'); row.style.display = name.includes(filter) ? '' : 'none'; }); }
         
         function getGridCols(count) {
-            if(count === 4) return 2;
-            if(count === 6 || count === 9) return 3;
-            return Math.min(4, Math.max(2, count));
+            return 2;
         }
 
         function getLast5Tx(cat, item) {
@@ -2940,7 +2938,7 @@
                 let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let data = smartInventory[key]; 
                 let coneQty = typeof data === 'object' ? data.cone : data;
                 let kgQty = typeof data === 'object' ? data.kg : 0;
-                let displayQty = typeof data === 'object' ? (kgQty > 0 ? `${coneQty} Cone, ${kgQty} KG` : `${coneQty} Cone`) : `${coneQty} Box`;
+                let displayQty = typeof data === 'object' ? (kgQty > 0 ? `${coneQty} Cone, ${kgQty} KG` : `${coneQty} Cone`) : `${coneQty} Cone`;
 
                 if (htmlMaps[cat] !== undefined) {
                     let txList = getLast5Tx(cat, shade);

@@ -1552,36 +1552,58 @@
                 }
             };
 
-            window.renderCategoryGrid = function() {
-                let grid = document.getElementById('dynamic-category-grid');
-                if(!grid) return;
-                let html = "";
-                window.appCategories.forEach(cat => {
-                    if(!cat.isDeleted) {
-                        let pageAttr = "";
-                        if (['thread', 'zari', 'nylon', 'cording', 'bobbin'].includes(cat.id)) {
-                            pageAttr = `onclick="openPage('${cat.page}')"`;
-                        } else {
-                            pageAttr = `onclick="openDynamicStockPage('${cat.dbKey}', '${cat.name}')"`;
-                        }
+            window.renderCategoryGrid = function() { 
+                let grid = document.getElementById('dynamic-category-grid'); 
+                if(!grid) return; 
+                let html = ""; 
 
-                        // Added 'sortable-cat' and 'data-id' for Drag & Drop
-                        html += `
-                        <div class="stock-grid-card sortable-cat" data-id="${cat.id}" ${pageAttr}>
-                            <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none;">
-                                <div class="sg-icon-wrap" style="background:${cat.bg || '#e8f0fe'}; color:${cat.color || 'var(--primary)'}; margin: 0 auto 6px auto;">
-                                    <span class="material-symbols-rounded">${cat.icon || 'category'}</span>
-                                </div>
-                                <div class="sg-title">${cat.name}</div>
-                                <div class="sg-value-wrap">Total Cones: <span class="sg-value" id="stock-val-${cat.id}" style="color:${cat.color || 'var(--primary)'};">0</span></div>
-                            </div>
-                        </div>`;
-                    }
+                // 🌟 AUTO-SORT LOGIC: Calculate usage based on stock amount
+                let usageCounts = {};
+                for (let key in smartInventory) {
+                    let cat = key.split("_")[0];
+                    let data = smartInventory[key];
+                    let coneQty = typeof data === 'object' ? (parseFloat(data.cone) || 0) : (parseFloat(data) || 0);
+                    usageCounts[cat] = (usageCounts[cat] || 0) + coneQty;
+                }
+
+                // Temporary array to sort active categories
+                let sortedCats = [...window.appCategories].filter(c => !c.isDeleted);
+                sortedCats.sort((a, b) => {
+                    let stockA = usageCounts[a.dbKey] || 0;
+                    let stockB = usageCounts[b.dbKey] || 0;
+                    return stockB - stockA; // Jiska stock sabse jyada, wo sabse upar
                 });
+
+                sortedCats.forEach(cat => { 
+                    let pageAttr = ""; 
+                    if (['thread', 'zari', 'nylon', 'cording', 'bobbin'].includes(cat.id)) { 
+                        pageAttr = `onclick="openPage('${cat.page}')"`; 
+                    } else { 
+                        pageAttr = `onclick="openDynamicStockPage('${cat.dbKey}', '${cat.name}')"`; 
+                    } 
+
+                    // Show image if available, else show icon
+                    let iconHtml = cat.image ? 
+                        `<img src="${cat.image}" style="width:100%; height:100%; border-radius:10px; object-fit:cover;">` : 
+                        `<span class="material-symbols-rounded">${cat.icon || 'category'}</span>`;
+
+                    let bgStyle = cat.image ? `background:transparent;` : `background:${cat.bg || '#e8f0fe'}; color:${cat.color || 'var(--primary)'};`;
+
+                    html += `
+                    <div class="stock-grid-card" data-id="${cat.id}" ${pageAttr}>
+                        <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none;">
+                            <div class="sg-icon-wrap" style="${bgStyle} margin: 0 auto 6px auto;">
+                                ${iconHtml}
+                            </div>
+                            <div class="sg-title">${cat.name}</div>
+                            <div class="sg-value-wrap">Total Cones: <span class="sg-value" id="stock-val-${cat.id}" style="color:${cat.color || 'var(--primary)'};">0</span></div>
+                        </div>
+                    </div>`; 
+                }); 
                 
-                // Low Stock Card ('no-sort' class added so it doesn't move)
+                // Low Stock Card (Hamesha last me rahega)
                 html += `
-                    <div class="stock-grid-card no-sort" onclick="openPage('lowstock-page')" style="border-color: #f8cbcb; background: #fffcfc;">
+                    <div class="stock-grid-card" onclick="openPage('lowstock-page')" style="border-color: #f8cbcb; background: #fffcfc;">
                         <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none;">
                             <div class="sg-icon-wrap" style="background:#fdf2f2; color:var(--danger); margin: 0 auto 6px auto;">
                                 <span class="material-symbols-rounded">warning</span>
@@ -1590,62 +1612,36 @@
                             <div class="sg-value-wrap" style="background:#fdf2f2;">Total Cones: <span class="sg-value" id="stock-val-lowstock" style="color:var(--danger);">0</span></div>
                         </div>
                     </div>
-                `;
-                grid.innerHTML = html;
-                if(typeof window.renderInventoryList === 'function') window.renderInventoryList();
-
-                // 🌟 DRAG AND DROP INITIALIZATION 🌟
-                if(window.catSortable) { window.catSortable.destroy(); }
-                window.catSortable = new Sortable(grid, {
-                    animation: 200,             // Smooth animation
-                    delay: 150,                 // 150ms hold karne par drag start hoga (Click vs Drag)
-                    delayOnTouchOnly: true,     // Delay sirf mobile touch par kaam karega
-                    filter: '.no-sort',         // Low Stock card move nahi hoga
-                    onEnd: function (evt) {
-                        // Nayi list ka order save karein
-                        let newOrderIds = [];
-                        grid.querySelectorAll('.sortable-cat').forEach(el => {
-                            newOrderIds.push(el.getAttribute('data-id'));
-                        });
-                        
-                        let newCatArray = [];
-                        // 1. Naye order ke hisab se category array banayein
-                        newOrderIds.forEach(id => {
-                            let c = window.appCategories.find(x => x.id === id);
-                            if(c) newCatArray.push(c);
-                        });
-                        
-                        // 2. Jo deleted categories hain unhe end me add kar dein (taki database me safe rahein)
-                        window.appCategories.forEach(c => {
-                            if(c.isDeleted) newCatArray.push(c);
-                        });
-
-                        // 3. Update and Save
-                        window.appCategories = newCatArray;
-                        localStorage.setItem('v_categories', JSON.stringify(window.appCategories));
-                        
-                        // Dropdowns aur Categories list ko naye order me update karein
-                        if(typeof window.updateCategoryDropdowns === 'function') window.updateCategoryDropdowns();
-                        if(typeof window.renderManageCategoriesList === 'function') window.renderManageCategoriesList();
-                    }
-                });
+                `; 
+                grid.innerHTML = html; 
+                if(typeof window.renderInventoryList === 'function') window.renderInventoryList(); 
             };
 
-            window.renderManageCategoriesList = function() {
-                let container = document.getElementById('manage-categories-list');
-                if(!container) return;
-                let html = "";
-                let activeCats = window.appCategories.filter(c => !c.isDeleted);
-                if(activeCats.length === 0) {
-                    container.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No active categories found.</div>`;
-                    return;
-                }
-                activeCats.forEach(cat => {
+            window.renderManageCategoriesList = function() { 
+                let container = document.getElementById('manage-categories-list'); 
+                if(!container) return; 
+                let html = ""; 
+                let activeCats = window.appCategories.filter(c => !c.isDeleted); 
+                if(activeCats.length === 0) { 
+                    container.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No active categories found.</div>`; 
+                    return; 
+                } 
+                activeCats.forEach(cat => { 
+                    let iconHtml = cat.image ? 
+                        `<img src="${cat.image}" style="width:100%; height:100%; border-radius:10px; object-fit:cover;">` : 
+                        `<div style="width:100%; height:100%; border-radius:10px; background:${cat.bg || '#e8f0fe'}; color:${cat.color || 'var(--primary)'}; display:flex; align-items:center; justify-content:center;">
+                            <span class="material-symbols-rounded" style="font-size:20px;">${cat.icon || 'category'}</span>
+                         </div>`;
+
                     html += `
                     <div class="form-panel" style="margin-bottom:10px; border-radius:14px; padding:12px; display:flex; align-items:center; justify-content:space-between; gap:10px; box-shadow:0 1px 3px rgba(0,0,0,0.02);">
                         <div style="display:flex; align-items:center; gap:10px; flex:1;">
-                            <div style="width:36px; height:36px; border-radius:10px; background:${cat.bg || '#e8f0fe'}; color:${cat.color || 'var(--primary)'}; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                                <span class="material-symbols-rounded" style="font-size:20px;">${cat.icon || 'category'}</span>
+                            <div style="position:relative; width:40px; height:40px; flex-shrink:0; cursor:pointer;" onclick="document.getElementById('cat-img-${cat.id}').click()">
+                                ${iconHtml}
+                                <div style="position:absolute; bottom:-4px; right:-4px; background:white; border-radius:50%; width:18px; height:18px; display:flex; justify-content:center; align-items:center; border:1px solid var(--border); box-shadow:0 1px 2px rgba(0,0,0,0.1);">
+                                    <span class="material-symbols-rounded" style="font-size:11px; color:var(--primary);">edit</span>
+                                </div>
+                                <input type="file" id="cat-img-${cat.id}" accept="image/*" style="display:none;" onchange="uploadCategoryPhoto(event, '${cat.id}')">
                             </div>
                             <input type="text" id="edit-cat-input-${cat.id}" class="form-control" value="${cat.name}" style="padding:8px 10px; font-size:13px; font-weight:600; border-radius:8px;">
                         </div>
@@ -1655,11 +1651,46 @@
                                 <span class="material-symbols-rounded" style="font-size:16px;">delete</span>
                             </button>
                         </div>
-                    </div>`;
-                });
-                container.innerHTML = html;
+                    </div>`; 
+                }); 
+                container.innerHTML = html; 
             };
 
+           window.uploadCategoryPhoto = function(event, id) {
+                let file = event.target.files[0];
+                if(!file) return;
+
+                if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Photo compress ho rahi hai...");
+
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let img = new Image();
+                    img.onload = function() {
+                        // Canvas se photo ko chhota karna taki storage na bhare
+                        let canvas = document.createElement('canvas');
+                        let ctx = canvas.getContext('2d');
+                        canvas.width = 120; canvas.height = 120;
+                        let size = Math.min(img.width, img.height);
+                        let sx = (img.width - size) / 2;
+                        let sy = (img.height - size) / 2;
+                        ctx.drawImage(img, sx, sy, size, size, 0, 0, 120, 120);
+                        let miniBase64 = canvas.toDataURL('image/jpeg', 0.6);
+
+                        let catIndex = window.appCategories.findIndex(c => c.id === id);
+                        if(catIndex > -1) {
+                            window.appCategories[catIndex].image = miniBase64;
+                            localStorage.setItem('v_categories', JSON.stringify(window.appCategories));
+                            
+                            window.renderCategoryGrid();
+                            window.renderManageCategoriesList();
+                            if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Category Photo Updated!");
+                        }
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+		
             window.addNewCategoryFromPage = function() {
                 let nameInput = document.getElementById('new-cat-name');
                 let name = nameInput ? nameInput.value.trim() : "";

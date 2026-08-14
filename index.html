@@ -1618,6 +1618,17 @@
                 if(typeof window.renderInventoryList === 'function') window.renderInventoryList(); 
             };
 
+            window.activeEditCatId = null;
+
+            window.toggleEditCategory = function(id) {
+                if (window.activeEditCatId === id) {
+                    window.activeEditCatId = null;
+                } else {
+                    window.activeEditCatId = id;
+                }
+                window.renderManageCategoriesList();
+            };
+
             window.renderManageCategoriesList = function() { 
                 let container = document.getElementById('manage-categories-list'); 
                 if(!container) return; 
@@ -1628,46 +1639,73 @@
                     return; 
                 } 
                 activeCats.forEach(cat => { 
+                    let isExpanded = (window.activeEditCatId === cat.id);
+
                     let iconHtml = cat.image ? 
                         `<img src="${cat.image}" style="width:100%; height:100%; border-radius:10px; object-fit:cover;">` : 
                         `<div style="width:100%; height:100%; border-radius:10px; background:${cat.bg || '#e8f0fe'}; color:${cat.color || 'var(--primary)'}; display:flex; align-items:center; justify-content:center;">
                             <span class="material-symbols-rounded" style="font-size:20px;">${cat.icon || 'category'}</span>
                          </div>`;
 
-                    html += `
-                    <div class="form-panel" style="margin-bottom:16px; border-radius:16px; padding:16px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e0e2e0; background:white;">
-                        <div style="display:flex; gap:16px; margin-bottom: 16px; align-items: flex-start;">
-                            
-                            <div style="position:relative; width:64px; height:64px; flex-shrink:0; cursor:pointer;" onclick="document.getElementById('cat-img-${cat.id}').click()">
-                                ${iconHtml}
-                                <div style="position:absolute; bottom:-6px; right:-6px; background:var(--primary); color:white; border-radius:50%; width:24px; height:24px; display:flex; justify-content:center; align-items:center; border:2px solid white; box-shadow:0 2px 5px rgba(0,0,0,0.2);">
-                                    <span class="material-symbols-rounded" style="font-size:14px;">edit</span>
-                                </div>
-                                <input type="file" id="cat-img-${cat.id}" accept="image/*" style="display:none;" onchange="uploadCategoryPhoto(event, '${cat.id}')">
-                            </div>
-                            
-                            <div style="flex:1; display:flex; flex-direction:column; gap:12px;">
-                                <div>
-                                    <label style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:4px; display:block; letter-spacing:0.5px;">CATEGORY NAME</label>
-                                    <input type="text" id="edit-cat-input-${cat.id}" class="form-control" value="${cat.name}" style="padding:10px 14px; font-size:15px; font-weight:600; border-radius:10px; width:100%; box-sizing:border-box;">
-                                </div>
-                                <div>
-                                    <label style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:4px; display:block; letter-spacing:0.5px;">LOW STOCK LIMIT</label>
-                                    <input type="number" id="edit-cat-limit-${cat.id}" class="form-control" value="${cat.lowStockLimit || 5}" style="padding:10px 14px; font-size:15px; font-weight:600; border-radius:10px; width:100px; box-sizing:border-box;">
-                                </div>
+                    if (isExpanded) {
+                        // ✏️ EXPANDED EDIT VIEW (Click hone par khulega)
+                        html += `
+                        <div class="form-panel" style="margin-bottom:12px; border-radius:16px; padding:16px; box-shadow:0 4px 15px rgba(10,86,208,0.12); border:2px solid var(--primary); background:white; animation:slideDown 0.2s ease-out;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid #f0f4f9; padding-bottom:8px;">
+                                <span style="font-size:12px; font-weight:700; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px;">Editing Category</span>
+                                <button onclick="toggleEditCategory('${cat.id}')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; display:flex; align-items:center; gap:4px; font-size:12px; font-weight:600;">
+                                    Close <span class="material-symbols-rounded" style="font-size:18px;">expand_less</span>
+                                </button>
                             </div>
 
-                        </div>
-                        
-                        <div style="display:flex; gap:10px; border-top:1px dashed #c2e7ff; padding-top:16px;">
-                            <button class="btn-outline" style="padding:12px 16px; font-size:14px; border-color:var(--danger); color:var(--danger); border-radius:12px; display:flex; align-items:center; justify-content:center; gap:6px; font-weight:600;" onclick="deleteCategoryInList('${cat.id}')">
-                                <span class="material-symbols-rounded" style="font-size:20px;">delete</span> Delete
-                            </button>
-                            <button class="btn-submit" style="flex:1; padding:12px 16px; font-size:14px; background:var(--primary); border-radius:12px; display:flex; align-items:center; justify-content:center; gap:6px; font-weight:600; box-shadow:0 4px 10px rgba(10,86,208,0.2);" onclick="saveCategoryInList('${cat.id}')">
-                                <span class="material-symbols-rounded" style="font-size:20px;">save</span> Save Changes
-                            </button>
-                        </div>
-                    </div>`; 
+                            <div style="display:flex; gap:16px; margin-bottom:16px; align-items:flex-start;">
+                                <div style="position:relative; width:60px; height:60px; flex-shrink:0; cursor:pointer;" onclick="document.getElementById('cat-img-${cat.id}').click()">
+                                    ${iconHtml}
+                                    <div style="position:absolute; bottom:-4px; right:-4px; background:var(--primary); color:white; border-radius:50%; width:22px; height:22px; display:flex; justify-content:center; align-items:center; border:2px solid white;">
+                                        <span class="material-symbols-rounded" style="font-size:12px;">edit</span>
+                                    </div>
+                                    <input type="file" id="cat-img-${cat.id}" accept="image/*" style="display:none;" onchange="uploadCategoryPhoto(event, '${cat.id}')">
+                                </div>
+                                
+                                <div style="flex:1; display:flex; flex-direction:column; gap:12px;">
+                                    <div>
+                                        <label style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:4px; display:block;">CATEGORY NAME</label>
+                                        <input type="text" id="edit-cat-input-${cat.id}" class="form-control" value="${cat.name}" style="padding:10px 12px; font-size:14px; font-weight:600; border-radius:10px; width:100%; box-sizing:border-box;">
+                                    </div>
+                                    <div>
+                                        <label style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:4px; display:block;">LOW STOCK LIMIT</label>
+                                        <input type="number" id="edit-cat-limit-${cat.id}" class="form-control" value="${cat.lowStockLimit || 5}" style="padding:10px 12px; font-size:14px; font-weight:600; border-radius:10px; width:100px; box-sizing:border-box;">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="display:flex; gap:10px; border-top:1px dashed #c2e7ff; padding-top:14px;">
+                                <button class="btn-outline" style="padding:10px 14px; font-size:13px; border-color:var(--danger); color:var(--danger); border-radius:12px; display:flex; align-items:center; justify-content:center; gap:4px; font-weight:600;" onclick="deleteCategoryInList('${cat.id}')">
+                                    <span class="material-symbols-rounded" style="font-size:18px;">delete</span> Delete
+                                </button>
+                                <button class="btn-submit" style="flex:1; padding:10px 14px; font-size:13px; background:var(--primary); border-radius:12px; display:flex; align-items:center; justify-content:center; gap:4px; font-weight:600; box-shadow:0 3px 8px rgba(10,86,208,0.2);" onclick="saveCategoryInList('${cat.id}')">
+                                    <span class="material-symbols-rounded" style="font-size:18px;">save</span> Save Changes
+                                </button>
+                            </div>
+                        </div>`;
+                    } else {
+                        // 📁 COMPACT LIST ROW VIEW (Shuru mein saare aisey dikhenge)
+                        html += `
+                        <div class="form-panel" onclick="toggleEditCategory('${cat.id}')" style="margin-bottom:10px; border-radius:14px; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.03); border:1px solid #e0e2e0; background:white; transition:all 0.2s ease;">
+                            <div style="display:flex; align-items:center; gap:14px; flex:1; min-width:0;">
+                                <div style="width:40px; height:40px; flex-shrink:0;">
+                                    ${iconHtml}
+                                </div>
+                                <div style="flex:1; min-width:0;">
+                                    <div style="font-size:15px; font-weight:700; color:var(--text-dark); font-family:'Product Sans', sans-serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cat.name}</div>
+                                    <div style="font-size:11px; color:var(--text-muted); font-weight:500;">Low Stock Limit: <span style="font-weight:700; color:var(--primary);">${cat.lowStockLimit || 5}</span></div>
+                                </div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:4px; color:var(--primary); font-size:12px; font-weight:600; background:#e8f0fe; padding:6px 12px; border-radius:20px; flex-shrink:0;">
+                                Edit <span class="material-symbols-rounded" style="font-size:16px;">expand_more</span>
+                            </div>
+                        </div>`;
+                    }
                 }); 
                 container.innerHTML = html; 
             };
@@ -1878,10 +1916,11 @@
                         if(pageHeader) pageHeader.innerText = newName;
                     }
 
+                    window.activeEditCatId = null; // Save hone par card wapas compact list ban jayega
                     window.renderCategoryGrid();
                     window.renderManageCategoriesList();
                     window.updateCategoryDropdowns();
-                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Category Name Updated!");
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Category Saved Successfully!");
                 }
             };
 

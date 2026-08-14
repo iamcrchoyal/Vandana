@@ -14,6 +14,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
     <style>
         /* ================= PREMIUM GOOGLE ONE UI ================= */
@@ -1613,7 +1614,6 @@
                 let html = "";
                 window.appCategories.forEach(cat => {
                     if(!cat.isDeleted) {
-                        // Agar naya page banaya hai, to dynamic stock page khulega
                         let pageAttr = "";
                         if (['thread', 'zari', 'nylon', 'cording', 'bobbin'].includes(cat.id)) {
                             pageAttr = `onclick="openPage('${cat.page}')"`;
@@ -1621,9 +1621,10 @@
                             pageAttr = `onclick="openDynamicStockPage('${cat.dbKey}', '${cat.name}')"`;
                         }
 
+                        // Added 'sortable-cat' and 'data-id' for Drag & Drop
                         html += `
-                        <div class="stock-grid-card" ${pageAttr}>
-                            <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                        <div class="stock-grid-card sortable-cat" data-id="${cat.id}" ${pageAttr}>
+                            <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none;">
                                 <div class="sg-icon-wrap" style="background:${cat.bg || '#e8f0fe'}; color:${cat.color || 'var(--primary)'}; margin: 0 auto 6px auto;">
                                     <span class="material-symbols-rounded">${cat.icon || 'category'}</span>
                                 </div>
@@ -1634,10 +1635,10 @@
                     }
                 });
                 
-                // Low Stock Card
+                // Low Stock Card ('no-sort' class added so it doesn't move)
                 html += `
-                    <div class="stock-grid-card" onclick="openPage('lowstock-page')" style="border-color: #f8cbcb; background: #fffcfc;">
-                        <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                    <div class="stock-grid-card no-sort" onclick="openPage('lowstock-page')" style="border-color: #f8cbcb; background: #fffcfc;">
+                        <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none;">
                             <div class="sg-icon-wrap" style="background:#fdf2f2; color:var(--danger); margin: 0 auto 6px auto;">
                                 <span class="material-symbols-rounded">warning</span>
                             </div>
@@ -1648,6 +1649,42 @@
                 `;
                 grid.innerHTML = html;
                 if(typeof window.renderInventoryList === 'function') window.renderInventoryList();
+
+                // 🌟 DRAG AND DROP INITIALIZATION 🌟
+                if(window.catSortable) { window.catSortable.destroy(); }
+                window.catSortable = new Sortable(grid, {
+                    animation: 200,             // Smooth animation
+                    delay: 150,                 // 150ms hold karne par drag start hoga (Click vs Drag)
+                    delayOnTouchOnly: true,     // Delay sirf mobile touch par kaam karega
+                    filter: '.no-sort',         // Low Stock card move nahi hoga
+                    onEnd: function (evt) {
+                        // Nayi list ka order save karein
+                        let newOrderIds = [];
+                        grid.querySelectorAll('.sortable-cat').forEach(el => {
+                            newOrderIds.push(el.getAttribute('data-id'));
+                        });
+                        
+                        let newCatArray = [];
+                        // 1. Naye order ke hisab se category array banayein
+                        newOrderIds.forEach(id => {
+                            let c = window.appCategories.find(x => x.id === id);
+                            if(c) newCatArray.push(c);
+                        });
+                        
+                        // 2. Jo deleted categories hain unhe end me add kar dein (taki database me safe rahein)
+                        window.appCategories.forEach(c => {
+                            if(c.isDeleted) newCatArray.push(c);
+                        });
+
+                        // 3. Update and Save
+                        window.appCategories = newCatArray;
+                        localStorage.setItem('v_categories', JSON.stringify(window.appCategories));
+                        
+                        // Dropdowns aur Categories list ko naye order me update karein
+                        if(typeof window.updateCategoryDropdowns === 'function') window.updateCategoryDropdowns();
+                        if(typeof window.renderManageCategoriesList === 'function') window.renderManageCategoriesList();
+                    }
+                });
             };
 
             window.renderManageCategoriesList = function() {

@@ -1786,11 +1786,6 @@
 
                 let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
                 
-                for (let key in smartInventory) { 
-                    let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let data = smartInventory[key]; 
-                    let coneQty = typeof data === 'object' ? data.cone : data;
-                    let kgQty = typeof data === 'object' ? data.kg : 0;
-                    let displayQty = typeof data === 'object' ? (kgQty > 0 ? `${coneQty} Cone, ${kgQty} KG` : `${coneQty} Cone`) : `${coneQty} Cone`;
 
                     if (htmlMaps[cat] !== undefined) {
                         let txList = getLast5Tx(cat, shade);
@@ -3357,13 +3352,21 @@
             let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
             
             for (let key in smartInventory) { 
-                let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let data = smartInventory[key]; 
-                let coneQty = typeof data === 'object' ? data.cone : data;
-                let kgQty = typeof data === 'object' ? data.kg : 0;
-                let displayQty = typeof data === 'object' ? (kgQty > 0 ? `${coneQty} Cone, ${kgQty} KG` : `${coneQty} Cone`) : `${coneQty} Cone`;
+                    let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let data = smartInventory[key]; 
+                    
+                    // 🌟 FIXED: Data ko zabardasti 'Number' me convert karega taaki [object Object] ya 000 error na aaye
+                    let coneQty = 0;
+                    let kgQty = 0;
+                    if(typeof data === 'object' && data !== null) {
+                        coneQty = parseFloat(data.cone) || 0;
+                        kgQty = parseFloat(data.kg) || 0;
+                    } else {
+                        coneQty = parseFloat(data) || 0;
+                    }
+                    let displayQty = kgQty > 0 ? `${coneQty} Cone, ${kgQty} KG` : `${coneQty} Cone`;
 
-                if (htmlMaps[cat] !== undefined) {
-                    let txList = getLast5Tx(cat, shade);
+                    if (htmlMaps[cat] !== undefined) {
+                        let txList = getLast5Tx(cat, shade);
                     let txHtml = "";
                     if(txList.length === 0) {
                         txHtml = `<div class="inv-tx-item" style="justify-content:center; color:gray;">No recent transactions</div>`;

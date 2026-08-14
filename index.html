@@ -1196,57 +1196,24 @@
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('items-page')">arrow_back</button><h2 class="page-title">Master Inventory</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
             <div class="stock-overview-title"><span class="material-symbols-rounded" style="font-size:18px; color:var(--primary);">category</span> STOCK CATEGORIES</div>
-            <div class="stock-grid">
-                
-                <div class="stock-grid-card" onclick="openPage('thread-stock-page')">
-                    <div class="sg-icon-wrap" style="background:#e8f0fe; color:var(--primary);">
-                        <span class="material-symbols-rounded">waves</span>
-                    </div>
-                    <div class="sg-title">Thread (थ्रेड)</div>
-                    <div class="sg-value-wrap">Total Cones: <span class="sg-value" id="stock-val-thread" style="color:var(--primary);">0</span></div>
+            <div class="stock-grid" id="dynamic-category-grid">
                 </div>
+        </div>
+    </div>
 
-                <div class="stock-grid-card" onclick="openPage('zari-stock-page')">
-                    <div class="sg-icon-wrap" style="background:#fff7ed; color:#f97316;">
-                        <span class="material-symbols-rounded">auto_awesome</span>
-                    </div>
-                    <div class="sg-title">Zari (जरी)</div>
-                    <div class="sg-value-wrap">Total Cones: <span class="sg-value" id="stock-val-zari" style="color:#f97316;">0</span></div>
-                </div>
-
-                <div class="stock-grid-card" onclick="openPage('nylon-stock-page')">
-                    <div class="sg-icon-wrap" style="background:#f4ebff; color:#9333ea;">
-                        <span class="material-symbols-rounded">all_inclusive</span>
-                    </div>
-                    <div class="sg-title">Nylon (नायलोन)</div>
-                    <div class="sg-value-wrap">Total Cones: <span class="sg-value" id="stock-val-nylon" style="color:#9333ea;">0</span></div>
-                </div>
-
-                <div class="stock-grid-card" onclick="openPage('cording-stock-page')">
-                    <div class="sg-icon-wrap" style="background:#e0f2fe; color:#4f46e5;">
-                        <span class="material-symbols-rounded">cyclone</span>
-                    </div>
-                    <div class="sg-title">Cording (कोडिंग)</div>
-                    <div class="sg-value-wrap">Total Cones: <span class="sg-value" id="stock-val-cording" style="color:#4f46e5;">0</span></div>
-                </div>
-
-                <div class="stock-grid-card" onclick="openPage('bobbin-stock-page')">
-                    <div class="sg-icon-wrap" style="background:#e6f4ea; color:var(--success);">
-                        <span class="material-symbols-rounded">radio_button_checked</span>
-                    </div>
-                    <div class="sg-title">Bobbin (बोबिन)</div>
-                    <div class="sg-value-wrap">Total Cones: <span class="sg-value" id="stock-val-bobbin" style="color:var(--success);">0</span></div>
-                </div>
-
-                <div class="stock-grid-card" onclick="openPage('lowstock-page')" style="border-color: #f8cbcb; background: #fffcfc;">
-                    <div class="sg-icon-wrap" style="background:#fdf2f2; color:var(--danger);">
-                        <span class="material-symbols-rounded">warning</span>
-                    </div>
-                    <div class="sg-title" style="color:var(--danger);">Low Stock</div>
-                    <div class="sg-value-wrap" style="background:#fdf2f2;">Total Cones: <span class="sg-value" id="stock-val-lowstock" style="color:var(--danger);">0</span></div>
-                </div>
-
+    <div id="cat-edit-modal" class="report-modal-overlay" style="z-index: 99999;">
+        <div class="report-modal-box" style="width:90%; max-width:320px; padding:24px; border-radius: 20px;">
+            <h3 style="margin-bottom: 16px; font-family: 'Product Sans', sans-serif; color:var(--text-dark);">✏️ Edit Category</h3>
+            <input type="hidden" id="cat-edit-id">
+            <div class="form-group" style="margin-bottom:20px;">
+                <label class="form-label">Category Name (नया नाम)</label>
+                <input type="text" id="cat-edit-name" class="form-control" placeholder="E.g. Dhaga, Lace...">
             </div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger); display:flex; align-items:center; justify-content:center; gap:4px;" onclick="deleteCategory()"><span class="material-symbols-rounded" style="font-size:18px;">delete</span> Delete</button>
+                <button class="btn-submit" style="flex:1; background:var(--primary); display:flex; align-items:center; justify-content:center; gap:4px;" onclick="saveCategoryEdit()"><span class="material-symbols-rounded" style="font-size:18px;">save</span> Save</button>
+            </div>
+            <button class="btn-outline" style="width:100%; margin-top:10px; border:none; background:#f0f4f9; color:var(--text-muted);" onclick="document.getElementById('cat-edit-modal').style.display='none'">Cancel</button>
         </div>
     </div>
 
@@ -1494,7 +1461,142 @@
                 let savedStack = sessionStorage.getItem('v_pageStack');
                 if(savedStack) window.pageStack = JSON.parse(savedStack);
             } catch(e){}
+
+           // ================= DYNAMIC CATEGORY SYSTEM =================
+            window.appCategories = [
+                { id: 'thread', dbKey: 'Thread', name: 'Thread (थ्रेड)', icon: 'waves', color: 'var(--primary)', bg: '#e8f0fe', page: 'thread-stock-page' },
+                { id: 'zari', dbKey: 'Zari', name: 'Zari (जरी)', icon: 'auto_awesome', color: '#f97316', bg: '#fff7ed', page: 'zari-stock-page' },
+                { id: 'nylon', dbKey: 'Nylon', name: 'Nylon (नायलोन)', icon: 'all_inclusive', color: '#9333ea', bg: '#f4ebff', page: 'nylon-stock-page' },
+                { id: 'cording', dbKey: 'Cording', name: 'Cording (कोडिंग)', icon: 'cyclone', color: '#4f46e5', bg: '#e0f2fe', page: 'cording-stock-page' },
+                { id: 'bobbin', dbKey: 'Bobbin', name: 'Bobbin (बोबिन)', icon: 'radio_button_checked', color: 'var(--success)', bg: '#e6f4ea', page: 'bobbin-stock-page' }
+            ];
+
+            window.loadCategories = function() {
+                let saved = localStorage.getItem('v_categories');
+                if(saved) {
+                    let parsed = JSON.parse(saved);
+                    window.appCategories = window.appCategories.map(cat => {
+                        let custom = parsed.find(p => p.id === cat.id);
+                        if(custom) {
+                            let updatedCat = { ...cat, name: custom.name, isDeleted: custom.isDeleted };
+                            // अंदर वाले पेज का टाइटल भी बदलें
+                            let pageHeader = document.querySelector('#' + updatedCat.page + ' .page-title');
+                            if(pageHeader && !custom.isDeleted) pageHeader.innerText = custom.name;
+                            return updatedCat;
+                        }
+                        return cat;
+                    });
+                }
+                if(typeof window.renderCategoryGrid === 'function') window.renderCategoryGrid();
+                if(typeof window.updateCategoryDropdowns === 'function') window.updateCategoryDropdowns();
+            };
+
+            window.renderCategoryGrid = function() {
+                let grid = document.getElementById('dynamic-category-grid');
+                if(!grid) return;
+                let html = "";
+                window.appCategories.forEach(cat => {
+                    if(!cat.isDeleted) {
+                        html += `
+                        <div class="stock-grid-card" style="position:relative;">
+                            <button class="material-symbols-rounded" style="position:absolute; top:6px; right:6px; background:white; border:1px solid #e0e2e0; border-radius:8px; color:var(--text-muted); font-size:16px; cursor:pointer; padding:4px; box-shadow:0 1px 3px rgba(0,0,0,0.05); z-index:10;" onclick="event.stopPropagation(); openCategoryEdit('${cat.id}', '${cat.name}')">edit</button>
+                            <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;" onclick="openPage('${cat.page}')">
+                                <div class="sg-icon-wrap" style="background:${cat.bg}; color:${cat.color}; margin: 0 auto 6px auto;">
+                                    <span class="material-symbols-rounded">${cat.icon}</span>
+                                </div>
+                                <div class="sg-title">${cat.name}</div>
+                                <div class="sg-value-wrap">Total Cones: <span class="sg-value" id="stock-val-${cat.id}" style="color:${cat.color};">0</span></div>
+                            </div>
+                        </div>`;
+                    }
+                });
+                
+                // Low Stock Card (Fixed)
+                html += `
+                    <div class="stock-grid-card" onclick="openPage('lowstock-page')" style="border-color: #f8cbcb; background: #fffcfc;">
+                        <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                            <div class="sg-icon-wrap" style="background:#fdf2f2; color:var(--danger); margin: 0 auto 6px auto;">
+                                <span class="material-symbols-rounded">warning</span>
+                            </div>
+                            <div class="sg-title" style="color:var(--danger);">Low Stock</div>
+                            <div class="sg-value-wrap" style="background:#fdf2f2;">Total Cones: <span class="sg-value" id="stock-val-lowstock" style="color:var(--danger);">0</span></div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML = html;
+                if(typeof window.renderInventoryList === 'function') window.renderInventoryList();
+            };
+
+            window.openCategoryEdit = function(id, currentName) {
+                document.getElementById('cat-edit-id').value = id;
+                document.getElementById('cat-edit-name').value = currentName;
+                document.getElementById('cat-edit-modal').style.display = 'flex';
+            };
+
+            window.saveCategoryEdit = function() {
+                let id = document.getElementById('cat-edit-id').value;
+                let newName = document.getElementById('cat-edit-name').value.trim();
+                if(!newName) return alert("कृपया नया नाम डालें!");
+                
+                let catIndex = window.appCategories.findIndex(c => c.id === id);
+                if(catIndex > -1) {
+                    window.appCategories[catIndex].name = newName;
+                    window.appCategories[catIndex].isDeleted = false;
+                    localStorage.setItem('v_categories', JSON.stringify(window.appCategories));
+                    
+                    let pageHeader = document.querySelector('#' + window.appCategories[catIndex].page + ' .page-title');
+                    if(pageHeader) pageHeader.innerText = newName;
+
+                    document.getElementById('cat-edit-modal').style.display = 'none';
+                    window.renderCategoryGrid();
+                    window.updateCategoryDropdowns();
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Category Updated!");
+                }
+            };
+
+            window.deleteCategory = function() {
+                let id = document.getElementById('cat-edit-id').value;
+                if(!confirm("क्या आप सच में इस केटेगरी को छुपाना (Delete) चाहते हैं?")) return;
+
+                let catIndex = window.appCategories.findIndex(c => c.id === id);
+                if(catIndex > -1) {
+                    window.appCategories[catIndex].isDeleted = true;
+                    localStorage.setItem('v_categories', JSON.stringify(window.appCategories));
+                    
+                    document.getElementById('cat-edit-modal').style.display = 'none';
+                    window.renderCategoryGrid();
+                    window.updateCategoryDropdowns();
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Category Deleted!");
+                }
+            };
+
+            window.updateCategoryDropdowns = function() {
+                let options = '<option value="">Select Category</option>';
+                window.appCategories.forEach(cat => {
+                    if(!cat.isDeleted) {
+                        options += `<option value="${cat.dbKey}">${cat.name}</option>`;
+                    }
+                });
+                
+                let posDropdown = document.getElementById('inv-cat');
+                if(posDropdown) posDropdown.innerHTML = options;
+                
+                let godownDropdown = document.getElementById('gd-cat');
+                if(godownDropdown) {
+                    let gdOptions = '';
+                    window.appCategories.forEach(cat => {
+                        if(!cat.isDeleted) gdOptions += `<option value="${cat.dbKey}">${cat.name}</option>`;
+                    });
+                    godownDropdown.innerHTML = gdOptions;
+                }
+            };
             
+            // ऐप चालू होते ही इस फीचर को लोड करें
+            setTimeout(() => {
+                if(typeof window.loadCategories === 'function') window.loadCategories();
+            }, 500);
+            // ===============================================================
+		
             // ================= SMART DATA FILTERING ENGINE =================
             window.rawCustomers = [];
             window.rawLedger = [];

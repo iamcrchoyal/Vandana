@@ -1210,21 +1210,53 @@
             <h2 class="page-title">Manage Categories</h2>
         </div>
         <div class="fixed-top-section" style="padding-top:16px;">
-            <div class="form-panel" style="margin-bottom:16px; border-color:var(--primary); border-radius:16px; box-shadow:0 2px 8px rgba(10,86,208,0.06);">
-                <div style="font-weight:700; font-size:14px; color:var(--text-dark); margin-bottom:10px; font-family:'Product Sans', sans-serif; display:flex; align-items:center; gap:6px;">
-                    <span class="material-symbols-rounded" style="color:var(--primary); font-size:20px;">add_circle</span> Add New Category
+            <div class="form-panel" style="margin-bottom:16px; border-color:var(--primary); border-radius:16px; box-shadow:0 2px 8px rgba(10,86,208,0.06); padding:0; overflow:hidden;">
+                <div onclick="toggleAddCategoryForm()" style="padding:16px; font-weight:700; font-size:15px; color:var(--primary); cursor:pointer; font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:space-between; background:#e8f0fe; transition:0.3s;">
+                    <span style="display:flex; align-items:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:22px;">add_circle</span> Add New Category</span>
+                    <span class="material-symbols-rounded" id="add-cat-toggle-icon" style="transition:0.3s;">expand_more</span>
                 </div>
-                <div class="form-group" style="margin-bottom:12px;">
-                    <input type="text" id="new-cat-name" class="form-control" placeholder="Enter Category Name (e.g. Dhaga, Lace...)" style="border-radius:10px;">
+                <div id="add-cat-form-area" style="display:none; padding:16px; border-top:1px solid #c2e7ff; background:white;">
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <input type="text" id="new-cat-name" class="form-control" placeholder="Enter Category Name (e.g. Dhaga, Lace...)" style="border-radius:10px;">
+                    </div>
+                    <button class="btn-submit" onclick="addNewCategoryFromPage()" style="border-radius:12px; padding:12px; font-size:14px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                        <span class="material-symbols-rounded" style="font-size:18px;">add</span> Save Category
+                    </button>
                 </div>
-                <button class="btn-submit" onclick="addNewCategoryFromPage()" style="border-radius:12px; padding:12px; font-size:14px; display:flex; align-items:center; justify-content:center; gap:6px;">
-                    <span class="material-symbols-rounded" style="font-size:18px;">add</span> Add Category
-                </button>
             </div>
             <div style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">Category List</div>
         </div>
         <div class="scroll-content" id="manage-categories-list" style="padding-top:0;">
             </div>
+    </div>
+
+    <div class="page flex-page" id="dynamic-stock-page">
+        <div class="sub-header">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('dynamic-stock-page')">arrow_back</button>
+            <h2 class="page-title" id="dyn-page-title" style="flex:1;">Stock</h2>
+            <button class="pro-add-btn" onclick="document.getElementById('dyn-anim-form').classList.toggle('form-hidden')">
+                <span class="material-symbols-rounded" style="font-size:16px;">add</span> Add
+            </button>
+        </div>
+        <div class="fixed-top-section">
+            <div class="search-bar-container" style="margin: 0 0 16px 0;">
+                <span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span>
+                <input type="text" id="search-dynamic" placeholder="Search Item/Shade Number...">
+            </div>
+            <div class="form-panel anim-form form-hidden" id="dyn-anim-form" style="margin-bottom:10px;">
+                <input type="hidden" id="dyn-cat-dbkey">
+                <div class="input-btn-group" style="margin-bottom: 12px;">
+                    <input type="text" class="form-control" id="dyn-box-no" placeholder="Item Name / Box No.">
+                    <input type="number" class="form-control" id="dyn-cone" placeholder="Cone">
+                </div>
+                <div class="in-out-btn-group">
+                    <button class="btn-in" style="width:100%;" onclick="addDynamicStock()">➕ Add IN Stock</button>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-content" style="padding-top:0;">
+            <div id="dynamic-stock-list" class="inventory-grid"></div>
+        </div>
     </div>
 
     <!-- 🧵 THREAD STOCK PAGE (NOW WITH 3D GRID) -->
@@ -1501,41 +1533,7 @@
                 if(typeof window.updateCategoryDropdowns === 'function') window.updateCategoryDropdowns();
             };
 
-            window.renderCategoryGrid = function() {
-                let grid = document.getElementById('dynamic-category-grid');
-                if(!grid) return;
-                let html = "";
-                window.appCategories.forEach(cat => {
-                    if(!cat.isDeleted) {
-                        html += `
-                        <div class="stock-grid-card" style="position:relative;">
-                            <button class="material-symbols-rounded" style="position:absolute; top:6px; right:6px; background:white; border:1px solid #e0e2e0; border-radius:8px; color:var(--text-muted); font-size:16px; cursor:pointer; padding:4px; box-shadow:0 1px 3px rgba(0,0,0,0.05); z-index:10;" onclick="event.stopPropagation(); openCategoryEdit('${cat.id}', '${cat.name}')">edit</button>
-                            <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;" onclick="openPage('${cat.page}')">
-                                <div class="sg-icon-wrap" style="background:${cat.bg}; color:${cat.color}; margin: 0 auto 6px auto;">
-                                    <span class="material-symbols-rounded">${cat.icon}</span>
-                                </div>
-                                <div class="sg-title">${cat.name}</div>
-                                <div class="sg-value-wrap">Total Cones: <span class="sg-value" id="stock-val-${cat.id}" style="color:${cat.color};">0</span></div>
-                            </div>
-                        </div>`;
-                    }
-                });
-                
-                // Low Stock Card (Fixed)
-                html += `
-                    <div class="stock-grid-card" onclick="openPage('lowstock-page')" style="border-color: #f8cbcb; background: #fffcfc;">
-                        <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                            <div class="sg-icon-wrap" style="background:#fdf2f2; color:var(--danger); margin: 0 auto 6px auto;">
-                                <span class="material-symbols-rounded">warning</span>
-                            </div>
-                            <div class="sg-title" style="color:var(--danger);">Low Stock</div>
-                            <div class="sg-value-wrap" style="background:#fdf2f2;">Total Cones: <span class="sg-value" id="stock-val-lowstock" style="color:var(--danger);">0</span></div>
-                        </div>
-                    </div>
-                `;
-                grid.innerHTML = html;
-                if(typeof window.renderInventoryList === 'function') window.renderInventoryList();
-            };
+    
 
             window.openCategoryEdit = function(id, currentName) {
                 document.getElementById('cat-edit-id').value = id;
@@ -1596,13 +1594,33 @@
                 if(typeof window.updateCategoryDropdowns === 'function') window.updateCategoryDropdowns();
             };
 
+            // Toggle Form Logic
+            window.toggleAddCategoryForm = function() {
+                let formArea = document.getElementById('add-cat-form-area');
+                let icon = document.getElementById('add-cat-toggle-icon');
+                if (formArea.style.display === 'none') {
+                    formArea.style.display = 'block';
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    formArea.style.display = 'none';
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            };
+
             window.renderCategoryGrid = function() {
                 let grid = document.getElementById('dynamic-category-grid');
                 if(!grid) return;
                 let html = "";
                 window.appCategories.forEach(cat => {
                     if(!cat.isDeleted) {
-                        let pageAttr = cat.page ? `onclick="openPage('${cat.page}')"` : `onclick="alert('${cat.name} Page')"` ;
+                        // Agar naya page banaya hai, to dynamic stock page khulega
+                        let pageAttr = "";
+                        if (['thread', 'zari', 'nylon', 'cording', 'bobbin'].includes(cat.id)) {
+                            pageAttr = `onclick="openPage('${cat.page}')"`;
+                        } else {
+                            pageAttr = `onclick="openDynamicStockPage('${cat.dbKey}', '${cat.name}')"`;
+                        }
+
                         html += `
                         <div class="stock-grid-card" ${pageAttr}>
                             <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;">
@@ -1636,13 +1654,11 @@
                 let container = document.getElementById('manage-categories-list');
                 if(!container) return;
                 let html = "";
-                
                 let activeCats = window.appCategories.filter(c => !c.isDeleted);
                 if(activeCats.length === 0) {
                     container.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No active categories found.</div>`;
                     return;
                 }
-
                 activeCats.forEach(cat => {
                     html += `
                     <div class="form-panel" style="margin-bottom:10px; border-radius:14px; padding:12px; display:flex; align-items:center; justify-content:space-between; gap:10px; box-shadow:0 1px 3px rgba(0,0,0,0.02);">
@@ -1674,19 +1690,130 @@
                     dbKey: name.replace(/\s+/g, ''),
                     name: name,
                     icon: 'category',
-                    color: 'var(--primary)',
+                    color: '#0842a0',
                     bg: '#e8f0fe',
-                    isDeleted: false
+                    isDeleted: false,
+                    page: 'dynamic-stock-page'
                 };
 
                 window.appCategories.push(newCat);
                 localStorage.setItem('v_categories', JSON.stringify(window.appCategories));
                 
                 if(nameInput) nameInput.value = "";
+                // फॉर्म बंद कर दें
+                document.getElementById('add-cat-form-area').style.display = 'none';
+                document.getElementById('add-cat-toggle-icon').style.transform = 'rotate(0deg)';
+
                 window.renderCategoryGrid();
                 window.renderManageCategoriesList();
                 window.updateCategoryDropdowns();
                 if(typeof window.showSaaSToast === 'function') window.showSaaSToast("New Category Added!");
+            };
+
+            // Dynamic Stock Page Logic
+            window.openDynamicStockPage = function(dbKey, name) {
+                document.getElementById('dyn-page-title').innerText = name;
+                document.getElementById('dyn-cat-dbkey').value = dbKey;
+                
+                let searchInput = document.getElementById('search-dynamic');
+                searchInput.onkeyup = function() { filterStockList('search-dynamic', 'dynamic-stock-list'); };
+                searchInput.value = "";
+                
+                document.getElementById('dyn-anim-form').classList.add('form-hidden');
+                document.getElementById('dyn-box-no').value = "";
+                document.getElementById('dyn-cone').value = "";
+                
+                openPage('dynamic-stock-page');
+                window.renderInventoryList(); 
+            };
+
+            window.addDynamicStock = function() {
+                let cat = document.getElementById('dyn-cat-dbkey').value;
+                addSpecificStock(cat, 'dyn-box-no', 'dyn-cone', null);
+                document.getElementById('dyn-anim-form').classList.add('form-hidden');
+            };
+
+            // OVERRIDING RENDER INVENTORY TO SUPPORT NEW CATEGORIES
+            window.renderInventoryList = function() { 
+                let htmlMaps = {};
+                let countMaps = {};
+                let itemsCount = {};
+                
+                window.appCategories.forEach(c => {
+                    if(!c.isDeleted) {
+                        htmlMaps[c.dbKey] = "";
+                        countMaps[c.dbKey] = 0;
+                        itemsCount[c.dbKey] = 0;
+                    }
+                });
+
+                let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
+                
+                for (let key in smartInventory) { 
+                    let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let data = smartInventory[key]; 
+                    let coneQty = typeof data === 'object' ? data.cone : data;
+                    let kgQty = typeof data === 'object' ? data.kg : 0;
+                    let displayQty = typeof data === 'object' ? (kgQty > 0 ? `${coneQty} Cone, ${kgQty} KG` : `${coneQty} Cone`) : `${coneQty} Cone`;
+
+                    if (htmlMaps[cat] !== undefined) {
+                        let txList = getLast5Tx(cat, shade);
+                        let txHtml = "";
+                        if(txList.length === 0) {
+                            txHtml = `<div class="inv-tx-item" style="justify-content:center; color:gray;">No recent transactions</div>`;
+                        } else {
+                            txList.forEach(tx => {
+                                let isOut = tx.type === 'OUT' || tx.type === 'Gave';
+                                let qClass = isOut ? 'out' : 'in';
+                                let sign = isOut ? '-' : '+';
+                                let dateStr = new Date(tx.date).toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+                                txHtml += `<div class="inv-tx-item"><span class="inv-tx-date">${dateStr}</span><span class="inv-tx-party">${tx.party}</span><span class="inv-tx-qty ${qClass}">${sign}${tx.qty}</span></div>`;
+                            });
+                        }
+                        htmlMaps[cat] += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)">
+                            <div class="inv-card-header"><div class="inv-card-title">${shade}</div><div class="inv-card-qty" style="font-size:11px;">${displayQty}</div></div>
+                            <div class="inv-tx-list" onclick="event.stopPropagation()">${txHtml}</div>
+                        </div>`;
+                        countMaps[cat] += coneQty;
+                        itemsCount[cat]++;
+                    }
+
+                    if(coneQty <= 5 && coneQty > 0) { 
+                        lowstockCount++; lowstockItemsCount++;
+                        lowstockHtml += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)" style="border-color:#f8cbcb;">
+                            <div class="inv-card-header"><div class="inv-card-title">${shade} <span style="font-size:10px;color:gray;">(${cat})</span></div><div class="inv-card-qty" style="color:var(--danger); background:#fdf2f2; font-size:11px;">${displayQty}</div></div>
+                            <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Time to re-order!</div></div>
+                        </div>`;
+                    } 
+                } 
+                
+                ['Thread', 'Zari', 'Nylon', 'Cording', 'Bobbin'].forEach(cat => {
+                    let el = document.getElementById(cat.toLowerCase() + '-stock-list');
+                    if(el) {
+                        el.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[cat])}, minmax(0, 1fr))`;
+                        el.innerHTML = htmlMaps[cat] || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:gray;">No Stock Available</div>';
+                    }
+                });
+
+                let dynCatKey = document.getElementById('dyn-cat-dbkey') ? document.getElementById('dyn-cat-dbkey').value : null;
+                if(dynCatKey && htmlMaps[dynCatKey] !== undefined) {
+                    let dynEl = document.getElementById('dynamic-stock-list');
+                    if(dynEl) {
+                        dynEl.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[dynCatKey])}, minmax(0, 1fr))`;
+                        dynEl.innerHTML = htmlMaps[dynCatKey] || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:gray;">No Stock Available</div>';
+                    }
+                }
+
+                window.appCategories.forEach(c => {
+                    let dashValEl = document.getElementById('stock-val-' + c.id);
+                    if(dashValEl) dashValEl.innerText = countMaps[c.dbKey] || 0;
+                });
+
+                let lowEl = document.getElementById('lowstock-list');
+                if(lowEl) {
+                    lowEl.style.gridTemplateColumns = `repeat(${getGridCols(lowstockItemsCount)}, minmax(0, 1fr))`;
+                    lowEl.innerHTML = lowstockHtml || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--success); font-weight:600;">All stocks are healthy! 🎉</div>';
+                }
+                if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
             };
 
             window.saveCategoryInList = function(id) {
@@ -2044,7 +2171,7 @@
             if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
-        const allPagesList = ['items-page', 'manage-categories-page', 'parties-page', 'cashbook-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'home'];
+        const allPagesList = ['items-page', 'manage-categories-page', 'dynamic-stock-page', 'parties-page', 'cashbook-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'home'];
         
         window.openPage = function(id, isBack = false) { 
             if(!isBack && window.pageStack[window.pageStack.length-1] !== id) {

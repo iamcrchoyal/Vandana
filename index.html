@@ -1217,8 +1217,9 @@
                     <span class="material-symbols-rounded" id="add-cat-toggle-icon" style="transition:0.3s;">expand_more</span>
                 </div>
                 <div id="add-cat-form-area" style="display:none; padding:16px; border-top:1px solid #c2e7ff; background:white;">
-                    <div class="form-group" style="margin-bottom:12px;">
+                    <div class="form-group" style="margin-bottom:12px; display:flex; flex-direction:column; gap:8px;">
                         <input type="text" id="new-cat-name" class="form-control" placeholder="Enter Category Name (e.g. Dhaga, Lace...)" style="border-radius:10px;">
+                        <input type="number" id="new-cat-limit" class="form-control" placeholder="Low Stock Alert Limit (जैसे: 5, 10)" style="border-radius:10px;">
                     </div>
                     <button class="btn-submit" onclick="addNewCategoryFromPage()" style="border-radius:12px; padding:12px; font-size:14px; display:flex; align-items:center; justify-content:center; gap:6px;">
                         <span class="material-symbols-rounded" style="font-size:18px;">add</span> Save Category
@@ -1644,6 +1645,8 @@
                                 <input type="file" id="cat-img-${cat.id}" accept="image/*" style="display:none;" onchange="uploadCategoryPhoto(event, '${cat.id}')">
                             </div>
                             <input type="text" id="edit-cat-input-${cat.id}" class="form-control" value="${cat.name}" style="padding:8px 10px; font-size:13px; font-weight:600; border-radius:8px;">
+                            <input type="number" id="edit-cat-limit-${cat.id}" class="form-control" value="${cat.lowStockLimit || 5}" style="padding:8px; font-size:13px; font-weight:600; border-radius:8px; width: 60px; text-align:center;" title="Low Stock Limit">
+                            <input type="number" id="edit-cat-limit-${cat.id}" class="form-control" value="${cat.lowStockLimit || 5}" style="padding:8px; font-size:13px; font-weight:600; border-radius:8px; width: 60px; text-align:center;" title="Low Stock Limit">
                         </div>
                         <div style="display:flex; gap:6px;">
                             <button class="btn-submit" style="padding:8px 12px; font-size:12px; background:var(--primary); border-radius:8px;" onclick="saveCategoryInList('${cat.id}')">Save</button>
@@ -1693,7 +1696,10 @@
 		
             window.addNewCategoryFromPage = function() {
                 let nameInput = document.getElementById('new-cat-name');
+                let limitInput = document.getElementById('new-cat-limit');
                 let name = nameInput ? nameInput.value.trim() : "";
+                let limitVal = limitInput && limitInput.value ? parseInt(limitInput.value) : 5; // डिफ़ॉल्ट 5
+
                 if(!name) return alert("Kripya Category Name likhein!");
 
                 let newId = 'cat_' + Date.now();
@@ -1705,13 +1711,15 @@
                     color: '#0842a0',
                     bg: '#e8f0fe',
                     isDeleted: false,
-                    page: 'dynamic-stock-page'
+                    page: 'dynamic-stock-page',
+                    lowStockLimit: limitVal
                 };
 
                 window.appCategories.push(newCat);
                 localStorage.setItem('v_categories', JSON.stringify(window.appCategories));
                 
                 if(nameInput) nameInput.value = "";
+                if(limitInput) limitInput.value = "";
                 // फॉर्म बंद कर दें
                 document.getElementById('add-cat-form-area').style.display = 'none';
                 document.getElementById('add-cat-toggle-icon').style.transform = 'rotate(0deg)';
@@ -1793,11 +1801,17 @@
                     itemsCount[cat]++;
                 }
 
-                if(coneQty <= 5 && coneQty > 0) { 
+                let customLimit = 5;
+                let catObj = window.appCategories.find(c => c.dbKey === cat);
+                if(catObj && catObj.lowStockLimit !== undefined) {
+                    customLimit = parseInt(catObj.lowStockLimit);
+                }
+
+                if(coneQty <= customLimit && coneQty > 0) { 
                     lowstockCount++; lowstockItemsCount++;
                     lowstockHtml += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)" style="border-color:#f8cbcb;">
                         <div class="inv-card-header"><div class="inv-card-title">${shade} <span style="font-size:10px;color:gray;">(${cat})</span></div><div class="inv-card-qty" style="color:var(--danger); background:#fdf2f2; font-size:11px;">${displayQty}</div></div>
-                        <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Time to re-order!</div></div>
+                        <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Limit: ${customLimit} - Time to re-order!</div></div>
                     </div>`;
                 } 
             } 
@@ -1834,12 +1848,16 @@
 
             window.saveCategoryInList = function(id) {
                 let input = document.getElementById('edit-cat-input-' + id);
+                let limitInput = document.getElementById('edit-cat-limit-' + id);
                 let newName = input ? input.value.trim() : "";
+                let newLimit = limitInput && limitInput.value ? parseInt(limitInput.value) : 5;
+
                 if(!newName) return alert("Category Name khaali nahi ho sakta!");
 
                 let catIndex = window.appCategories.findIndex(c => c.id === id);
                 if(catIndex > -1) {
                     window.appCategories[catIndex].name = newName;
+                    window.appCategories[catIndex].lowStockLimit = newLimit;
                     localStorage.setItem('v_categories', JSON.stringify(window.appCategories));
                     
                     if(window.appCategories[catIndex].page) {
@@ -3349,7 +3367,27 @@
             return list.slice(0, 5);
         }
 		
-        window.shareLowStock = function() { let msg = "⚠️ *Low Stock Alert - Vandana Enterprises* ⚠️%0A%0A"; let hasLow = false; for (let key in smartInventory) { if(smartInventory[key] <= 5 && smartInventory[key] > 0) { let parts = key.split("_"); msg += `▪️ *${parts[1]}* (${parts[0]}) - Only ${smartInventory[key]} Box%0A`; hasLow = true; } } if(!hasLow) return alert("Everything is fully stocked! No low stock items to share."); window.open(`https://wa.me/?text=${msg}`, '_blank'); }
+        window.shareLowStock = function() { 
+            let msg = "⚠️ *Low Stock Alert - Vandana Enterprises* ⚠️%0A%0A"; 
+            let hasLow = false; 
+            for (let key in smartInventory) { 
+                let parts = key.split("_");
+                let cat = parts[0];
+                let customLimit = 5;
+                let catObj = window.appCategories.find(c => c.dbKey === cat);
+                if(catObj && catObj.lowStockLimit !== undefined) customLimit = parseInt(catObj.lowStockLimit);
+
+                let data = smartInventory[key];
+                let qty = typeof data === 'object' ? (parseFloat(data.cone) || 0) : (parseFloat(data) || 0);
+
+                if(qty <= customLimit && qty > 0) { 
+                    msg += `▪️ *${parts[1]}* (${cat}) - Only ${qty} Left%0A`; 
+                    hasLow = true; 
+                } 
+            } 
+            if(!hasLow) return alert("Everything is fully stocked! No low stock items to share."); 
+            window.open(`https://wa.me/?text=${msg}`, '_blank'); 
+        }
 
         let currentCart = []; let grandInvoiceTotal = 0; let invoiceBoxCount = 0;
         

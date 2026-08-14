@@ -1504,64 +1504,8 @@
                 let savedStack = sessionStorage.getItem('v_pageStack');
                 if(savedStack) window.pageStack = JSON.parse(savedStack);
             } catch(e){}
-
-           // ================= DYNAMIC CATEGORY SYSTEM =================
-            window.appCategories = [
-                { id: 'thread', dbKey: 'Thread', name: 'Thread (थ्रेड)', icon: 'waves', color: 'var(--primary)', bg: '#e8f0fe', page: 'thread-stock-page' },
-                { id: 'zari', dbKey: 'Zari', name: 'Zari (जरी)', icon: 'auto_awesome', color: '#f97316', bg: '#fff7ed', page: 'zari-stock-page' },
-                { id: 'nylon', dbKey: 'Nylon', name: 'Nylon (नायलोन)', icon: 'all_inclusive', color: '#9333ea', bg: '#f4ebff', page: 'nylon-stock-page' },
-                { id: 'cording', dbKey: 'Cording', name: 'Cording (कोडिंग)', icon: 'cyclone', color: '#4f46e5', bg: '#e0f2fe', page: 'cording-stock-page' },
-                { id: 'bobbin', dbKey: 'Bobbin', name: 'Bobbin (बोबिन)', icon: 'radio_button_checked', color: 'var(--success)', bg: '#e6f4ea', page: 'bobbin-stock-page' }
-            ];
-
-            window.loadCategories = function() {
-                let saved = localStorage.getItem('v_categories');
-                if(saved) {
-                    let parsed = JSON.parse(saved);
-                    window.appCategories = window.appCategories.map(cat => {
-                        let custom = parsed.find(p => p.id === cat.id);
-                        if(custom) {
-                            let updatedCat = { ...cat, name: custom.name, isDeleted: custom.isDeleted };
-                            // अंदर वाले पेज का टाइटल भी बदलें
-                            let pageHeader = document.querySelector('#' + updatedCat.page + ' .page-title');
-                            if(pageHeader && !custom.isDeleted) pageHeader.innerText = custom.name;
-                            return updatedCat;
-                        }
-                        return cat;
-                    });
-                }
-                if(typeof window.renderCategoryGrid === 'function') window.renderCategoryGrid();
-                if(typeof window.updateCategoryDropdowns === 'function') window.updateCategoryDropdowns();
-            };
-
-    
-
-            window.openCategoryEdit = function(id, currentName) {
-                document.getElementById('cat-edit-id').value = id;
-                document.getElementById('cat-edit-name').value = currentName;
-                document.getElementById('cat-edit-modal').style.display = 'flex';
-            };
-
-            window.saveCategoryEdit = function() {
-                let id = document.getElementById('cat-edit-id').value;
-                let newName = document.getElementById('cat-edit-name').value.trim();
-                if(!newName) return alert("कृपया नया नाम डालें!");
-                
-                let catIndex = window.appCategories.findIndex(c => c.id === id);
-                if(catIndex > -1) {
-                    window.appCategories[catIndex].name = newName;
-                    window.appCategories[catIndex].isDeleted = false;
-                    localStorage.setItem('v_categories', JSON.stringify(window.appCategories));
-                    
-                    let pageHeader = document.querySelector('#' + window.appCategories[catIndex].page + ' .page-title');
-                    if(pageHeader) pageHeader.innerText = newName;
-
-                    document.getElementById('cat-edit-modal').style.display = 'none';
-                    window.renderCategoryGrid();
-                    window.updateCategoryDropdowns();
-                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Category Updated!");
-                }
-            };// ================= DYNAMIC CATEGORY SYSTEM =================
+			
+		// ================= DYNAMIC CATEGORY SYSTEM =================
             window.defaultCategories = [
                 { id: 'thread', dbKey: 'Thread', name: 'Thread (थ्रेड)', icon: 'waves', color: 'var(--primary)', bg: '#e8f0fe', page: 'thread-stock-page' },
                 { id: 'zari', dbKey: 'Zari', name: 'Zari (जरी)', icon: 'auto_awesome', color: '#f97316', bg: '#fff7ed', page: 'zari-stock-page' },
@@ -3757,21 +3701,6 @@
             } else {
                 alert("No recent bill found to share!");
             }
-        }
-        
-        window.resetBillingPage = function() { 
-            currentCart = []; 
-            renderCartUi(); 
-            window.editingBillNo = null; 
-            window.editingEntryKey = null;
-            window.editingEntryDate = null;
-            document.getElementById('inv-date').value = new Date().toISOString().split('T')[0]; 
-            document.getElementById('inv-party').value = ''; 
-            document.getElementById('inv-phone').value = ''; 
-            window.setPaymentMode('credit'); 
-            if(document.getElementById('inv-received-amt')) document.getElementById('inv-received-amt').value = ''; 
-            document.getElementById('billing-form-area').style.display = 'block'; 
-            document.getElementById('post-bill-area').style.display = 'none'; 
         }
         
         window.searchParties = function() { let filter = document.getElementById('party-search').value.toUpperCase(); document.querySelectorAll('#kb-customer-list .kb-list-item').forEach(item => { item.style.display = item.querySelector('.kb-name').innerText.toUpperCase().indexOf(filter) > -1 ? "" : "none"; }); }

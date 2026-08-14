@@ -1715,87 +1715,91 @@
             };
 
             // OVERRIDING RENDER INVENTORY TO SUPPORT NEW CATEGORIES
-            window.renderInventoryList = function() { 
-                let htmlMaps = {};
-                let countMaps = {};
-                let itemsCount = {};
+            // OVERRIDING RENDER INVENTORY TO SUPPORT NEW CATEGORIES
+        window.renderInventoryList = function() { 
+            let htmlMaps = {};
+            let countMaps = {};
+            let itemsCount = {};
+            
+            window.appCategories.forEach(c => {
+                if(!c.isDeleted) {
+                    htmlMaps[c.dbKey] = "";
+                    countMaps[c.dbKey] = 0;
+                    itemsCount[c.dbKey] = 0;
+                }
+            });
+
+            let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
+            
+            for (let key in smartInventory) { 
+                let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let data = smartInventory[key]; 
                 
-                window.appCategories.forEach(c => {
-                    if(!c.isDeleted) {
-                        htmlMaps[c.dbKey] = "";
-                        countMaps[c.dbKey] = 0;
-                        itemsCount[c.dbKey] = 0;
-                    }
-                });
-
-                let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
+                // FIX: Yaha par hum text ko number me convert kar rahe hain (parseFloat)
+                let coneQty = typeof data === 'object' ? (parseFloat(data.cone) || 0) : (parseFloat(data) || 0);
+                let kgQty = typeof data === 'object' ? (parseFloat(data.kg) || 0) : 0;
                 
-                for (let key in smartInventory) { 
-                    let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let data = smartInventory[key]; 
-                    let coneQty = typeof data === 'object' ? data.cone : data;
-                    let kgQty = typeof data === 'object' ? data.kg : 0;
-                    let displayQty = typeof data === 'object' ? (kgQty > 0 ? `${coneQty} Cone, ${kgQty} KG` : `${coneQty} Cone`) : `${coneQty} Cone`;
+                let displayQty = kgQty > 0 ? `${coneQty} Cone, ${kgQty} KG` : `${coneQty} Cone`;
 
-                    if (htmlMaps[cat] !== undefined) {
-                        let txList = getLast5Tx(cat, shade);
-                        let txHtml = "";
-                        if(txList.length === 0) {
-                            txHtml = `<div class="inv-tx-item" style="justify-content:center; color:gray;">No recent transactions</div>`;
-                        } else {
-                            txList.forEach(tx => {
-                                let isOut = tx.type === 'OUT' || tx.type === 'Gave';
-                                let qClass = isOut ? 'out' : 'in';
-                                let sign = isOut ? '-' : '+';
-                                let dateStr = new Date(tx.date).toLocaleDateString('en-GB', {day:'numeric', month:'short'});
-                                txHtml += `<div class="inv-tx-item"><span class="inv-tx-date">${dateStr}</span><span class="inv-tx-party">${tx.party}</span><span class="inv-tx-qty ${qClass}">${sign}${tx.qty}</span></div>`;
-                            });
-                        }
-                        htmlMaps[cat] += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)">
-                            <div class="inv-card-header"><div class="inv-card-title">${shade}</div><div class="inv-card-qty" style="font-size:11px;">${displayQty}</div></div>
-                            <div class="inv-tx-list" onclick="event.stopPropagation()">${txHtml}</div>
-                        </div>`;
-                        countMaps[cat] += coneQty;
-                        itemsCount[cat]++;
+                if (htmlMaps[cat] !== undefined) {
+                    let txList = getLast5Tx(cat, shade);
+                    let txHtml = "";
+                    if(txList.length === 0) {
+                        txHtml = `<div class="inv-tx-item" style="justify-content:center; color:gray;">No recent transactions</div>`;
+                    } else {
+                        txList.forEach(tx => {
+                            let isOut = tx.type === 'OUT' || tx.type === 'Gave';
+                            let qClass = isOut ? 'out' : 'in';
+                            let sign = isOut ? '-' : '+';
+                            let dateStr = new Date(tx.date).toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+                            txHtml += `<div class="inv-tx-item"><span class="inv-tx-date">${dateStr}</span><span class="inv-tx-party">${tx.party}</span><span class="inv-tx-qty ${qClass}">${sign}${parseFloat(tx.qty)||0}</span></div>`;
+                        });
                     }
+                    htmlMaps[cat] += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)">
+                        <div class="inv-card-header"><div class="inv-card-title">${shade}</div><div class="inv-card-qty" style="font-size:11px;">${displayQty}</div></div>
+                        <div class="inv-tx-list" onclick="event.stopPropagation()">${txHtml}</div>
+                    </div>`;
+                    countMaps[cat] += coneQty;
+                    itemsCount[cat]++;
+                }
 
-                    if(coneQty <= 5 && coneQty > 0) { 
-                        lowstockCount++; lowstockItemsCount++;
-                        lowstockHtml += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)" style="border-color:#f8cbcb;">
-                            <div class="inv-card-header"><div class="inv-card-title">${shade} <span style="font-size:10px;color:gray;">(${cat})</span></div><div class="inv-card-qty" style="color:var(--danger); background:#fdf2f2; font-size:11px;">${displayQty}</div></div>
-                            <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Time to re-order!</div></div>
-                        </div>`;
-                    } 
+                if(coneQty <= 5 && coneQty > 0) { 
+                    lowstockCount++; lowstockItemsCount++;
+                    lowstockHtml += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)" style="border-color:#f8cbcb;">
+                        <div class="inv-card-header"><div class="inv-card-title">${shade} <span style="font-size:10px;color:gray;">(${cat})</span></div><div class="inv-card-qty" style="color:var(--danger); background:#fdf2f2; font-size:11px;">${displayQty}</div></div>
+                        <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Time to re-order!</div></div>
+                    </div>`;
                 } 
-                
-                ['Thread', 'Zari', 'Nylon', 'Cording', 'Bobbin'].forEach(cat => {
-                    let el = document.getElementById(cat.toLowerCase() + '-stock-list');
-                    if(el) {
-                        el.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[cat])}, minmax(0, 1fr))`;
-                        el.innerHTML = htmlMaps[cat] || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:gray;">No Stock Available</div>';
-                    }
-                });
-
-                let dynCatKey = document.getElementById('dyn-cat-dbkey') ? document.getElementById('dyn-cat-dbkey').value : null;
-                if(dynCatKey && htmlMaps[dynCatKey] !== undefined) {
-                    let dynEl = document.getElementById('dynamic-stock-list');
-                    if(dynEl) {
-                        dynEl.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[dynCatKey])}, minmax(0, 1fr))`;
-                        dynEl.innerHTML = htmlMaps[dynCatKey] || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:gray;">No Stock Available</div>';
-                    }
+            } 
+            
+            ['Thread', 'Zari', 'Nylon', 'Cording', 'Bobbin'].forEach(cat => {
+                let el = document.getElementById(cat.toLowerCase() + '-stock-list');
+                if(el) {
+                    el.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[cat])}, minmax(0, 1fr))`;
+                    el.innerHTML = htmlMaps[cat] || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:gray;">No Stock Available</div>';
                 }
+            });
 
-                window.appCategories.forEach(c => {
-                    let dashValEl = document.getElementById('stock-val-' + c.id);
-                    if(dashValEl) dashValEl.innerText = countMaps[c.dbKey] || 0;
-                });
-
-                let lowEl = document.getElementById('lowstock-list');
-                if(lowEl) {
-                    lowEl.style.gridTemplateColumns = `repeat(${getGridCols(lowstockItemsCount)}, minmax(0, 1fr))`;
-                    lowEl.innerHTML = lowstockHtml || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--success); font-weight:600;">All stocks are healthy! 🎉</div>';
+            let dynCatKey = document.getElementById('dyn-cat-dbkey') ? document.getElementById('dyn-cat-dbkey').value : null;
+            if(dynCatKey && htmlMaps[dynCatKey] !== undefined) {
+                let dynEl = document.getElementById('dynamic-stock-list');
+                if(dynEl) {
+                    dynEl.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[dynCatKey])}, minmax(0, 1fr))`;
+                    dynEl.innerHTML = htmlMaps[dynCatKey] || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:gray;">No Stock Available</div>';
                 }
-                if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
-            };
+            }
+
+            window.appCategories.forEach(c => {
+                let dashValEl = document.getElementById('stock-val-' + c.id);
+                if(dashValEl) dashValEl.innerText = countMaps[c.dbKey] || 0;
+            });
+
+            let lowEl = document.getElementById('lowstock-list');
+            if(lowEl) {
+                lowEl.style.gridTemplateColumns = `repeat(${getGridCols(lowstockItemsCount)}, minmax(0, 1fr))`;
+                lowEl.innerHTML = lowstockHtml || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--success); font-weight:600;">All stocks are healthy! 🎉</div>';
+            }
+            if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
+        };
 
             window.saveCategoryInList = function(id) {
                 let input = document.getElementById('edit-cat-input-' + id);
@@ -2504,11 +2508,14 @@
                 let cur = snap.val() || { cone: 0, kg: 0 }; 
                 if(typeof cur === 'number') cur = { cone: cur, kg: 0 };
                 
+                let oldCone = parseFloat(cur.cone) || 0;
+                let oldKg = parseFloat(cur.kg) || 0;
+                
                 // If editing, inventory was already reverted during the edit button click.
-                let newConeQty = type === 'OUT' ? cur.cone - qty : cur.cone + qty; 
+                let newConeQty = type === 'OUT' ? oldCone - qty : oldCone + qty; 
                 if(newConeQty < 0) newConeQty = 0; 
                 
-                set(itemRef, { cone: newConeQty, kg: cur.kg }); 
+                set(itemRef, { cone: newConeQty, kg: oldKg }); 
             }); 
             
             let dataObj = { 
@@ -3258,7 +3265,12 @@
             get(itemRef).then((snap) => { 
                 let cur = snap.val() || { cone: 0, kg: 0 }; 
                 if(typeof cur === 'number') cur = { cone: cur, kg: 0 }; 
-                set(itemRef, { cone: cur.cone + cone, kg: cur.kg + kg }); 
+                
+                // FIX: Yaha par purane data ko number me convert kiya hai taki wo string ki tarah na jude
+                let oldCone = parseFloat(cur.cone) || 0;
+                let oldKg = parseFloat(cur.kg) || 0;
+                
+                set(itemRef, { cone: oldCone + cone, kg: oldKg + kg }); 
             }); 
             
             if(document.getElementById(id1).tagName !== 'SELECT') document.getElementById(id1).value = ''; 
@@ -3293,68 +3305,7 @@
             list.sort((a,b) => new Date(b.date) - new Date(a.date));
             return list.slice(0, 5);
         }
-
-        window.renderInventoryList = function() { 
-            let htmlMaps = { Thread: "", Zari: "", Nylon: "", Cording: "", Bobbin: "" };
-            let countMaps = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
-            let itemsCount = { Thread: 0, Zari: 0, Nylon: 0, Cording: 0, Bobbin: 0 };
-            let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
-            
-            for (let key in smartInventory) { 
-                let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let data = smartInventory[key]; 
-                let coneQty = typeof data === 'object' ? data.cone : data;
-                let kgQty = typeof data === 'object' ? data.kg : 0;
-                let displayQty = typeof data === 'object' ? (kgQty > 0 ? `${coneQty} Cone, ${kgQty} KG` : `${coneQty} Cone`) : `${coneQty} Cone`;
-
-                if (htmlMaps[cat] !== undefined) {
-                    let txList = getLast5Tx(cat, shade);
-                    let txHtml = "";
-                    if(txList.length === 0) {
-                        txHtml = `<div class="inv-tx-item" style="justify-content:center; color:gray;">No recent transactions</div>`;
-                    } else {
-                        txList.forEach(tx => {
-                            let isOut = tx.type === 'OUT' || tx.type === 'Gave';
-                            let qClass = isOut ? 'out' : 'in';
-                            let sign = isOut ? '-' : '+';
-                            let dateStr = new Date(tx.date).toLocaleDateString('en-GB', {day:'numeric', month:'short'});
-                            txHtml += `<div class="inv-tx-item"><span class="inv-tx-date">${dateStr}</span><span class="inv-tx-party">${tx.party}</span><span class="inv-tx-qty ${qClass}">${sign}${tx.qty}</span></div>`;
-                        });
-                    }
-                    htmlMaps[cat] += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)">
-                        <div class="inv-card-header"><div class="inv-card-title">${shade}</div><div class="inv-card-qty" style="font-size:11px;">${displayQty}</div></div>
-                        <div class="inv-tx-list" onclick="event.stopPropagation()">${txHtml}</div>
-                    </div>`;
-                    countMaps[cat] += coneQty;
-                    itemsCount[cat]++;
-                }
-
-                if(coneQty <= 5 && coneQty > 0) { 
-                    lowstockCount++; lowstockItemsCount++;
-                    lowstockHtml += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)" style="border-color:#f8cbcb;">
-                        <div class="inv-card-header"><div class="inv-card-title">${shade} <span style="font-size:10px;color:gray;">(${cat})</span></div><div class="inv-card-qty" style="color:var(--danger); background:#fdf2f2; font-size:11px;">${displayQty}</div></div>
-                        <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Time to re-order!</div></div>
-                    </div>`;
-                } 
-            } 
-            
-            for(let cat in htmlMaps) {
-                let el = document.getElementById(cat.toLowerCase() + '-stock-list');
-                if(el) {
-                    el.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[cat])}, minmax(0, 1fr))`;
-                    el.innerHTML = htmlMaps[cat] || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:gray;">No Stock Available</div>';
-                }
-                let valEl = document.getElementById('stock-val-' + cat.toLowerCase());
-                if(valEl) valEl.innerText = countMaps[cat];
-            }
-
-            let lowEl = document.getElementById('lowstock-list');
-            if(lowEl) {
-                lowEl.style.gridTemplateColumns = `repeat(${getGridCols(lowstockItemsCount)}, minmax(0, 1fr))`;
-                lowEl.innerHTML = lowstockHtml || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--success); font-weight:600;">All stocks are healthy! 🎉</div>';
-            }
-            if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
-        }
-
+		
         window.shareLowStock = function() { let msg = "⚠️ *Low Stock Alert - Vandana Enterprises* ⚠️%0A%0A"; let hasLow = false; for (let key in smartInventory) { if(smartInventory[key] <= 5 && smartInventory[key] > 0) { let parts = key.split("_"); msg += `▪️ *${parts[1]}* (${parts[0]}) - Only ${smartInventory[key]} Box%0A`; hasLow = true; } } if(!hasLow) return alert("Everything is fully stocked! No low stock items to share."); window.open(`https://wa.me/?text=${msg}`, '_blank'); }
 
         let currentCart = []; let grandInvoiceTotal = 0; let invoiceBoxCount = 0;

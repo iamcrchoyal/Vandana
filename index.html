@@ -3233,26 +3233,33 @@
         
         
         window.editCurrentInvoice = function() { 
-            if(!confirm("Are you sure you want to edit this invoice?")) return; 
-            currentEntryData.cart.forEach(item => { 
-                let key = item.cat + "_" + item.shade; 
-                let itemRef = ref(db, 'Inventory/' + key); 
-                get(itemRef).then(snap => { set(itemRef, (snap.val() || 0) + item.qty); }); 
-            }); 
-            window.editingEntryKey = currentEntryData.key;
-            window.editingBillNo = currentEntryData.billNo;
-            window.editingEntryDate = currentEntryData.date;
-            currentCart = [...currentEntryData.cart]; 
-            document.getElementById('inv-party').value = currentEntryData.name; 
-            let cust = globalCustomers.find(c => c.name === currentEntryData.name); 
-            document.getElementById('inv-phone').value = cust ? cust.phone : ""; 
-            let d = new Date(currentEntryData.date); 
-            if(!isNaN(d)) document.getElementById('inv-date').value = d.toISOString().split('T')[0]; 
-            window.setPaymentMode('credit'); 
-            renderCartUi(); 
-            navTo('pos-page', null); 
-            document.getElementById('billing-form-area').style.display = 'block'; 
-            document.getElementById('post-bill-area').style.display = 'none'; 
+            window.showCustomConfirm("Edit Invoice?", "क्या आप इस इनवॉइस को एडिट करना चाहते हैं?", function() {
+                currentEntryData.cart.forEach(item => { 
+                    let key = item.cat + "_" + item.shade; 
+                    let itemRef = ref(db, 'Inventory/' + key); 
+                    get(itemRef).then(snap => { 
+                        let cur = snap.val() || {cone:0, kg:0};
+                        if(typeof cur === 'number') cur = {cone:cur, kg:0};
+                        let revertedCone = cur.cone + (parseFloat(item.rawCone) || 0);
+                        let revertedKg = cur.kg + (parseFloat(item.rawKg) || 0);
+                        set(itemRef, {cone: revertedCone, kg: revertedKg}); 
+                    }); 
+                }); 
+                window.editingEntryKey = currentEntryData.key;
+                window.editingBillNo = currentEntryData.billNo;
+                window.editingEntryDate = currentEntryData.date;
+                currentCart = [...currentEntryData.cart]; 
+                document.getElementById('inv-party').value = currentEntryData.name; 
+                let cust = globalCustomers.find(c => c.name === currentEntryData.name); 
+                document.getElementById('inv-phone').value = cust ? cust.phone : ""; 
+                let d = new Date(currentEntryData.date); 
+                if(!isNaN(d)) document.getElementById('inv-date').value = d.toISOString().split('T')[0]; 
+                window.setPaymentMode('pending'); 
+                renderCartUi(); 
+                navTo('pos-page', null); 
+                document.getElementById('billing-form-area').style.display = 'block'; 
+                document.getElementById('post-bill-area').style.display = 'none'; 
+            });
         }
 
         window.editCurrentEntryAmount = function() { if(!currentEntryData) return; window.isEditingEntry = true; window.calcType = currentEntryData.type; window.calcValue = currentEntryData.amount.toString(); document.getElementById('calc-amount').value = window.calcValue; document.getElementById('calc-details').value = currentEntryData.details || ""; document.getElementById('calc-hidden-area').classList.add('show'); document.getElementById('calc-save-btn').innerText = "UPDATE ENTRY"; let d = new Date(currentEntryData.date); if(!isNaN(d)) document.getElementById('calc-date').value = d.toISOString().split('T')[0]; closePage('entry-details-page'); openCalculator(window.calcType, true); }
@@ -3892,43 +3899,57 @@
             let d = new Date(currentEntryData.date); 
             document.getElementById('pdf-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleDateString('en-GB'); 
             document.getElementById('pdf-bill-no').innerText = currentEntryData.billNo || currentEntryData.key.substring(1, 8).toUpperCase(); 
-            document.getElementById('pdf-cust-name').innerText = currentEntryData.name;
+            
+            // Customer Name & Mobile Number logic
+            let cPhoneText = "";
+            let cData = globalCustomers.find(c => c.name === currentEntryData.name);
+            if(cData && cData.phone) cPhoneText = " (Mob: " + cData.phone + ")";
+            document.getElementById('pdf-cust-name').innerText = currentEntryData.name + cPhoneText;
             
             // 2. टेबल लॉजिक (With Sr. No. & Total Qty)
-            let totalBoxQty = 0;
+            let totalCones = 0;
+            let totalKgs = 0;
             
             if(currentEntryData.cart && currentEntryData.cart.length > 0) {
                 let html = ""; 
                 currentEntryData.cart.forEach((item, index) => { 
-                    totalBoxQty += parseInt(item.qty) || 0; // टोटल बॉक्स गिनना
+                    totalCones += (parseFloat(item.rawCone) || 0); 
+                    totalKgs += (parseFloat(item.rawKg) || 0); 
+                    
+                    let subTextLabel = (item.cat === 'Thread' || item.cat === 'Cotton' || item.cat === 'Zari') ? 'Number / Colour' : 'Kg / Colour';
                     
                     html += `
                         <tr>
-                            <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:14px; color:#1f1f1f; font-weight:600;">
+                            <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:14px; color:#1f1f1f; font-weight:600; vertical-align:middle;">
                                 ${index + 1}
                             </td>
-                            <td style="padding:12px; border:1px solid #e0e2e0;">
+                            <td style="padding:12px; border:1px solid #e0e2e0; vertical-align:middle;">
                                 <strong style="font-size:14px; color:#1f1f1f;">${item.cat}</strong><br>
-                                <span style="font-size:12px; color:#718096;">Shade / Color: ${item.shade}</span>
+                                <span style="font-size:12px; color:#718096;">${subTextLabel}: ${item.shade}</span>
                             </td>
-                            <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:14px; color:#1f1f1f; font-weight:600;">
-                                ${item.qty} Box
+                            <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:14px; color:#1f1f1f; font-weight:600; vertical-align:middle;">
+                                ${item.qty}
                             </td>
-                            <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-size:14px; color:#1f1f1f;">
+                            <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-size:14px; color:#1f1f1f; vertical-align:middle;">
                                 ₹${item.rate}
                             </td>
-                            <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:700; font-size:14px; color:#1f1f1f;">
+                            <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:700; font-size:14px; color:#1f1f1f; vertical-align:middle;">
                                 ₹${item.itemTotal.toLocaleString('en-IN')}
                             </td>
                         </tr>
                     `; 
                 }); 
                 
+                let totalQtyStr = "";
+                if(totalCones > 0 && totalKgs > 0) totalQtyStr = `${totalCones} Cone, ${totalKgs} Kg`;
+                else if (totalKgs > 0) totalQtyStr = `${totalKgs} Kg`;
+                else totalQtyStr = `${totalCones} Cone`;
+                
                 // एकदम नीचे Total Qty का बॉक्स
                 html += `
                     <tr style="background:#f8fafd; font-weight:bold;">
-                        <td colspan="2" style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-size:14px; color:#0a56d0;">Total Quantity:</td>
-                        <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:15px; color:#0a56d0; font-weight:800;">${totalBoxQty} Box</td>
+                        <td colspan="2" style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-size:14px; color:#0a56d0; vertical-align:middle;">Total Quantity:</td>
+                        <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:15px; color:#0a56d0; font-weight:800; vertical-align:middle;">${totalQtyStr}</td>
                         <td colspan="2" style="padding:12px; border:1px solid #e0e2e0;"></td>
                     </tr>
                 `;
@@ -4021,7 +4042,7 @@
             preparePDFData(); 
             let elem = document.getElementById('pdf-invoice-template'); 
             let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
-            alert("Generating PDF... Please wait a moment."); 
+            if(typeof window.showSaaSToast === 'function') window.showSaaSToast("PDF डाउनलोड हो रहा है... कृपया प्रतीक्षा करें।"); else alert("Downloading PDF...");
             setTimeout(() => { html2pdf().set(opt).from(elem).save(); }, 200); 
         }
         
@@ -4030,7 +4051,7 @@
             preparePDFData(); 
             let elem = document.getElementById('pdf-invoice-template'); 
             let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
-            alert("Preparing PDF for direct sharing... Please wait 2 seconds."); 
+            if(typeof window.showSaaSToast === 'function') window.showSaaSToast("PDF शेयर करने के लिए तैयार हो रहा है... कृपया प्रतीक्षा करें।"); else alert("Preparing PDF...");
             setTimeout(async () => {
                 try { 
                     let pdfBlob = await html2pdf().set(opt).from(elem).output('blob'); 
@@ -4345,23 +4366,28 @@ window.showTargetCelebration = function() {
                 let d = new Date(bill.date);
                 let dateStr = isNaN(d) ? bill.date : d.toLocaleDateString('en-GB');
                 
+                let bPhoneText = "";
+                let bData = globalCustomers.find(c => c.name === bill.name);
+                if(bData && bData.phone) bPhoneText = " (Mob: " + bData.phone + ")";
+                
                 // --- 4-COLUMN TABLE LOGIC (Product Details, Qty, Rate, Total Amount) ---
                 let cartHtml = "";
                 if(bill.cart && bill.cart.length > 0) {
                     bill.cart.forEach(item => {
+                        let subTextLabel = (item.cat === 'Thread' || item.cat === 'Cotton' || item.cat === 'Zari') ? 'Number / Colour' : 'Kg / Colour';
                         cartHtml += `
                             <tr>
-                                <td style="padding:12px; border:1px solid #e0e2e0;">
+                                <td style="padding:12px; border:1px solid #e0e2e0; vertical-align:middle;">
                                     <strong style="font-size:14px; color:#1f1f1f;">${item.cat}</strong><br>
-                                    <span style="font-size:12px; color:#718096;">Shade / Color: ${item.shade}</span>
+                                    <span style="font-size:12px; color:#718096;">${subTextLabel}: ${item.shade}</span>
                                 </td>
-                                <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:14px; color:#1f1f1f;">
-                                    ${item.qty} Box
+                                <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:14px; color:#1f1f1f; vertical-align:middle;">
+                                    ${item.qty}
                                 </td>
-                                <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-size:14px; color:#1f1f1f;">
+                                <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-size:14px; color:#1f1f1f; vertical-align:middle;">
                                     ₹${item.rate}
                                 </td>
-                                <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:700; font-size:14px; color:#1f1f1f;">
+                                <td style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-weight:700; font-size:14px; color:#1f1f1f; vertical-align:middle;">
                                     ₹${item.itemTotal.toLocaleString('en-IN')}
                                 </td>
                             </tr>
@@ -4402,7 +4428,7 @@ window.showTargetCelebration = function() {
                         <!-- Billed To Section -->
                         <div style="background:#f8fafd; padding:20px; border-radius:12px; border:1px solid #c2e7ff; margin-bottom:30px;">
                             <h3 style="margin:0 0 8px 0; font-size:12px; color:#718096; text-transform:uppercase; letter-spacing:1px;">BILLED TO:</h3>
-                            <p style="margin:0; font-size:22px; font-weight:700; color:#1f1f1f;">${bill.name}</p>
+                            <p style="margin:0; font-size:22px; font-weight:700; color:#1f1f1f;">${bill.name}${bPhoneText}</p>
                         </div>
 
                         <!-- 4-COLUMN ITEMS TABLE -->

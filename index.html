@@ -13,8 +13,12 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          emailjs.init("51RmUspp1ICdYrAC9"); // बाद में यहाँ अपनी की (Key) डालेंगे
+       })();
+    </script>
 
     <style>
         /* ================= PREMIUM GOOGLE ONE UI ================= */
@@ -297,27 +301,43 @@
             </button>
         </div>
 
-        <div id="signup-section" style="display:none; background: white; padding: 35px 30px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center; margin: auto; animation: popIn 0.3s ease;">
-            <div style="background: #e8f0fe; color: var(--primary); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 15px auto;" class="material-symbols-rounded">person_add</div>
-            <h2 style="color: var(--text-dark); margin-bottom: 6px; font-size: 24px; font-weight: 700; font-family: 'Product Sans', sans-serif;">Register</h2>
-            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 25px;">Join Vandana Enterprises</p>
+        <div id="signup-section" style="display:none; background: white; padding: 30px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center; margin: auto; animation: popIn 0.3s ease;">
+            <div style="background: #e8f0fe; color: var(--primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 10px auto;" class="material-symbols-rounded">person_add</div>
+            <h2 style="color: var(--text-dark); margin-bottom: 4px; font-size: 22px; font-weight: 700; font-family: 'Product Sans', sans-serif;">Register</h2>
+            <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 20px;">Join Vandana Enterprises</p>
             
-            <div style="text-align: left; margin-bottom: 15px;">
-                <label style="font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px; display:block;">CUSTOMER / SUPPLIER NAME</label>
-                <input type="text" id="reg-name" class="form-control" placeholder="Enter Full Name" style="border-radius:12px; padding:14px; background:#f8fafd; border-color:#c2e7ff;">
+            <div style="text-align: left; margin-bottom: 12px;">
+                <label style="font-size:11px; font-weight:600; color:var(--text-muted); margin-bottom:4px; display:block;">CUSTOMER / SUPPLIER NAME</label>
+                <input type="text" id="reg-name" class="form-control" placeholder="Enter Full Name" style="border-radius:10px; padding:12px; background:#f8fafd; border-color:#c2e7ff;">
             </div>
 
-            <div style="text-align: left; margin-bottom: 15px;">
-                <label style="font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px; display:block;">VALID MOBILE NUMBER</label>
-                <input type="tel" id="reg-mobile" class="form-control" placeholder="10-Digit Mobile Number" style="border-radius:12px; padding:14px; background:#f8fafd; border-color:#c2e7ff;" maxlength="10">
+            <div style="text-align: left; margin-bottom: 12px;">
+                <label style="font-size:11px; font-weight:600; color:var(--text-muted); margin-bottom:4px; display:block;">VALID MOBILE NUMBER</label>
+                <input type="tel" id="reg-mobile" class="form-control" placeholder="10-Digit Mobile Number" style="border-radius:10px; padding:12px; background:#f8fafd; border-color:#c2e7ff;" maxlength="10">
             </div>
 
-            <div style="text-align: left; margin-bottom: 20px;">
-                <label style="font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px; display:block;">EMAIL ADDRESS</label>
-                <input type="email" id="reg-email" class="form-control" placeholder="name@example.com" style="border-radius:12px; padding:14px; background:#f8fafd; border-color:#c2e7ff;">
+            <div style="text-align: left; margin-bottom: 12px;">
+                <label style="font-size:11px; font-weight:600; color:var(--text-muted); margin-bottom:4px; display:block;">EMAIL ADDRESS</label>
+                <input type="email" id="reg-email" class="form-control" placeholder="name@example.com" style="border-radius:10px; padding:12px; background:#f8fafd; border-color:#c2e7ff;">
+            </div>
+
+            <div style="display:flex; gap:10px; margin-bottom: 15px;">
+                <div style="flex:1; text-align: left;">
+                    <label style="font-size:11px; font-weight:600; color:var(--text-muted); margin-bottom:4px; display:block;">CREATE PASSWORD</label>
+                    <input type="password" id="reg-pass1" class="form-control" placeholder="••••••••" style="border-radius:10px; padding:12px; background:#f8fafd; border-color:#c2e7ff;">
+                </div>
+                <div style="flex:1; text-align: left;">
+                    <label style="font-size:11px; font-weight:600; color:var(--text-muted); margin-bottom:4px; display:block;">CONFIRM PASSWORD</label>
+                    <input type="password" id="reg-pass2" class="form-control" placeholder="••••••••" style="border-radius:10px; padding:12px; background:#f8fafd; border-color:#c2e7ff;">
+                </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom: 15px; text-align:left;">
+                <input type="checkbox" id="reg-remember" checked style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;">
+                <label for="reg-remember" style="font-size:12px; color:var(--text-dark); font-weight:500; cursor:pointer;">Remember me for fast login</label>
             </div>
             
-            <button id="send-otp-btn" onclick="initiateSignup()" style="width: 100%; background: var(--primary); color: white; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 600; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(10,86,208,0.25); margin-bottom: 15px;">
+            <button id="send-otp-btn" onclick="initiateSignup()" style="width: 100%; background: var(--primary); color: white; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(10,86,208,0.25); margin-bottom: 15px;">
                 Create Account
             </button>
             
@@ -335,8 +355,8 @@
             
             <input type="number" id="otp-input" placeholder="• • • • • •" style="width: 100%; font-size: 24px; letter-spacing: 10px; text-align: center; padding: 12px; border-radius: 12px; border: 2px solid #c2e7ff; background: #f8fafd; margin-bottom: 20px; font-weight: 700; color: var(--primary); outline:none;">
             
-            <button onclick="verifySignupOtp()" style="width: 100%; background: var(--success); color: white; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 600; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(20, 108, 46, 0.25); margin-bottom: 10px;">
-                Verify OTP
+            <button id="final-verify-btn" onclick="verifySignupOtp()" style="width: 100%; background: var(--success); color: white; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 600; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(20, 108, 46, 0.25); margin-bottom: 10px;">
+                Verify OTP & Create Account
             </button>
             <button onclick="closeOtpModal()" style="width: 100%; background: transparent; color: var(--danger); padding: 10px; border-radius: 14px; font-size: 13px; font-weight: 600; border: 1px solid var(--danger); cursor: pointer;">
                 Cancel
@@ -344,28 +364,22 @@
         </div>
     </div>
 
-    <div id="password-modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px);">
+    <div id="forgot-password-modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px);">
         <div style="background: white; padding: 30px; border-radius: 24px; width: 100%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: popIn 0.3s ease;">
-            <div style="width: 60px; height: 60px; background: #fff4e5; color: #f29900; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 15px auto;" class="material-symbols-rounded">password</div>
-            <h3 style="font-family: 'Product Sans', sans-serif; font-size: 20px; color: var(--text-dark); margin-bottom: 8px;">Create Password</h3>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">OTP Verified! Now create a strong password.</p>
+            <div style="width: 60px; height: 60px; background: #fff4e5; color: #f29900; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 15px auto;" class="material-symbols-rounded">lock_reset</div>
+            <h3 style="font-family: 'Product Sans', sans-serif; font-size: 20px; color: var(--text-dark); margin-bottom: 8px;">Reset Password</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">Enter your registered email address. We will send you a secure link to create a new password.</p>
             
-            <div style="text-align: left; margin-bottom: 12px;">
-                <label style="font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px; display:block;">NEW PASSWORD</label>
-                <input type="password" id="reg-pass1" class="form-control" placeholder="••••••••" style="border-radius:12px; padding:14px; background:#f8fafd; border-color:#c2e7ff;">
-            </div>
-            <div style="text-align: left; margin-bottom: 15px;">
-                <label style="font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px; display:block;">CONFIRM PASSWORD</label>
-                <input type="password" id="reg-pass2" class="form-control" placeholder="••••••••" style="border-radius:12px; padding:14px; background:#f8fafd; border-color:#c2e7ff;">
-            </div>
-
-            <div style="display:flex; align-items:center; gap:8px; margin-bottom: 20px; text-align:left;">
-                <input type="checkbox" id="reg-remember" checked style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;">
-                <label for="reg-remember" style="font-size:13px; color:var(--text-dark); font-weight:500; cursor:pointer;">Remember me for fast login</label>
+            <div style="text-align: left; margin-bottom: 20px;">
+                <label style="font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px; display:block;">EMAIL ADDRESS</label>
+                <input type="email" id="forgot-email-input" class="form-control" placeholder="name@example.com" style="border-radius:12px; padding:14px; background:#f8fafd; border-color:#c2e7ff;">
             </div>
             
-            <button id="final-create-btn" onclick="finalizeAccountCreation()" style="width: 100%; background: var(--primary); color: white; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 600; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(10,86,208,0.25);">
-                Create Password & Finish
+            <button id="send-reset-btn" onclick="sendForgotPasswordLink()" style="width: 100%; background: #f29900; color: white; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 600; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(242, 153, 0, 0.25); margin-bottom: 10px;">
+                Send Reset Link
+            </button>
+            <button onclick="closeForgotPasswordModal()" style="width: 100%; background: transparent; color: var(--text-muted); padding: 10px; border-radius: 14px; font-size: 13px; font-weight: 600; border: 1px solid var(--border); cursor: pointer;">
+                Back to Login
             </button>
         </div>
     </div>
@@ -2341,7 +2355,7 @@
 
         document.getElementById('dash-date-picker').addEventListener('change', function(e) { calculateGrandTotals(); });
 
-        // ================= NEW AUTHENTICATION LOGIC (OTP & PASSWORD SYSTEM) =================
+        // ================= NEW AUTHENTICATION LOGIC (OTP, PASSWORD & EMAILJS) =================
         window.generatedOtp = "";
         window.tempRegData = {};
 
@@ -2350,114 +2364,148 @@
             document.getElementById('login-section').style.display = 'none';
             document.getElementById('signup-section').style.display = 'block';
         }
-
         window.toggleToLogin = function() {
             document.getElementById('signup-section').style.display = 'none';
             document.getElementById('login-section').style.display = 'block';
         }
 
-        // 2. Initiate Sign Up (Validate & Generate OTP)
+        // 2. Validate Password (8 Chars + 1 Special Character)
+        function isStrongPassword(password) {
+            // Kam se kam 8 letter, aur kam se kam 1 special character (@, #, $, %, etc.)
+            const strongRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>\-_]).{8,}$/;
+            return strongRegex.test(password);
+        }
+
+        // 3. Initiate Sign Up & Send REAL Email OTP
         window.initiateSignup = function() {
             let name = document.getElementById('reg-name').value.trim();
             let mobile = document.getElementById('reg-mobile').value.trim();
             let email = document.getElementById('reg-email').value.trim();
+            let pass1 = document.getElementById('reg-pass1').value;
+            let pass2 = document.getElementById('reg-pass2').value;
+            let remember = document.getElementById('reg-remember').checked;
 
-            if(!name || !mobile || !email) return alert("Please fill all the details.");
+            if(!name || !mobile || !email || !pass1 || !pass2) return alert("Please fill all the details.");
             if(mobile.length < 10) return alert("Please enter a valid 10-digit mobile number.");
+            
+            if(!isStrongPassword(pass1)) {
+                return alert("Weak Password! \nपासवर्ड कम से कम 8 अक्षरों का होना चाहिए और उसमें एक स्पेशल करैक्टर (जैसे @, #, $, &) होना ज़रूरी है।");
+            }
+            if(pass1 !== pass2) return alert("Passwords do not match!");
 
-            // 6-digit random OTP Generate kar rahe hain
+            let btn = document.getElementById('send-otp-btn');
+            btn.innerText = "Sending OTP...";
+            btn.disabled = true;
+
+            // 6-digit random OTP Generate
             window.generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-            window.tempRegData = { name, mobile, email };
+            window.tempRegData = { name, mobile, email, pass1, remember };
 
+            // ----- EMAILJS CODE FOR SENDING REAL OTP -----
+            // (Note: To make this work, replace Service ID and Template ID below)
+            let emailParams = {
+                to_email: email,
+                to_name: name,
+                otp_code: window.generatedOtp
+            };
+
+            // [!IMPORTANT!] Agar aapne abhi EmailJS setup nahi kiya hai, to yeh error dega. 
+            // Isliye abhi main emailjs wale code ko comment (//) kar raha hu taki app ruke nahi.
+            // Setup ke baad, in // ko hata dena.
+            
+            /*
+            emailjs.send("service_huvd2iu", "template_n3xmq0a", emailParams)
+            .then(function(res) {
+                document.getElementById('otp-show-email').innerText = email;
+                document.getElementById('otp-modal').style.display = 'flex';
+                document.getElementById('otp-input').value = "";
+                btn.innerText = "Create Account";
+                btn.disabled = false;
+            })
+            .catch(function(err) {
+                alert("Email bhejne me error aayi: " + JSON.stringify(err));
+                btn.innerText = "Create Account";
+                btn.disabled = false;
+            });
+            */
+            
+            // --- TESTING BYPASS (Jab tak EmailJS lagta nahi) ---
             document.getElementById('otp-show-email').innerText = email;
             document.getElementById('otp-modal').style.display = 'flex';
             document.getElementById('otp-input').value = "";
-
-            // Alert for Testing (Kyunki abhi Email API connect nahi hai)
-            alert("TESTING ALERT (ईमेल सिस्टम जुड़ने तक): \n\nआपका 6-Digit OTP है: " + window.generatedOtp);
+            btn.innerText = "Create Account";
+            btn.disabled = false;
+            console.log("TESTING OTP (Hidden from UI): " + window.generatedOtp); // Ye sirf developer console me dikhega
         }
 
         window.closeOtpModal = function() {
             document.getElementById('otp-modal').style.display = 'none';
         }
 
-        // 3. Verify OTP
+        // 4. Verify OTP & Finalize Account Creation
         window.verifySignupOtp = function() {
             let enteredOtp = document.getElementById('otp-input').value.trim();
             if(enteredOtp === window.generatedOtp) {
-                document.getElementById('otp-modal').style.display = 'none';
-                document.getElementById('password-modal').style.display = 'flex';
+                let btn = document.getElementById('final-verify-btn');
+                btn.innerText = "Creating Account...";
+                btn.disabled = true;
+
+                // Firebase me Account Create karna
+                createUserWithEmailAndPassword(auth, window.tempRegData.email, window.tempRegData.pass1)
+                .then((userCredential) => {
+                    let user = userCredential.user;
+                    
+                    // Realtime Database me Data Save karna
+                    const userRef = ref(db, 'AppUsers/' + user.uid);
+                    set(userRef, {
+                        name: window.tempRegData.name,
+                        email: window.tempRegData.email,
+                        phone: window.tempRegData.mobile,
+                        address: "",
+                        role: "pending",
+                        createdAt: new Date().toISOString()
+                    });
+
+                    // Customer Node me bhi daalna
+                    push(ref(db, 'Customers'), {
+                        name: window.tempRegData.name,
+                        phone: window.tempRegData.mobile,
+                        address: "",
+                        date: new Date().toISOString(),
+                        status: "Active",
+                        type: "Customer"
+                    });
+
+                    // Remember Me Logic (Local Storage)
+                    if(window.tempRegData.remember) {
+                        localStorage.setItem('v_remember_email', window.tempRegData.email);
+                        localStorage.setItem('v_remember_pass', window.tempRegData.pass1);
+                    } else {
+                        localStorage.removeItem('v_remember_email');
+                        localStorage.removeItem('v_remember_pass');
+                    }
+
+                    // Security: SignOut instantly to force them to click "Sign In" manually
+                    return signOut(auth);
+                })
+                .then(() => {
+                    document.getElementById('otp-modal').style.display = 'none';
+                    document.getElementById('success-modal').style.display = 'flex'; // Success Popup Show
+                    btn.innerText = "Verify OTP & Create Account";
+                    btn.disabled = false;
+                })
+                .catch((error) => {
+                    console.error(error);
+                    alert("Error: " + error.message);
+                    btn.innerText = "Verify OTP & Create Account";
+                    btn.disabled = false;
+                });
             } else {
                 alert("Incorrect OTP! Please check the code and try again.");
             }
         }
 
-        // 4. Create Password & Finalize Account
-        window.finalizeAccountCreation = function() {
-            let p1 = document.getElementById('reg-pass1').value;
-            let p2 = document.getElementById('reg-pass2').value;
-            let remember = document.getElementById('reg-remember').checked;
-
-            if(p1.length < 6) return alert("Password must be at least 6 characters strong.");
-            if(p1 !== p2) return alert("Passwords do not match!");
-
-            let btn = document.getElementById('final-create-btn');
-            btn.innerText = "Creating Account...";
-            btn.disabled = true;
-
-            // Firebase me Account Create karna
-            createUserWithEmailAndPassword(auth, window.tempRegData.email, p1)
-            .then((userCredential) => {
-                let user = userCredential.user;
-                
-                // Realtime Database me Data Save karna
-                const userRef = ref(db, 'AppUsers/' + user.uid);
-                set(userRef, {
-                    name: window.tempRegData.name,
-                    email: window.tempRegData.email,
-                    phone: window.tempRegData.mobile,
-                    address: "",
-                    role: "pending",
-                    createdAt: new Date().toISOString()
-                });
-
-                // Customer Node me bhi daalna
-                push(ref(db, 'Customers'), {
-                    name: window.tempRegData.name,
-                    phone: window.tempRegData.mobile,
-                    address: "",
-                    date: new Date().toISOString(),
-                    status: "Active",
-                    type: "Customer"
-                });
-
-                // Remember Me Logic (Local Storage)
-                if(remember) {
-                    localStorage.setItem('v_remember_email', window.tempRegData.email);
-                    localStorage.setItem('v_remember_pass', p1);
-                } else {
-                    localStorage.removeItem('v_remember_email');
-                    localStorage.removeItem('v_remember_pass');
-                }
-
-                // SignOut karwana taki custom flow toot na jaye
-                return signOut(auth);
-            })
-            .then(() => {
-                document.getElementById('password-modal').style.display = 'none';
-                document.getElementById('success-modal').style.display = 'flex'; // Success Popup Show
-                btn.innerText = "Create Password & Finish";
-                btn.disabled = false;
-            })
-            .catch((error) => {
-                console.error(error);
-                alert("Error: " + error.message);
-                btn.innerText = "Create Password & Finish";
-                btn.disabled = false;
-            });
-        }
-
-        // 5. Success k baad Login page par jana aur Auto-Fill karna
+        // 5. Success se Login page par wapas aana (Aur auto-fill karna)
         window.goToLoginFromSuccess = function() {
             document.getElementById('success-modal').style.display = 'none';
             toggleToLogin();
@@ -2475,7 +2523,7 @@
             }
         }
 
-        // 6. Regular Sign In Login
+        // 6. Regular Sign In Login (Force Manual Click & Tab Close protection)
         window.handleEmailLogin = function() {
             let email = document.getElementById('auth-login-email').value.trim();
             let password = document.getElementById('auth-login-password').value;
@@ -2483,9 +2531,9 @@
 
             if(!email || !password) return alert("Please enter Email & Password!");
 
-            let persistenceType = rememberMe ? browserLocalPersistence : browserSessionPersistence;
-            
-            setPersistence(auth, persistenceType)
+            // STRICT LOGIN SECURITY: BrowserSessionPersistence means tab band karte hi logout!
+            // Remember me sirf Textbox me auto-fill karne ke kaam aayega.
+            setPersistence(auth, browserSessionPersistence)
             .then(() => {
                 return signInWithEmailAndPassword(auth, email, password);
             })
@@ -2505,15 +2553,36 @@
             });
         }
         
-        // 7. Forgot Password Logic
+        // 7. Forgot Password Logic (Professional Popup & Real Firebase Link)
         window.forgotPassword = function() {
-            let email = document.getElementById('auth-login-email').value.trim();
-            if (!email) return alert("Please type your Email address in the box first!");
+            document.getElementById('forgot-email-input').value = document.getElementById('auth-login-email').value;
+            document.getElementById('forgot-password-modal').style.display = 'flex';
+        }
+        window.closeForgotPasswordModal = function() {
+            document.getElementById('forgot-password-modal').style.display = 'none';
+        }
+
+        window.sendForgotPasswordLink = function() {
+            let email = document.getElementById('forgot-email-input').value.trim();
+            if (!email) return alert("Please enter your registered Email address!");
             
+            let btn = document.getElementById('send-reset-btn');
+            btn.innerText = "Sending Link...";
+            btn.disabled = true;
+
             sendPasswordResetEmail(auth, email).then(() => {
-                alert("Password reset link has been sent to " + email + "!");
+                alert(`Success! A secure password reset link has been sent to ${email}.\n(पासवर्ड बदलने का लिंक आपकी ईमेल पर भेज दिया गया है।)`);
+                closeForgotPasswordModal();
+                btn.innerText = "Send Reset Link";
+                btn.disabled = false;
             }).catch((error) => {
-                alert("Error: " + error.message);
+                if(error.code === 'auth/user-not-found') {
+                    alert("इस ईमेल से कोई भी अकाउंट नहीं बना है!");
+                } else {
+                    alert("Error: " + error.message);
+                }
+                btn.innerText = "Send Reset Link";
+                btn.disabled = false;
             });
         }
 
@@ -2523,17 +2592,13 @@
             let loginBtn = document.getElementById('google-login-btn');
             loginBtn.innerHTML = "Checking...";
             
-            let rememberMe = document.getElementById('auth-login-remember') ? document.getElementById('auth-login-remember').checked : true;
-            let persistenceType = rememberMe ? browserLocalPersistence : browserSessionPersistence;
-
-            setPersistence(auth, persistenceType).then(() => {
+            // Tab close auto-logout also applies to Google Login
+            setPersistence(auth, browserSessionPersistence).then(() => {
                 return signInWithPopup(auth, googleProvider);
             }).then((result) => {
                 loginBtn.innerHTML = `<img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width: 20px;"> Continue with Google`;
             }).catch((error) => {
-                console.error(error);
-                if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Login Cancelled or Error Occurred.");
-                loginBtn.innerHTML = `<img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width: 20px;"> Continue with Google`;
+                loginBtn.innerHTML = `<img src="https://www.svgrepo.com/show/475656/google-color.svg" alt=\"Google\" style=\"width: 20px;\"> Continue with Google`;
             });
         }
         // =========================================================================

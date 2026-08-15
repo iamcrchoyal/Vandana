@@ -364,6 +364,24 @@
         </div>
     </div>
 
+    **✅ Uski jagah yeh Naya Code paste kar dein:**
+*(Isme Email Verification aur Forgot Password dono ka ekdam premium design hai)*
+```html
+    <div id="verify-link-modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px);">
+        <div style="background: white; padding: 30px; border-radius: 24px; width: 100%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: popIn 0.3s ease;">
+            <div style="width: 60px; height: 60px; background: #e8f0fe; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 15px auto;" class="material-symbols-rounded">mark_email_read</div>
+            <h3 style="font-family: 'Product Sans', sans-serif; font-size: 20px; color: var(--text-dark); margin-bottom: 8px;">Verify Your Email</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">Ek secure verification link aapki email par bhej diya gaya hai: <br><strong id="link-show-email" style="color:var(--primary);"></strong><br><br>Kripya apna email check karein aur us link par click karke account verify karein.</p>
+            
+            <button onclick="openGmailApp()" style="width: 100%; background: #ea4335; color: white; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 600; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(234, 67, 53, 0.25); margin-bottom: 10px; display:flex; justify-content:center; align-items:center; gap:8px;">
+                <span class="material-symbols-rounded" style="font-size:20px;">mail</span> Open Gmail App
+            </button>
+            <button onclick="closeVerifyLinkModal()" style="width: 100%; background: transparent; color: var(--text-muted); padding: 10px; border-radius: 14px; font-size: 13px; font-weight: 600; border: 1px solid var(--border); cursor: pointer;">
+                I will verify later (Go to Login)
+            </button>
+        </div>
+    </div>
+
     <div id="forgot-password-modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px);">
         <div style="background: white; padding: 30px; border-radius: 24px; width: 100%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: popIn 0.3s ease;">
             <div style="width: 60px; height: 60px; background: #fff4e5; color: #f29900; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 15px auto;" class="material-symbols-rounded">lock_reset</div>
@@ -380,18 +398,6 @@
             </button>
             <button onclick="closeForgotPasswordModal()" style="width: 100%; background: transparent; color: var(--text-muted); padding: 10px; border-radius: 14px; font-size: 13px; font-weight: 600; border: 1px solid var(--border); cursor: pointer;">
                 Back to Login
-            </button>
-        </div>
-    </div>
-
-    <div id="success-modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px);">
-        <div style="background: white; padding: 40px 30px; border-radius: 24px; width: 100%; max-width: 350px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-            <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Success" style="width: 80px; margin-bottom: 20px;">
-            <h3 style="font-family: 'Product Sans', sans-serif; font-size: 24px; color: var(--success); margin-bottom: 10px;">Account Activated!</h3>
-            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5;">Welcome to Vandana Enterprises. Your account has been created successfully.</p>
-            
-            <button onclick="goToLoginFromSuccess()" style="width: 100%; background: var(--success); color: white; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 600; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(20, 108, 46, 0.25);">
-                Go to Login Page
             </button>
         </div>
     </div>
@@ -2376,7 +2382,7 @@
             return strongRegex.test(password);
         }
 
-        // 3. Initiate Sign Up & Send REAL Email OTP
+        // 3. Initiate Sign Up & Send Verification Link
         window.initiateSignup = function() {
             let name = document.getElementById('reg-name').value.trim();
             let mobile = document.getElementById('reg-mobile').value.trim();
@@ -2394,136 +2400,89 @@
             if(pass1 !== pass2) return alert("Passwords do not match!");
 
             let btn = document.getElementById('send-otp-btn');
-            btn.innerText = "Sending OTP...";
+            btn.innerText = "Creating Account...";
             btn.disabled = true;
 
-            // 6-digit random OTP Generate
-            window.generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-            window.tempRegData = { name, mobile, email, pass1, remember };
+            // 🌟 Step A: Firebase me Account Create karna
+            createUserWithEmailAndPassword(auth, email, pass1)
+            .then((userCredential) => {
+                let user = userCredential.user;
+                
+                // 🌟 Step B: Realtime Database me Data Save karna
+                const userRef = ref(db, 'AppUsers/' + user.uid);
+                set(userRef, {
+                    name: name,
+                    email: email,
+                    phone: mobile,
+                    address: "",
+                    role: "pending",
+                    createdAt: new Date().toISOString()
+                });
 
-            // ----- EMAILJS CODE FOR SENDING REAL OTP -----
-            // (Note: To make this work, replace Service ID and Template ID below)
-            let emailParams = {
-                to_email: email,
-                to_name: name,
-                otp_code: window.generatedOtp
-            };
+                // Customer Node me bhi daalna
+                push(ref(db, 'Customers'), {
+                    name: name,
+                    phone: mobile,
+                    address: "",
+                    date: new Date().toISOString(),
+                    status: "Active",
+                    type: "Customer"
+                });
 
-            // [!IMPORTANT!] Agar aapne abhi EmailJS setup nahi kiya hai, to yeh error dega. 
-            // Isliye abhi main emailjs wale code ko comment (//) kar raha hu taki app ruke nahi.
-            // Setup ke baad, in // ko hata dena.
-            
-            /*
-            emailjs.send("service_huvd2iu","template_n3xmq0a"), emailParams)
-            .then(function(res) {
-                document.getElementById('otp-show-email').innerText = email;
-                document.getElementById('otp-modal').style.display = 'flex';
-                document.getElementById('otp-input').value = "";
+                // Remember Me Logic (Local Storage)
+                if(remember) {
+                    localStorage.setItem('v_remember_email', email);
+                    localStorage.setItem('v_remember_pass', pass1);
+                } else {
+                    localStorage.removeItem('v_remember_email');
+                    localStorage.removeItem('v_remember_pass');
+                }
+
+                // 🌟 Step C: Firebase se Direct Secure Verification Link Bhejna
+                return sendEmailVerification(user);
+            })
+            .then(() => {
+                // Link bhej diya gaya hai, ab Sign Out kar do taki bina verify login na kar paye
+                signOut(auth);
+                
+                // UI Update: Link sent Modal dikhana
+                document.getElementById('signup-section').style.display = 'none';
+                document.getElementById('link-show-email').innerText = email;
+                document.getElementById('verify-link-modal').style.display = 'flex';
+                
                 btn.innerText = "Create Account";
                 btn.disabled = false;
             })
-            .catch(function(err) {
-                alert("Email bhejne me error aayi: " + JSON.stringify(err));
+            .catch((error) => {
+                console.error(error);
+                let msg = "Error: " + error.message;
+                if(error.code === 'auth/email-already-in-use') msg = "Is email se pehle hi account bana hua hai!";
+                alert(msg);
                 btn.innerText = "Create Account";
                 btn.disabled = false;
             });
-            */
-            
-            // --- TESTING BYPASS (Jab tak EmailJS lagta nahi) ---
-            document.getElementById('otp-show-email').innerText = email;
-            document.getElementById('otp-modal').style.display = 'flex';
-            document.getElementById('otp-input').value = "";
-            btn.innerText = "Create Account";
-            btn.disabled = false;
-            console.log("TESTING OTP (Hidden from UI): " + window.generatedOtp); // Ye sirf developer console me dikhega
         }
 
-        window.closeOtpModal = function() {
-            document.getElementById('otp-modal').style.display = 'none';
+        // 4. Open Gmail App directly
+        window.openGmailApp = function() {
+            window.open("[https://mail.google.com/](https://mail.google.com/)", "_blank");
         }
 
-        // 4. Verify OTP & Finalize Account Creation
-        window.verifySignupOtp = function() {
-            let enteredOtp = document.getElementById('otp-input').value.trim();
-            if(enteredOtp === window.generatedOtp) {
-                let btn = document.getElementById('final-verify-btn');
-                btn.innerText = "Creating Account...";
-                btn.disabled = true;
-
-                // Firebase me Account Create karna
-                createUserWithEmailAndPassword(auth, window.tempRegData.email, window.tempRegData.pass1)
-                .then((userCredential) => {
-                    let user = userCredential.user;
-                    
-                    // Realtime Database me Data Save karna
-                    const userRef = ref(db, 'AppUsers/' + user.uid);
-                    set(userRef, {
-                        name: window.tempRegData.name,
-                        email: window.tempRegData.email,
-                        phone: window.tempRegData.mobile,
-                        address: "",
-                        role: "pending",
-                        createdAt: new Date().toISOString()
-                    });
-
-                    // Customer Node me bhi daalna
-                    push(ref(db, 'Customers'), {
-                        name: window.tempRegData.name,
-                        phone: window.tempRegData.mobile,
-                        address: "",
-                        date: new Date().toISOString(),
-                        status: "Active",
-                        type: "Customer"
-                    });
-
-                    // Remember Me Logic (Local Storage)
-                    if(window.tempRegData.remember) {
-                        localStorage.setItem('v_remember_email', window.tempRegData.email);
-                        localStorage.setItem('v_remember_pass', window.tempRegData.pass1);
-                    } else {
-                        localStorage.removeItem('v_remember_email');
-                        localStorage.removeItem('v_remember_pass');
-                    }
-
-                    // Security: SignOut instantly to force them to click "Sign In" manually
-                    return signOut(auth);
-                })
-                .then(() => {
-                    document.getElementById('otp-modal').style.display = 'none';
-                    document.getElementById('success-modal').style.display = 'flex'; // Success Popup Show
-                    btn.innerText = "Verify OTP & Create Account";
-                    btn.disabled = false;
-                })
-                .catch((error) => {
-                    console.error(error);
-                    alert("Error: " + error.message);
-                    btn.innerText = "Verify OTP & Create Account";
-                    btn.disabled = false;
-                });
-            } else {
-                alert("Incorrect OTP! Please check the code and try again.");
-            }
-        }
-
-        // 5. Success se Login page par wapas aana (Aur auto-fill karna)
-        window.goToLoginFromSuccess = function() {
-            document.getElementById('success-modal').style.display = 'none';
+        // 5. Close Modal and Go back to Login (Auto-fill email/pass)
+        window.closeVerifyLinkModal = function() {
+            document.getElementById('verify-link-modal').style.display = 'none';
             toggleToLogin();
-
-            // Auto-Fill Check
+            
             let savedEmail = localStorage.getItem('v_remember_email');
             let savedPass = localStorage.getItem('v_remember_pass');
             if(savedEmail && savedPass) {
                 document.getElementById('auth-login-email').value = savedEmail;
                 document.getElementById('auth-login-password').value = savedPass;
                 document.getElementById('auth-login-remember').checked = true;
-            } else {
-                document.getElementById('auth-login-email').value = "";
-                document.getElementById('auth-login-password').value = "";
             }
         }
 
-        // 6. Regular Sign In Login (Force Manual Click & Tab Close protection)
+        // 6. Regular Sign In Login (With Verification Check)
         window.handleEmailLogin = function() {
             let email = document.getElementById('auth-login-email').value.trim();
             let password = document.getElementById('auth-login-password').value;
@@ -2531,13 +2490,28 @@
 
             if(!email || !password) return alert("Please enter Email & Password!");
 
-            // STRICT LOGIN SECURITY: BrowserSessionPersistence means tab band karte hi logout!
-            // Remember me sirf Textbox me auto-fill karne ke kaam aayega.
+            let actionBtn = document.getElementById('auth-action-btn');
+            actionBtn.innerText = "Checking...";
+            actionBtn.disabled = true;
+
+            // STRICT LOGIN SECURITY
             setPersistence(auth, browserSessionPersistence)
             .then(() => {
                 return signInWithEmailAndPassword(auth, email, password);
             })
-            .then(() => {
+            .then((userCredential) => {
+                let user = userCredential.user;
+                
+                // 🌟 VERIFICATION CHECK: Agar email verify nahi hai, toh rok do!
+                if (!user.emailVerified) {
+                    signOut(auth); // Wapas log out kar do
+                    alert("⚠️ Apka account abhi verify nahi hua hai! Kripya apna Email check karein aur link par click karke verify karein.");
+                    actionBtn.innerText = "Sign In";
+                    actionBtn.disabled = false;
+                    return;
+                }
+
+                // Agar verify hai toh Remember Me apply hoga aur login hone denge
                 if(rememberMe) {
                     localStorage.setItem('v_remember_email', email);
                     localStorage.setItem('v_remember_pass', password);
@@ -2545,11 +2519,16 @@
                     localStorage.removeItem('v_remember_email');
                     localStorage.removeItem('v_remember_pass');
                 }
+                
+                // (Jaise hi successful login hoga, onAuthStateChanged apne aap dashboard dikha dega)
             })
             .catch(error => {
                 let msg = "Invalid Email or Password!";
-                if(error.code === 'auth/user-not-found') msg = "Account not found.";
+                if(error.code === 'auth/user-not-found') msg = "Account not found. Please Sign Up.";
+                if(error.code === 'auth/too-many-requests') msg = "बार-बार गलत पासवर्ड डालने से अकाउंट लॉक हो गया है। अपना पासवर्ड 'Forgot Password' से रीसेट करें।";
                 alert(msg);
+                actionBtn.innerText = "Sign In";
+                actionBtn.disabled = false;
             });
         }
         

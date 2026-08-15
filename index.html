@@ -935,13 +935,13 @@
                             </div>
                         </div>
                     </div>
-                    <button id="save-bill-btn" class="btn-submit" onclick="triggerSaveAndShare()">💾 Generate Bill</button>
+                    <button id="save-bill-btn" class="btn-submit" onclick="triggerSaveAndShare()">💾 Generate Invoice</button>
                 </div>
             </div>
 
             <div id="post-bill-area" style="display:none; padding-bottom: 80px;">
                 <div style="background:#e6f4ea; color:var(--success); padding:12px; border-radius:12px; margin-bottom:16px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:8px; border: 1px solid #cce8d6;">
-                    <span class="material-symbols-rounded" style="font-size: 24px;">check_circle</span> <span id="success-msg-title">Bill Generated Successfully!</span>
+                    <span class="material-symbols-rounded" style="font-size: 24px;">check_circle</span> <span id="success-msg-title">Invoice Generated Successfully!</span>
                 </div>
                 
                 <div id="pos-immediate-preview" style="background:#e0e2e0; padding:10px; border-radius:12px; overflow-x:auto; zoom: 0.48; margin-bottom: 20px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.05); display:flex; justify-content:center;">
@@ -1503,10 +1503,12 @@
                 }
             });
             // --- NEW AUTH LOGIC ENDS ---
-            let todayStr = new Date().toISOString().split('T')[0];
+            let todayObjInit = new Date();
+            let todayStr = new Date(todayObjInit.getTime() - (todayObjInit.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
             if(document.getElementById('dash-date-picker')) document.getElementById('dash-date-picker').value = todayStr;
             if(document.getElementById('calc-date')) document.getElementById('calc-date').value = todayStr;
             if(document.getElementById('gd-date')) document.getElementById('gd-date').value = todayStr;
+            if(document.getElementById('inv-date')) document.getElementById('inv-date').value = todayStr; // Invoice date automatic present date
             
             try {
                 let savedStack = sessionStorage.getItem('v_pageStack');
@@ -2168,13 +2170,22 @@
             } catch (error) {}
             // ===============================================================
 
-            // 🌟 SMART CUSTOMER AUTOCOMPLETE
-            document.getElementById('inv-party').addEventListener('change', function(e) { 
+            // 🌟 SMART CUSTOMER AUTOCOMPLETE (Name to Number & Number to Name)
+            document.getElementById('inv-party').addEventListener('input', function(e) { 
                 let val = e.target.value.trim().toLowerCase(); 
                 let cust = globalCustomers.find(c => c.name.toLowerCase() === val); 
                 if(cust) { 
-                    e.target.value = cust.name; // Auto-correct exact case matching the DB
+                    e.target.value = cust.name; // Capital/Small automatic sahi ho jayega
                     if(cust.phone) document.getElementById('inv-phone').value = cust.phone; 
+                    if(typeof checkPosStep1 === 'function') checkPosStep1(); // Automatic Add Product section show karega
+                } 
+            });
+            document.getElementById('inv-phone').addEventListener('input', function(e) { 
+                let val = e.target.value.trim(); 
+                let cust = globalCustomers.find(c => c.phone === val); 
+                if(cust) { 
+                    document.getElementById('inv-party').value = cust.name; // Number dalte hi Name automatic aa jayega
+                    if(typeof checkPosStep1 === 'function') checkPosStep1(); // Automatic Add Product section show karega
                 } 
             });
 
@@ -3627,7 +3638,7 @@
             document.getElementById('inv-rate') ? document.getElementById('inv-rate').value='' : null; 
             let btn = document.getElementById('save-bill-btn'); 
             if(btn) { 
-                btn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">update</span> Update Bill` : `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">receipt_long</span> Generate Bill`; 
+                btn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">update</span> Update Invoice` : `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">receipt_long</span> Generate Invoice`; 
                 btn.style.background = window.editingBillNo ? "var(--warning)" : "var(--primary)"; 
             }
             if(typeof window.updateDynamicQR === 'function') window.updateDynamicQR();
@@ -3754,7 +3765,7 @@
                 billNo: tempBillNo, breakdown: breakdownData 
             };
             
-            document.getElementById('success-msg-title').innerText = isUpdating ? "Invoice Updated Successfully!" : "Bill Generated Successfully!";
+            document.getElementById('success-msg-title').innerText = isUpdating ? "Invoice Updated Successfully!" : "Invoice Generated Successfully!";
 
             let savePromise;
             if (window.editingEntryKey) {
@@ -3769,12 +3780,10 @@
 
             savePromise.then(() => {
                 let paymentPromises = [];
-                // Add exact Cash Entry
                 if(cAmt > 0) {
                     let cashEntry = { date: finalDateTime, name: partyName, type: "Got", amount: cAmt, details: `Cash Received (Bill #${tempBillNo})` };
                     paymentPromises.push(push(ref(db, 'Ledger'), cashEntry));
                 }
-                // Add exact Online Entry
                 if(oAmt > 0) {
                     let onlineEntry = { date: finalDateTime, name: partyName, type: "Got", amount: oAmt, details: `Online Payment Received (Bill #${tempBillNo})` };
                     paymentPromises.push(push(ref(db, 'Ledger'), onlineEntry));
@@ -3784,16 +3793,29 @@
                     if(typeof window.autoAdjustBillNumbers === 'function') window.autoAdjustBillNumbers(); 
                 });
                 
-                // SHOW IMMEDIATE PREVIEW
+                // SHOW IMMEDIATE PREVIEW IN PROPER A4 FORMAT
                 currentEntryData = window.lastGeneratedEntryData;
                 preparePDFData();
-                let previewHtml = document.getElementById('pdf-invoice-template').innerHTML;
-                document.getElementById('pos-immediate-preview').innerHTML = previewHtml;
+                let previewHtml = document.getElementById('pdf-invoice-template').outerHTML; // outerHTML maintains CSS for A4 Format
+                let previewContainer = document.getElementById('pos-immediate-preview');
+                previewContainer.innerHTML = previewHtml;
+                
+                // A4 Preview Setup
+                previewContainer.style.background = '#e0e2e0';
+                previewContainer.style.padding = '20px';
+                previewContainer.style.zoom = '0.45'; // Proper scale
+                previewContainer.style.display = 'flex';
+                previewContainer.style.justifyContent = 'center';
+                
+                // Change Title to Invoice Preview
+                let posTitle = document.querySelector('#pos-page .page-title');
+                if(posTitle) posTitle.innerText = "Invoice Preview";
                 
                 window.editingBillNo = null; 
                 window.editingEntryDate = null;
                 document.getElementById('billing-form-area').style.display = 'none'; 
                 document.getElementById('post-bill-area').style.display = 'block'; 
+                
                 // Scroll to top to see preview
                 document.querySelector('#pos-page .scroll-content').scrollTop = 0;
             }); 
@@ -3806,9 +3828,18 @@
             window.editingBillNo = null; 
             window.editingEntryKey = null;
             window.editingEntryDate = null;
-            document.getElementById('inv-date').value = new Date().toISOString().split('T')[0]; 
+            
+            // Set Present Date Automatic
+            let d = new Date();
+            let localDate = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+            document.getElementById('inv-date').value = localDate; 
+            
             document.getElementById('inv-party').value = ''; 
             document.getElementById('inv-phone').value = ''; 
+            
+            // Revert Title Back to "Create Invoice"
+            let posTitle = document.querySelector('#pos-page .page-title');
+            if(posTitle) posTitle.innerText = "Create Invoice";
             
             // Re-hide sections using check function
             if(typeof checkPosStep1 === 'function') checkPosStep1();

@@ -252,16 +252,51 @@
 <body>
 
     <!-- 🔒 PRO LOGIN OVERLAY -->
-    <div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #f0f4f8 0%, #d7e3fc 100%); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
-        <div style="background: white; padding: 40px 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 100%; max-width: 380px; text-align: center;">
-            <div style="background: var(--primary); color: white; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);" class="material-symbols-rounded">inventory_2</div>
-            <h2 style="color: #2c3e50; margin-bottom: 8px; font-size: 26px; font-weight: 700;">Vandana ERP</h2>
-            <p style="color: #7f8c8d; font-size: 14px; margin-bottom: 35px;">Welcome! Please login to continue.</p>
+    <div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #f0f4f8 0%, #d7e3fc 100%); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; overflow-y: auto;">
+        <div style="background: white; padding: 35px 30px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center; margin: auto;">
             
-            <button id="google-login-btn" onclick="loginWithGoogle()" style="background: white; color: #3c4043; border: 1px solid #dadce0; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: background 0.3s;">
-                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width: 22px;">
+            <div style="background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 15px auto; box-shadow: 0 4px 15px rgba(10,86,208,0.3);" class="material-symbols-rounded">inventory_2</div>
+            <h2 style="color: var(--text-dark); margin-bottom: 6px; font-size: 24px; font-weight: 700; font-family: 'Product Sans', sans-serif;">Vandana ERP</h2>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 25px;" id="auth-subtitle">Log in to your account</p>
+            
+            <div style="text-align: left; margin-bottom: 15px;">
+                <label style="font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px; display:block;">EMAIL ADDRESS</label>
+                <input type="email" id="auth-email" class="form-control" placeholder="name@example.com" style="border-radius:12px; padding:14px; background:#f8fafd; border-color:#c2e7ff;">
+            </div>
+            
+            <div style="text-align: left; margin-bottom: 15px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <label style="font-size:12px; font-weight:600; color:var(--text-muted);">PASSWORD</label>
+                    <span id="auth-forgot-link" onclick="forgotPassword()" style="font-size:12px; font-weight:600; color:var(--primary); cursor:pointer;">Forgot Password?</span>
+                </div>
+                <input type="password" id="auth-password" class="form-control" placeholder="••••••••" style="border-radius:12px; padding:14px; background:#f8fafd; border-color:#c2e7ff;">
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom: 20px; text-align:left;">
+                <input type="checkbox" id="auth-remember" checked style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;">
+                <label for="auth-remember" style="font-size:13px; color:var(--text-dark); font-weight:500; cursor:pointer;">Remember me</label>
+            </div>
+            
+            <button id="auth-action-btn" onclick="handleEmailAuth()" style="width: 100%; background: var(--primary); color: white; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 600; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(10,86,208,0.25); margin-bottom: 20px; transition: transform 0.2s;">
+                Sign In
+            </button>
+
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+                <div style="flex:1; height:1px; background:var(--border);"></div>
+                <span style="font-size:12px; color:var(--text-muted); font-weight:500;">OR</span>
+                <div style="flex:1; height:1px; background:var(--border);"></div>
+            </div>
+
+            <button id="google-login-btn" onclick="loginWithGoogle()" style="background: white; color: #3c4043; border: 1px solid #dadce0; border-radius: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: background 0.2s;">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width: 20px;">
                 Continue with Google
             </button>
+
+            <div style="margin-top: 25px; font-size: 13px; color: var(--text-muted); font-weight: 500;">
+                <span id="auth-toggle-text">Don't have an account?</span> 
+                <span onclick="toggleAuthMode()" id="auth-toggle-link" style="color: var(--primary); font-weight: 700; cursor: pointer;">Sign Up</span>
+            </div>
+
         </div>
     </div>
 <!-- 📝 NEW CUSTOMER DETAILS POPUP -->
@@ -1329,7 +1364,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, get, set, push, update, remove, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getStorage, ref as storageRef, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = {
@@ -2224,27 +2259,128 @@
 
         document.getElementById('dash-date-picker').addEventListener('change', function(e) { calculateGrandTotals(); });
 
-        // --- GOOGLE LOGIN FUNCTION ---
-        window.loginWithGoogle = function() {
-            const googleProvider = new GoogleAuthProvider(); // <--- हमने चाबी यहाँ अंदर रख दी!
+        // ================= AUTHENTICATION LOGIC (EMAIL + GOOGLE) =================
+        window.isSignUpMode = false;
+
+        window.toggleAuthMode = function() {
+            window.isSignUpMode = !window.isSignUpMode;
+            let actionBtn = document.getElementById('auth-action-btn');
+            let toggleText = document.getElementById('auth-toggle-text');
+            let toggleLink = document.getElementById('auth-toggle-link');
+            let subtitle = document.getElementById('auth-subtitle');
+            let forgotLink = document.getElementById('auth-forgot-link');
+
+            if (window.isSignUpMode) {
+                actionBtn.innerText = "Create Account";
+                subtitle.innerText = "Create a new account to continue";
+                toggleText.innerText = "Already have an account?";
+                toggleLink.innerText = "Log In";
+                forgotLink.style.display = "none";
+            } else {
+                actionBtn.innerText = "Sign In";
+                subtitle.innerText = "Log in to your account";
+                toggleText.innerText = "Don't have an account?";
+                toggleLink.innerText = "Sign Up";
+                forgotLink.style.display = "block";
+            }
+        }
+
+        window.handleEmailAuth = function() {
+            let email = document.getElementById('auth-email').value.trim();
+            let password = document.getElementById('auth-password').value.trim();
+            let rememberMe = document.getElementById('auth-remember').checked;
+            let actionBtn = document.getElementById('auth-action-btn');
+
+            if (!email || !password) {
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Please enter both Email & Password!");
+                else alert("Please enter both Email & Password!");
+                return;
+            }
+
+            actionBtn.innerText = "Processing...";
+            actionBtn.disabled = true;
+
+            // Set Persistence (Remember me logic)
+            let persistenceType = rememberMe ? browserLocalPersistence : browserSessionPersistence;
             
-            let loginBtn = document.getElementById('google-login-btn');
-            loginBtn.innerHTML = "Checking...";
-            
-            signInWithPopup(auth, googleProvider)
-                .then((result) => {
-                    const user = result.user;
-                    alert("Welcome " + user.displayName + "! (लॉगिन सफल)");
-                    document.getElementById('login-overlay').style.display = 'none';
-                    loginBtn.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 24px;"> Sign in with Google`;
+            setPersistence(auth, persistenceType)
+                .then(() => {
+                    if (window.isSignUpMode) {
+                        // Sign Up
+                        return createUserWithEmailAndPassword(auth, email, password);
+                    } else {
+                        // Log In
+                        return signInWithEmailAndPassword(auth, email, password);
+                    }
+                })
+                .then((userCredential) => {
+                    // Success! 
+                    // Note: onAuthStateChanged will automatically handle hiding the overlay and loading data.
+                    actionBtn.innerText = window.isSignUpMode ? "Create Account" : "Sign In";
+                    actionBtn.disabled = false;
+                    document.getElementById('auth-password').value = ""; // Clear password for security
                 })
                 .catch((error) => {
                     console.error(error);
-                    alert("लॉगिन कैंसल हो गया या एरर आया।");
-                    loginBtn.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 24px;"> Sign in with Google`;
+                    let errorMsg = "An error occurred.";
+                    if(error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') errorMsg = "Invalid Email or Password!";
+                    else if(error.code === 'auth/email-already-in-use') errorMsg = "An account already exists with this email.";
+                    else if(error.code === 'auth/weak-password') errorMsg = "Password should be at least 6 characters.";
+                    else if(error.code === 'auth/invalid-email') errorMsg = "Please enter a valid email address.";
+                    
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(errorMsg);
+                    else alert(errorMsg);
+                    
+                    actionBtn.innerText = window.isSignUpMode ? "Create Account" : "Sign In";
+                    actionBtn.disabled = false;
                 });
         }
-        // -----------------------------------
+
+        window.forgotPassword = function() {
+            let email = document.getElementById('auth-email').value.trim();
+            if (!email) {
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Please enter your Email address first!");
+                else alert("Please enter your Email address first!");
+                return;
+            }
+
+            let btn = document.getElementById('auth-forgot-link');
+            btn.innerText = "Sending...";
+
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    alert(`Password reset link has been sent to ${email}. Please check your inbox!`);
+                    btn.innerText = "Forgot Password?";
+                })
+                .catch((error) => {
+                    console.error(error);
+                    if(error.code === 'auth/user-not-found') alert("No account found with this email.");
+                    else alert("Error sending reset email: " + error.message);
+                    btn.innerText = "Forgot Password?";
+                });
+        }
+
+        window.loginWithGoogle = function() {
+            const googleProvider = new GoogleAuthProvider(); 
+            let loginBtn = document.getElementById('google-login-btn');
+            loginBtn.innerHTML = "Checking...";
+            
+            // Set persistence based on Remember Me checkbox even for Google Login
+            let rememberMe = document.getElementById('auth-remember').checked;
+            let persistenceType = rememberMe ? browserLocalPersistence : browserSessionPersistence;
+
+            setPersistence(auth, persistenceType).then(() => {
+                return signInWithPopup(auth, googleProvider);
+            }).then((result) => {
+                // Success handled by onAuthStateChanged
+                loginBtn.innerHTML = `<img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width: 20px;"> Continue with Google`;
+            }).catch((error) => {
+                console.error(error);
+                if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Login Cancelled or Error Occurred.");
+                loginBtn.innerHTML = `<img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width: 20px;"> Continue with Google`;
+            });
+        }
+        // =========================================================================
 
         window.updateGreeting = function() {
             const hour = new Date().getHours(); let greeting = "Good morning";

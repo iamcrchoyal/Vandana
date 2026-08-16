@@ -414,6 +414,7 @@
             <div style="background:#f8fafd; padding:20px; border-radius:12px; border:1px solid #c2e7ff; margin-bottom:30px;">
                 <h3 style="margin:0 0 8px 0; font-size:12px; color:#718096; text-transform:uppercase; letter-spacing:1px;">BILLED TO:</h3>
                 <p style="margin:0; font-size:22px; font-weight:700; color:#1f1f1f;" id="pdf-cust-name">Customer Name</p>
+                <p style="margin:4px 0 0 0; font-size:14px; font-weight:600; color:#444746;" id="pdf-cust-phone">Mob: N/A</p>
             </div>
 
             <!-- Items Table (With Sr. No) -->
@@ -458,7 +459,8 @@
                     <p style="margin:0 0 4px 0; color:#1f1f1f; font-weight:600; font-size:15px;">Thank you for your business!</p>
                     <p style="margin:0;">Report generated via Vandana ERP Software</p>
                 </div>
-                <div style="text-align:right; color:#1f1f1f; font-size:15px; font-weight:700;">
+                <div style="text-align:right; color:#1f1f1f; font-size:15px; font-weight:700; display:flex; flex-direction:column; align-items:flex-end;">
+                    <div style="font-family: 'Brush Script MT', cursive; font-size: 28px; color: #0a56d0; line-height: 1; margin-bottom: 4px; font-weight: normal;">Vandana Ent.</div>
                     Authorized Signatory
                 </div>
             </div>
@@ -1152,7 +1154,7 @@
 
     <!-- 💸 ENTRY DETAILS PAGE -->
     <div class="page flex-page" id="entry-details-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('entry-details-page')">arrow_back</button><h2 class="page-title">Entry Details</h2></div>
+        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('entry-details-page')">arrow_back</button><h2 class="page-title" id="entry-page-header-title">Entry Details</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
             <div class="entry-detail-card">
                 <div class="ed-header"><div class="ed-header-left"><div><div style="font-weight:500; font-size:18px; font-family:'Product Sans', sans-serif; color:var(--text-dark);" id="ed-party-name">Name</div><div style="font-size:12px; color:var(--text-muted);" id="ed-date">Date</div></div></div><div class="ed-amount-box"><div class="ed-amt" id="ed-amount">₹ 0</div><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; text-align:right;" id="ed-type">You Gave</div></div></div>
@@ -3223,6 +3225,12 @@
             document.getElementById('ed-type').style.color = color; 
             document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry"; 
             
+            // Phase 1: Dynamic Header Title Update
+            let titleElem = document.getElementById('entry-page-header-title');
+            if(titleElem) {
+                titleElem.innerText = (currentEntryData.cart && currentEntryData.cart.length > 0) ? "Invoice Details" : "Entry Details";
+            }
+
             if(currentEntryData.cart && currentEntryData.cart.length > 0) { 
                 document.getElementById('ed-edit-btn-container').innerHTML = `<button class="btn-outline" onclick="editCurrentInvoice()" style="width:100%; border:1px solid var(--primary); color:var(--primary); font-family:'Product Sans', sans-serif; display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded" style="font-size:18px;">edit_document</span> Edit Invoice</button>`; 
             } else { 
@@ -3900,11 +3908,18 @@
             document.getElementById('pdf-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleDateString('en-GB'); 
             document.getElementById('pdf-bill-no').innerText = currentEntryData.billNo || currentEntryData.key.substring(1, 8).toUpperCase(); 
             
-            // Customer Name & Mobile Number logic
-            let cPhoneText = "";
+            // Phase 1: Customer Name & Mobile Number logic (Name upar, Number niche)
             let cData = globalCustomers.find(c => c.name === currentEntryData.name);
-            if(cData && cData.phone) cPhoneText = " (Mob: " + cData.phone + ")";
-            document.getElementById('pdf-cust-name').innerText = currentEntryData.name + cPhoneText;
+            document.getElementById('pdf-cust-name').innerText = currentEntryData.name;
+            let phoneElem = document.getElementById('pdf-cust-phone');
+            if(phoneElem) {
+                if(cData && cData.phone) {
+                    phoneElem.innerText = "Mob: +91 " + cData.phone;
+                    phoneElem.style.display = "block";
+                } else {
+                    phoneElem.style.display = "none";
+                }
+            }
             
             // 2. टेबल लॉजिक (With Sr. No. & Total Qty)
             let totalCones = 0;
@@ -3956,12 +3971,12 @@
 
                 document.getElementById('pdf-cart-body').innerHTML = html;
                 
-                // 5-COLUMN HEADER
+                // Phase 1: 5-COLUMN HEADER (Sr. No. Properly Aligned - nowrap lagaya)
                 document.getElementById('pdf-table-header').innerHTML = `
                     <tr style="background:#0a56d0; color:white;">
-                        <th style="padding:12px; text-align:center; font-size:14px; border:1px solid #0a56d0; width:60px;">Sr. No.</th>
+                        <th style="padding:12px; text-align:center; font-size:14px; border:1px solid #0a56d0; width:65px; white-space:nowrap;">Sr. No.</th>
                         <th style="padding:12px; text-align:left; font-size:14px; border:1px solid #0a56d0;">Product Details</th>
-                        <th style="padding:12px; text-align:center; font-size:14px; border:1px solid #0a56d0;">Qty</th>
+                        <th style="padding:12px; text-align:center; font-size:14px; border:1px solid #0a56d0; width:80px;">Qty</th>
                         <th style="padding:12px; text-align:right; font-size:14px; border:1px solid #0a56d0;">Rate</th>
                         <th style="padding:12px; text-align:right; font-size:14px; border:1px solid #0a56d0;">Total Amount</th>
                     </tr>
@@ -4428,7 +4443,8 @@ window.showTargetCelebration = function() {
                         <!-- Billed To Section -->
                         <div style="background:#f8fafd; padding:20px; border-radius:12px; border:1px solid #c2e7ff; margin-bottom:30px;">
                             <h3 style="margin:0 0 8px 0; font-size:12px; color:#718096; text-transform:uppercase; letter-spacing:1px;">BILLED TO:</h3>
-                            <p style="margin:0; font-size:22px; font-weight:700; color:#1f1f1f;">${bill.name}${bPhoneText}</p>
+                            <p style="margin:0; font-size:22px; font-weight:700; color:#1f1f1f;">${bill.name}</p>
+                            ${bData && bData.phone ? `<p style="margin:4px 0 0 0; font-size:14px; font-weight:600; color:#444746;">Mob: +91 ${bData.phone}</p>` : ''}
                         </div>
 
                         <!-- 4-COLUMN ITEMS TABLE -->
@@ -4461,7 +4477,8 @@ window.showTargetCelebration = function() {
                                 <p style="margin:0 0 4px 0; color:#1f1f1f; font-weight:600; font-size:15px;">Thank you for your business!</p>
                                 <p style="margin:0;">Report generated via Vandana ERP Software</p>
                             </div>
-                            <div style="text-align:right; color:#1f1f1f; font-size:15px; font-weight:700;">
+                            <div style="text-align:right; color:#1f1f1f; font-size:15px; font-weight:700; display:flex; flex-direction:column; align-items:flex-end;">
+                                <div style="font-family: 'Brush Script MT', cursive; font-size: 28px; color: #0a56d0; line-height: 1; margin-bottom: 4px; font-weight: normal;">Vandana Ent.</div>
                                 Authorized Signatory
                             </div>
                         </div>

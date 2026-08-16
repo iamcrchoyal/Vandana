@@ -1962,18 +1962,18 @@
             };
 
             window.deleteCategoryInList = function(id) {
-                if(!confirm("Kya aap sach me is category ko delete / hide karna chahte hain?")) return;
-
-                let catIndex = window.appCategories.findIndex(c => c.id === id);
-                if(catIndex > -1) {
-                    window.appCategories[catIndex].isDeleted = true;
-                    localStorage.setItem('v_categories', JSON.stringify(window.appCategories));
-                    
-                    window.renderCategoryGrid();
-                    window.renderManageCategoriesList();
-                    window.updateCategoryDropdowns();
-                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Category Deleted!");
-                }
+                window.showCustomConfirm("Delete Category?", "क्या आप सच में इस केटेगरी को डिलीट करना चाहते हैं?", function() {
+                    let catIndex = window.appCategories.findIndex(c => c.id === id);
+                    if(catIndex > -1) {
+                        window.appCategories[catIndex].isDeleted = true;
+                        localStorage.setItem('v_categories', JSON.stringify(window.appCategories));
+                        
+                        window.renderCategoryGrid();
+                        window.renderManageCategoriesList();
+                        window.updateCategoryDropdowns();
+                        if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Category Deleted!");
+                    }
+                });
             };
 
             window.updateCategoryDropdowns = function() {
@@ -4134,12 +4134,12 @@
         // ==========================================================================
 // ================= MANUAL LOGOUT =================
         window.manualLogout = function() {
-            if(confirm("क्या आप सच में लॉगआउट करना चाहते हैं?")) {
+            window.showCustomConfirm("Logout Account?", "क्या आप सच में लॉगआउट करना चाहते हैं?", function() {
                 signOut(auth).then(() => {
                     // लॉगआउट होने के बाद पेज रीफ्रेश हो जाएगा और लॉगिन स्क्रीन आ जाएगी
                     window.location.reload(); 
                 }).catch(err => console.error("Logout Error:", err));
-            }
+            });
         }
         // ==================================================
         
@@ -5046,7 +5046,7 @@ window.showTargetCelebration = function() {
 
 	<div id="custom-confirm-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px);">
         <div style="background: white; padding: 24px; border-radius: 20px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-            <div style="width: 55px; height: 55px; background: #fdf2f2; color: var(--danger); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 16px auto;" class="material-symbols-rounded">delete_sweep</div>
+            <div id="confirm-modal-icon-bg" style="width: 55px; height: 55px; background: #fdf2f2; color: var(--danger); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 16px auto;" class="material-symbols-rounded anim-pulse"><span id="confirm-modal-icon">delete_sweep</span></div>
             <h3 style="font-family: 'Product Sans', sans-serif; font-size: 19px; color: var(--text-dark); margin-bottom: 8px;" id="confirm-modal-title">Confirm Delete?</h3>
             <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5;" id="confirm-modal-msg">Are you sure?</p>
             <div style="display: flex; gap: 10px;">
@@ -5057,9 +5057,36 @@ window.showTargetCelebration = function() {
     </div>
 
     <script>
-        // Custom Modal Logic
+        // Phase 3: Smart Custom Modal Logic (Edit/Delete/Logout)
         window.customConfirmCallback = null;
         window.showCustomConfirm = function(title, msg, callback) {
+            let isEdit = title.toLowerCase().includes('edit');
+            let isLogout = title.toLowerCase().includes('logout');
+            
+            let iconBg = document.getElementById('confirm-modal-icon-bg');
+            let iconElem = document.getElementById('confirm-modal-icon');
+            let confirmBtn = document.getElementById('confirm-modal-btn');
+            
+            if (isEdit) {
+                iconBg.style.background = '#e8f0fe';
+                iconBg.style.color = 'var(--primary)';
+                iconElem.innerText = 'edit_document';
+                confirmBtn.style.background = 'var(--primary)';
+                confirmBtn.innerText = 'Yes, Edit';
+            } else if (isLogout) {
+                iconBg.style.background = '#fdf4e5';
+                iconBg.style.color = '#b36b00';
+                iconElem.innerText = 'logout';
+                confirmBtn.style.background = '#b36b00';
+                confirmBtn.innerText = 'Yes, Logout';
+            } else {
+                iconBg.style.background = '#fdf2f2';
+                iconBg.style.color = 'var(--danger)';
+                iconElem.innerText = 'delete_sweep';
+                confirmBtn.style.background = 'var(--danger)';
+                confirmBtn.innerText = 'Yes, Delete';
+            }
+
             document.getElementById('confirm-modal-title').innerText = title;
             document.getElementById('confirm-modal-msg').innerText = msg;
             window.customConfirmCallback = callback;

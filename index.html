@@ -943,9 +943,17 @@
                             <tbody id="cart-rows"><tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted); font-weight:500;">🛒 Cart is empty. Add a product above.</td></tr></tbody>
                         </table>
                     </div>
-                    <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:16px;">
-                        <span style="font-weight:600; font-size:16px; color:var(--primary); font-family: 'Product Sans', sans-serif;">Grand Total:</span>
-                        <span style="font-size:26px; font-weight:700; color:var(--primary); font-family: 'Product Sans', sans-serif;" id="cart-grand-total">₹ 0</span>
+                    <div class="form-panel" style="background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:16px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom: 1px dashed #c2e7ff; padding-bottom: 8px;">
+                            <label style="font-weight:600; font-size:14px; color:var(--text-dark); display:flex; align-items:center; gap:8px; cursor:pointer;">
+                                <input type="checkbox" id="inv-apply-gst" onchange="renderCartUi()" style="width:18px; height:18px; accent-color:var(--primary);"> Apply 5% GST
+                            </label>
+                            <span style="font-size:14px; font-weight:600; color:var(--text-muted);" id="cart-gst-amount">+ ₹ 0 (GST)</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-weight:600; font-size:16px; color:var(--primary); font-family: 'Product Sans', sans-serif;">Grand Total:</span>
+                            <span style="font-size:26px; font-weight:700; color:var(--primary); font-family: 'Product Sans', sans-serif;" id="cart-grand-total">₹ 0</span>
+                        </div>
                     </div>
 
                     <div class="form-panel" style="margin-bottom: 16px; border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
@@ -3344,10 +3352,25 @@
         
         window.deleteCurrentEntry = function() { 
             window.showCustomConfirm("Delete Entry?", "क्या आप इस एंट्री को डिलीट करना चाहते हैं? यह Recycle Bin में चली जाएगी।", function() {
+                // Phase 5: Live Stock Revert on Delete
+                if (currentEntryData.cart && currentEntryData.cart.length > 0) {
+                    currentEntryData.cart.forEach(item => {
+                        let key = item.cat + "_" + item.shade;
+                        let itemRef = ref(db, 'Inventory/' + key);
+                        get(itemRef).then(snap => {
+                            let cur = snap.val() || {cone:0, kg:0};
+                            if(typeof cur === 'number') cur = {cone:cur, kg:0};
+                            let revertedCone = cur.cone + (parseFloat(item.rawCone) || 0);
+                            let revertedKg = cur.kg + (parseFloat(item.rawKg) || 0);
+                            set(itemRef, {cone: revertedCone, kg: revertedKg});
+                        });
+                    });
+                }
+
                 set(ref(db, 'RecycleBin/' + currentEntryData.key), currentEntryData); 
                 remove(ref(db, 'Ledger/' + currentEntryData.key)); 
                 closePage('entry-details-page'); 
-                if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Entry Deleted Successfully! ✅");
+                if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Entry Deleted & Stock Reverted! ✅");
             });
         }
         window.renderRecycleBin = function() { let container = document.getElementById('recycle-list-container'); if(allRecycleData.length === 0) { container.innerHTML = `<div style="text-align:center; padding:40px; color:gray;">Recycle Bin is empty.</div>`; return; } let html = ""; allRecycleData.forEach(entry => { let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB'); html += `<div class="entry-card" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--text-dark); font-weight:800; font-size: 16px;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">${dateStr} | ${entry.details}</div><div style="display:flex; gap:10px;"><button class="btn-submit" style="flex:1; background:#e8f0fe; color:var(--primary); padding:8px; border-radius:12px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="restoreRecycle('${entry.key}')"><span class="material-symbols-rounded" style="font-size:16px;">settings_backup_restore</span> Restore</button><button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger); padding:8px; border-radius:12px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="permanentlyDeleteRecycle('${entry.key}')"><span class="material-symbols-rounded" style="font-size:16px;">delete_forever</span> Delete</button></div></div>`; }); container.innerHTML = html; }
@@ -3735,7 +3758,18 @@
                 </tr>`; 
             }); 
             if(currentCart.length === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted); font-weight:500;">🛒 Cart is empty. Add a product above.</td></tr>`;
-            
+
+// Phase 5: GST Calculation Logic
+                let gstCheckbox = document.getElementById('inv-apply-gst');
+                let gstAmount = 0;
+                if(gstCheckbox && gstCheckbox.checked) {
+                    gstAmount = grandInvoiceTotal * 0.05; // 5% GST calculate
+                    grandInvoiceTotal += gstAmount;       // Total me GST joda gaya
+                }
+                if(document.getElementById('cart-gst-amount')) {
+                    document.getElementById('cart-gst-amount').innerText = `+ ₹ ${gstAmount.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (GST)`;
+                }
+			
             document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`; 
             
             // SHOW/HIDE CART & PAYMENT SECTION
@@ -3772,9 +3806,16 @@
                 
                 let updates = {};
                 let billMap = {}; 
+                let yearCounters = {}; // Phase 5: Track year-wise count
                 
-                invoices.forEach((inv, index) => {
-                    let newBillNo = "VE " + String(index + 1).padStart(2, '0');
+                invoices.forEach((inv) => {
+                    let invYear = new Date(inv.date).getFullYear();
+                    if (!yearCounters[invYear]) yearCounters[invYear] = 0;
+                    yearCounters[invYear]++;
+                    
+                    // Phase 5: Generate proper yearly sequence
+                    let newBillNo = `VE/${invYear}/` + String(yearCounters[invYear]).padStart(3, '0');
+                    
                     if(inv.billNo !== newBillNo) {
                         updates[inv.key + '/billNo'] = newBillNo;
                         let parts = inv.details.split('-');
@@ -3848,10 +3889,6 @@
                 }); 
             }); 
             
-            let maxInv = 0;
-            allLedgerData.forEach(e => { if(e.billNo && e.billNo.startsWith('VE ')) { let num = parseInt(e.billNo.replace('VE ', '')); if(!isNaN(num) && num > maxInv) maxInv = num; } });
-            let tempBillNo = window.editingBillNo || ("VE " + String(maxInv + 1).padStart(2, '0'));
-            
             let invDate = document.getElementById('inv-date').value; 
             if(!invDate) invDate = new Date().toISOString().split('T')[0];
             
@@ -3867,9 +3904,22 @@
                 }
             }
 
-            let breakdownData = { cash: cAmt, online: oAmt, pending: grandInvoiceTotal - totalReceived };
+            // Phase 5: Yearly Sequence Generation (e.g., VE/2026/001)
+            let currentYear = new Date(finalDateTime).getFullYear();
+            let maxInv = 0;
+            allLedgerData.forEach(e => { 
+                if(e.billNo && e.billNo.startsWith(`VE/${currentYear}/`)) { 
+                    let num = parseInt(e.billNo.split('/').pop()); 
+                    if(!isNaN(num) && num > maxInv) maxInv = num; 
+                } 
+            });
+            let tempBillNo = window.editingBillNo || (`VE/${currentYear}/` + String(maxInv + 1).padStart(3, '0'));
 
-            // Phase 4: Create correct details string
+            // Phase 5: GST Save to Database
+            let isGstApplied = document.getElementById('inv-apply-gst') ? document.getElementById('inv-apply-gst').checked : false;
+            let breakdownData = { cash: cAmt, online: oAmt, pending: grandInvoiceTotal - totalReceived, isGst: isGstApplied };
+
+            // Phase 4 & 5: Exact string mapping
             window.posTotalQtyStr = "";
             if(totalCones > 0 && totalKg > 0) window.posTotalQtyStr = `${totalCones} Cone, ${totalKg} Kg`;
             else if(totalKg > 0) window.posTotalQtyStr = `${totalKg} Kg`;
@@ -4101,9 +4151,15 @@
             }
             
             // 3. ग्रैंड टोटल अमाउंट और Payment Breakdown
-            document.getElementById('pdf-total').innerText = "₹ " + parseFloat(currentEntryData.amount).toLocaleString('en-IN');
-            
-            if(currentEntryData.breakdown && document.getElementById('pdf-payment-breakdown')) {
+            // Phase 5: GST Breakdown in PDF
+            let finalAmt = parseFloat(currentEntryData.amount) || 0;
+            if(currentEntryData.breakdown && currentEntryData.breakdown.isGst) {
+                let baseAmt = finalAmt / 1.05;
+                let gstAmt = finalAmt - baseAmt;
+                document.getElementById('pdf-total').innerHTML = `<div style="font-size:14px; color:var(--text-muted); font-weight:600; margin-bottom:4px; text-transform:none; letter-spacing:0;">Base: ₹${baseAmt.toFixed(2)} + GST: ₹${gstAmt.toFixed(2)}</div>₹ ${finalAmt.toLocaleString('en-IN')}`;
+            } else {
+                document.getElementById('pdf-total').innerText = "₹ " + finalAmt.toLocaleString('en-IN');
+            }
                 document.getElementById('pdf-payment-breakdown').style.display = 'flex';
                 document.getElementById('pdf-paid-cash').innerText = "₹ " + (currentEntryData.breakdown.cash || 0).toLocaleString('en-IN');
                 document.getElementById('pdf-paid-online').innerText = "₹ " + (currentEntryData.breakdown.online || 0).toLocaleString('en-IN');

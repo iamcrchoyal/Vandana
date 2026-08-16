@@ -332,15 +332,6 @@
         </div>
     </div>
 
-    <!-- ✂️ CROPPER MODAL -->
-    <div id="crop-modal" class="crop-modal-overlay">
-        <div class="crop-area"><img id="crop-image" src=""></div>
-        <div class="crop-actions">
-            <button class="btn-outline" style="flex:1; border-color:white; color:white; background:transparent;" onclick="cancelCrop()">Cancel</button>
-            <button class="btn-submit" style="flex:1; background:var(--primary);" onclick="applyCrop()">Crop & Save</button>
-        </div>
-    </div>
-
     <!-- ✂️ CUST CROPPER MODAL -->
     <div id="cust-crop-modal" class="crop-modal-overlay">
         <div class="crop-area"><img id="cust-crop-image" src=""></div>
@@ -349,7 +340,25 @@
             <button class="btn-submit" style="flex:1; background:var(--primary);" onclick="applyCustCrop()">Crop & Save</button>
         </div>
     </div>
-
+       <div id="product-search-modal" class="report-modal-overlay" style="z-index:99999;">
+        <div class="report-modal-box" style="width:90%; max-width:400px; padding:24px; background:#f4f7fc; border-radius:24px; box-shadow:0 10px 40px rgba(0,0,0,0.1);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <h3 style="font-family:'Product Sans', sans-serif; font-size:18px; margin:0; color:var(--primary-dark); display:flex; align-items:center; gap:6px;"><span class="material-symbols-rounded">manage_search</span> Search Product</h3>
+                <span class="material-symbols-rounded" style="cursor:pointer; color:var(--danger); background:#fdf2f2; border-radius:50%; padding:4px;" onclick="closeProductSearchModal()">close</span>
+            </div>
+            <div class="search-bar-container" style="margin:0 0 16px 0; background:white; border:2px solid var(--primary); box-shadow:0 4px 10px rgba(10,86,208,0.1);">
+                <span class="material-symbols-rounded" style="font-size:22px; color:var(--primary);">search</span>
+                <input type="text" id="modal-product-search" placeholder="Search Shade, Number or Colour..." onkeyup="filterProductSearch()" style="font-size:15px; font-weight:500;">
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:0 12px 8px 12px; font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
+                <span>Details</span>
+                <span>Live Stock</span>
+            </div>
+            <div id="modal-product-list" style="max-height:280px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding-right:4px;">
+                </div>
+        </div>
+    </div>
+	
     <!-- 📊 REPORTS MODAL -->
     <div id="report-modal" class="report-modal-overlay">
         <div class="report-modal-box">
@@ -917,16 +926,25 @@
                 <div id="pos-add-product-section" style="display:none;">
                     <div class="form-panel" style="border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
                         <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">📦 Add Product</label>
-                        <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;" onchange="updatePosShades()">
-                            <option value="">Select Category</option>
-                            <option value="Thread">Thread</option><option value="Zari">Zari</option><option value="Nylon">Nylon</option>
-                            <option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>
-                        </select>
-                        <select class="form-control" id="inv-shade" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;"><option value="">Select Category First</option></select>
-                        <div class="input-btn-group" id="pos-dynamic-inputs" style="margin-bottom: 16px;">
-                            <input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px;">
-                            <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">
+                    
+                    <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd; font-weight:600;" onchange="updatePosShades()">
+                        <option value="">Select Category</option>
+                        <option value="Thread">Thread</option><option value="Cotton">Cotton</option><option value="Zari">Zari</option>
+                        <option value="Nylon">Nylon</option><option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>
+                    </select>
+
+                    <div style="display:flex; gap:10px; margin-bottom:12px; align-items:center;">
+                        <div style="position:relative; flex:1;">
+                            <input type="text" class="form-control" id="inv-shade" readonly placeholder="Tap to select item..." style="border-radius:12px; border:1px solid #c2e7ff; background:white; cursor:pointer; font-weight:600; color:var(--text-dark);" onclick="openProductSearchModal()">
+                            <span class="material-symbols-rounded" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--primary); pointer-events:none;">search</span>
                         </div>
+                        <div id="live-stock-badge" style="display:none; padding:12px 14px; background:#e6f4ea; color:var(--success); border-radius:12px; font-weight:800; font-size:13px; white-space:nowrap; border:1px solid #cce8d6; box-shadow:0 2px 4px rgba(0,0,0,0.02);">🟢 0</div>
+                    </div>
+
+                    <div class="input-btn-group" id="pos-dynamic-inputs" style="margin-bottom: 16px;">
+                        <input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px;">
+                        <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">
+                    </div>
                         <button class="btn-submit" style="background:linear-gradient(135deg, #0a56d0 0%, #0842a0 100%); display:flex; align-items:center; justify-content:center; gap:8px; border-radius:16px; font-size:15px; box-shadow:0 4px 12px rgba(10,86,208,0.25); padding:14px;" onclick="addCartItem()"><span class="material-symbols-rounded" style="font-size:22px;">add_shopping_cart</span> Add Product</button>
                     </div>
                 </div>
@@ -3627,34 +3645,123 @@
             }
         }
 
+        // ================= PROFESSIONAL SEARCH MODAL LOGIC =================
         window.updatePosShades = function() { 
             let cat = document.getElementById('inv-cat').value; 
-            let shadeSelect = document.getElementById('inv-shade'); 
+            let shadeInput = document.getElementById('inv-shade'); 
             let qtyGroup = document.getElementById('pos-dynamic-inputs');
+            let stockBadge = document.getElementById('live-stock-badge');
             
-            shadeSelect.innerHTML = '<option value="">Select Item / Type</option>'; 
-            if(!cat) return; 
+            shadeInput.value = ''; 
+            stockBadge.style.display = 'none'; // Category badalte hi stock badge chhip jayega
 
-            // Dynamic Inputs Swap
-            if(cat === 'Thread' || cat === 'Zari') {
-                qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px;"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">`;
-            } else {
-                qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px;"><input type="number" class="form-control" id="inv-kg" placeholder="KG" style="border-radius:12px;"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">`;
+            if(!cat) {
+                shadeInput.placeholder = 'Select Category First';
+                return; 
             }
+
+            // Unit Logic (Cone vs Kg)
+            if(cat === 'Thread' || cat === 'Cotton' || cat === 'Zari') {
+                shadeInput.placeholder = 'Tap to search Number / Colour...';
+                qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px; font-weight:600;"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px; font-weight:600;">`;
+            } else {
+                shadeInput.placeholder = 'Tap to search Kg / Colour...';
+                qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-kg" placeholder="KG" style="border-radius:12px; font-weight:600;"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px; font-weight:600;">`;
+            }
+        }
+
+        window.openProductSearchModal = function() {
+            let cat = document.getElementById('inv-cat').value; 
+            if(!cat) {
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Please select Category first!");
+                return;
+            }
+            
+            let searchInput = document.getElementById('modal-product-search');
+            searchInput.value = '';
+            
+            let listContainer = document.getElementById('modal-product-list');
+            listContainer.innerHTML = '';
+            
+            let itemsFound = false;
 
             for (let key in smartInventory) { 
                 let parts = key.split("_"); 
                 if(parts[0] === cat) { 
                     let data = smartInventory[key];
-                    let coneQty = typeof data === 'object' ? data.cone : data;
-                    let kgQty = typeof data === 'object' ? data.kg : 0;
-                    if(coneQty > 0) { 
-                        let dis = kgQty > 0 ? `${coneQty} Cone, ${kgQty} KG` : `${coneQty} Cone`;
-                        shadeSelect.innerHTML += `<option value="${parts[1]}">${parts[1]} (${dis} Left)</option>`; 
+                    let coneQty = typeof data === 'object' ? (parseFloat(data.cone) || 0) : (parseFloat(data) || 0);
+                    let kgQty = typeof data === 'object' ? (parseFloat(data.kg) || 0) : 0;
+                    
+                    if(coneQty > 0 || kgQty > 0) { 
+                        itemsFound = true;
+                        let isKgItem = (cat === 'Cording' || cat === 'Nylon' || cat === 'Bobbin');
+                        let stockVal = isKgItem ? `${kgQty} Kg` : `${coneQty} Cone`;
+                        
+                        // Green if stock > 5, Orange if Low Stock
+                        let stockColor = (isKgItem ? kgQty : coneQty) > 5 ? 'var(--success)' : '#d97706';
+                        let stockBg = (isKgItem ? kgQty : coneQty) > 5 ? '#e6f4ea' : '#fef3c7';
+                        let icon = (isKgItem ? kgQty : coneQty) > 5 ? '🟢' : '🟠';
+
+                        listContainer.innerHTML += `
+                            <div class="search-item-row" onclick="selectProductSearchItem('${parts[1]}', '${icon} ${stockVal}')" style="background:white; padding:14px 16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; border:1px solid #e0e2e0; box-shadow:0 2px 4px rgba(0,0,0,0.02); transition:0.2s;">
+                                <span style="font-weight:700; color:var(--text-dark); font-size:15px; font-family:'Product Sans', sans-serif;">${parts[1]}</span>
+                                <span style="font-size:13px; color:${stockColor}; font-weight:700; background:${stockBg}; padding:6px 10px; border-radius:8px;">${icon} ${stockVal}</span>
+                            </div>
+                        `; 
                     }
                 } 
-            } 
+            }
+
+            if(!itemsFound) {
+                listContainer.innerHTML = '<div style="text-align:center; padding:30px 20px; color:var(--danger); font-weight:600; background:#fdf2f2; border-radius:12px;">🔴 Out of Stock in this Category.</div>';
+            }
+
+            document.getElementById('product-search-modal').style.display = 'flex';
+            
+            // Auto Focus: Modal khulte hi keyboard aa jayega
+            setTimeout(() => { searchInput.focus(); }, 100);
         }
+
+        window.closeProductSearchModal = function() {
+            document.getElementById('product-search-modal').style.display = 'none';
+        }
+
+        window.filterProductSearch = function() {
+            let filter = document.getElementById('modal-product-search').value.toLowerCase().replace(/\s+/g, '');
+            let rows = document.querySelectorAll('#modal-product-list .search-item-row');
+            rows.forEach(row => {
+                let text = row.innerText.toLowerCase().replace(/\s+/g, '');
+                row.style.display = text.includes(filter) ? 'flex' : 'none';
+            });
+        }
+
+        window.selectProductSearchItem = function(shade, stockText) {
+            // Set Input Value
+            document.getElementById('inv-shade').value = shade;
+            
+            // Show Live Inline Badge
+            let badge = document.getElementById('live-stock-badge');
+            badge.innerText = stockText;
+            
+            // Set Badge Color Dynamically
+            if(stockText.includes('🟠')) {
+                badge.style.background = '#fef3c7'; badge.style.color = '#d97706'; badge.style.borderColor = '#fde68a';
+            } else {
+                badge.style.background = '#e6f4ea'; badge.style.color = 'var(--success)'; badge.style.borderColor = '#cce8d6';
+            }
+            badge.style.display = 'block';
+
+            closeProductSearchModal();
+
+            // Auto-Jump: Cursor sidha Qty me chala jayega
+            setTimeout(() => {
+                let coneInput = document.getElementById('inv-cone');
+                let kgInput = document.getElementById('inv-kg');
+                if(coneInput) coneInput.focus();
+                else if(kgInput) kgInput.focus();
+            }, 100);
+        }
+        // ===================================================================
 
         window.addCartItem = function() { 
             const cat = document.getElementById('inv-cat').value; 

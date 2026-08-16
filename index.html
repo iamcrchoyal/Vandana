@@ -332,6 +332,15 @@
         </div>
     </div>
 
+    <!-- ✂️ CROPPER MODAL -->
+    <div id="crop-modal" class="crop-modal-overlay">
+        <div class="crop-area"><img id="crop-image" src=""></div>
+        <div class="crop-actions">
+            <button class="btn-outline" style="flex:1; border-color:white; color:white; background:transparent;" onclick="cancelCrop()">Cancel</button>
+            <button class="btn-submit" style="flex:1; background:var(--primary);" onclick="applyCrop()">Crop & Save</button>
+        </div>
+    </div>
+
     <!-- ✂️ CUST CROPPER MODAL -->
     <div id="cust-crop-modal" class="crop-modal-overlay">
         <div class="crop-area"><img id="cust-crop-image" src=""></div>
@@ -341,21 +350,6 @@
         </div>
     </div>
 
-<div id="product-search-modal" class="report-modal-overlay" style="z-index:99999;">
-        <div class="report-modal-box" style="width:90%; max-width:400px; padding:20px; background:#f0f4f9;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                <h3 style="font-family:'Product Sans', sans-serif; font-size:18px; margin:0; color:var(--primary-dark);">Search Product</h3>
-                <span class="material-symbols-rounded" style="cursor:pointer; color:var(--danger);" onclick="closeProductSearchModal()">close</span>
-            </div>
-            <div class="search-bar-container" style="margin:0 0 16px 0; background:white;">
-                <span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span>
-                <input type="text" id="modal-product-search" placeholder="Search Number, Colour or Kg..." onkeyup="filterProductSearch()">
-            </div>
-            <div id="modal-product-list" style="max-height:300px; overflow-y:auto; border-radius:12px; display:flex; flex-direction:column; gap:8px;">
-                </div>
-        </div>
-    </div>
-	
     <!-- 📊 REPORTS MODAL -->
     <div id="report-modal" class="report-modal-overlay">
         <div class="report-modal-box">
@@ -921,17 +915,14 @@
                         <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">📦 Add Product</label>
                         <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;" onchange="updatePosShades()">
                             <option value="">Select Category</option>
-                            <option value="Thread">Thread</option><option value="Cotton">Cotton</option><option value="Zari">Zari</option>
-                            <option value="Nylon">Nylon</option><option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>
+                            <option value="Thread">Thread</option><option value="Zari">Zari</option><option value="Nylon">Nylon</option>
+                            <option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>
                         </select>
-                        <div style="position:relative; margin-bottom:12px;">
-                            <input type="text" class="form-control" id="inv-shade" readonly placeholder="Select Category First" style="border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd; cursor:pointer;" onclick="openProductSearchModal()">
-                            <span class="material-symbols-rounded" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--primary); pointer-events:none;">search</span>
-                        </div>
+                        <select class="form-control" id="inv-shade" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd;"><option value="">Select Category First</option></select>
                         <div class="input-btn-group" id="pos-dynamic-inputs" style="margin-bottom: 16px;">
                             <input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px;">
                             <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">
-                        </div>>
+                        </div>
                         <button class="btn-submit" style="background:linear-gradient(135deg, #0a56d0 0%, #0842a0 100%); display:flex; align-items:center; justify-content:center; gap:8px; border-radius:16px; font-size:15px; box-shadow:0 4px 12px rgba(10,86,208,0.25); padding:14px;" onclick="addCartItem()"><span class="material-symbols-rounded" style="font-size:22px;">add_shopping_cart</span> Add Product</button>
                     </div>
                 </div>
@@ -943,17 +934,9 @@
                             <tbody id="cart-rows"><tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted); font-weight:500;">🛒 Cart is empty. Add a product above.</td></tr></tbody>
                         </table>
                     </div>
-                    <div class="form-panel" style="background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:16px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom: 1px dashed #c2e7ff; padding-bottom: 8px;">
-                            <label style="font-weight:600; font-size:14px; color:var(--text-dark); display:flex; align-items:center; gap:8px; cursor:pointer;">
-                                <input type="checkbox" id="inv-apply-gst" onchange="renderCartUi()" style="width:18px; height:18px; accent-color:var(--primary);"> Apply 5% GST
-                            </label>
-                            <span style="font-size:14px; font-weight:600; color:var(--text-muted);" id="cart-gst-amount">+ ₹ 0 (GST)</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span style="font-weight:600; font-size:16px; color:var(--primary); font-family: 'Product Sans', sans-serif;">Grand Total:</span>
-                            <span style="font-size:26px; font-weight:700; color:var(--primary); font-family: 'Product Sans', sans-serif;" id="cart-grand-total">₹ 0</span>
-                        </div>
+                    <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:16px;">
+                        <span style="font-weight:600; font-size:16px; color:var(--primary); font-family: 'Product Sans', sans-serif;">Grand Total:</span>
+                        <span style="font-size:26px; font-weight:700; color:var(--primary); font-family: 'Product Sans', sans-serif;" id="cart-grand-total">₹ 0</span>
                     </div>
 
                     <div class="form-panel" style="margin-bottom: 16px; border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
@@ -3352,25 +3335,10 @@
         
         window.deleteCurrentEntry = function() { 
             window.showCustomConfirm("Delete Entry?", "क्या आप इस एंट्री को डिलीट करना चाहते हैं? यह Recycle Bin में चली जाएगी।", function() {
-                // Phase 5: Live Stock Revert on Delete
-                if (currentEntryData.cart && currentEntryData.cart.length > 0) {
-                    currentEntryData.cart.forEach(item => {
-                        let key = item.cat + "_" + item.shade;
-                        let itemRef = ref(db, 'Inventory/' + key);
-                        get(itemRef).then(snap => {
-                            let cur = snap.val() || {cone:0, kg:0};
-                            if(typeof cur === 'number') cur = {cone:cur, kg:0};
-                            let revertedCone = cur.cone + (parseFloat(item.rawCone) || 0);
-                            let revertedKg = cur.kg + (parseFloat(item.rawKg) || 0);
-                            set(itemRef, {cone: revertedCone, kg: revertedKg});
-                        });
-                    });
-                }
-
                 set(ref(db, 'RecycleBin/' + currentEntryData.key), currentEntryData); 
                 remove(ref(db, 'Ledger/' + currentEntryData.key)); 
                 closePage('entry-details-page'); 
-                if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Entry Deleted & Stock Reverted! ✅");
+                if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Entry Deleted Successfully! ✅");
             });
         }
         window.renderRecycleBin = function() { let container = document.getElementById('recycle-list-container'); if(allRecycleData.length === 0) { container.innerHTML = `<div style="text-align:center; padding:40px; color:gray;">Recycle Bin is empty.</div>`; return; } let html = ""; allRecycleData.forEach(entry => { let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB'); html += `<div class="entry-card" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--text-dark); font-weight:800; font-size: 16px;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">${dateStr} | ${entry.details}</div><div style="display:flex; gap:10px;"><button class="btn-submit" style="flex:1; background:#e8f0fe; color:var(--primary); padding:8px; border-radius:12px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="restoreRecycle('${entry.key}')"><span class="material-symbols-rounded" style="font-size:16px;">settings_backup_restore</span> Restore</button><button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger); padding:8px; border-radius:12px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="permanentlyDeleteRecycle('${entry.key}')"><span class="material-symbols-rounded" style="font-size:16px;">delete_forever</span> Delete</button></div></div>`; }); container.innerHTML = html; }
@@ -3593,109 +3561,55 @@
             }
         }
 
-        // Phase 4: Smart Popup Logic & Product Unit Logic
         window.updatePosShades = function() { 
             let cat = document.getElementById('inv-cat').value; 
-            let shadeInput = document.getElementById('inv-shade'); 
+            let shadeSelect = document.getElementById('inv-shade'); 
             let qtyGroup = document.getElementById('pos-dynamic-inputs');
             
-            shadeInput.value = ''; 
-            if(!cat) {
-                shadeInput.placeholder = 'Select Category First';
-                return; 
-            }
+            shadeSelect.innerHTML = '<option value="">Select Item / Type</option>'; 
+            if(!cat) return; 
 
-            if(cat === 'Thread' || cat === 'Cotton' || cat === 'Zari') {
-                shadeInput.placeholder = 'Tap to search Number / Colour';
+            // Dynamic Inputs Swap
+            if(cat === 'Thread' || cat === 'Zari') {
                 qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px;"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">`;
             } else {
-                shadeInput.placeholder = 'Tap to search Kg / Colour';
-                qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-kg" placeholder="KG" style="border-radius:12px;"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">`;
+                qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px;"><input type="number" class="form-control" id="inv-kg" placeholder="KG" style="border-radius:12px;"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">`;
             }
-        }
 
-        window.openProductSearchModal = function() {
-            let cat = document.getElementById('inv-cat').value; 
-            if(!cat) return alert("Please select a Category first!");
-            
-            document.getElementById('modal-product-search').value = '';
-            let listContainer = document.getElementById('modal-product-list');
-            listContainer.innerHTML = '';
-            
             for (let key in smartInventory) { 
                 let parts = key.split("_"); 
                 if(parts[0] === cat) { 
                     let data = smartInventory[key];
                     let coneQty = typeof data === 'object' ? data.cone : data;
                     let kgQty = typeof data === 'object' ? data.kg : 0;
-                    
-                    if(coneQty > 0 || kgQty > 0) { 
-                        let dis = (cat === 'Cording' || cat === 'Nylon' || cat === 'Bobbin') ? `${kgQty} Kg Left` : `${coneQty} Cone Left`;
-                        listContainer.innerHTML += `
-                            <div class="search-item-row" onclick="selectProductSearchItem('${parts[1]}')" style="background:white; padding:12px 16px; border-radius:12px; display:flex; justify-content:space-between; cursor:pointer; border:1px solid var(--border); transition:0.2s;">
-                                <span style="font-weight:700; color:var(--text-dark);">${parts[1]}</span>
-                                <span style="font-size:12px; color:var(--primary); font-weight:600; background:#e8f0fe; padding:4px 8px; border-radius:6px;">${dis}</span>
-                            </div>
-                        `; 
+                    if(coneQty > 0) { 
+                        let dis = kgQty > 0 ? `${coneQty} Cone, ${kgQty} KG` : `${coneQty} Cone`;
+                        shadeSelect.innerHTML += `<option value="${parts[1]}">${parts[1]} (${dis} Left)</option>`; 
                     }
                 } 
-            }
-            if(listContainer.innerHTML === '') listContainer.innerHTML = '<div style="text-align:center; padding:20px; color:gray;">No stock available in this category.</div>';
-            document.getElementById('product-search-modal').style.display = 'flex';
-        }
-
-        window.closeProductSearchModal = function() {
-            document.getElementById('product-search-modal').style.display = 'none';
-        }
-
-        window.selectProductSearchItem = function(shade) {
-            document.getElementById('inv-shade').value = shade;
-            closeProductSearchModal();
-        }
-
-        window.filterProductSearch = function() {
-            let filter = document.getElementById('modal-product-search').value.toUpperCase();
-            let rows = document.querySelectorAll('#modal-product-list .search-item-row');
-            rows.forEach(row => {
-                let text = row.innerText.toUpperCase();
-                row.style.display = text.includes(filter) ? '' : 'none';
-            });
+            } 
         }
 
         window.addCartItem = function() { 
             const cat = document.getElementById('inv-cat').value; 
             const shade = document.getElementById('inv-shade').value; 
-            
-            let coneElem = document.getElementById('inv-cone');
-            let kgElem = document.getElementById('inv-kg');
-            let cone = coneElem ? (parseFloat(coneElem.value) || 0) : 0;
-            let kg = kgElem ? (parseFloat(kgElem.value) || 0) : 0;
+            let cone = parseFloat(document.getElementById('inv-cone').value) || 0;
             let rate = parseFloat(document.getElementById('inv-rate').value) || 0;
+            let kg = document.getElementById('inv-kg') ? (parseFloat(document.getElementById('inv-kg').value) || 0) : 0;
 
             if (!cat || !shade) return alert("Select Category and Item first!"); 
-            
-            let isKgItem = (cat === 'Cording' || cat === 'Nylon' || cat === 'Bobbin');
-            
-            if (isKgItem) {
-                if (kg <= 0 || rate <= 0) return alert("Enter valid KG & Rate!"); 
-            } else {
-                if (cone <= 0 || rate <= 0) return alert("Enter valid Cone & Rate!"); 
-            }
+            if (cone <= 0 || rate <= 0) return alert("Enter valid Cone & Rate!"); 
 
             let key = cat + "_" + shade; 
             let cur = smartInventory[key] || { cone: 0, kg: 0 }; 
             if(typeof cur === 'number') cur = { cone: cur, kg: 0 };
 
-            if(!isKgItem && cone > cur.cone) { 
+            if(cone > cur.cone) { 
                 alert(`OUT OF STOCK! You only have ${cur.cone} Cone left.`); return; 
             } 
-            if(isKgItem && kg > cur.kg) { 
-                alert(`OUT OF STOCK! You only have ${cur.kg} KG left.`); return; 
-            }
 
-            // Phase 4: Exact Qty assignment based on item type
-            let displayQty = isKgItem ? `${kg} Kg` : `${cone} Cone`;
-            let itemTotal = isKgItem ? (kg * rate) : (cone * rate); 
+            let displayQty = kg > 0 ? `${cone} Cone, ${kg} KG` : `${cone} Cone`;
+            let itemTotal = kg > 0 ? (kg * rate) : (cone * rate); // If KG is provided, rate applies to KG, else Cone
 
             currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty: displayQty, rawCone: cone, rawKg: kg, rate: rate, itemTotal: itemTotal }); 
             renderCartUi(); 
@@ -3736,16 +3650,10 @@
             let tbody = document.getElementById('cart-rows'); 
             tbody.innerHTML = ''; 
             grandInvoiceTotal = 0; 
-            
-            // Phase 4: Dynamic Unit Count
-            let totalCones = 0;
-            let totalKg = 0;
-            
+            invoiceBoxCount = 0; 
             currentCart.forEach((item, index) => { 
                 grandInvoiceTotal += item.itemTotal; 
-                totalCones += (item.rawCone || 0);
-                totalKg += (item.rawKg || 0);
-                
+                invoiceBoxCount += item.qty; 
                 tbody.innerHTML += `<tr>
                     <td style="font-weight:600; color:var(--text-dark); font-size:13px;">${item.title}</td>
                     <td style="text-align:center; font-size:13px; font-weight:600;">${item.qty}</td>
@@ -3758,18 +3666,7 @@
                 </tr>`; 
             }); 
             if(currentCart.length === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted); font-weight:500;">🛒 Cart is empty. Add a product above.</td></tr>`;
-
-// Phase 5: GST Calculation Logic
-                let gstCheckbox = document.getElementById('inv-apply-gst');
-                let gstAmount = 0;
-                if(gstCheckbox && gstCheckbox.checked) {
-                    gstAmount = grandInvoiceTotal * 0.05; // 5% GST calculate
-                    grandInvoiceTotal += gstAmount;       // Total me GST joda gaya
-                }
-                if(document.getElementById('cart-gst-amount')) {
-                    document.getElementById('cart-gst-amount').innerText = `+ ₹ ${gstAmount.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (GST)`;
-                }
-			
+            
             document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`; 
             
             // SHOW/HIDE CART & PAYMENT SECTION
@@ -3806,16 +3703,9 @@
                 
                 let updates = {};
                 let billMap = {}; 
-                let yearCounters = {}; // Phase 5: Track year-wise count
                 
-                invoices.forEach((inv) => {
-                    let invYear = new Date(inv.date).getFullYear();
-                    if (!yearCounters[invYear]) yearCounters[invYear] = 0;
-                    yearCounters[invYear]++;
-                    
-                    // Phase 5: Generate proper yearly sequence
-                    let newBillNo = `VE/${invYear}/` + String(yearCounters[invYear]).padStart(3, '0');
-                    
+                invoices.forEach((inv, index) => {
+                    let newBillNo = "VE " + String(index + 1).padStart(2, '0');
                     if(inv.billNo !== newBillNo) {
                         updates[inv.key + '/billNo'] = newBillNo;
                         let parts = inv.details.split('-');
@@ -3889,6 +3779,10 @@
                 }); 
             }); 
             
+            let maxInv = 0;
+            allLedgerData.forEach(e => { if(e.billNo && e.billNo.startsWith('VE ')) { let num = parseInt(e.billNo.replace('VE ', '')); if(!isNaN(num) && num > maxInv) maxInv = num; } });
+            let tempBillNo = window.editingBillNo || ("VE " + String(maxInv + 1).padStart(2, '0'));
+            
             let invDate = document.getElementById('inv-date').value; 
             if(!invDate) invDate = new Date().toISOString().split('T')[0];
             
@@ -3904,30 +3798,11 @@
                 }
             }
 
-            // Phase 5: Yearly Sequence Generation (e.g., VE/2026/001)
-            let currentYear = new Date(finalDateTime).getFullYear();
-            let maxInv = 0;
-            allLedgerData.forEach(e => { 
-                if(e.billNo && e.billNo.startsWith(`VE/${currentYear}/`)) { 
-                    let num = parseInt(e.billNo.split('/').pop()); 
-                    if(!isNaN(num) && num > maxInv) maxInv = num; 
-                } 
-            });
-            let tempBillNo = window.editingBillNo || (`VE/${currentYear}/` + String(maxInv + 1).padStart(3, '0'));
-
-            // Phase 5: GST Save to Database
-            let isGstApplied = document.getElementById('inv-apply-gst') ? document.getElementById('inv-apply-gst').checked : false;
-            let breakdownData = { cash: cAmt, online: oAmt, pending: grandInvoiceTotal - totalReceived, isGst: isGstApplied };
-
-            // Phase 4 & 5: Exact string mapping
-            window.posTotalQtyStr = "";
-            if(totalCones > 0 && totalKg > 0) window.posTotalQtyStr = `${totalCones} Cone, ${totalKg} Kg`;
-            else if(totalKg > 0) window.posTotalQtyStr = `${totalKg} Kg`;
-            else window.posTotalQtyStr = `${totalCones} Cone`;
+            let breakdownData = { cash: cAmt, online: oAmt, pending: grandInvoiceTotal - totalReceived };
 
             let newEntry = { 
                 date: finalDateTime, name: partyName, type: "Gave", amount: grandInvoiceTotal, 
-                details: `Invoice #${tempBillNo} - ${window.posTotalQtyStr}`, cart: currentCart, 
+                details: `Invoice #${tempBillNo} - ${invoiceBoxCount} Box`, cart: currentCart, 
                 billNo: tempBillNo, breakdown: breakdownData 
             };
             
@@ -4151,15 +4026,9 @@
             }
             
             // 3. ग्रैंड टोटल अमाउंट और Payment Breakdown
-            // Phase 5: GST Breakdown in PDF
-            let finalAmt = parseFloat(currentEntryData.amount) || 0;
-            if(currentEntryData.breakdown && currentEntryData.breakdown.isGst) {
-                let baseAmt = finalAmt / 1.05;
-                let gstAmt = finalAmt - baseAmt;
-                document.getElementById('pdf-total').innerHTML = `<div style="font-size:14px; color:var(--text-muted); font-weight:600; margin-bottom:4px; text-transform:none; letter-spacing:0;">Base: ₹${baseAmt.toFixed(2)} + GST: ₹${gstAmt.toFixed(2)}</div>₹ ${finalAmt.toLocaleString('en-IN')}`;
-            } else {
-                document.getElementById('pdf-total').innerText = "₹ " + finalAmt.toLocaleString('en-IN');
-            }
+            document.getElementById('pdf-total').innerText = "₹ " + parseFloat(currentEntryData.amount).toLocaleString('en-IN');
+            
+            if(currentEntryData.breakdown && document.getElementById('pdf-payment-breakdown')) {
                 document.getElementById('pdf-payment-breakdown').style.display = 'flex';
                 document.getElementById('pdf-paid-cash').innerText = "₹ " + (currentEntryData.breakdown.cash || 0).toLocaleString('en-IN');
                 document.getElementById('pdf-paid-online').innerText = "₹ " + (currentEntryData.breakdown.online || 0).toLocaleString('en-IN');

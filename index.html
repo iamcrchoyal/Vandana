@@ -902,11 +902,15 @@
                         <input type="date" class="form-control" id="inv-date" style="margin-bottom:16px; font-family:'Product Sans', sans-serif;">
                         
                         <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Customer Details</label>
-                        <div class="input-btn-group" style="margin-bottom:12px;">
-                            <input type="text" id="inv-party" class="form-control" list="pos-customers-dl" placeholder="Enter Customer Name" onkeyup="checkPosStep1()" onchange="checkPosStep1()">
+                        <div class="input-btn-group" style="margin-bottom:12px; position:relative;">
+                            <input type="text" id="inv-party" class="form-control" autocomplete="off" placeholder="Enter Customer Name" onkeyup="handleCustomerSearch('name')" onfocus="handleCustomerSearch('name')">
                             <button class="action-btn material-symbols-rounded" onclick="openPhonebook('inv-party', 'inv-phone'); setTimeout(checkPosStep1, 1000);" style="width:48px; border-radius:8px; flex-shrink:0;">contacts</button>
+                            <div id="name-suggestion-box" style="display:none; position:absolute; top:100%; left:0; width:calc(100% - 58px); background:white; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.15); z-index:9999; max-height:220px; overflow-y:auto;"></div>
                         </div>
-                        <input type="tel" class="form-control" id="inv-phone" placeholder="Mobile Number" onkeyup="checkPosStep1()" onchange="checkPosStep1()">
+                        <div style="position:relative;">
+                            <input type="tel" class="form-control" id="inv-phone" autocomplete="off" placeholder="Mobile Number" onkeyup="handleCustomerSearch('phone')" onfocus="handleCustomerSearch('phone')">
+                            <div id="phone-suggestion-box" style="display:none; position:absolute; top:100%; left:0; width:100%; background:white; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.15); z-index:9999; max-height:220px; overflow-y:auto;"></div>
+                        </div>
                     </div>
                 </div>
                 
@@ -2198,23 +2202,85 @@
             } catch (error) {}
             // ===============================================================
 
-            // 🌟 SMART CUSTOMER AUTOCOMPLETE (Name to Number & Number to Name)
-            document.getElementById('inv-party').addEventListener('input', function(e) { 
-                let val = e.target.value.trim().toLowerCase(); 
-                let cust = globalCustomers.find(c => c.name.toLowerCase() === val); 
-                if(cust) { 
-                    e.target.value = cust.name; // Capital/Small automatic sahi ho jayega
-                    if(cust.phone) document.getElementById('inv-phone').value = cust.phone; 
-                    if(typeof checkPosStep1 === 'function') checkPosStep1(); // Automatic Add Product section show karega
-                } 
-            });
-            document.getElementById('inv-phone').addEventListener('input', function(e) { 
-                let val = e.target.value.trim(); 
-                let cust = globalCustomers.find(c => c.phone === val); 
-                if(cust) { 
-                    document.getElementById('inv-party').value = cust.name; // Number dalte hi Name automatic aa jayega
-                    if(typeof checkPosStep1 === 'function') checkPosStep1(); // Automatic Add Product section show karega
-                } 
+            // 🌟 ADVANCED AI CUSTOMER AUTOCOMPLETE (Two-Way & Typo Checker)
+            function fuzzyMatch(pattern, str) {
+                // Typo Checker: Agar spelling thodi aage-pichhe bhi ho, toh samajh jayega
+                pattern = '.*' + pattern.toLowerCase().split('').join('.*') + '.*';
+                return new RegExp(pattern).test(str.toLowerCase());
+            }
+
+            window.handleCustomerSearch = function(type) {
+                let inputVal = type === 'name' ? document.getElementById('inv-party').value.trim() : document.getElementById('inv-phone').value.trim();
+                let box = type === 'name' ? document.getElementById('name-suggestion-box') : document.getElementById('phone-suggestion-box');
+                
+                if (inputVal.length === 0) {
+                    box.style.display = 'none';
+                    if(typeof checkPosStep1 === 'function') checkPosStep1();
+                    return;
+                }
+
+                let matches = globalCustomers.filter(c => {
+                    if (type === 'name') {
+                        let nameLower = c.name.toLowerCase();
+                        let inputLower = inputVal.toLowerCase();
+                        // Ya toh exact match ho, ya typo (fuzzy) match ho
+                        return nameLower.includes(inputLower) || fuzzyMatch(inputLower, nameLower);
+                    } else {
+                        return c.phone && c.phone.includes(inputVal);
+                    }
+                });
+
+                // Jo bilkul same se shuru hote hain, unhe upar dikhana (Sorting)
+                matches.sort((a, b) => {
+                    if (type === 'name') {
+                        let aStarts = a.name.toLowerCase().startsWith(inputVal.toLowerCase());
+                        let bStarts = b.name.toLowerCase().startsWith(inputVal.toLowerCase());
+                        if (aStarts && !bStarts) return -1;
+                        if (!aStarts && bStarts) return 1;
+                    }
+                    return 0;
+                });
+
+                matches = matches.slice(0, 8); // Top 8 results dikhayenge
+
+                if (matches.length > 0) {
+                    let html = '';
+                    matches.forEach(c => {
+                        let displayPhone = c.phone || 'No Number';
+                        let safeName = c.name.replace(/'/g, "\\'"); // Naam me comma hone par error roki
+                        html += `<div style="padding:10px 14px; border-bottom:1px solid #f0f4f9; cursor:pointer; display:flex; flex-direction:column; transition: background 0.2s;" onmouseover="this.style.background='#e8f0fe'" onmouseout="this.style.background='white'" onclick="selectSmartCustomer('${safeName}', '${c.phone || ''}')">
+                                    <span style="font-weight:700; font-size:14px; color:#1f1f1f;">${c.name}</span>
+                                    <span style="font-size:11px; color:#0a56d0; font-weight:600;">📱 ${displayPhone}</span>
+                                 </div>`;
+                    });
+                    box.innerHTML = html;
+                    box.style.display = 'block';
+                } else {
+                    box.innerHTML = `<div style="padding:12px; font-size:12px; color:var(--text-muted); font-weight:500;">No match found. Bill will be saved as new customer.</div>`;
+                    box.style.display = 'block';
+                }
+                
+                if(typeof checkPosStep1 === 'function') checkPosStep1();
+            }
+
+            window.selectSmartCustomer = function(name, phone) {
+                document.getElementById('inv-party').value = name;
+                document.getElementById('inv-phone').value = phone;
+                document.getElementById('name-suggestion-box').style.display = 'none';
+                document.getElementById('phone-suggestion-box').style.display = 'none';
+                if(typeof checkPosStep1 === 'function') checkPosStep1();
+            }
+
+            // Click outside to close dropdowns (Agar bahar click karein to box band ho jaye)
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#inv-party') && !e.target.closest('#name-suggestion-box')) {
+                    let nBox = document.getElementById('name-suggestion-box');
+                    if(nBox) nBox.style.display = 'none';
+                }
+                if (!e.target.closest('#inv-phone') && !e.target.closest('#phone-suggestion-box')) {
+                    let pBox = document.getElementById('phone-suggestion-box');
+                    if(pBox) pBox.style.display = 'none';
+                }
             });
 
             document.getElementById('cp-scroll-content').addEventListener('scroll', function() {

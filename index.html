@@ -247,21 +247,40 @@
         
         /* ================= OFFLINE BANNER CSS ================= */
         #offline-banner { display: none; position: fixed; top: 0; left: 0; width: 100%; background: var(--danger); color: white; text-align: center; padding: 12px; font-weight: 600; z-index: 9999999; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        
+        /* ================= PHASE 2: MODERN ANIMATIONS & SAAS LOGIN ================= */
+        @keyframes float-icon { 0% { transform: translateY(0px); } 50% { transform: translateY(-4px); } 100% { transform: translateY(0px); } }
+        @keyframes pulse-icon { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        .anim-float { animation: float-icon 3s ease-in-out infinite; }
+        .anim-pulse { animation: pulse-icon 2s ease-in-out infinite; }
+        
+        /* Premium SaaS Login Styles */
+        .saas-login-bg { background: linear-gradient(45deg, #0a56d0, #0842a0, #c2e7ff); background-size: 400% 400%; animation: gemini-mesh 10s ease infinite; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.5); }
     </style>
 </head>
 <body>
 
     <!-- 🔒 PRO LOGIN OVERLAY -->
-    <div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #f0f4f8 0%, #d7e3fc 100%); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
-        <div style="background: white; padding: 40px 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 100%; max-width: 380px; text-align: center;">
-            <div style="background: var(--primary); color: white; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);" class="material-symbols-rounded">inventory_2</div>
-            <h2 style="color: #2c3e50; margin-bottom: 8px; font-size: 26px; font-weight: 700;">Vandana ERP</h2>
-            <p style="color: #7f8c8d; font-size: 14px; margin-bottom: 35px;">Welcome! Please login to continue.</p>
+    <div id="login-overlay" class="saas-login-bg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
+        <div class="glass-card" style="padding: 50px 40px; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); width: 100%; max-width: 420px; text-align: center; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: linear-gradient(90deg, var(--primary), #c2e7ff);"></div>
             
-            <button id="google-login-btn" onclick="loginWithGoogle()" style="background: white; color: #3c4043; border: 1px solid #dadce0; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: background 0.3s;">
-                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width: 22px;">
-                Continue with Google
+            <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; width: 75px; height: 75px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 38px; margin: 0 auto 25px; box-shadow: 0 10px 20px rgba(10, 86, 208, 0.3); transform: rotate(-5deg);" class="material-symbols-rounded anim-float">storefront</div>
+            
+            <h2 style="color: #1f1f1f; margin-bottom: 10px; font-size: 30px; font-weight: 800; font-family: 'Product Sans', sans-serif; letter-spacing: -0.5px;">Vandana ERP</h2>
+            <p style="color: #444746; font-size: 15px; font-weight: 500; margin-bottom: 40px;">Smart Inventory & Billing System</p>
+            
+            <button id="google-login-btn" onclick="loginWithGoogle()" style="background: white; color: #1f1f1f; border: 1px solid #e0e2e0; border-radius: 16px; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.3s ease;">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width: 26px;">
+                Secure Login with Google
             </button>
+            
+            <div style="margin-top: 30px; font-size: 12px; color: #718096; font-weight: 500; display:flex; align-items:center; justify-content:center; gap:4px;">
+                <span class="material-symbols-rounded" style="font-size:14px; color:var(--success);">lock</span> End-to-End Encrypted
+            </div>
         </div>
     </div>
 <!-- 📝 NEW CUSTOMER DETAILS POPUP -->
@@ -637,14 +656,21 @@
                 <span class="material-symbols-rounded" style="color: #856404;">chevron_right</span>
             </div>
             <div class="google-card" onclick="openInvoicesPage()">
-                <div class="card-header" id="dash-sales-label">Total Sales (Today)</div>
-                <div class="card-value" id="dash-card-sale-value">₹0</div>
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <div class="card-header" id="dash-sales-label">Total Sales (Today)</div>
+                        <div class="card-value" id="dash-card-sale-value">₹0</div>
+                    </div>
+                    <div style="background:#e6f4ea; color:var(--success); width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center;" class="anim-pulse">
+                        <span class="material-symbols-rounded">trending_up</span>
+                    </div>
+                </div>
                 <div class="progress-bar-bg"><div class="progress-bar-fill"></div></div>
                 <div class="card-subtext">Tap to view today's generated bills</div>
             </div>
             <div class="dash-card-grid" id="admin-action-cards">
 				<div class="dash-card" onclick="navTo('pos-page', null)">
-					<div style="width:48px; height:48px; border-radius:16px; background:#e8f0fe; color:var(--primary); display:flex; align-items:center; justify-content:center; margin-bottom:10px;">
+					<div style="width:48px; height:48px; border-radius:16px; background:#e8f0fe; color:var(--primary); display:flex; align-items:center; justify-content:center; margin-bottom:10px;" class="anim-float">
 						<span class="material-symbols-rounded" style="font-size:26px;">receipt_long</span>
 					</div>
 					<div class="card-header" style="margin-bottom:2px; font-size:15px; font-weight:700;">Sale Invoice</div>
@@ -654,7 +680,7 @@
 					</div>
 				</div>
 				<div class="dash-card" onclick="navTo('godown-page', null)">
-					<div style="width:48px; height:48px; border-radius:16px; background:#fdf2f2; color:var(--danger); display:flex; align-items:center; justify-content:center; margin-bottom:10px;">
+					<div style="width:48px; height:48px; border-radius:16px; background:#fdf2f2; color:var(--danger); display:flex; align-items:center; justify-content:center; margin-bottom:10px;" class="anim-float">
 						<span class="material-symbols-rounded" style="font-size:26px;">storefront</span>
 					</div>
 					<div class="card-header" style="margin-bottom:2px; font-size:15px; font-weight:700;">Shop Transfer</div>
@@ -666,7 +692,7 @@
 			</div>
             <div id="top-customers-container" style="background: rgba(255, 255, 255, 0.9); border-radius: 20px; padding: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid rgba(255,255,255,0.8); width: 100%; box-sizing: border-box;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
-                    <div style="font-size: 14px; font-weight: 500; color: var(--text-dark); font-family: 'Inter', sans-serif; display:flex; align-items:center; gap:8px;" id="tc-title">Top Customers 🏆 <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;">2% OFF</span></div>
+                    <div style="font-size: 14px; font-weight: 500; color: var(--text-dark); font-family: 'Inter', sans-serif; display:flex; align-items:center; gap:8px;" id="tc-title">Top Customers <span class="anim-pulse" style="display:inline-block;">🏆</span> <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;" class="anim-pulse">2% OFF</span></div>
 </div>
 <div class="ajio-tab-container" style="margin:0 0 16px 0;" id="tc-tabs">
                     <div class="kb-tab active" id="tc-curr-tab" onclick="switchTopCustTab('current')">THIS MONTH</div>
@@ -1090,7 +1116,7 @@
     <div class="page flex-page" id="admin-profile-page">
         <div class="sub-header" style="justify-content: flex-start;">
             <button class="back-btn material-symbols-rounded" onclick="closePage('admin-profile-page')" style="margin-right: 12px;">arrow_back</button>
-            <h2 class="page-title">Business Settings</h2>
+            <h2 class="page-title" style="display:flex; align-items:center; gap:8px;">Business Settings <span class="material-symbols-rounded" style="animation: spin-slow 4s linear infinite; color:var(--primary);">settings</span></h2>
         </div>
         <!-- Scroll Fix: padding-bottom 20px कर दिया गया है ताकि पेज फालतू स्क्रॉल न हो -->
         <div class="scroll-content" style="padding-top:16px; padding-bottom: 20px;">

@@ -3646,51 +3646,6 @@
         }
 
         // ================= PROFESSIONAL SEARCH MODAL LOGIC =================
-// Phase 4: Virtual Live Stock (Cart-Aware Calculator)
-        window.getVirtualStock = function(cat, shade) {
-            let key = cat + "_" + shade;
-            let data = smartInventory[key] || {cone: 0, kg: 0};
-            let masterCone = typeof data === 'object' ? (parseFloat(data.cone) || 0) : (parseFloat(data) || 0);
-            let masterKg = typeof data === 'object' ? (parseFloat(data.kg) || 0) : 0;
-            
-            // Cart me pehle se add kiye gaye item ka hisaab lagana
-            let cartCone = 0; let cartKg = 0;
-            currentCart.forEach(item => {
-                if(item.cat === cat && item.shade === shade) {
-                    cartCone += (item.rawCone || 0);
-                    cartKg += (item.rawKg || 0);
-                }
-            });
-            
-            return { cone: Math.max(0, masterCone - cartCone), kg: Math.max(0, masterKg - cartKg) };
-        };
-
-        window.refreshLiveBadge = function() {
-            let cat = document.getElementById('inv-cat').value;
-            let shade = document.getElementById('inv-shade').value;
-            let badge = document.getElementById('live-stock-badge');
-            
-            if(cat && shade && badge && badge.style.display !== 'none') {
-                let vStock = window.getVirtualStock(cat, shade);
-                let isKgItem = (cat === 'Cording' || cat === 'Nylon' || cat === 'Bobbin');
-                let stockQty = isKgItem ? vStock.kg : vStock.cone;
-                let stockVal = isKgItem ? `${stockQty} Kg` : `${stockQty} Cone`;
-                
-                let stockColor = stockQty > 5 ? 'var(--success)' : (stockQty > 0 ? '#d97706' : 'var(--danger)');
-                let stockBg = stockQty > 5 ? '#e6f4ea' : (stockQty > 0 ? '#fef3c7' : '#fdf2f2');
-                let icon = stockQty > 5 ? '🟢' : (stockQty > 0 ? '🟠' : '🔴');
-                
-                if(stockQty <= 0) {
-                    stockColor = 'var(--danger)'; stockBg = '#fdf2f2'; icon = '🔴';
-                }
-                
-                badge.innerText = `${icon} ${stockVal}`;
-                badge.style.background = stockBg;
-                badge.style.color = stockColor;
-                badge.style.borderColor = stockColor;
-            }
-        };
-		
         window.updatePosShades = function() { 
             let cat = document.getElementById('inv-cat').value; 
             let shadeInput = document.getElementById('inv-shade'); 
@@ -3733,10 +3688,9 @@
             for (let key in smartInventory) { 
                 let parts = key.split("_"); 
                 if(parts[0] === cat) { 
-                    // Yahan 'Virtual Stock' function ka istemaal ho raha hai
-                    let vStock = window.getVirtualStock(cat, parts[1]);
-                    let coneQty = vStock.cone;
-                    let kgQty = vStock.kg;
+                    let data = smartInventory[key];
+                    let coneQty = typeof data === 'object' ? (parseFloat(data.cone) || 0) : (parseFloat(data) || 0);
+                    let kgQty = typeof data === 'object' ? (parseFloat(data.kg) || 0) : 0;
                     
                     if(coneQty > 0 || kgQty > 0) { 
                         itemsFound = true;
@@ -3819,14 +3773,12 @@
             if (!cat || !shade) return alert("Select Category and Item first!"); 
             if (cone <= 0 || rate <= 0) return alert("Enter valid Cone & Rate!"); 
 
-            // Check Virtual Stock instead of Master Stock
-            let vStock = window.getVirtualStock(cat, shade);
+            let key = cat + "_" + shade; 
+            let cur = smartInventory[key] || { cone: 0, kg: 0 }; 
+            if(typeof cur === 'number') cur = { cone: cur, kg: 0 };
 
-            if(!isKgItem && cone > vStock.cone) { 
-                alert(`OUT OF STOCK! You only have ${vStock.cone} Cone left for this bill.`); return; 
-            } 
-            if(isKgItem && kg > vStock.kg) { 
-                alert(`OUT OF STOCK! You only have ${vStock.kg} KG left for this bill.`); return; 
+            if(cone > cur.cone) { 
+                alert(`OUT OF STOCK! You only have ${cur.cone} Cone left.`); return; 
             } 
 
             let displayQty = kg > 0 ? `${cone} Cone, ${kg} KG` : `${cone} Cone`;
@@ -3904,9 +3856,6 @@
                 btn.style.background = window.editingBillNo ? "var(--warning)" : "var(--primary)"; 
             }
             if(typeof window.updateDynamicQR === 'function') window.updateDynamicQR();
-            
-            // Instantly refresh the badge when item is added/removed from cart
-            if(typeof window.refreshLiveBadge === 'function') window.refreshLiveBadge();
         }
         
         // 🌟 STEP 3A: Auto Adjust Bill Number Logic (Date के हिसाब से Sequence Fix करना)

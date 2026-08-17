@@ -260,6 +260,7 @@
         .saas-login-bg { background: linear-gradient(45deg, #0a56d0, #0842a0, #c2e7ff); background-size: 400% 400%; animation: gemini-mesh 10s ease infinite; }
         .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.5); }
     </style>
+    <script src="https://cdn.lordicon.com/lordicon.js" defer></script>
 </head>
 <body>
 
@@ -3426,7 +3427,18 @@
             });
         }
         window.renderRecycleBin = function() { let container = document.getElementById('recycle-list-container'); if(allRecycleData.length === 0) { container.innerHTML = `<div style="text-align:center; padding:40px; color:gray;">Recycle Bin is empty.</div>`; return; } let html = ""; allRecycleData.forEach(entry => { let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB'); html += `<div class="entry-card" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--text-dark); font-weight:800; font-size: 16px;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">${dateStr} | ${entry.details}</div><div style="display:flex; gap:10px;"><button class="btn-submit" style="flex:1; background:#e8f0fe; color:var(--primary); padding:8px; border-radius:12px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="restoreRecycle('${entry.key}')"><span class="material-symbols-rounded" style="font-size:16px;">settings_backup_restore</span> Restore</button><button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger); padding:8px; border-radius:12px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="permanentlyDeleteRecycle('${entry.key}')"><span class="material-symbols-rounded" style="font-size:16px;">delete_forever</span> Delete</button></div></div>`; }); container.innerHTML = html; }
-        window.restoreRecycle = function(key) { let entry = allRecycleData.find(e => e.key === key); if(entry) { let dbEntry = {...entry}; delete dbEntry.key; set(ref(db, 'Ledger/' + key), dbEntry); remove(ref(db, 'RecycleBin/' + key)); } }
+        window.restoreRecycle = function(key) { 
+            window.showCustomConfirm("Restore Entry?", "क्या आप इस एंट्री को वापस रीस्टोर करना चाहते हैं?", function() {
+                let entry = allRecycleData.find(e => e.key === key); 
+                if(entry) { 
+                    let dbEntry = {...entry}; 
+                    delete dbEntry.key; 
+                    set(ref(db, 'Ledger/' + key), dbEntry); 
+                    remove(ref(db, 'RecycleBin/' + key)); 
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Entry Restored Successfully! ✅");
+                }
+            });
+        }
         window.permanentlyDeleteRecycle = function(key) { 
             window.showCustomConfirm("Delete Permanently?", "क्या आप इस इनवॉइस को हमेशा के लिए डिलीट करना चाहते हैं? इसे वापस नहीं लाया जा सकेगा।", function() {
                 remove(ref(db, 'RecycleBin/' + key)); 
@@ -5192,14 +5204,26 @@ window.showTargetCelebration = function() {
         <div class="scroll-content" id="pending-requests-list" style="padding-top:0px;"></div>
     </div>
 <div id="saas-toast" style="display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#1f1f1f; color:white; padding:12px 20px; border-radius:12px; font-family:'Product Sans', sans-serif; font-size:13px; font-weight:500; z-index:999999; box-shadow:0 10px 30px rgba(0,0,0,0.2); align-items:center; gap:10px; min-width: 280px; border: 1px solid #444; animation: slideDown 0.3s ease-out;">
-        <span class="material-symbols-rounded" style="color:#2ecc71; font-size: 20px;">check_circle</span>
+        <div id="saas-toast-icon-container" style="display:flex; align-items:center; justify-content:center;">
+            <lord-icon src="https://cdn.lordicon.com/guqkthkk.json" trigger="in" delay="10" colors="primary:#2ecc71" style="width:24px;height:24px"></lord-icon>
+        </div>
         <span id="saas-toast-msg" style="flex:1;">Success!</span>
     </div>
     
     <script>
         window.showSaaSToast = function(msg) {
             let toast = document.getElementById('saas-toast');
+            let iconContainer = document.getElementById('saas-toast-icon-container');
             document.getElementById('saas-toast-msg').innerText = msg;
+            
+            // स्मार्ट AI लॉजिक: अगर मैसेज में Error या Warning है तो लाल वाला आइकॉन
+            if (msg.toLowerCase().includes('error') || msg.toLowerCase().includes('failed') || msg.toLowerCase().includes('out of stock')) {
+                iconContainer.innerHTML = '<lord-icon src="https://cdn.lordicon.com/bmnlikjh.json" trigger="in" delay="10" colors="primary:#e74c3c" style="width:24px;height:24px"></lord-icon>';
+            } else {
+                // वरना सफलता का हरा टिक
+                iconContainer.innerHTML = '<lord-icon src="https://cdn.lordicon.com/guqkthkk.json" trigger="in" delay="10" colors="primary:#2ecc71" style="width:24px;height:24px"></lord-icon>';
+            }
+            
             toast.style.display = 'flex';
             setTimeout(() => { toast.style.display = 'none'; }, 4000);
         }
@@ -5235,27 +5259,33 @@ window.showTargetCelebration = function() {
         window.showCustomConfirm = function(title, msg, callback) {
             let isEdit = title.toLowerCase().includes('edit');
             let isLogout = title.toLowerCase().includes('logout');
+            let isRestore = title.toLowerCase().includes('restore'); // नया रिस्टोर लॉजिक
             
             let iconBg = document.getElementById('confirm-modal-icon-bg');
-            let iconElem = document.getElementById('confirm-modal-icon');
             let confirmBtn = document.getElementById('confirm-modal-btn');
             
+            // पुरानी क्लास हटा रहे हैं ताकि नया एनीमेशन 100% सही दिखे
+            iconBg.classList.remove('material-symbols-rounded');
+
             if (isEdit) {
                 iconBg.style.background = '#e8f0fe';
-                iconBg.style.color = 'var(--primary)';
-                iconElem.innerText = 'edit_document';
+                iconBg.innerHTML = '<lord-icon src="https://cdn.lordicon.com/puvaffet.json" trigger="loop" delay="500" colors="primary:#0a56d0,secondary:#0a56d0" style="width:35px;height:35px"></lord-icon>';
                 confirmBtn.style.background = 'var(--primary)';
                 confirmBtn.innerText = 'Yes, Edit';
             } else if (isLogout) {
                 iconBg.style.background = '#fdf4e5';
-                iconBg.style.color = '#b36b00';
-                iconElem.innerText = 'logout';
+                iconBg.innerHTML = '<lord-icon src="https://cdn.lordicon.com/eohwfuhe.json" trigger="loop" delay="500" colors="primary:#b36b00,secondary:#b36b00" style="width:35px;height:35px"></lord-icon>';
                 confirmBtn.style.background = '#b36b00';
                 confirmBtn.innerText = 'Yes, Logout';
+            } else if (isRestore) {
+                iconBg.style.background = '#e6f4ea';
+                iconBg.innerHTML = '<lord-icon src="https://cdn.lordicon.com/nxaaasqe.json" trigger="loop" delay="500" colors="primary:#146c2e,secondary:#146c2e" style="width:35px;height:35px"></lord-icon>';
+                confirmBtn.style.background = 'var(--success)';
+                confirmBtn.innerText = 'Yes, Restore';
             } else {
+                // Delete
                 iconBg.style.background = '#fdf2f2';
-                iconBg.style.color = 'var(--danger)';
-                iconElem.innerText = 'delete_sweep';
+                iconBg.innerHTML = '<lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" delay="500" colors="primary:#b3261e,secondary:#b3261e" style="width:35px;height:35px"></lord-icon>';
                 confirmBtn.style.background = 'var(--danger)';
                 confirmBtn.innerText = 'Yes, Delete';
             }

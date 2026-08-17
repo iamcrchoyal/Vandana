@@ -3890,11 +3890,27 @@
             window.showCustomConfirm("Edit Item?", "Kya aap is product ki detail update karna chahte hain?", function() {
                 let item = currentCart[index];
                 
+                // 🌟 Live Stock Check Karna (Superfast Backend Fetch)
+                let key = item.cat + "_" + item.shade;
+                let curStock = smartInventory[key] || { cone: 0, kg: 0 };
+                if(typeof curStock === 'number') curStock = { cone: curStock, kg: 0 };
+                
+                let maxCone = parseFloat(curStock.cone) || 0;
+                let maxKg = parseFloat(curStock.kg) || 0;
+                
+                // Hidden fields me max stock save karna taaki save karte waqt check ho sake
+                document.getElementById('ei-max-cone').value = maxCone;
+                document.getElementById('ei-max-kg').value = maxKg;
+                
                 // Naya Popup me Data Set Karna
                 document.getElementById('ei-index').value = index;
                 document.getElementById('ei-cat').value = item.cat;
                 document.getElementById('ei-shade').value = item.shade;
                 document.getElementById('ei-title').innerText = item.cat + " - " + item.shade;
+                
+                // Popup me Live Stock Dikhana
+                let stockText = maxKg > 0 ? `${maxCone} Cone, ${maxKg} Kg` : `${maxCone} Cone`;
+                document.getElementById('ei-live-stock').innerText = `🟢 Stock: ${stockText}`;
                 
                 document.getElementById('ei-cone').value = item.rawCone || '';
                 document.getElementById('ei-rate').value = item.rate || '';
@@ -3919,7 +3935,7 @@
             });
         };
 
-        // 🌟 SAVE EDITED ITEM FAST LOGIC
+        // 🌟 SAVE EDITED ITEM FAST LOGIC WITH STOCK VALIDATION
         window.saveEditedItem = function() {
             let index = parseInt(document.getElementById('ei-index').value);
             let cat = document.getElementById('ei-cat').value;
@@ -3927,8 +3943,26 @@
             let cone = parseFloat(document.getElementById('ei-cone').value) || 0;
             let kg = parseFloat(document.getElementById('ei-kg').value) || 0;
             let rate = parseFloat(document.getElementById('ei-rate').value) || 0;
+            
+            // Max Stock Fetch Karna
+            let maxCone = parseFloat(document.getElementById('ei-max-cone').value) || 0;
+            let maxKg = parseFloat(document.getElementById('ei-max-kg').value) || 0;
 
             if (cone <= 0 || rate <= 0) return alert("Please enter valid Cone & Rate!");
+            
+            // 🛑 STOCK VALIDATION: Agar stock se zyada likha to Error dekar rok dena
+            if (cone > maxCone) {
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Only ${maxCone} Cone left. ⚠️`);
+                else alert(`Out of Stock! Only ${maxCone} Cone left.`);
+                return; // Code yahi ruk jayega, save nahi hoga
+            }
+            if (cat === 'Nylon' || cat === 'Cording' || cat === 'Bobbin') {
+                if (kg > 0 && kg > maxKg) {
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Only ${maxKg} Kg left. ⚠️`);
+                    else alert(`Out of Stock! Only ${maxKg} Kg left.`);
+                    return; 
+                }
+            }
 
             let displayQty = kg > 0 ? `${cone} Cone, ${kg} KG` : `${cone} Cone`;
             let itemTotal = kg > 0 ? (kg * rate) : (cone * rate);
@@ -5442,13 +5476,18 @@ window.showTargetCelebration = function() {
             </div>
             
             <div style="background:#f8fafd; border:1px solid #c2e7ff; padding:12px; border-radius:12px; margin-bottom:16px;">
-                <div style="font-size:12px; color:var(--text-muted); font-weight:600;">Product Name & Details</div>
-                <div id="ei-title" style="font-size:16px; font-weight:700; color:var(--primary-dark);">Thread - 105</div>
+                <div style="font-size:12px; color:var(--text-muted); font-weight:600; display:flex; justify-content:space-between; align-items:center;">
+                    <span>Product Name & Details</span>
+                    <span id="ei-live-stock" style="background:#e6f4ea; color:var(--success); padding:2px 8px; border-radius:6px; font-size:11px; font-weight:800;">🟢 Stock: 0</span>
+                </div>
+                <div id="ei-title" style="font-size:16px; font-weight:700; color:var(--primary-dark); margin-top:4px;">Thread - 105</div>
             </div>
             
             <input type="hidden" id="ei-index">
             <input type="hidden" id="ei-cat">
             <input type="hidden" id="ei-shade">
+            <input type="hidden" id="ei-max-cone">
+            <input type="hidden" id="ei-max-kg">
             
             <div class="input-btn-group" style="margin-bottom: 20px;">
                 <div style="flex:1;" id="ei-cone-wrapper">

@@ -926,7 +926,7 @@
                 
                 <div id="pos-add-product-section" style="display:none;">
                     <div class="form-panel" style="border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
-                        <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">📦 Add Product</label>
+                        <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">📦 Product Details</label>
                     
                     <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd; font-weight:600;" onchange="updatePosShades()">
                         <option value="">Select Category</option>
@@ -3877,24 +3877,35 @@
             currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty: displayQty, rawCone: cone, rawKg: kg, rate: rate, itemTotal: itemTotal }); 
             renderCartUi(); 
         }
-        // 🌟 EDITABLE CART LOGIC WITH PROFESSIONAL ICONS
+        // 🌟 EDITABLE CART LOGIC WITH PROFESSIONAL ICONS & RE-CONFIRMATION
         window.removeCartItem = function(index) {
-            currentCart.splice(index, 1);
-            renderCartUi();
+            window.showCustomConfirm("Delete Item?", "Kya aap sach mein is item ko bill se hatana chahte hain?", function() {
+                currentCart.splice(index, 1);
+                renderCartUi();
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Item Deleted Successfully! ✅");
+            });
         };
 
         window.editCartItem = function(index) {
-            let item = currentCart[index];
-            document.getElementById('inv-cat').value = item.cat;
-            updatePosShades(); 
-            setTimeout(() => { document.getElementById('inv-shade').value = item.shade; }, 150);
-            
-            document.getElementById('inv-qty').value = item.qty;
-            document.getElementById('inv-rate').value = item.rate;
-            
-            currentCart.splice(index, 1);
-            renderCartUi();
-            window.showSaaSToast("Item ready for editing!");
+            window.showCustomConfirm("Edit Item?", "Kya aap is item ko edit karna chahte hain? Yeh wapas upar form mein aa jayega.", function() {
+                let item = currentCart[index];
+                document.getElementById('inv-cat').value = item.cat;
+                updatePosShades(); 
+                
+                setTimeout(() => { 
+                    document.getElementById('inv-shade').value = item.shade; 
+                    // Bug Fixed: Correctly updating Cone and Kg values
+                    let coneInput = document.getElementById('inv-cone');
+                    let kgInput = document.getElementById('inv-kg');
+                    if(coneInput) coneInput.value = item.rawCone || '';
+                    if(kgInput) kgInput.value = item.rawKg || '';
+                    document.getElementById('inv-rate').value = item.rate;
+                }, 150);
+                
+                currentCart.splice(index, 1);
+                renderCartUi();
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Item ready for editing! ✏️");
+            });
         };
 
         // STEP LOGIC FOR POS PAGE

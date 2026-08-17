@@ -3518,7 +3518,85 @@
             document.getElementById('kb-customer-list').innerHTML = html || `<div style="padding:40px; text-align:center; color:gray;">No ${currentTabType}s found</div>`; 
         }
             
-        window.openInvoicesPage = function() { let listContainer = document.getElementById('invoices-list-container'); listContainer.innerHTML = ''; let selectedDateString = document.getElementById('dash-date-picker').value; let todayInvoices = allLedgerData.filter(entry => { let entryDateString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; } catch(e){} return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice"); }); if(todayInvoices.length === 0) { listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:gray; font-size:14px; font-weight:600;">No Bills found for this date.</div>'; } else { todayInvoices.forEach(entry => { listContainer.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; cursor:pointer;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--success); font-weight:800; font-size: 16px; font-family:'Product Sans', sans-serif;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;"><span>${entry.details}</span><span style="color:var(--primary); font-weight:600; display:flex; align-items:center;"><span class="material-symbols-rounded" style="font-size:16px;">visibility</span> View</span></div></div>`; }); } navTo('invoices-page', null); }
+        window.openInvoicesPage = function() { 
+            let listContainer = document.getElementById('invoices-list-container'); 
+            listContainer.innerHTML = ''; 
+            let selectedDateString = document.getElementById('dash-date-picker').value; 
+            
+            let todayInvoices = allLedgerData.filter(entry => { 
+                let entryDateString = ""; 
+                try { 
+                    let d = new Date(entry.date); 
+                    if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; 
+                } catch(e){} 
+                // "Bill" की जगह "Invoice" शब्द को मैच कर रहे हैं
+                return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice"); 
+            }); 
+
+            if(todayInvoices.length === 0) { 
+                // खाली होने पर शानदार एनिमेटेड आइकॉन
+                listContainer.innerHTML = '<div style="text-align:center; padding:50px 20px; color:gray; font-size:14px; font-weight:600;"><lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop" delay="1500" colors="primary:#0a56d0,secondary:#0a56d0" style="width:60px;height:60px"></lord-icon><br><span style="display:block; margin-top:10px;">No Invoices found for this date.</span></div>'; 
+            } else { 
+                let isAdmin = (window.currentUserRole === 'admin');
+                
+                todayInvoices.forEach(entry => { 
+                    // समय (Time) निकालना
+                    let d = new Date(entry.date);
+                    let timeStr = isNaN(d) ? '' : d.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+                    
+                    // क्वांटिटी या डिटेल्स अलग करना
+                    let qtyMatch = entry.details.split('-');
+                    let itemInfo = qtyMatch.length > 1 ? qtyMatch[1].trim() : "View Details";
+
+                    // पेमेंट स्टेटस (Paid / Due)
+                    let statusText = "🟢 Paid";
+                    let statusStyle = "background:#e6f4ea; color:var(--success);";
+                    if(entry.breakdown && entry.breakdown.pending > 0) {
+                        statusText = `🔴 Due: ₹${entry.breakdown.pending.toLocaleString('en-IN')}`;
+                        statusStyle = "background:#fdf2f2; color:var(--danger);";
+                    }
+
+                    // प्रोफाइल फोटो (Avatar) लॉजिक
+                    let cData = globalCustomers.find(c => c.name === entry.name);
+                    let displayPic = cData && cData.pic ? cData.pic : null;
+                    let avatarHtml = displayPic ? `<img src="${displayPic}" style="width:100%;height:100%;object-fit:cover;">` : entry.name.charAt(0).toUpperCase();
+
+                    // रोल के हिसाब से टेक्स्ट
+                    let rolePrefix = isAdmin ? 'Billed To:' : 'Purchased From:';
+
+                    // सुपरफ़ास्ट और मॉडर्न UI कार्ड
+                    listContainer.innerHTML += `
+                    <div class="entry-card" onclick="openEntryDetails('${entry.key}')" style="padding: 16px; border: 1px solid #e0e2e0; border-radius:18px; margin-bottom: 12px; cursor:pointer; display:flex; align-items:center; gap:14px; box-shadow:0 4px 10px rgba(0,0,0,0.02); transition:transform 0.2s;">
+                        <div style="width:48px; height:48px; border-radius:50%; flex-shrink:0; background:#e8f0fe; color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; overflow:hidden; border:2px solid #c2e7ff;">
+                            ${avatarHtml}
+                        </div>
+                        <div style="flex:1; min-width:0;">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:2px;">
+                                <div style="font-weight:700; font-size: 15px; color:var(--text-dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                    <span style="font-size:9px; color:var(--text-muted); display:block; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">${rolePrefix}</span>
+                                    ${entry.name}
+                                </div>
+                                <div style="text-align:right;">
+                                    <div style="color:var(--text-dark); font-weight:800; font-size: 16px; font-family:'Product Sans', sans-serif;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div>
+                                </div>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                <div style="font-size:11px; color:var(--text-muted); font-weight:600; display:flex; align-items:center; gap:6px;">
+                                    <span style="background:#e8f0fe; color:var(--primary-dark); padding:2px 8px; border-radius:6px; font-weight:800;">${entry.billNo || 'INVOICE'}</span> 
+                                    <span>🕛 ${timeStr}</span>
+                                </div>
+                                <div style="font-size:10px; font-weight:800; padding:3px 8px; border-radius:6px; ${statusStyle}">${statusText}</div>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed #e0e2e0; padding-top:10px;">
+                                <div style="font-size:12px; color:var(--text-muted); font-weight:600;">📦 ${itemInfo}</div>
+                                <div style="color:var(--primary); font-size:12px; font-weight:800; display:flex; align-items:center; gap:4px; background:#f8fafd; padding:6px 14px; border-radius:14px; border:1px solid #c2e7ff;">View <span class="material-symbols-rounded" style="font-size:14px;">arrow_forward</span></div>
+                            </div>
+                        </div>
+                    </div>`; 
+                }); 
+            } 
+            navTo('invoices-page', null); 
+        }
 
         window.addSpecificStock = function(category, id1, id2, id3) { 
             let identifier = document.getElementById(id1).value.trim(); 

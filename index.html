@@ -3887,25 +3887,67 @@
         };
 
         window.editCartItem = function(index) {
-            window.showCustomConfirm("Edit Item?", "Kya aap is item ko edit karna chahte hain? Yeh wapas upar form mein aa jayega.", function() {
+            window.showCustomConfirm("Edit Item?", "Kya aap is product ki detail update karna chahte hain?", function() {
                 let item = currentCart[index];
-                document.getElementById('inv-cat').value = item.cat;
-                updatePosShades(); 
                 
-                setTimeout(() => { 
-                    document.getElementById('inv-shade').value = item.shade; 
-                    // Bug Fixed: Correctly updating Cone and Kg values
-                    let coneInput = document.getElementById('inv-cone');
-                    let kgInput = document.getElementById('inv-kg');
-                    if(coneInput) coneInput.value = item.rawCone || '';
-                    if(kgInput) kgInput.value = item.rawKg || '';
-                    document.getElementById('inv-rate').value = item.rate;
-                }, 150);
+                // Naya Popup me Data Set Karna
+                document.getElementById('ei-index').value = index;
+                document.getElementById('ei-cat').value = item.cat;
+                document.getElementById('ei-shade').value = item.shade;
+                document.getElementById('ei-title').innerText = item.cat + " - " + item.shade;
                 
-                currentCart.splice(index, 1);
-                renderCartUi();
+                document.getElementById('ei-cone').value = item.rawCone || '';
+                document.getElementById('ei-rate').value = item.rate || '';
+                
+                let kgWrap = document.getElementById('ei-kg-wrapper');
+                let coneWrap = document.getElementById('ei-cone-wrapper');
+                let kgInput = document.getElementById('ei-kg');
+                
+                // Smart Logic: Category ke hisaab se Cone ya Kg dikhana
+                if(item.cat === 'Thread' || item.cat === 'Cotton' || item.cat === 'Zari') {
+                    kgWrap.style.display = 'none';
+                    coneWrap.style.display = 'block';
+                    kgInput.value = '';
+                } else {
+                    kgWrap.style.display = 'block';
+                    kgInput.value = item.rawKg || '';
+                }
+                
+                // Popup ko chalu karna (Fast UI without deleting item)
+                document.getElementById('edit-item-modal').style.display = 'flex';
                 if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Item ready for editing! ✏️");
             });
+        };
+
+        // 🌟 SAVE EDITED ITEM FAST LOGIC
+        window.saveEditedItem = function() {
+            let index = parseInt(document.getElementById('ei-index').value);
+            let cat = document.getElementById('ei-cat').value;
+            let shade = document.getElementById('ei-shade').value;
+            let cone = parseFloat(document.getElementById('ei-cone').value) || 0;
+            let kg = parseFloat(document.getElementById('ei-kg').value) || 0;
+            let rate = parseFloat(document.getElementById('ei-rate').value) || 0;
+
+            if (cone <= 0 || rate <= 0) return alert("Please enter valid Cone & Rate!");
+
+            let displayQty = kg > 0 ? `${cone} Cone, ${kg} KG` : `${cone} Cone`;
+            let itemTotal = kg > 0 ? (kg * rate) : (cone * rate);
+
+            // Sirf wahi item update hoga jispe click kiya tha
+            currentCart[index] = {
+                cat: cat,
+                shade: shade,
+                title: `${cat} - ${shade}`,
+                qty: displayQty,
+                rawCone: cone,
+                rawKg: kg,
+                rate: rate,
+                itemTotal: itemTotal
+            };
+
+            document.getElementById('edit-item-modal').style.display = 'none';
+            renderCartUi();
+            if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Product Updated Successfully! ✅");
         };
 
         // STEP LOGIC FOR POS PAGE
@@ -5392,6 +5434,43 @@ window.showTargetCelebration = function() {
             closeCustomConfirm();
         });
     </script>
-    
+<div id="edit-item-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999999; justify-content: center; align-items: flex-end; backdrop-filter: blur(4px);">
+        <div style="background: white; width: 100%; max-width: 500px; border-radius: 24px 24px 0 0; padding: 24px; animation: slideUp 0.3s ease-out; box-shadow: 0 -10px 40px rgba(0,0,0,0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin:0; font-size:18px; font-weight:700; color:var(--text-dark); display:flex; align-items:center; gap:8px;"><span class="material-symbols-rounded" style="color:var(--primary);">edit_square</span> Update Product</h3>
+                <span class="material-symbols-rounded" style="cursor:pointer; background:#f0f4f9; padding:6px; border-radius:50%; color:var(--text-muted);" onclick="document.getElementById('edit-item-modal').style.display='none'">close</span>
+            </div>
+            
+            <div style="background:#f8fafd; border:1px solid #c2e7ff; padding:12px; border-radius:12px; margin-bottom:16px;">
+                <div style="font-size:12px; color:var(--text-muted); font-weight:600;">Product Name & Details</div>
+                <div id="ei-title" style="font-size:16px; font-weight:700; color:var(--primary-dark);">Thread - 105</div>
+            </div>
+            
+            <input type="hidden" id="ei-index">
+            <input type="hidden" id="ei-cat">
+            <input type="hidden" id="ei-shade">
+            
+            <div class="input-btn-group" style="margin-bottom: 20px;">
+                <div style="flex:1;" id="ei-cone-wrapper">
+                    <label style="font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px; display:block;">Cone (Qty)</label>
+                    <input type="number" id="ei-cone" class="form-control" placeholder="0" style="border-radius:12px; font-weight:700; font-size:16px;">
+                </div>
+                <div style="flex:1; display:none;" id="ei-kg-wrapper">
+                    <label style="font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px; display:block;">Kg (Qty)</label>
+                    <input type="number" id="ei-kg" class="form-control" placeholder="0" style="border-radius:12px; font-weight:700; font-size:16px;">
+                </div>
+                <div style="flex:1;">
+                    <label style="font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px; display:block;">Rate (₹)</label>
+                    <input type="number" id="ei-rate" class="form-control" placeholder="0" style="border-radius:12px; font-weight:700; font-size:16px;">
+                </div>
+            </div>
+            
+            <button class="btn-submit" onclick="saveEditedItem()" style="width:100%; border-radius:16px; padding:16px; font-size:16px; font-weight:700; background:var(--primary); box-shadow:0 4px 15px rgba(10,86,208,0.3); display:flex; align-items:center; justify-content:center; gap:8px;"><span class="material-symbols-rounded">save</span> Update & Save</button>
+        </div>
+    </div>
+    <style>
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    </style>
+	
 </body>
 </html>

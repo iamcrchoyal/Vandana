@@ -3369,33 +3369,27 @@
         
         window.editCurrentInvoice = function() { 
             window.showCustomConfirm("Edit Invoice?", "क्या आप इस इनवॉइस को एडिट करना चाहते हैं?", function() {
-                currentEntryData.cart.forEach(item => { 
-                    let key = item.cat + "_" + item.shade; 
-                    let itemRef = ref(db, 'Inventory/' + key); 
-                    get(itemRef).then(snap => { 
-                        let cur = snap.val() || {cone:0, kg:0};
-                        if(typeof cur === 'number') cur = {cone:cur, kg:0};
-                        let revertedCone = cur.cone + (parseFloat(item.rawCone) || 0);
-                        let revertedKg = cur.kg + (parseFloat(item.rawKg) || 0);
-                        set(itemRef, {cone: revertedCone, kg: revertedKg}); 
-                    }); 
-                }); 
+                // 🌟 VIRTUAL REVERT: Puraane items ko database se nahi, sirf memory me temporary store karenge
+                window.originalEditCart = JSON.parse(JSON.stringify(currentEntryData.cart)); 
+
                 window.editingEntryKey = currentEntryData.key;
                 window.editingBillNo = currentEntryData.billNo;
                 window.editingEntryDate = currentEntryData.date;
                 currentCart = [...currentEntryData.cart]; 
+                
                 document.getElementById('inv-party').value = currentEntryData.name; 
                 let cust = globalCustomers.find(c => c.name === currentEntryData.name); 
                 document.getElementById('inv-phone').value = cust ? cust.phone : ""; 
                 let d = new Date(currentEntryData.date); 
                 if(!isNaN(d)) document.getElementById('inv-date').value = d.toISOString().split('T')[0]; 
+                
                 window.setPaymentMode('pending'); 
                 renderCartUi(); 
                 navTo('pos-page', null); 
                 document.getElementById('billing-form-area').style.display = 'block'; 
                 document.getElementById('post-bill-area').style.display = 'none'; 
             });
-        }
+        }}
 
         window.editCurrentEntryAmount = function() { if(!currentEntryData) return; window.isEditingEntry = true; window.calcType = currentEntryData.type; window.calcValue = currentEntryData.amount.toString(); document.getElementById('calc-amount').value = window.calcValue; document.getElementById('calc-details').value = currentEntryData.details || ""; document.getElementById('calc-hidden-area').classList.add('show'); document.getElementById('calc-save-btn').innerText = "UPDATE ENTRY"; let d = new Date(currentEntryData.date); if(!isNaN(d)) document.getElementById('calc-date').value = d.toISOString().split('T')[0]; closePage('entry-details-page'); openCalculator(window.calcType, true); }
         
@@ -3806,7 +3800,7 @@
             }
         }
 
-        // 🌟 LIVE CART-AWARE STOCK CALCULATOR
+        // 🌟 LIVE CART-AWARE STOCK CALCULATOR (Advanced Edit Support)
         window.getAvailableStock = function(cat, shade, ignoreIndex = -1) {
             let key = cat + "_" + shade;
             let dbStock = smartInventory[key] || { cone: 0, kg: 0 };
@@ -3815,7 +3809,17 @@
             let availCone = parseFloat(dbStock.cone) || 0;
             let availKg = parseFloat(dbStock.kg) || 0;
             
-            // कार्ट में जो पहले से है उसे माइनस (Minus) कर दो
+            // 🌟 1. VIRTUAL ADD: Agar purana bill edit kar rahe hain, to uske items virtually wapas jod lo
+            if (window.editingEntryKey && window.originalEditCart) {
+                window.originalEditCart.forEach(item => {
+                    if (item.cat === cat && item.shade === shade) {
+                        availCone += (parseFloat(item.rawCone) || 0);
+                        availKg += (parseFloat(item.rawKg) || 0);
+                    }
+                });
+            }
+
+            // 🌟 2. VIRTUAL MINUS: Cart me jo present hai use minus karo
             currentCart.forEach((item, index) => {
                 if(index !== ignoreIndex && item.cat === cat && item.shade === shade) {
                     availCone -= (parseFloat(item.rawCone) || 0);
@@ -4201,18 +4205,44 @@
             
             let isUpdating = !!window.editingEntryKey;
             
-            currentCart.forEach(item => { 
-                let key = item.cat + "_" + item.shade; 
-                let itemRef = ref(db, 'Inventory/' + key); 
-                get(itemRef).then(snap => { 
-                    let cur = snap.val() || {cone:0, kg:0};
-                    if(typeof cur === 'number') cur = {cone:cur, kg:0};
-                    let newCone = cur.cone - item.rawCone;
-                    let newKg = cur.kg - (item.rawKg || 0);
-                    if(newCone < 0) newCone = 0; if(newKg < 0) newKg = 0;
-                    set(itemRef, {cone: newCone, kg: newKg}); 
-                }); 
-            }); 
+            // 🌟 NAYA LOGIC: DIFFERENCE NIKALNA HAI (ताकि एडिट करते समय स्टॉक न बिगड़े)
+            let stockUpdates = {};
+            
+            if (window.editingEntryKey && window.originalEditCart) {
+                window.originalEditCart.forEach(item => {
+                    let key = item.cat + "_" + item.shade;
+                    if(!stockUpdates[key]) stockUpdates[key] = {cone:0, kg:0};
+                    stockUpdates[key].cone += (parseFloat(item.rawCone) || 0); // Purana wapas joda
+                    stockUpdates[key].kg += (parseFloat(item.rawKg) || 0);
+                });
+            }
+
+            currentCart.forEach(item => {
+                let key = item.cat + "_" + item.shade;
+                if(!stockUpdates[key]) stockUpdates[key] = {cone:0, kg:0};
+                stockUpdates[key].cone -= (parseFloat(item.rawCone) || 0); // Naya waala kaata
+                stockUpdates[key].kg -= (parseFloat(item.rawKg) || 0);
+            });
+
+            // 🌟 Fast Bulk Database Update
+            Object.keys(stockUpdates).forEach(key => {
+                let diffCone = stockUpdates[key].cone;
+                let diffKg = stockUpdates[key].kg;
+
+                if (diffCone !== 0 || diffKg !== 0) {
+                    let itemRef = ref(db, 'Inventory/' + key); 
+                    get(itemRef).then(snap => { 
+                        let cur = snap.val() || {cone:0, kg:0};
+                        if(typeof cur === 'number') cur = {cone:cur, kg:0};
+                        let newCone = cur.cone + diffCone; 
+                        let newKg = cur.kg + diffKg;
+                        if(newCone < 0) newCone = 0; 
+                        if(newKg < 0) newKg = 0;
+                        set(itemRef, {cone: newCone, kg: newKg}); 
+                    }); 
+                }
+            });
+            window.originalEditCart = null; // Memory clear kar di
             
             let maxInv = 0;
             allLedgerData.forEach(e => { if(e.billNo && e.billNo.startsWith('VE ')) { let num = parseInt(e.billNo.replace('VE ', '')); if(!isNaN(num) && num > maxInv) maxInv = num; } });
@@ -4300,6 +4330,7 @@
         // 🌟 RESET BILLING PAGE LOGIC
         window.resetBillingPage = function() { 
             currentCart = []; 
+            window.originalEditCart = null; // Memory zarur clear karein!
             renderCartUi(); 
             window.editingBillNo = null; 
             window.editingEntryKey = null;

@@ -2720,6 +2720,21 @@
             
             if(!item || isNaN(qty) || qty <= 0 || rate <= 0) return alert("Please enter valid Item Name, Quantity, and Rate!"); 
             
+            let invKey = cat + "_" + item; 
+
+            // 🌟 LIVE STOCK VALIDATION (Superfast Synchronous Check)
+            if (type === 'OUT') {
+                let dbStock = smartInventory[invKey] || { cone: 0, kg: 0 };
+                if(typeof dbStock === 'number') dbStock = { cone: dbStock, kg: 0 };
+                let availCone = parseFloat(dbStock.cone) || 0;
+                
+                if (qty > availCone) {
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Shop me sirf ${availCone} Cone bache hain. ⚠️`);
+                    else alert(`Error: Out of Stock! Shop me sirf ${availCone} Cone bache hain.`);
+                    return; // Code yahin ruk jayega, aage save nahi hoga!
+                }
+            }
+
             let dateVal = document.getElementById('gd-date').value;
             let finalDateTime;
             if(dateVal) {
@@ -2732,7 +2747,6 @@
             }
 
             let totalAmount = qty * rate;
-            let invKey = cat + "_" + item; 
             let itemRef = ref(db, 'Inventory/' + invKey); 
             
             // Inventory Adjust
@@ -2762,13 +2776,15 @@
 
             if(editKey) {
                 update(ref(db, 'GodownTransfers/' + editKey), dataObj);
-                alert("Entry Updated!");
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Entry Updated Successfully! ✅");
+                else alert("Entry Updated!");
                 document.getElementById('gd-edit-key').value = '';
                 document.getElementById('gd-btn-in').style.display = 'block';
                 document.getElementById('gd-btn-out').style.display = 'block';
             } else {
                 push(ref(db, 'GodownTransfers'), dataObj); 
-                alert(type === 'IN' ? `Stock Received from Shop!` : `Stock Sent to Shop!`); 
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast(type === 'IN' ? `Stock Received from Godown! ✅` : `Stock Sent to Godown! ✅`);
+                else alert(type === 'IN' ? `Stock Received from Godown!` : `Stock Sent to Godown!`); 
             }
             
             document.getElementById('gd-item').value = ''; 

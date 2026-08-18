@@ -3389,7 +3389,7 @@
                 document.getElementById('billing-form-area').style.display = 'block'; 
                 document.getElementById('post-bill-area').style.display = 'none'; 
             });
-        }}
+        }
 
         window.editCurrentEntryAmount = function() { if(!currentEntryData) return; window.isEditingEntry = true; window.calcType = currentEntryData.type; window.calcValue = currentEntryData.amount.toString(); document.getElementById('calc-amount').value = window.calcValue; document.getElementById('calc-details').value = currentEntryData.details || ""; document.getElementById('calc-hidden-area').classList.add('show'); document.getElementById('calc-save-btn').innerText = "UPDATE ENTRY"; let d = new Date(currentEntryData.date); if(!isNaN(d)) document.getElementById('calc-date').value = d.toISOString().split('T')[0]; closePage('entry-details-page'); openCalculator(window.calcType, true); }
         
@@ -4179,8 +4179,7 @@
             let partyPhone = document.getElementById('inv-phone').value.trim(); 
             if(!partyName || !partyPhone || partyPhone.length < 10) return alert("Please enter Customer Name and a valid Mobile Number before generating the bill!");
             
-            let cAmt = 0;
-            let oAmt = 0;
+            let cAmt = 0; let oAmt = 0;
 
             if(window.currentPaymentMode === 'cash') {
                 cAmt = grandInvoiceTotal;
@@ -4189,7 +4188,6 @@
             } else if (window.currentPaymentMode === 'half') {
                 cAmt = parseFloat(document.getElementById('inv-cash-amt').value) || 0;
                 let typedOnline = parseFloat(document.getElementById('inv-online-amt').value);
-                // Auto calculate online if left blank
                 if(isNaN(typedOnline) && cAmt > 0 && cAmt < grandInvoiceTotal) {
                     oAmt = grandInvoiceTotal - cAmt;
                 } else {
@@ -4205,14 +4203,14 @@
             
             let isUpdating = !!window.editingEntryKey;
             
-            // 🌟 NAYA LOGIC: DIFFERENCE NIKALNA HAI (ताकि एडिट करते समय स्टॉक न बिगड़े)
+            // 🌟 DIFFERENCE NIKALNA HAI (Stock Update Logic)
             let stockUpdates = {};
             
             if (window.editingEntryKey && window.originalEditCart) {
                 window.originalEditCart.forEach(item => {
                     let key = item.cat + "_" + item.shade;
                     if(!stockUpdates[key]) stockUpdates[key] = {cone:0, kg:0};
-                    stockUpdates[key].cone += (parseFloat(item.rawCone) || 0); // Purana wapas joda
+                    stockUpdates[key].cone += (parseFloat(item.rawCone) || 0); 
                     stockUpdates[key].kg += (parseFloat(item.rawKg) || 0);
                 });
             }
@@ -4220,11 +4218,10 @@
             currentCart.forEach(item => {
                 let key = item.cat + "_" + item.shade;
                 if(!stockUpdates[key]) stockUpdates[key] = {cone:0, kg:0};
-                stockUpdates[key].cone -= (parseFloat(item.rawCone) || 0); // Naya waala kaata
+                stockUpdates[key].cone -= (parseFloat(item.rawCone) || 0); 
                 stockUpdates[key].kg -= (parseFloat(item.rawKg) || 0);
             });
 
-            // 🌟 Fast Bulk Database Update
             Object.keys(stockUpdates).forEach(key => {
                 let diffCone = stockUpdates[key].cone;
                 let diffKg = stockUpdates[key].kg;
@@ -4242,8 +4239,8 @@
                     }); 
                 }
             });
-            window.originalEditCart = null; // Memory clear kar di
-            
+            window.originalEditCart = null; // Memory Clear
+
             let maxInv = 0;
             allLedgerData.forEach(e => { if(e.billNo && e.billNo.startsWith('VE ')) { let num = parseInt(e.billNo.replace('VE ', '')); if(!isNaN(num) && num > maxInv) maxInv = num; } });
             let tempBillNo = window.editingBillNo || ("VE " + String(maxInv + 1).padStart(2, '0'));
@@ -4299,21 +4296,18 @@
                     if(typeof window.autoAdjustBillNumbers === 'function') window.autoAdjustBillNumbers(); 
                 });
                 
-                // SHOW IMMEDIATE PREVIEW IN PROPER A4 FORMAT
                 currentEntryData = window.lastGeneratedEntryData;
                 preparePDFData();
-                let previewHtml = document.getElementById('pdf-invoice-template').outerHTML; // outerHTML maintains CSS for A4 Format
+                let previewHtml = document.getElementById('pdf-invoice-template').outerHTML; 
                 let previewContainer = document.getElementById('pos-immediate-preview');
                 previewContainer.innerHTML = previewHtml;
                 
-                // A4 Preview Setup
                 previewContainer.style.background = '#e0e2e0';
                 previewContainer.style.padding = '20px';
-                previewContainer.style.zoom = '0.45'; // Proper scale
+                previewContainer.style.zoom = '0.45'; 
                 previewContainer.style.display = 'flex';
                 previewContainer.style.justifyContent = 'center';
                 
-                // Change Title to Invoice Preview
                 let posTitle = document.querySelector('#pos-page .page-title');
                 if(posTitle) posTitle.innerText = "Invoice Preview";
                 
@@ -4322,7 +4316,6 @@
                 document.getElementById('billing-form-area').style.display = 'none'; 
                 document.getElementById('post-bill-area').style.display = 'block'; 
                 
-                // Scroll to top to see preview
                 document.querySelector('#pos-page .scroll-content').scrollTop = 0;
             }); 
         }
@@ -4336,7 +4329,6 @@
             window.editingEntryKey = null;
             window.editingEntryDate = null;
             
-            // Set Present Date Automatic
             let d = new Date();
             let localDate = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
             document.getElementById('inv-date').value = localDate; 
@@ -4344,11 +4336,9 @@
             document.getElementById('inv-party').value = ''; 
             document.getElementById('inv-phone').value = ''; 
             
-            // Revert Title Back to "Create Invoice"
             let posTitle = document.querySelector('#pos-page .page-title');
             if(posTitle) posTitle.innerText = "Create Invoice";
             
-            // Re-hide sections using check function
             if(typeof checkPosStep1 === 'function') checkPosStep1();
             
             window.setPaymentMode('pending'); 

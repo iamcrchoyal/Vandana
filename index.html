@@ -3760,6 +3760,26 @@
             }
         }
 
+        // 🌟 LIVE CART-AWARE STOCK CALCULATOR
+        window.getAvailableStock = function(cat, shade, ignoreIndex = -1) {
+            let key = cat + "_" + shade;
+            let dbStock = smartInventory[key] || { cone: 0, kg: 0 };
+            if(typeof dbStock === 'number') dbStock = { cone: dbStock, kg: 0 };
+            
+            let availCone = parseFloat(dbStock.cone) || 0;
+            let availKg = parseFloat(dbStock.kg) || 0;
+            
+            // कार्ट में जो पहले से है उसे माइनस (Minus) कर दो
+            currentCart.forEach((item, index) => {
+                if(index !== ignoreIndex && item.cat === cat && item.shade === shade) {
+                    availCone -= (parseFloat(item.rawCone) || 0);
+                    availKg -= (parseFloat(item.rawKg) || 0);
+                }
+            });
+            
+            return { cone: Math.max(0, availCone), kg: Math.max(0, availKg) };
+        };
+
         window.openProductSearchModal = function() {
             let cat = document.getElementById('inv-cat').value; 
             if(!cat) {
@@ -3778,9 +3798,10 @@
             for (let key in smartInventory) { 
                 let parts = key.split("_"); 
                 if(parts[0] === cat) { 
-                    let data = smartInventory[key];
-                    let coneQty = typeof data === 'object' ? (parseFloat(data.cone) || 0) : (parseFloat(data) || 0);
-                    let kgQty = typeof data === 'object' ? (parseFloat(data.kg) || 0) : 0;
+                    // 🌟 Use Smart Available Stock (DB Stock - Cart Stock)
+                    let availStock = getAvailableStock(parts[0], parts[1]);
+                    let coneQty = availStock.cone;
+                    let kgQty = availStock.kg;
                     
                     if(coneQty > 0 || kgQty > 0) { 
                         itemsFound = true;
@@ -3803,7 +3824,7 @@
             }
 
             if(!itemsFound) {
-                listContainer.innerHTML = '<div style="text-align:center; padding:30px 20px; color:var(--danger); font-weight:600; background:#fdf2f2; border-radius:12px;">🔴 Out of Stock in this Category.</div>';
+                listContainer.innerHTML = '<div style="text-align:center; padding:30px 20px; color:var(--danger); font-weight:600; background:#fdf2f2; border-radius:12px;">🔴 Out of Stock or Already in Cart.</div>';
             }
 
             document.getElementById('product-search-modal').style.display = 'flex';
@@ -3863,19 +3884,40 @@
             if (!cat || !shade) return alert("Select Category and Item first!"); 
             if (cone <= 0 || rate <= 0) return alert("Enter valid Cone & Rate!"); 
 
-            let key = cat + "_" + shade; 
-            let cur = smartInventory[key] || { cone: 0, kg: 0 }; 
-            if(typeof cur === 'number') cur = { cone: cur, kg: 0 };
+            // 🌟 Live Cart-Aware Stock Check (कार्ट का माइनस करने के बाद का स्टॉक)
+            let availStock = getAvailableStock(cat, shade);
 
-            if(cone > cur.cone) { 
-                alert(`OUT OF STOCK! You only have ${cur.cone} Cone left.`); return; 
+            if(cone > availStock.cone) { 
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.cone} Cone bache hain. ⚠️`);
+                else alert(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.cone} Cone bache hain.`);
+                return; 
             } 
+            if (cat === 'Nylon' || cat === 'Cording' || cat === 'Bobbin') {
+                if (kg > 0 && kg > availStock.kg) {
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.kg} Kg bache hain. ⚠️`);
+                    else alert(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.kg} Kg bache hain.`);
+                    return; 
+                }
+            }
 
             let displayQty = kg > 0 ? `${cone} Cone, ${kg} KG` : `${cone} Cone`;
             let itemTotal = kg > 0 ? (kg * rate) : (cone * rate); // If KG is provided, rate applies to KG, else Cone
 
             currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty: displayQty, rawCone: cone, rawKg: kg, rate: rate, itemTotal: itemTotal }); 
+            
+            // UI साफ़ करना और Live Badge को तुरंत छुपाना
+            if(document.getElementById('inv-cone')) document.getElementById('inv-cone').value=''; 
+            if(document.getElementById('inv-kg')) document.getElementById('inv-kg').value=''; 
+            if(document.getElementById('inv-rate')) document.getElementById('inv-rate').value=''; 
+            if(document.getElementById('inv-shade')) {
+                document.getElementById('inv-shade').value=''; 
+                document.getElementById('inv-shade').placeholder='Tap to select item...';
+            }
+            let badge = document.getElementById('live-stock-badge');
+            if(badge) badge.style.display = 'none';
+
             renderCartUi(); 
+            if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Product Added to Cart! ✅");
         }
         // 🌟 EDITABLE CART LOGIC WITH PROFESSIONAL ICONS & RE-CONFIRMATION
         window.removeCartItem = function(index) {
@@ -3890,13 +3932,10 @@
             window.showCustomConfirm("Edit Item?", "Kya aap is product ki detail update karna chahte hain?", function() {
                 let item = currentCart[index];
                 
-                // 🌟 Live Stock Check Karna (Superfast Backend Fetch)
-                let key = item.cat + "_" + item.shade;
-                let curStock = smartInventory[key] || { cone: 0, kg: 0 };
-                if(typeof curStock === 'number') curStock = { cone: curStock, kg: 0 };
-                
-                let maxCone = parseFloat(curStock.cone) || 0;
-                let maxKg = parseFloat(curStock.kg) || 0;
+                // 🌟 Live Cart-Aware Stock Check Karna (Ignore this item's own qty)
+                let availStock = window.getAvailableStock(item.cat, item.shade, index);
+                let maxCone = availStock.cone;
+                let maxKg = availStock.kg;
                 
                 // Hidden fields me max stock save karna taaki save karte waqt check ho sake
                 document.getElementById('ei-max-cone').value = maxCone;

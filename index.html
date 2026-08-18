@@ -3468,14 +3468,74 @@
         }
         window.renderRecycleBin = function() { let container = document.getElementById('recycle-list-container'); if(allRecycleData.length === 0) { container.innerHTML = `<div style="text-align:center; padding:40px; color:gray;">Recycle Bin is empty.</div>`; return; } let html = ""; allRecycleData.forEach(entry => { let d = new Date(entry.date); let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB'); html += `<div class="entry-card" style="flex-direction:column; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px;"><div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><div style="font-weight:700; font-size: 15px; color:var(--text-dark);">${entry.name}</div><div style="color:var(--text-dark); font-weight:800; font-size: 16px;">₹${parseFloat(entry.amount).toLocaleString('en-IN')}</div></div><div style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">${dateStr} | ${entry.details}</div><div style="display:flex; gap:10px;"><button class="btn-submit" style="flex:1; background:#e8f0fe; color:var(--primary); padding:8px; border-radius:12px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="restoreRecycle('${entry.key}')"><span class="material-symbols-rounded" style="font-size:16px;">settings_backup_restore</span> Restore</button><button class="btn-outline" style="flex:1; border-color:var(--danger); color:var(--danger); padding:8px; border-radius:12px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="permanentlyDeleteRecycle('${entry.key}')"><span class="material-symbols-rounded" style="font-size:16px;">delete_forever</span> Delete</button></div></div>`; }); container.innerHTML = html; }
         window.restoreRecycle = function(key) { 
-            window.showCustomConfirm("Restore Entry?", "Kya aap is entry ko wapas restore karna chahte hain?", function() {
+            window.showCustomConfirm("Restore Entry?", "क्या आप इस एंट्री को वापस रिस्टोर करना चाहते हैं?", function() {
                 let entry = allRecycleData.find(e => e.key === key); 
                 if(entry) { 
+                    
+                    // 🌟 1. SUPERFAST LIVE STOCK CHECK FOR RESTORE
+                    if (entry.cart && entry.cart.length > 0) {
+                        let isStockAvailable = true;
+                        let errorMsg = "";
+
+                        // Pehle check karo ki kya godam me abhi utna stock bacha hai?
+                        for (let i = 0; i < entry.cart.length; i++) {
+                            let item = entry.cart[i];
+                            let invKey = item.cat + "_" + item.shade;
+                            let dbStock = smartInventory[invKey] || { cone: 0, kg: 0 };
+                            if(typeof dbStock === 'number') dbStock = { cone: dbStock, kg: 0 };
+
+                            let availCone = parseFloat(dbStock.cone) || 0;
+                            let availKg = parseFloat(dbStock.kg) || 0;
+                            let reqCone = parseFloat(item.rawCone) || 0;
+                            let reqKg = parseFloat(item.rawKg) || 0;
+
+                            if (reqCone > availCone) {
+                                isStockAvailable = false;
+                                errorMsg = `Out of Stock! '${item.shade}' ke ${reqCone} Cone chahiye, par sirf ${availCone} bache hain.`;
+                                break;
+                            }
+                            if ((item.cat === 'Nylon' || item.cat === 'Cording' || item.cat === 'Bobbin') && reqKg > availKg) {
+                                isStockAvailable = false;
+                                errorMsg = `Out of Stock! '${item.shade}' ke ${reqKg} Kg chahiye, par sirf ${availKg} bache hain.`;
+                                break;
+                            }
+                        }
+
+                        // Agar stock nahi hai toh Restore rok do
+                        if (!isStockAvailable) {
+                            if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: ${errorMsg} ⚠️`);
+                            else alert(errorMsg);
+                            return; 
+                        }
+
+                        // 🌟 2. RE-ALLOCATE STOCK (Stock wapas minus karo)
+                        entry.cart.forEach(item => {
+                            let invKey = item.cat + "_" + item.shade;
+                            let itemRef = ref(db, 'Inventory/' + invKey);
+                            get(itemRef).then(snap => {
+                                let cur = snap.val() || {cone: 0, kg: 0};
+                                if(typeof cur === 'number') cur = {cone: cur, kg: 0};
+                                
+                                let newCone = cur.cone - (parseFloat(item.rawCone) || 0);
+                                let newKg = cur.kg - (parseFloat(item.rawKg) || 0);
+                                if(newCone < 0) newCone = 0;
+                                if(newKg < 0) newKg = 0;
+                                
+                                set(itemRef, {cone: newCone, kg: newKg});
+                            });
+                        });
+                    }
+
+                    // 🌟 3. FINALLY RESTORE THE BILL
                     let dbEntry = {...entry}; 
                     delete dbEntry.key; 
                     set(ref(db, 'Ledger/' + key), dbEntry); 
                     remove(ref(db, 'RecycleBin/' + key)); 
-                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Entry Restored Successfully!");
+                    
+                    if(typeof window.showSaaSToast === 'function') {
+                        if(entry.cart && entry.cart.length > 0) window.showSaaSToast("Bill Restored & Stock Adjusted! ✅");
+                        else window.showSaaSToast("Entry Restored Successfully! ✅");
+                    }
                 }
             });
         }

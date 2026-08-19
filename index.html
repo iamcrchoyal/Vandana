@@ -341,10 +341,10 @@
             <button class="btn-submit" style="flex:1; background:var(--primary);" onclick="applyCustCrop()">Crop & Save</button>
         </div>
     </div>
-       <div id="product-search-modal" class="report-modal-overlay" style="z-index:99999;">
-        <div class="report-modal-box" style="width:90%; max-width:400px; padding:24px; background:#f4f7fc; border-radius:24px; box-shadow:0 10px 40px rgba(0,0,0,0.1);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                <h3 style="font-family:'Product Sans', sans-serif; font-size:18px; margin:0; color:var(--primary-dark); display:flex; align-items:center; gap:6px;"><span class="material-symbols-rounded">manage_search</span> Search Product</h3>
+       <div id="product-search-modal" class="report-modal-overlay" style="z-index:99999; align-items:flex-start; padding-top:20px; overflow-y:auto;">
+        <div class="report-modal-box" style="width:92%; max-width:400px; padding:20px; background:#f4f7fc; border-radius:24px; box-shadow:0 10px 40px rgba(0,0,0,0.2); margin-top:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <h3 style="font-family:'Product Sans', sans-serif; font-size:18px; margin:0; color:var(--primary-dark); display:flex; align-items:center; gap:6px;"><span class="material-symbols-rounded">manage_search</span> Search Sub Product</h3>
                 <span class="material-symbols-rounded" style="cursor:pointer; color:var(--danger); background:#fdf2f2; border-radius:50%; padding:4px;" onclick="closeProductSearchModal()">close</span>
             </div>
             <div class="search-bar-container" style="margin:0 0 16px 0; background:white; border:2px solid var(--primary); box-shadow:0 4px 10px rgba(10,86,208,0.1);">
@@ -3847,7 +3847,7 @@
         }
 
         // ================= PROFESSIONAL SEARCH MODAL LOGIC =================
-        // 🌟 1. & 2. ADVANCED CATEGORY, LABEL & UNIT LOGIC
+        // 🌟 1. & 2. ADVANCED CATEGORY, LABEL & UNIT LOGIC (SUB-PRODUCT & NUMBER FORMAT)
         window.updatePosShades = function() { 
             let cat = document.getElementById('inv-cat').value; 
             let shadeInput = document.getElementById('inv-shade'); 
@@ -3881,28 +3881,25 @@
                 if (cat === 'Thread') {
                     label.innerText = 'NUMBER';
                     shadeInput.placeholder = 'Tap to search Number...';
-                } else if (cat === 'Zari') {
-                    label.innerText = 'ZARI NAME';
-                    shadeInput.placeholder = 'Tap to search Zari (e.g. Water 20)...';
-                } else if (cat === 'Cotton') {
-                    label.innerText = 'COLOUR / NAME';
-                    shadeInput.placeholder = 'Tap to search Colour/Name...';
+                } else {
+                    label.innerText = 'SUB-PRODUCT';
+                    shadeInput.placeholder = 'Tap to search Sub-Product...';
                 }
             } 
             // 🌟 2. THE KG & DECIMAL ENGINE (DECIMALS ALLOWED)
             else {
                 qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-kg" placeholder="KG" step="0.01" style="border-radius:12px; font-weight:600;"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px; font-weight:600;">`;
                 
-                if (cat === 'Cording') {
-                    label.innerText = 'COLOUR';
-                    shadeInput.placeholder = 'Tap to search Colour...';
-                } else if (cat === 'Nylon') {
+                if (cat === 'Nylon') {
                     shadeWrapper.style.display = 'none';
                     shadeInput.value = 'Nylon'; // Auto-set Nylon default
                 } else if (cat === 'Bobbin') {
-                    label.innerText = 'SELECT BOBBIN COLOUR';
+                    label.innerText = 'SUB-PRODUCT';
                     inputCont.style.display = 'none';
                     bobbinCont.style.display = 'block';
+                } else {
+                    label.innerText = 'SUB-PRODUCT';
+                    shadeInput.placeholder = 'Tap to search Sub-Product...';
                 }
             }
         }
@@ -4619,7 +4616,8 @@
                     totalCones += (parseFloat(item.rawCone) || 0); 
                     totalKgs += (parseFloat(item.rawKg) || 0); 
                     
-                    let subTextLabel = (item.cat === 'Thread' || item.cat === 'Cotton' || item.cat === 'Zari') ? 'Number / Colour' : 'Kg / Colour';
+                    // Thread me 'Number: X' aayega, baki sab me direct Sub-Product ka naam aayega (Jaise: Water 20)
+                    let subTextDisplay = (item.cat === 'Thread') ? `Number: ${item.shade}` : `${item.shade}`;
                     
                     html += `
                         <tr>
@@ -4628,7 +4626,7 @@
                             </td>
                             <td style="padding:12px; border:1px solid #e0e2e0; vertical-align:middle;">
                                 <strong style="font-size:14px; color:#1f1f1f;">${item.cat}</strong><br>
-                                <span style="font-size:12px; color:#718096;">${subTextLabel}: ${item.shade}</span>
+                                <span style="font-size:12px; color:#718096;">${subTextDisplay}</span>
                             </td>
                             <td style="padding:12px; border:1px solid #e0e2e0; text-align:center; font-size:14px; color:#1f1f1f; font-weight:600; vertical-align:middle;">
                                 ${item.qty}

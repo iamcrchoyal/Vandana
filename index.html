@@ -1583,40 +1583,34 @@
                 if(savedStack) window.pageStack = JSON.parse(savedStack);
             } catch(e){}
 			
-		// 🌟 NEW MASTER CATEGORY LIST
+		// ================= DYNAMIC CATEGORY SYSTEM (NEW LIST & ERROR-FREE EDIT) =================
             window.defaultCategories = [
-                { id: 'thread', dbKey: 'Shree Kamlai Thread', name: 'Shree Kamlai Thread', icon: 'waves', color: 'var(--primary)', bg: '#e8f0fe', page: 'dynamic-stock-page' },
-                { id: 'zari', dbKey: 'Zari', name: 'Zari', icon: 'auto_awesome', color: '#f97316', bg: '#fff7ed', page: 'dynamic-stock-page' },
-                { id: 'nylon', dbKey: 'Nylon', name: 'Nylon', icon: 'all_inclusive', color: '#9333ea', bg: '#f4ebff', page: 'dynamic-stock-page' },
-                { id: 'bobbin', dbKey: 'Bobbin', name: 'Bobbin', icon: 'radio_button_checked', color: 'var(--success)', bg: '#e6f4ea', page: 'dynamic-stock-page' },
-                { id: 'coding', dbKey: 'Coding', name: 'Coding', icon: 'cyclone', color: '#4f46e5', bg: '#e0f2fe', page: 'dynamic-stock-page' }
+                { id: 'thread', dbKey: 'Thread', name: 'Shree Kamlai Thread', icon: 'waves', color: 'var(--primary)', bg: '#e8f0fe', page: 'thread-stock-page' },
+                { id: 'zari', dbKey: 'Zari', name: 'Zari', icon: 'auto_awesome', color: '#f97316', bg: '#fff7ed', page: 'zari-stock-page' },
+                { id: 'nylon', dbKey: 'Nylon', name: 'Nylon', icon: 'all_inclusive', color: '#9333ea', bg: '#f4ebff', page: 'nylon-stock-page' },
+                { id: 'bobbin', dbKey: 'Bobbin', name: 'Bobbin', icon: 'radio_button_checked', color: 'var(--success)', bg: '#e6f4ea', page: 'bobbin-stock-page' },
+                { id: 'cording', dbKey: 'Cording', name: 'Coding', icon: 'cyclone', color: '#4f46e5', bg: '#e0f2fe', page: 'cording-stock-page' },
+                { id: 'cotton', dbKey: 'Cotton', name: 'Cotton', icon: 'dry_cleaning', color: '#0284c7', bg: '#e0f2fe', page: 'dynamic-stock-page' }
             ];
 
             window.appCategories = [...window.defaultCategories];
 
             window.loadCategories = function() {
-                let saved = localStorage.getItem('v_categories');
-                let shouldReset = false;
-
+                let saved = localStorage.getItem('v_categories_v3');
                 if(saved) {
                     try {
                         let parsed = JSON.parse(saved);
-                        // 🌟 SMART MEMORY CHECK: Puraane naam milte hi memory reset kar dega
-                        let hasOld = parsed.find(c => c.name === 'Thread (थ्रेड)' || c.dbKey === 'Cording' || c.dbKey === 'Thread');
-                        if(hasOld) {
-                            shouldReset = true; // Purani memory mili, isko reset karo
-                        } else if(Array.isArray(parsed) && parsed.length > 0) {
-                            window.appCategories = parsed; // Nayi memory hai, isko chalne do
+                        if(Array.isArray(parsed) && parsed.length > 0) {
+                            window.appCategories = parsed;
+                        } else {
+                            window.appCategories = JSON.parse(JSON.stringify(window.defaultCategories));
                         }
-                    } catch(e){ shouldReset = true; }
+                    } catch(e){
+                        window.appCategories = JSON.parse(JSON.stringify(window.defaultCategories));
+                    }
                 } else {
-                    shouldReset = true;
-                }
-
-                // Agar memory reset karni hai, toh nayi Master List save kar do
-                if (shouldReset) {
                     window.appCategories = JSON.parse(JSON.stringify(window.defaultCategories));
-                    localStorage.setItem('v_categories', JSON.stringify(window.appCategories));
+                    localStorage.setItem('v_categories_v3', JSON.stringify(window.appCategories));
                 }
                 
                 window.appCategories.forEach(cat => {
@@ -1840,7 +1834,7 @@
                 let nameInput = document.getElementById('new-cat-name');
                 let limitInput = document.getElementById('new-cat-limit');
                 let name = nameInput ? nameInput.value.trim() : "";
-                let limitVal = limitInput && limitInput.value ? parseInt(limitInput.value) : 5; // डिफ़ॉल्ट 5
+                let limitVal = limitInput && limitInput.value ? parseInt(limitInput.value) : 5;
 
                 if(!name) return alert("Kripya Category Name likhein!");
 
@@ -1858,11 +1852,10 @@
                 };
 
                 window.appCategories.push(newCat);
-                localStorage.setItem('v_categories', JSON.stringify(window.appCategories));
+                localStorage.setItem('v_categories_v3', JSON.stringify(window.appCategories));
                 
                 if(nameInput) nameInput.value = "";
                 if(limitInput) limitInput.value = "";
-                // फॉर्म बंद कर दें
                 document.getElementById('add-cat-form-area').style.display = 'none';
                 document.getElementById('add-cat-toggle-icon').style.transform = 'rotate(0deg)';
 
@@ -1872,6 +1865,49 @@
                 if(typeof window.showSaaSToast === 'function') window.showSaaSToast("New Category Added!");
             };
 
+            window.saveCategoryInList = function(id) {
+                let input = document.getElementById('edit-cat-input-' + id);
+                let limitInput = document.getElementById('edit-cat-limit-' + id);
+                let newName = input ? input.value.trim() : "";
+                let newLimit = limitInput && limitInput.value ? parseInt(limitInput.value) : 5;
+
+                if(!newName) return alert("Category Name khaali nahi ho sakta!");
+
+                let catIndex = window.appCategories.findIndex(c => c.id === id);
+                if(catIndex > -1) {
+                    window.appCategories[catIndex].name = newName;
+                    window.appCategories[catIndex].lowStockLimit = newLimit;
+                    localStorage.setItem('v_categories_v3', JSON.stringify(window.appCategories));
+                    
+                    if(window.appCategories[catIndex].page) {
+                        let pageHeader = document.querySelector('#' + window.appCategories[catIndex].page + ' .page-title');
+                        if(pageHeader) pageHeader.innerText = newName;
+                    }
+
+                    window.activeEditCatId = null;
+                    window.renderCategoryGrid();
+                    window.renderManageCategoriesList();
+                    window.updateCategoryDropdowns();
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Category Saved Successfully!");
+                }
+            };
+
+            window.deleteCategoryInList = function(id) {
+                window.showCustomConfirm("Delete Category?", "क्या आप सच में इस केटेगरी को डिलीट करना चाहते हैं?", function() {
+                    let catIndex = window.appCategories.findIndex(c => c.id === id);
+                    if(catIndex > -1) {
+                        window.appCategories[catIndex].isDeleted = true;
+                        localStorage.setItem('v_categories_v3', JSON.stringify(window.appCategories));
+                        
+                        window.renderCategoryGrid();
+                        window.renderManageCategoriesList();
+                        window.updateCategoryDropdowns();
+                        if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Category Deleted!");
+                    }
+                });
+            };
+
+                
             // Dynamic Stock Page Logic
             window.openDynamicStockPage = function(dbKey, name) {
                 document.getElementById('dyn-page-title').innerText = name;
@@ -1988,47 +2024,6 @@
             if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
         };
 
-            window.saveCategoryInList = function(id) {
-                let input = document.getElementById('edit-cat-input-' + id);
-                let limitInput = document.getElementById('edit-cat-limit-' + id);
-                let newName = input ? input.value.trim() : "";
-                let newLimit = limitInput && limitInput.value ? parseInt(limitInput.value) : 5;
-
-                if(!newName) return alert("Category Name khaali nahi ho sakta!");
-
-                let catIndex = window.appCategories.findIndex(c => c.id === id);
-                if(catIndex > -1) {
-                    window.appCategories[catIndex].name = newName;
-                    window.appCategories[catIndex].lowStockLimit = newLimit;
-                    localStorage.setItem('v_categories', JSON.stringify(window.appCategories));
-                    
-                    if(window.appCategories[catIndex].page) {
-                        let pageHeader = document.querySelector('#' + window.appCategories[catIndex].page + ' .page-title');
-                        if(pageHeader) pageHeader.innerText = newName;
-                    }
-
-                    window.activeEditCatId = null; // Save hone par card wapas compact list ban jayega
-                    window.renderCategoryGrid();
-                    window.renderManageCategoriesList();
-                    window.updateCategoryDropdowns();
-                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Category Saved Successfully!");
-                }
-            };
-
-            window.deleteCategoryInList = function(id) {
-                window.showCustomConfirm("Delete Category?", "क्या आप सच में इस केटेगरी को डिलीट करना चाहते हैं?", function() {
-                    let catIndex = window.appCategories.findIndex(c => c.id === id);
-                    if(catIndex > -1) {
-                        window.appCategories[catIndex].isDeleted = true;
-                        localStorage.setItem('v_categories', JSON.stringify(window.appCategories));
-                        
-                        window.renderCategoryGrid();
-                        window.renderManageCategoriesList();
-                        window.updateCategoryDropdowns();
-                        if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Category Deleted!");
-                    }
-                });
-            };
 
             window.updateCategoryDropdowns = function() {
                 let options = '<option value="">Select Category</option>';

@@ -928,24 +928,32 @@
                     <div class="form-panel" style="border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
                         <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">📦 Product Details</label>
                     
-                    <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd; font-weight:600;" onchange="updatePosShades()">
-                        <option value="">Select Category</option>
-                        <option value="Thread">Thread</option><option value="Cotton">Cotton</option><option value="Zari">Zari</option>
-                        <option value="Nylon">Nylon</option><option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>
-                    </select>
+                        <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd; font-weight:600;" onchange="updatePosShades()">
+                            <option value="">Select Category</option>
+                            <option value="Thread">Thread</option><option value="Cotton">Cotton</option><option value="Zari">Zari</option>
+                            <option value="Nylon">Nylon</option><option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>
+                        </select>
 
-                    <div style="display:flex; gap:10px; margin-bottom:12px; align-items:center;">
-                        <div style="position:relative; flex:1;">
-                            <input type="text" class="form-control" id="inv-shade" readonly placeholder="Tap to select item..." style="border-radius:12px; border:1px solid #c2e7ff; background:white; cursor:pointer; font-weight:600; color:var(--text-dark);" onclick="openProductSearchModal()">
-                            <span class="material-symbols-rounded" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--primary); pointer-events:none;">search</span>
+                        <div id="dynamic-shade-wrapper" style="margin-bottom:12px; display:none;">
+                            <label id="inv-shade-label" class="form-label" style="font-size:11px; font-weight:800; color:var(--primary-dark); margin-bottom:6px; display:block; text-transform:uppercase;">ITEM DETAILS</label>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <div style="position:relative; flex:1;" id="inv-shade-input-container">
+                                    <input type="text" class="form-control" id="inv-shade" readonly placeholder="Tap to select item..." style="border-radius:12px; border:1px solid #c2e7ff; background:white; cursor:pointer; font-weight:600; color:var(--text-dark);" onclick="openProductSearchModal()">
+                                    <span class="material-symbols-rounded" id="inv-shade-icon" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--primary); pointer-events:none;">search</span>
+                                </div>
+                                <div style="position:relative; flex:1; display:none;" id="inv-bobbin-container">
+                                    <select class="form-control" id="inv-bobbin-select" style="border-radius:12px; border:1px solid #c2e7ff; background:white; font-weight:600; color:var(--text-dark);" onchange="document.getElementById('inv-shade').value = this.value; checkBobbinStock();">
+                                        <option value="">Select Bobbin Colour</option>
+                                        <option value="White">White</option>
+                                        <option value="Chiku">Chiku</option>
+                                    </select>
+                                </div>
+                                <div id="live-stock-badge" style="display:none; padding:12px 14px; background:#e6f4ea; color:var(--success); border-radius:12px; font-weight:800; font-size:13px; white-space:nowrap; border:1px solid #cce8d6; box-shadow:0 2px 4px rgba(0,0,0,0.02);">🟢 0</div>
+                            </div>
                         </div>
-                        <div id="live-stock-badge" style="display:none; padding:12px 14px; background:#e6f4ea; color:var(--success); border-radius:12px; font-weight:800; font-size:13px; white-space:nowrap; border:1px solid #cce8d6; box-shadow:0 2px 4px rgba(0,0,0,0.02);">🟢 0</div>
-                    </div>
 
-                    <div class="input-btn-group" id="pos-dynamic-inputs" style="margin-bottom: 16px;">
-                        <input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px;">
-                        <input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px;">
-                    </div>
+                        <div class="input-btn-group" id="pos-dynamic-inputs" style="margin-bottom: 16px;">
+                            </div>
                         <button class="btn-submit" style="background:linear-gradient(135deg, #0a56d0 0%, #0842a0 100%); display:flex; align-items:center; justify-content:center; gap:8px; border-radius:16px; font-size:15px; box-shadow:0 4px 12px rgba(10,86,208,0.25); padding:14px;" onclick="addCartItem()"><span class="material-symbols-rounded" style="font-size:22px;">add_shopping_cart</span> Add Product</button>
                     </div>
                 </div>
@@ -958,8 +966,11 @@
                         </table>
                     </div>
                     <div class="form-panel" style="display:flex; justify-content:space-between; align-items:center; background:#f8fafd; border:1px solid #c2e7ff; margin-bottom:16px;">
-                        <span style="font-weight:600; font-size:16px; color:var(--primary); font-family: 'Product Sans', sans-serif;">Grand Total:</span>
-                        <span style="font-size:26px; font-weight:700; color:var(--primary); font-family: 'Product Sans', sans-serif;" id="cart-grand-total">₹ 0</span>
+                        <div style="font-weight:700; font-size:13px; color:var(--text-muted); background:white; padding:6px 12px; border-radius:10px; border:1px solid #e0e2e0;" id="cart-qty-summary">Total Qty: 0</div>
+                        <div style="text-align:right;">
+                            <div style="font-weight:700; font-size:12px; color:var(--primary); font-family: 'Product Sans', sans-serif; margin-bottom:2px; text-transform:uppercase;">Grand Total</div>
+                            <div style="font-size:26px; font-weight:800; color:var(--primary); font-family: 'Product Sans', sans-serif; line-height:1;" id="cart-grand-total">₹ 0</div>
+                        </div>
                     </div>
 
                     <div class="form-panel" style="margin-bottom: 16px; border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
@@ -3836,28 +3847,142 @@
         }
 
         // ================= PROFESSIONAL SEARCH MODAL LOGIC =================
+        // 🌟 1. & 2. ADVANCED CATEGORY, LABEL & UNIT LOGIC
         window.updatePosShades = function() { 
             let cat = document.getElementById('inv-cat').value; 
             let shadeInput = document.getElementById('inv-shade'); 
             let qtyGroup = document.getElementById('pos-dynamic-inputs');
             let stockBadge = document.getElementById('live-stock-badge');
             
+            let shadeWrapper = document.getElementById('dynamic-shade-wrapper');
+            let label = document.getElementById('inv-shade-label');
+            let inputCont = document.getElementById('inv-shade-input-container');
+            let bobbinCont = document.getElementById('inv-bobbin-container');
+            let bobbinSel = document.getElementById('inv-bobbin-select');
+            
             shadeInput.value = ''; 
-            stockBadge.style.display = 'none'; // Category badalte hi stock badge chhip jayega
+            bobbinSel.value = '';
+            stockBadge.style.display = 'none'; 
+            shadeWrapper.style.display = 'block';
+            inputCont.style.display = 'block';
+            bobbinCont.style.display = 'none';
+            label.style.display = 'block';
 
             if(!cat) {
-                shadeInput.placeholder = 'Select Category First';
+                shadeWrapper.style.display = 'none';
+                qtyGroup.innerHTML = '';
                 return; 
             }
 
-            // Unit Logic (Cone vs Kg)
+            // 🌟 1. THE CONE & INTEGER ENGINE (NO DECIMALS ALLOWED)
             if(cat === 'Thread' || cat === 'Cotton' || cat === 'Zari') {
-                shadeInput.placeholder = 'Tap to search Number / Colour...';
-                qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px; font-weight:600;"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px; font-weight:600;">`;
-            } else {
-                shadeInput.placeholder = 'Tap to search Kg / Colour...';
-                qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-kg" placeholder="KG" style="border-radius:12px; font-weight:600;"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px; font-weight:600;">`;
+                qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px; font-weight:600;" oninput="this.value = this.value.replace(/[^0-9]/g, '')"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px; font-weight:600;">`;
+                
+                if (cat === 'Thread') {
+                    label.innerText = 'NUMBER';
+                    shadeInput.placeholder = 'Tap to search Number...';
+                } else if (cat === 'Zari') {
+                    label.innerText = 'ZARI NAME';
+                    shadeInput.placeholder = 'Tap to search Zari (e.g. Water 20)...';
+                } else if (cat === 'Cotton') {
+                    label.innerText = 'COLOUR / NAME';
+                    shadeInput.placeholder = 'Tap to search Colour/Name...';
+                }
+            } 
+            // 🌟 2. THE KG & DECIMAL ENGINE (DECIMALS ALLOWED)
+            else {
+                qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-kg" placeholder="KG" step="0.01" style="border-radius:12px; font-weight:600;"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px; font-weight:600;">`;
+                
+                if (cat === 'Cording') {
+                    label.innerText = 'COLOUR';
+                    shadeInput.placeholder = 'Tap to search Colour...';
+                } else if (cat === 'Nylon') {
+                    shadeWrapper.style.display = 'none';
+                    shadeInput.value = 'Nylon'; // Auto-set Nylon default
+                } else if (cat === 'Bobbin') {
+                    label.innerText = 'SELECT BOBBIN COLOUR';
+                    inputCont.style.display = 'none';
+                    bobbinCont.style.display = 'block';
+                }
             }
+        }
+
+        // 🌟 CHECK BOBBIN STOCK WHEN DROPDOWN CHANGES
+        window.checkBobbinStock = function() {
+            let cat = document.getElementById('inv-cat').value;
+            let shade = document.getElementById('inv-shade').value;
+            let badge = document.getElementById('live-stock-badge');
+            
+            if (cat === 'Bobbin' && shade) {
+                let availStock = getAvailableStock(cat, shade);
+                let stockText = `${availStock.kg} Kg`;
+                
+                let stockColor = availStock.kg > 5 ? 'var(--success)' : '#d97706';
+                let stockBg = availStock.kg > 5 ? '#e6f4ea' : '#fef3c7';
+                let icon = availStock.kg > 5 ? '🟢' : '🟠';
+                
+                badge.innerText = `${icon} ${stockText}`;
+                badge.style.background = stockBg; 
+                badge.style.color = stockColor; 
+                badge.style.borderColor = availStock.kg > 5 ? '#cce8d6' : '#fde68a';
+                badge.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // 🌟 ADD CART ITEM (Modified for Cone vs Kg strict separation)
+        window.addCartItem = function() { 
+            const cat = document.getElementById('inv-cat').value; 
+            const shade = document.getElementById('inv-shade').value; 
+            
+            let coneEl = document.getElementById('inv-cone');
+            let kgEl = document.getElementById('inv-kg');
+            
+            let cone = coneEl ? (parseInt(coneEl.value) || 0) : 0;
+            let kg = kgEl ? (parseFloat(kgEl.value) || 0) : 0;
+            let rate = parseFloat(document.getElementById('inv-rate') ? document.getElementById('inv-rate').value : 0) || 0;
+
+            if (!cat || !shade) return alert("Select Category and Item Details first!"); 
+            if ((cone <= 0 && kg <= 0) || rate <= 0) return alert("Enter valid Qty & Rate!"); 
+
+            // Live Cart-Aware Stock Check
+            let availStock = getAvailableStock(cat, shade);
+
+            if(cone > 0 && cone > availStock.cone) { 
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.cone} Cone bache hain. ⚠️`);
+                else alert(`Error: Out of Stock! Only ${availStock.cone} Cone left.`);
+                return; 
+            } 
+            if (kg > 0 && kg > availStock.kg) {
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.kg} Kg bache hain. ⚠️`);
+                else alert(`Error: Out of Stock! Only ${availStock.kg} Kg left.`);
+                return; 
+            }
+
+            let displayQty = "";
+            if (cone > 0 && kg > 0) displayQty = `${cone} Cone, ${kg} KG`;
+            else if (cone > 0) displayQty = `${cone} Cone`;
+            else if (kg > 0) displayQty = `${kg} KG`;
+
+            let itemTotal = kg > 0 ? (kg * rate) : (cone * rate);
+
+            currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty: displayQty, rawCone: cone, rawKg: kg, rate: rate, itemTotal: itemTotal }); 
+            
+            // UI Reset
+            if(coneEl) coneEl.value=''; 
+            if(kgEl) kgEl.value=''; 
+            if(document.getElementById('inv-rate')) document.getElementById('inv-rate').value=''; 
+            if(cat !== 'Nylon' && document.getElementById('inv-shade')) {
+                document.getElementById('inv-shade').value=''; 
+            }
+            if(document.getElementById('inv-bobbin-select')) document.getElementById('inv-bobbin-select').value='';
+            
+            let badge = document.getElementById('live-stock-badge');
+            if(badge) badge.style.display = 'none';
+
+            renderCartUi(); 
+            if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Product Added to Cart! ✅");
         }
 
         // 🌟 LIVE CART-AWARE STOCK CALCULATOR (Advanced Edit Support)
@@ -4149,15 +4274,20 @@
             let tbody = document.getElementById('cart-rows'); 
             tbody.innerHTML = ''; 
             grandInvoiceTotal = 0; 
-            invoiceBoxCount = 0; 
+            
+            let totalCones = 0;
+            let totalKgs = 0;
+
             currentCart.forEach((item, index) => { 
                 grandInvoiceTotal += item.itemTotal; 
-                invoiceBoxCount += item.qty; 
+                totalCones += (parseFloat(item.rawCone) || 0);
+                totalKgs += (parseFloat(item.rawKg) || 0);
+
                 tbody.innerHTML += `<tr>
                     <td style="font-weight:600; color:var(--text-dark); font-size:13px;">${item.title}</td>
                     <td style="text-align:center; font-size:13px; font-weight:600;">${item.qty}</td>
                     <td style="text-align:center; font-size:13px;">₹${item.rate}</td>
-                    <td style="text-align:right; font-size:14px; color:var(--primary);"><strong>₹${item.itemTotal.toLocaleString()}</strong></td>
+                    <td style="text-align:right; font-size:14px; color:var(--primary);"><strong>₹${item.itemTotal.toLocaleString('en-IN')}</strong></td>
                     <td style="text-align:center; white-space:nowrap;">
                         <span class="material-symbols-rounded" style="color:#0a56d0; font-size:18px; cursor:pointer; vertical-align:middle; margin-right:6px; padding:6px; background:#e8f0fe; border-radius:8px; border:1px solid #c2e7ff; transition:0.2s;" onclick="editCartItem(${index})">edit</span>
                         <span class="material-symbols-rounded" style="color:#b3261e; font-size:18px; cursor:pointer; vertical-align:middle; padding:6px; background:#fdf2f2; border-radius:8px; border:1px solid #f8cbcb; transition:0.2s;" onclick="removeCartItem(${index})">delete</span>
@@ -4167,15 +4297,23 @@
             if(currentCart.length === 0) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted); font-weight:500;">🛒 Cart is empty. Add a product above.</td></tr>`;
             
             document.getElementById('cart-grand-total').innerText = `₹ ${grandInvoiceTotal.toLocaleString('en-IN')}`; 
-            
-            // SHOW/HIDE CART & PAYMENT SECTION
-            let cartPaySec = document.getElementById('pos-cart-payment-section');
-            if(cartPaySec) {
-                cartPaySec.style.display = currentCart.length > 0 ? 'block' : 'none';
-            }
 
-            document.getElementById('inv-qty') ? document.getElementById('inv-qty').value='' : null; 
-            document.getElementById('inv-rate') ? document.getElementById('inv-rate').value='' : null; 
+            // 🌟 3. PROFESSIONAL TOTAL BILL SUMMARY
+            let summaryText = "";
+            if (totalCones > 0 && totalKgs > 0) summaryText = `Total Qty: ${totalCones} Cone | ${totalKgs.toFixed(2).replace(/\.00$/, '')} KG`;
+            else if (totalCones > 0) summaryText = `Total Qty: ${totalCones} Cone`;
+            else if (totalKgs > 0) summaryText = `Total Qty: ${totalKgs.toFixed(2).replace(/\.00$/, '')} KG`;
+            else summaryText = `Total Qty: 0`;
+
+            if(document.getElementById('cart-qty-summary')) document.getElementById('cart-qty-summary').innerText = summaryText;
+            
+            let cartPaySec = document.getElementById('pos-cart-payment-section');
+            if(cartPaySec) cartPaySec.style.display = currentCart.length > 0 ? 'block' : 'none';
+
+            if(document.getElementById('inv-cone')) document.getElementById('inv-cone').value=''; 
+            if(document.getElementById('inv-kg')) document.getElementById('inv-kg').value=''; 
+            if(document.getElementById('inv-rate')) document.getElementById('inv-rate').value=''; 
+
             let btn = document.getElementById('save-bill-btn'); 
             if(btn) { 
                 btn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">update</span> Update Invoice` : `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">receipt_long</span> Generate Invoice`; 
@@ -4322,9 +4460,17 @@
 
             let breakdownData = { cash: cAmt, online: oAmt, pending: grandInvoiceTotal - totalReceived };
 
+            // 🌟 Professional Total Qty for Database Details
+            let tCones = 0; let tKgs = 0;
+            currentCart.forEach(i => { tCones += (parseFloat(i.rawCone) || 0); tKgs += (parseFloat(i.rawKg) || 0); });
+            let qtyDetailsStr = "";
+            if (tCones > 0 && tKgs > 0) qtyDetailsStr = `${tCones} Cone, ${tKgs} KG`;
+            else if (tCones > 0) qtyDetailsStr = `${tCones} Cone`;
+            else if (tKgs > 0) qtyDetailsStr = `${tKgs} KG`;
+
             let newEntry = { 
                 date: finalDateTime, name: partyName, type: "Gave", amount: grandInvoiceTotal, 
-                details: `Invoice #${tempBillNo} - ${invoiceBoxCount} Box`, cart: currentCart, 
+                details: `Invoice #${tempBillNo} - ${qtyDetailsStr}`, cart: currentCart, 
                 billNo: tempBillNo, breakdown: breakdownData 
             };
             

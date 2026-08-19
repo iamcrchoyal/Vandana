@@ -1596,13 +1596,27 @@
 
             window.loadCategories = function() {
                 let saved = localStorage.getItem('v_categories');
+                let shouldReset = false;
+
                 if(saved) {
                     try {
                         let parsed = JSON.parse(saved);
-                        if(Array.isArray(parsed) && parsed.length > 0) {
-                            window.appCategories = parsed;
+                        // 🌟 SMART MEMORY CHECK: Puraane naam milte hi memory reset kar dega
+                        let hasOld = parsed.find(c => c.name === 'Thread (थ्रेड)' || c.dbKey === 'Cording' || c.dbKey === 'Thread');
+                        if(hasOld) {
+                            shouldReset = true; // Purani memory mili, isko reset karo
+                        } else if(Array.isArray(parsed) && parsed.length > 0) {
+                            window.appCategories = parsed; // Nayi memory hai, isko chalne do
                         }
-                    } catch(e){}
+                    } catch(e){ shouldReset = true; }
+                } else {
+                    shouldReset = true;
+                }
+
+                // Agar memory reset karni hai, toh nayi Master List save kar do
+                if (shouldReset) {
+                    window.appCategories = JSON.parse(JSON.stringify(window.defaultCategories));
+                    localStorage.setItem('v_categories', JSON.stringify(window.appCategories));
                 }
                 
                 window.appCategories.forEach(cat => {

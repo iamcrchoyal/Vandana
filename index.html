@@ -1925,12 +1925,12 @@
                 window.renderInventoryList(); 
             };
 
-            window.addDynamicStock = function() {
+            window.addDynamicStock = function(type = 'IN') {
                 let cat = document.getElementById('dyn-cat-dbkey').value;
-                addSpecificStock(cat, 'dyn-box-no', 'dyn-cone', null);
-                document.getElementById('dyn-anim-form').classList.add('form-hidden');
+                addSpecificStock(cat, 'dyn-box-no', 'dyn-cone', null, type);
+                let formElem = document.getElementById('dyn-anim-form');
+                if(formElem) formElem.classList.add('form-hidden');
             };
-
         
             // OVERRIDING RENDER INVENTORY TO SUPPORT NEW CATEGORIES
 			
@@ -2205,6 +2205,14 @@
                     renderInventoryList(); 
                     updatePosShades(); 
                     checkRestore(); 
+                });
+
+                // 🌟 NEW: Wastage/Damage Data Listener
+                window.allWastageData = [];
+                onValue(ref(db, 'WastageLog'), (snapshot) => {
+                    let data = snapshot.val() || {};
+                    window.allWastageData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse();
+                    if(typeof calculateGrandTotals === 'function') calculateGrandTotals();
                 });
                 
                 onValue(ref(db, 'Customers'), (snapshot) => { 
@@ -3175,6 +3183,28 @@
             window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet }; updateLedgerTotalsUI(); if(document.getElementById('parties-page').classList.contains('active')) { renderCustomerList(globalCustomers); }
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
 
+            // 🌟 FINANCIAL WASTAGE DASHBOARD LOGIC
+            let currentMonthWastage = 0;
+            if(window.allWastageData) {
+                window.allWastageData.forEach(w => {
+                    if(w.date && w.date.startsWith(currentMonth)) {
+                        currentMonthWastage += (parseFloat(w.lossValue) || 0);
+                    }
+                });
+            }
+            
+            let saleCard = document.getElementById('dash-card-sale-value');
+            if (saleCard && window.currentUserRole === 'admin') {
+                if (!document.getElementById('dash-wastage-value')) {
+                    let wasteDiv = document.createElement('div');
+                    wasteDiv.innerHTML = `<div style="font-size:12px; color:var(--danger); font-weight:700; margin-top:8px; display:flex; align-items:center; gap:4px; background:#fdf2f2; padding:4px 8px; border-radius:6px; width:max-content; border:1px solid #f8cbcb;">
+                        <span class="material-symbols-rounded" style="font-size:14px;">warning</span> Damage Loss: <span id="dash-wastage-value">₹0</span>
+                    </div>`;
+                    saleCard.parentNode.appendChild(wasteDiv);
+                }
+                document.getElementById('dash-wastage-value').innerText = `₹${currentMonthWastage.toLocaleString('en-IN')}`;
+            }
+
             // ============== SMART DYNAMIC TITLE LOGIC ==============
             let selectedDateObj = new Date(selectedDateString);
             let todayObj = new Date();
@@ -3780,34 +3810,100 @@
             navTo('invoices-page', null); 
         }
 
-        window.addSpecificStock = function(category, id1, id2, id3) { 
+        window.addSpecificStock = function(category, id1, id2, id3, type = 'IN') { 
             let identifier = document.getElementById(id1).value.trim(); 
             let cone = parseFloat(document.getElementById(id2).value) || 0; 
             let kg = id3 ? (parseFloat(document.getElementById(id3).value) || 0) : 0; 
             
-            if(!identifier || cone <= 0) return alert("Please enter valid Type/Box No. and Cone!"); 
+            if(!identifier || (cone <= 0 && kg <= 0)) return alert("Please enter valid Item Name & Qty!"); 
             
             let key = category + "_" + identifier; 
-            let itemRef = ref(db, 'Inventory/' + key); 
-            
-            get(itemRef).then((snap) => { 
-                let cur = snap.val() || { cone: 0, kg: 0 }; 
-                if(typeof cur === 'number') cur = { cone: cur, kg: 0 }; 
+
+            if (type === 'WASTAGE') {
+                // 🌟 LIVE STOCK CHECK FOR DAMAGE
+                let dbStock = smartInventory[key] || { cone: 0, kg: 0 };
+                if(typeof dbStock === 'number') dbStock = { cone: dbStock, kg: 0 };
+                let availCone = parseFloat(dbStock.cone) || 0;
+                let availKg = parseFloat(dbStock.kg) || 0;
+
+                if ((cone > 0 && cone > availCone) || (kg > 0 && kg > availKg)) {
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Godown me itna stock nahi hai! (${availCone} Cone / ${availKg} Kg bacha hai) ⚠️`);
+                    else alert(`Not enough stock! (${availCone} Cone left)`);
+                    return;
+                }
+
+                // 📝 ASK FOR REASON & LOSS
+                let reason = prompt("डैमेज/खराब होने का कारण बताएं (जैसे: चूहे, कलर खराब, आदि):", "Damage/Wastage");
+                if(reason === null) return;
+                if(reason.trim() === "") reason = "Damage/Wastage";
+
+                let lossAmountStr = prompt("इस डैमेज से कितने रुपये (₹) का नुकसान हुआ?", "0");
+                if(lossAmountStr === null) return;
+                let lossAmount = parseFloat(lossAmountStr) || 0;
+
+                let itemRef = ref(db, 'Inventory/' + key); 
+                get(itemRef).then((snap) => { 
+                    let cur = snap.val() || { cone: 0, kg: 0 }; 
+                    if(typeof cur === 'number') cur = { cone: cur, kg: 0 }; 
+                    let newCone = parseFloat(cur.cone) - cone;
+                    let newKg = parseFloat(cur.kg) - kg;
+                    if(newCone < 0) newCone = 0;
+                    if(newKg < 0) newKg = 0;
+                    set(itemRef, { cone: newCone, kg: newKg }); 
+                }); 
+
+                push(ref(db, 'WastageLog'), {
+                    date: new Date().toISOString(),
+                    cat: category,
+                    item: identifier,
+                    cone: cone,
+                    kg: kg,
+                    lossValue: lossAmount,
+                    reason: reason,
+                    type: 'WASTAGE'
+                });
                 
-                // FIX: Yaha par purane data ko number me convert kiya hai taki wo string ki tarah na jude
-                let oldCone = parseFloat(cur.cone) || 0;
-                let oldKg = parseFloat(cur.kg) || 0;
-                
-                set(itemRef, { cone: oldCone + cone, kg: oldKg + kg }); 
-            }); 
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Damaged Stock Deducted Successfully! 🔴");
+            } else {
+                // NORMAL IN STOCK
+                let itemRef = ref(db, 'Inventory/' + key); 
+                get(itemRef).then((snap) => { 
+                    let cur = snap.val() || { cone: 0, kg: 0 }; 
+                    if(typeof cur === 'number') cur = { cone: cur, kg: 0 }; 
+                    let oldCone = parseFloat(cur.cone) || 0;
+                    let oldKg = parseFloat(cur.kg) || 0;
+                    set(itemRef, { cone: oldCone + cone, kg: oldKg + kg }); 
+                }); 
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Stock Added (IN) Successfully! 🟢");
+            }
             
             if(document.getElementById(id1).tagName !== 'SELECT') document.getElementById(id1).value = ''; 
             document.getElementById(id2).value = ''; 
             if(id3) document.getElementById(id3).value = ''; 
             
-            alert("Stock Added (IN) Successfully!"); 
-            document.getElementById(category.toLowerCase() + '-anim-form').classList.add('form-hidden'); 
+            let formElem = document.getElementById(category.toLowerCase() + '-anim-form');
+            if(formElem) formElem.classList.add('form-hidden'); 
         }
+
+        // 🌟 SMART AUTO-INJECT WASTAGE BUTTONS (No HTML Change Required)
+        setTimeout(() => {
+            document.querySelectorAll('.in-out-btn-group').forEach(group => {
+                if(!group.querySelector('.btn-wastage')) {
+                    let inBtn = group.querySelector('.btn-in');
+                    if(inBtn) {
+                        let clickFunc = inBtn.getAttribute('onclick');
+                        let wasteClick = clickFunc.includes('addDynamicStock') ? "addDynamicStock('WASTAGE')" : clickFunc.replace(")", ", 'WASTAGE')").replace(", null, 'WASTAGE')", ", null, 'WASTAGE')");
+                        
+                        let wasteBtn = document.createElement('button');
+                        wasteBtn.className = "btn-out btn-wastage";
+                        wasteBtn.style.flex = "1";
+                        wasteBtn.innerHTML = "⚠️ Damage OUT";
+                        wasteBtn.setAttribute('onclick', wasteClick);
+                        group.appendChild(wasteBtn);
+                    }
+                }
+            });
+        }, 1500);
         window.filterStockList = function(inputId, listId) { let filter = document.getElementById(inputId).value.toUpperCase(); let rows = document.querySelectorAll('#' + listId + ' .stock-row'); rows.forEach(row => { let name = row.getAttribute('data-name'); row.style.display = name.includes(filter) ? '' : 'none'; }); }
         
         function getGridCols(count) {

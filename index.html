@@ -830,8 +830,11 @@
                 <input type="hidden" id="gd-edit-key" value="">
                 <input type="date" id="gd-date" class="form-control" style="margin-bottom:12px; font-family:'Product Sans', sans-serif;">
                 <select id="gd-cat" class="form-control" style="margin-bottom:12px;">
-                    <option value="Thread">Thread (थ्रेड)</option><option value="Zari">Zari (जरी)</option>
-                    <option value="Nylon">Nylon (नायलोन)</option><option value="Cording">Cording (कोडिंग)</option><option value="Bobbin">Bobbin (बोबिन)</option>
+                    <option value="Shree Kamlai Thread">Shree Kamlai Thread</option>
+                    <option value="Zari">Zari</option>
+                    <option value="Nylon">Nylon</option>
+                    <option value="Bobbin">Bobbin</option>
+                    <option value="Coding">Coding</option>
                 </select>
                 <input type="text" id="gd-item" class="form-control" placeholder="Item Name / Shade No." style="margin-bottom:12px;">
                 <div class="input-btn-group" style="margin-bottom: 16px;">
@@ -930,8 +933,11 @@
                     
                         <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd; font-weight:600;" onchange="updatePosShades()">
                             <option value="">Select Category</option>
-                            <option value="Thread">Thread</option><option value="Cotton">Cotton</option><option value="Zari">Zari</option>
-                            <option value="Nylon">Nylon</option><option value="Cording">Cording</option><option value="Bobbin">Bobbin</option>
+                            <option value="Shree Kamlai Thread">Shree Kamlai Thread</option>
+                            <option value="Zari">Zari</option>
+                            <option value="Nylon">Nylon</option>
+                            <option value="Bobbin">Bobbin</option>
+                            <option value="Coding">Coding</option>
                         </select>
 
                         <div id="dynamic-shade-wrapper" style="margin-bottom:12px; display:none;">
@@ -1352,14 +1358,14 @@
         <div class="scroll-content" style="padding-top:0;"><div id="zari-stock-list" class="inventory-grid"></div></div>
     </div>
 
-    <!-- 🪢 CORDING STOCK PAGE -->
-    <div class="page flex-page" id="cording-stock-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('cording-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Cording Stock</h2><button class="pro-add-btn" onclick="document.getElementById('cording-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
+    <!-- 🪢 Coding STOCK PAGE -->
+    <div class="page flex-page" id="coding-stock-page">
+        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('coding-stock-page')">arrow_back</button><h2 class="page-title" style="flex:1;">Coding Stock</h2><button class="pro-add-btn" onclick="document.getElementById('coding-anim-form').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Add</button></div>
         <div class="fixed-top-section">
-            <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-cording" placeholder="Search Item..." onkeyup="filterStockList('search-cording', 'cording-stock-list')"></div>
-            <div class="form-panel anim-form form-hidden" id="cording-anim-form" style="margin-bottom:10px;"><input type="text" class="form-control" id="cording-type" placeholder="Type" style="margin-bottom:12px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="number" class="form-control" id="cording-cone" placeholder="Cone"><input type="number" class="form-control" id="cording-kg" placeholder="KG"></div><div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock('Cording', 'cording-type', 'cording-cone', 'cording-kg')">➕ Add IN Stock</button></div></div>
+            <div class="search-bar-container" style="margin: 0 0 16px 0;"><span class="material-symbols-rounded" style="font-size:20px; color:#444746; margin-right:8px;">search</span><input type="text" id="search-coding" placeholder="Search Item..." onkeyup="filterStockList('search-coding', 'coding-stock-list')"></div>
+            <div class="form-panel anim-form form-hidden" id="coding-anim-form" style="margin-bottom:10px;"><input type="text" class="form-control" id="coding-type" placeholder="Type" style="margin-bottom:12px;"><div class="input-btn-group" style="margin-bottom: 12px;"><input type="number" class="form-control" id="coding-cone" placeholder="Cone"><input type="number" class="form-control" id="coding-kg" placeholder="KG"></div><div class="in-out-btn-group"><button class="btn-in" style="width:100%;" onclick="addSpecificStock('coding', 'coding-type', 'coding-cone', 'coding-kg')">➕ Add IN Stock</button></div></div>
         </div>
-        <div class="scroll-content" style="padding-top:0;"><div id="cording-stock-list" class="inventory-grid"></div></div>
+        <div class="scroll-content" style="padding-top:0;"><div id="coding-stock-list" class="inventory-grid"></div></div>
     </div>
 
     <!-- 🧶 NYLON STOCK PAGE -->
@@ -1577,13 +1583,13 @@
                 if(savedStack) window.pageStack = JSON.parse(savedStack);
             } catch(e){}
 			
-		// ================= DYNAMIC CATEGORY SYSTEM =================
+		// 🌟 NEW MASTER CATEGORY LIST
             window.defaultCategories = [
-                { id: 'thread', dbKey: 'Thread', name: 'Thread (थ्रेड)', icon: 'waves', color: 'var(--primary)', bg: '#e8f0fe', page: 'thread-stock-page' },
-                { id: 'zari', dbKey: 'Zari', name: 'Zari (जरी)', icon: 'auto_awesome', color: '#f97316', bg: '#fff7ed', page: 'zari-stock-page' },
-                { id: 'nylon', dbKey: 'Nylon', name: 'Nylon (नायलोन)', icon: 'all_inclusive', color: '#9333ea', bg: '#f4ebff', page: 'nylon-stock-page' },
-                { id: 'cording', dbKey: 'Cording', name: 'Cording (कोडिंग)', icon: 'cyclone', color: '#4f46e5', bg: '#e0f2fe', page: 'cording-stock-page' },
-                { id: 'bobbin', dbKey: 'Bobbin', name: 'Bobbin (बोबिन)', icon: 'radio_button_checked', color: 'var(--success)', bg: '#e6f4ea', page: 'bobbin-stock-page' }
+                { id: 'thread', dbKey: 'Shree Kamlai Thread', name: 'Shree Kamlai Thread', icon: 'waves', color: 'var(--primary)', bg: '#e8f0fe', page: 'dynamic-stock-page' },
+                { id: 'zari', dbKey: 'Zari', name: 'Zari', icon: 'auto_awesome', color: '#f97316', bg: '#fff7ed', page: 'dynamic-stock-page' },
+                { id: 'nylon', dbKey: 'Nylon', name: 'Nylon', icon: 'all_inclusive', color: '#9333ea', bg: '#f4ebff', page: 'dynamic-stock-page' },
+                { id: 'bobbin', dbKey: 'Bobbin', name: 'Bobbin', icon: 'radio_button_checked', color: 'var(--success)', bg: '#e6f4ea', page: 'dynamic-stock-page' },
+                { id: 'coding', dbKey: 'Coding', name: 'Coding', icon: 'cyclone', color: '#4f46e5', bg: '#e0f2fe', page: 'dynamic-stock-page' }
             ];
 
             window.appCategories = [...window.defaultCategories];
@@ -1648,7 +1654,7 @@
 
                 sortedCats.forEach(cat => { 
                     let pageAttr = ""; 
-                    if (['thread', 'zari', 'nylon', 'cording', 'bobbin'].includes(cat.id)) { 
+                    if (['thread', 'zari', 'nylon', 'coding', 'bobbin'].includes(cat.id)) { 
                         pageAttr = `onclick="openPage('${cat.page}')"`; 
                     } else { 
                         pageAttr = `onclick="openDynamicStockPage('${cat.dbKey}', '${cat.name}')"`; 
@@ -1938,7 +1944,7 @@
                 } 
             } 
             
-            ['Thread', 'Zari', 'Nylon', 'Cording', 'Bobbin'].forEach(cat => {
+            ['Thread', 'Zari', 'Nylon', 'coding', 'Bobbin'].forEach(cat => {
                 let el = document.getElementById(cat.toLowerCase() + '-stock-list');
                 if(el) {
                     el.style.gridTemplateColumns = `repeat(${getGridCols(itemsCount[cat])}, minmax(0, 1fr))`;
@@ -2399,7 +2405,7 @@
             if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
-        const allPagesList = ['items-page', 'manage-categories-page', 'dynamic-stock-page', 'parties-page', 'cashbook-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'cording-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'home'];
+        const allPagesList = ['items-page', 'manage-categories-page', 'dynamic-stock-page', 'parties-page', 'cashbook-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'coding-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'home'];
         
         window.openPage = function(id, isBack = false) { 
             if(!isBack && window.pageStack[window.pageStack.length-1] !== id) {
@@ -3505,7 +3511,7 @@
                                 errorMsg = `Out of Stock! '${item.shade}' ke ${reqCone} Cone chahiye, par sirf ${availCone} bache hain.`;
                                 break;
                             }
-                            if ((item.cat === 'Nylon' || item.cat === 'Cording' || item.cat === 'Bobbin') && reqKg > availKg) {
+                            if ((item.cat === 'Nylon' || item.cat === 'Coding' || item.cat === 'Bobbin') && reqKg > availKg) {
                                 isStockAvailable = false;
                                 errorMsg = `Out of Stock! '${item.shade}' ke ${reqKg} Kg chahiye, par sirf ${availKg} bache hain.`;
                                 break;
@@ -3847,7 +3853,7 @@
         }
 
         // ================= PROFESSIONAL SEARCH MODAL LOGIC =================
-        // 🌟 1. & 2. ADVANCED CATEGORY, LABEL & UNIT LOGIC (SUB-PRODUCT & NUMBER FORMAT)
+        // 🌟 1. & 2. ADVANCED CATEGORY, LABEL & UNIT LOGIC (Sub-Product & NUMBER FORMAT)
         window.updatePosShades = function() { 
             let cat = document.getElementById('inv-cat').value; 
             let shadeInput = document.getElementById('inv-shade'); 
@@ -3875,14 +3881,14 @@
             }
 
             // 🌟 1. THE CONE & INTEGER ENGINE (NO DECIMALS ALLOWED)
-            if(cat === 'Thread' || cat === 'Cotton' || cat === 'Zari') {
+            if(cat === 'Shree Kamlai Thread' || cat === 'Zari') {
                 qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px; font-weight:600;" oninput="this.value = this.value.replace(/[^0-9]/g, '')"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px; font-weight:600;">`;
                 
-                if (cat === 'Thread') {
+                if (cat === 'Shree Kamlai Thread') {
                     label.innerText = 'NUMBER';
                     shadeInput.placeholder = 'Tap to search Number...';
                 } else {
-                    label.innerText = 'SUB-PRODUCT';
+                    label.innerText = 'Sub-Product';
                     shadeInput.placeholder = 'Tap to search Sub-Product...';
                 }
             } 
@@ -3894,11 +3900,11 @@
                     shadeWrapper.style.display = 'none';
                     shadeInput.value = 'Nylon'; // Auto-set Nylon default
                 } else if (cat === 'Bobbin') {
-                    label.innerText = 'SUB-PRODUCT';
+                    label.innerText = 'Sub-Product';
                     inputCont.style.display = 'none';
                     bobbinCont.style.display = 'block';
                 } else {
-                    label.innerText = 'SUB-PRODUCT';
+                    label.innerText = 'Sub-Product';
                     shadeInput.placeholder = 'Tap to search Sub-Product...';
                 }
             }
@@ -4037,7 +4043,7 @@
                     
                     if(coneQty > 0 || kgQty > 0) { 
                         itemsFound = true;
-                        let isKgItem = (cat === 'Cording' || cat === 'Nylon' || cat === 'Bobbin');
+                        let isKgItem = (cat === 'Coding' || cat === 'Nylon' || cat === 'Bobbin');
                         let stockVal = isKgItem ? `${kgQty} Kg` : `${coneQty} Cone`;
                         
                         // Green if stock > 5, Orange if Low Stock
@@ -4124,7 +4130,7 @@
                 else alert(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.cone} Cone bache hain.`);
                 return; 
             } 
-            if (cat === 'Nylon' || cat === 'Cording' || cat === 'Bobbin') {
+            if (cat === 'Nylon' || cat === 'Coding' || cat === 'Bobbin') {
                 if (kg > 0 && kg > availStock.kg) {
                     if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.kg} Kg bache hain. ⚠️`);
                     else alert(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.kg} Kg bache hain.`);
@@ -4227,7 +4233,7 @@
                 else alert(`Out of Stock! Only ${maxCone} Cone left.`);
                 return; // Code yahi ruk jayega, save nahi hoga
             }
-            if (cat === 'Nylon' || cat === 'Cording' || cat === 'Bobbin') {
+            if (cat === 'Nylon' || cat === 'Coding' || cat === 'Bobbin') {
                 if (kg > 0 && kg > maxKg) {
                     if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Only ${maxKg} Kg left. ⚠️`);
                     else alert(`Out of Stock! Only ${maxKg} Kg left.`);
@@ -4616,8 +4622,8 @@
                     totalCones += (parseFloat(item.rawCone) || 0); 
                     totalKgs += (parseFloat(item.rawKg) || 0); 
                     
-                    // Thread me 'Number: X' aayega, baki sab me direct Sub-Product ka naam aayega (Jaise: Water 20)
-                    let subTextDisplay = (item.cat === 'Thread') ? `Number: ${item.shade}` : `${item.shade}`;
+                    // Shree Kamlai Thread me 'Number: X' aayega, baki sab me direct Sub-Product ka naam aayega (Jaise: Water 20)
+                    let subTextDisplay = (item.cat === 'Shree Kamlai Thread') ? `Number: ${item.shade}` : `${item.shade}`;
                     
                     html += `
                         <tr>

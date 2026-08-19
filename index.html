@@ -3864,7 +3864,7 @@
         // ================= PROFESSIONAL SEARCH MODAL LOGIC =================
         // 🌟 1. & 2. ADVANCED CATEGORY, LABEL & UNIT LOGIC (Sub-Product & NUMBER FORMAT)
         window.updatePosShades = function() { 
-            let cat = document.getElementById('inv-cat').value; 
+            let cat = document.getElementById('inv-cat').value; // Database key (Thread, Zari, Cording etc.)
             let shadeInput = document.getElementById('inv-shade'); 
             let qtyGroup = document.getElementById('pos-dynamic-inputs');
             let stockBadge = document.getElementById('live-stock-badge');
@@ -3890,14 +3890,14 @@
             }
 
             // 🌟 1. THE CONE & INTEGER ENGINE (NO DECIMALS ALLOWED)
-            if(cat === 'Shree Kamlai Thread' || cat === 'Zari') {
+            if(cat === 'Thread' || cat === 'Zari' || cat === 'Cotton') {
                 qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px; font-weight:600;" oninput="this.value = this.value.replace(/[^0-9]/g, '')"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px; font-weight:600;">`;
                 
-                if (cat === 'Shree Kamlai Thread') {
+                if (cat === 'Thread') {
                     label.innerText = 'NUMBER';
                     shadeInput.placeholder = 'Tap to search Number...';
                 } else {
-                    label.innerText = 'Sub-Product';
+                    label.innerText = 'SUB-PRODUCT';
                     shadeInput.placeholder = 'Tap to search Sub-Product...';
                 }
             } 
@@ -3909,11 +3909,11 @@
                     shadeWrapper.style.display = 'none';
                     shadeInput.value = 'Nylon'; // Auto-set Nylon default
                 } else if (cat === 'Bobbin') {
-                    label.innerText = 'Sub-Product';
+                    label.innerText = 'SUB-PRODUCT';
                     inputCont.style.display = 'none';
                     bobbinCont.style.display = 'block';
                 } else {
-                    label.innerText = 'Sub-Product';
+                    label.innerText = 'SUB-PRODUCT';
                     shadeInput.placeholder = 'Tap to search Sub-Product...';
                 }
             }
@@ -3966,10 +3966,12 @@
                 else alert(`Error: Out of Stock! Only ${availStock.cone} Cone left.`);
                 return; 
             } 
-            if (kg > 0 && kg > availStock.kg) {
-                if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.kg} Kg bache hain. ⚠️`);
-                else alert(`Error: Out of Stock! Only ${availStock.kg} Kg left.`);
-                return; 
+            if (cat === 'Nylon' || cat === 'Cording' || cat === 'Bobbin') {
+                if (kg > 0 && kg > availStock.kg) {
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.kg} Kg bache hain. ⚠️`);
+                    else alert(`Error: Out of Stock! Only ${availStock.kg} Kg left.`);
+                    return; 
+                }
             }
 
             let displayQty = "";
@@ -3987,6 +3989,7 @@
             if(document.getElementById('inv-rate')) document.getElementById('inv-rate').value=''; 
             if(cat !== 'Nylon' && document.getElementById('inv-shade')) {
                 document.getElementById('inv-shade').value=''; 
+                document.getElementById('inv-shade').placeholder='Tap to select item...';
             }
             if(document.getElementById('inv-bobbin-select')) document.getElementById('inv-bobbin-select').value='';
             
@@ -4052,7 +4055,7 @@
                     
                     if(coneQty > 0 || kgQty > 0) { 
                         itemsFound = true;
-                        let isKgItem = (cat === 'Coding' || cat === 'Nylon' || cat === 'Bobbin');
+                        let isKgItem = (cat === 'Cording' || cat === 'Nylon' || cat === 'Bobbin');
                         let stockVal = isKgItem ? `${kgQty} Kg` : `${coneQty} Cone`;
                         
                         // Green if stock > 5, Orange if Low Stock

@@ -1931,8 +1931,9 @@
                 document.getElementById('dyn-anim-form').classList.add('form-hidden');
             };
 
+        
             // OVERRIDING RENDER INVENTORY TO SUPPORT NEW CATEGORIES
-            // OVERRIDING RENDER INVENTORY TO SUPPORT NEW CATEGORIES
+			
         window.renderInventoryList = function() { 
             let htmlMaps = {};
             let countMaps = {};
@@ -1951,11 +1952,20 @@
             for (let key in smartInventory) { 
                 let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let data = smartInventory[key]; 
                 
-                // FIX: Yaha par hum text ko number me convert kar rahe hain (parseFloat)
                 let coneQty = typeof data === 'object' ? (parseFloat(data.cone) || 0) : (parseFloat(data) || 0);
                 let kgQty = typeof data === 'object' ? (parseFloat(data.kg) || 0) : 0;
                 
                 let displayQty = kgQty > 0 ? `${coneQty} Cone, ${kgQty} KG` : `${coneQty} Cone`;
+                
+                // Overlay element ki aasan styling ke liye safe ID banana
+                let safeKeyId = key.replace(/[^a-zA-Z0-9]/g, '_');
+
+                // 🌟 HIDDEN DELETE OVERLAY HTML
+                let overlayHtml = `
+                    <div id="del-overlay-${safeKeyId}" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.95); z-index:10; align-items:center; justify-content:center; border-radius:12px; backdrop-filter:blur(3px); gap:10px; box-shadow:0 4px 15px rgba(0,0,0,0.1);">
+                        <button class="btn-submit" style="background:var(--danger); padding:8px 14px; font-size:13px; font-weight:700; box-shadow:none; border-radius:10px;" onclick="confirmDeleteStock('${key}', '${shade}', event)">🗑️ Delete Now</button>
+                        <button class="btn-outline" style="padding:6px 10px; font-size:16px; border-color:var(--text-muted); color:var(--text-muted); border-radius:10px;" onclick="cancelDeleteOverlay('${safeKeyId}', event)">✕</button>
+                    </div>`;
 
                 if (htmlMaps[cat] !== undefined) {
                     let txList = getLast5Tx(cat, shade);
@@ -1971,7 +1981,10 @@
                             txHtml += `<div class="inv-tx-item"><span class="inv-tx-date">${dateStr}</span><span class="inv-tx-party">${tx.party}</span><span class="inv-tx-qty ${qClass}">${sign}${parseFloat(tx.qty)||0}</span></div>`;
                         });
                     }
-                    htmlMaps[cat] += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)">
+                    
+                    // Added onmousedown, ontouchstart etc. to detect Long Press
+                    htmlMaps[cat] += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)" onmousedown="startHold('${key}', '${safeKeyId}', event)" onmouseup="endHold()" onmouseleave="endHold()" ontouchstart="startHold('${key}', '${safeKeyId}', event)" ontouchend="endHold()">
+                        ${overlayHtml}
                         <div class="inv-card-header"><div class="inv-card-title">${shade}</div><div class="inv-card-qty" style="font-size:11px;">${displayQty}</div></div>
                         <div class="inv-tx-list" onclick="event.stopPropagation()">${txHtml}</div>
                     </div>`;
@@ -1987,7 +2000,8 @@
 
                 if(coneQty <= customLimit && coneQty > 0) { 
                     lowstockCount++; lowstockItemsCount++;
-                    lowstockHtml += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)" style="border-color:#f8cbcb;">
+                    lowstockHtml += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)" style="border-color:#f8cbcb;" onmousedown="startHold('${key}', '${safeKeyId}', event)" onmouseup="endHold()" onmouseleave="endHold()" ontouchstart="startHold('${key}', '${safeKeyId}', event)" ontouchend="endHold()">
+                        ${overlayHtml}
                         <div class="inv-card-header"><div class="inv-card-title">${shade} <span style="font-size:10px;color:gray;">(${cat})</span></div><div class="inv-card-qty" style="color:var(--danger); background:#fdf2f2; font-size:11px;">${displayQty}</div></div>
                         <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Limit: ${customLimit} - Time to re-order!</div></div>
                     </div>`;
@@ -2022,6 +2036,48 @@
                 lowEl.innerHTML = lowstockHtml || '<div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--success); font-weight:600;">All stocks are healthy! 🎉</div>';
             }
             if(document.getElementById('stock-val-lowstock')) document.getElementById('stock-val-lowstock').innerText = lowstockCount;
+        };
+
+        // 🌟 LONG-PRESS TO DELETE LOGIC (2.5 Seconds)
+        window.holdTimer = null;
+        window.isTouchDetected = false;
+
+        window.startHold = function(key, safeId, event) {
+            if (event.type === 'touchstart') window.isTouchDetected = true;
+            if (event.type === 'mousedown' && window.isTouchDetected) return; // Prevent double trigger
+            
+            // 2.5 Second ka timer start karo
+            window.holdTimer = setTimeout(() => {
+                let overlay = document.getElementById('del-overlay-' + safeId);
+                if(overlay) {
+                    overlay.style.display = 'flex';
+                    if (navigator.vibrate) navigator.vibrate(50); // Halka sa mobile vibrate hoga
+                }
+            }, 2500);
+        };
+
+        window.endHold = function() {
+            // Agar ungli pehle hata li, toh timer cancel kar do
+            if (window.holdTimer) {
+                clearTimeout(window.holdTimer);
+                window.holdTimer = null;
+            }
+        };
+
+        window.cancelDeleteOverlay = function(safeId, event) {
+            event.stopPropagation();
+            let overlay = document.getElementById('del-overlay-' + safeId);
+            if(overlay) overlay.style.display = 'none';
+        };
+
+        window.confirmDeleteStock = function(key, shadeName, event) {
+            event.stopPropagation();
+            // User se aakhiri confirmation lenge
+            window.showCustomConfirm("Delete Product?", `Kya aap sach me '${shadeName}' ko Inventory se completely delete karna chahte hain?`, function() {
+                remove(ref(db, 'Inventory/' + key)).then(() => {
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Product Deleted Completely! ✅");
+                }).catch(err => alert("Error deleting: " + err.message));
+            });
         };
 
 

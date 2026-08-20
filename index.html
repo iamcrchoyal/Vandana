@@ -1048,15 +1048,16 @@
             <h2 class="page-title" style="flex:1;">Cash & Bank Book</h2>
             <button class="pro-add-btn" onclick="document.getElementById('cb-bank-form').classList.toggle('form-hidden')" style="background:var(--primary-dark);"><span class="material-symbols-rounded" style="font-size:16px;">add_card</span> Add Bank</button>
         </div>
+        
         <div class="fixed-top-section">
             <div class="form-panel anim-form form-hidden" id="cb-bank-form" style="margin-bottom:10px; border-color:var(--primary-dark) !important;">
                 <div class="form-group" style="margin-bottom:12px;">
-                    <input type="text" id="cb-new-bank-name" class="form-control" placeholder="Bank Name (e.g. SBI, HDFC)">
+                    <input type="text" id="cb-new-bank-name" class="form-control" placeholder="Bank Name (e.g. SBI, PhonePe)">
                 </div>
                 <div class="form-group" style="margin-bottom:12px;">
                     <input type="number" id="cb-new-bank-bal" class="form-control" placeholder="Opening Balance (₹)">
                 </div>
-                <button class="btn-submit" style="background:var(--primary-dark); width:100%;" onclick="saveNewBank()">💾 Save Bank Account</button>
+                <button class="btn-submit" style="background:var(--primary-dark); width:100%;" onclick="saveNewBank()">💾 Save Account</button>
             </div>
             
             <div style="display:flex; gap:10px; margin-bottom:16px;">
@@ -1069,40 +1070,104 @@
                     <div style="font-size:22px; font-weight:700; color:#0a56d0; font-family:'Product Sans', sans-serif;" id="cb-bank-bal">₹ 0</div>
                 </div>
             </div>
+            
             <div class="ajio-tab-container" style="margin-bottom:12px;">
-                <div class="kb-tab active" id="cb-tab-tx" onclick="switchCbTab('tx')">TRANSACTIONS</div>
-                <div class="kb-tab" id="cb-tab-banks" onclick="switchCbTab('banks')">BANK ACCOUNTS</div>
+                <div class="kb-tab active" id="cb-tab-day" onclick="switchCbTab('day')">DAY BOOK</div>
+                <div class="kb-tab" id="cb-tab-tx" onclick="switchCbTab('tx')">ALL TXNS</div>
+                <div class="kb-tab" id="cb-tab-banks" onclick="switchCbTab('banks')">BANKS</div>
             </div>
         </div>
+        
         <div class="scroll-content" id="cb-scroll-area" style="padding-top:0; padding-bottom: 80px;">
             <div style="text-align:center; padding:40px 20px; color:gray; font-size:13px;">Loading...</div>
         </div>
-        <div class="bottom-action-bar" style="z-index: 9999;">
-            <button class="btn-l-gave" style="background:#fdf2f2; color:var(--danger);" onclick="openCbEntryModal('OUT')">🔴 Money OUT</button>
-            <button class="btn-l-got" style="background:#e6f4ea; color:var(--success);" onclick="openCbEntryModal('IN')">🟢 Money IN</button>
+        
+        <div class="bottom-action-bar" style="z-index: 9999; gap: 8px;">
+            <button class="btn-submit" style="flex:1; background:#f0f4f9; color:var(--primary-dark); border:1px solid var(--primary-dark); border-radius:14px; font-size:12px; display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px;" onclick="openCbContraModal()">
+                <span class="material-symbols-rounded" style="font-size:18px;">sync_alt</span> Contra
+            </button>
+            <button class="btn-submit" style="flex:1.5; background:#fdf2f2; color:var(--danger); border-radius:14px; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px; box-shadow:none;" onclick="openCbEntryModal('OUT')">
+                <span class="material-symbols-rounded" style="font-size:18px;">remove_circle</span> Money OUT
+            </button>
+            <button class="btn-submit" style="flex:1.5; background:#e6f4ea; color:var(--success); border-radius:14px; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px; box-shadow:none;" onclick="openCbEntryModal('IN')">
+                <span class="material-symbols-rounded" style="font-size:18px;">add_circle</span> Money IN
+            </button>
         </div>
 
         <div id="cb-entry-modal" class="report-modal-overlay" style="z-index: 10000;">
             <div class="report-modal-box" style="width:90%; max-width:350px; padding:24px;">
                 <h3 id="cb-entry-title" style="margin-bottom: 16px; font-family: 'Product Sans', sans-serif; color:var(--success);">Money IN</h3>
                 <input type="hidden" id="cb-entry-type">
+                
                 <div class="form-group" style="margin-bottom:12px;">
-                    <label class="form-label">Amount (₹)</label>
+                    <label class="form-label">Amount (₹) *</label>
                     <input type="number" id="cb-entry-amount" class="form-control" placeholder="0" style="font-size:24px; font-weight:700;">
                 </div>
+                
                 <div class="form-group" style="margin-bottom:12px;">
-                    <label class="form-label">Payment Mode</label>
-                    <select id="cb-entry-mode" class="form-control" style="background:#f8fafd; border-color:#c2e7ff;">
-                        <option value="Cash">Cash (गल्ला)</option>
+                    <label class="form-label">Category *</label>
+                    <select id="cb-entry-category" class="form-control" style="background:#f8fafd; border-color:#c2e7ff; font-weight:600;">
                         </select>
                 </div>
-                <div class="form-group" style="margin-bottom:20px;">
-                    <label class="form-label">Details / Remarks</label>
-                    <input type="text" id="cb-entry-details" class="form-control" placeholder="Reason for transaction">
+                
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label class="form-label">Payment Mode *</label>
+                    <select id="cb-entry-mode" class="form-control" style="background:#f8fafd; border-color:#c2e7ff; font-weight:600;">
+                        <option value="Cash">Cash (गल्ला)</option>
+                    </select>
                 </div>
+                
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label class="form-label">Details / Remarks</label>
+                    <input type="text" id="cb-entry-details" class="form-control" placeholder="e.g. Tea, Rent, Salary...">
+                </div>
+                
+                <button id="cb-upi-btn" class="btn-submit" style="display:none; background:#5f259f; width:100%; margin-bottom:10px; border-radius:12px; font-size:13px; align-items:center; justify-content:center; gap:6px;" onclick="payExpenseViaUPI()">
+                    <span class="material-symbols-rounded">qr_code_scanner</span> Pay via PhonePe / GPay
+                </button>
+
                 <div style="display:flex; gap:10px;">
                     <button class="btn-outline" style="flex:1; border-color:var(--border);" onclick="document.getElementById('cb-entry-modal').style.display='none'">Cancel</button>
                     <button class="btn-submit" id="cb-entry-save-btn" style="flex:1; background:var(--success);" onclick="saveCbEntry()">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="cb-contra-modal" class="report-modal-overlay" style="z-index: 10000;">
+            <div class="report-modal-box" style="width:90%; max-width:350px; padding:24px;">
+                <h3 style="margin-bottom: 16px; font-family: 'Product Sans', sans-serif; color:var(--primary-dark); display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-rounded">sync_alt</span> Bank / Cash Transfer
+                </h3>
+                
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label class="form-label">Amount (₹) *</label>
+                    <input type="number" id="cb-contra-amount" class="form-control" placeholder="0" style="font-size:24px; font-weight:700;">
+                </div>
+                
+                <div style="display:flex; gap:10px; margin-bottom:12px; align-items:center;">
+                    <div style="flex:1;">
+                        <label class="form-label">From (कहाँ से कटेगा)</label>
+                        <select id="cb-contra-from" class="form-control" style="background:#fdf2f2; border-color:#f8cbcb; color:var(--danger); font-weight:600; padding:10px;">
+                            <option value="Cash">Cash (गल्ला)</option>
+                        </select>
+                    </div>
+                    <span class="material-symbols-rounded" style="color:var(--text-muted); margin-top:20px;">arrow_forward</span>
+                    <div style="flex:1;">
+                        <label class="form-label">To (कहाँ जुड़ेगा)</label>
+                        <select id="cb-contra-to" class="form-control" style="background:#e6f4ea; border-color:#cce8d6; color:var(--success); font-weight:600; padding:10px;">
+                            <option value="Cash">Cash (गल्ला)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label class="form-label">Remarks</label>
+                    <input type="text" id="cb-contra-details" class="form-control" placeholder="e.g. Cash Deposit to Bank">
+                </div>
+                
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-outline" style="flex:1; border-color:var(--border);" onclick="document.getElementById('cb-contra-modal').style.display='none'">Cancel</button>
+                    <button class="btn-submit" style="flex:1; background:var(--primary-dark);" onclick="saveCbContra()">Transfer</button>
                 </div>
             </div>
         </div>
@@ -5771,127 +5836,314 @@ window.showTargetCelebration = function() {
             } catch(e) { console.error(e); alert("Error generating PDF."); }
         }
 
-		// ================= CASH & BANK BOOK LOGIC =================
-        let cbTransactions = [];
-        let cbBanks = [];
-        let totalCashBal = 0;
-        let totalBankBal = 0;
-        let currentCbTab = 'tx';
+		// ================= CASH & BANK BOOK LOGIC (ADVANCED & FAST) =================
+    let cbTransactions = [];
+    let cbBanks = [];
+    let totalCashBal = 0;
+    let totalBankBal = 0;
+    let currentCbTab = 'day'; // Default tab ab 'day' (Day Book) hoga
 
-        onValue(ref(db, 'CashBankBook/Banks'), (snapshot) => {
-            let data = snapshot.val() || {};
-            cbBanks = Object.keys(data).map(key => ({ key: key, ...data[key] }));
-            updateCbDashboard();
-            if(document.getElementById('cashbook-page').classList.contains('active')) renderCbTab();
+    const incomeCategories = ["Sales/Bill Payment", "Owner Capital IN", "Other Income"];
+    const expenseCategories = ["Tea/Snacks", "Transport/Freight", "Shop Rent", "Staff Salary", "Owner Withdrawal", "Other Expense"];
+
+    onValue(ref(db, 'CashBankBook/Banks'), (snapshot) => {
+        let data = snapshot.val() || {};
+        cbBanks = Object.keys(data).map(key => ({ key: key, ...data[key] }));
+        updateCbDashboard();
+        if(document.getElementById('cashbook-page').classList.contains('active')) renderCbTab();
+    });
+
+    onValue(ref(db, 'CashBankBook/Transactions'), (snapshot) => {
+        let data = snapshot.val() || {};
+        cbTransactions = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse();
+        updateCbDashboard();
+        if(document.getElementById('cashbook-page').classList.contains('active')) renderCbTab();
+    });
+
+    function updateCbDashboard() {
+        totalBankBal = 0;
+        cbBanks.forEach(b => totalBankBal += (parseFloat(b.balance) || 0));
+
+        totalCashBal = 0;
+        cbTransactions.forEach(t => {
+            if(t.mode === 'Cash') {
+                if(t.type === 'IN') totalCashBal += parseFloat(t.amount);
+                if(t.type === 'OUT') totalCashBal -= parseFloat(t.amount);
+            }
         });
+        
+        let cBal = document.getElementById('cb-cash-bal');
+        if(cBal) cBal.innerText = "₹ " + totalCashBal.toLocaleString('en-IN');
+        let bBal = document.getElementById('cb-bank-bal');
+        if(bBal) bBal.innerText = "₹ " + totalBankBal.toLocaleString('en-IN');
+    }
 
-        onValue(ref(db, 'CashBankBook/Transactions'), (snapshot) => {
-            let data = snapshot.val() || {};
-            cbTransactions = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse();
-            updateCbDashboard();
-            if(document.getElementById('cashbook-page').classList.contains('active')) renderCbTab();
-        });
+    window.switchCbTab = function(tab) {
+        currentCbTab = tab;
+        document.getElementById('cb-tab-day').classList.toggle('active', tab === 'day');
+        document.getElementById('cb-tab-tx').classList.toggle('active', tab === 'tx');
+        document.getElementById('cb-tab-banks').classList.toggle('active', tab === 'banks');
+        renderCbTab();
+    }
 
-        function updateCbDashboard() {
-            totalBankBal = 0;
-            cbBanks.forEach(b => totalBankBal += (parseFloat(b.balance) || 0));
-
-            totalCashBal = 0;
+    window.renderCbTab = function() {
+        let area = document.getElementById('cb-scroll-area');
+        if(!area) return;
+        let html = "";
+        
+        if (currentCbTab === 'day') {
+            // 🌟 FAST DAY-BOOK LOGIC
+            let todayStr = new Date().toLocaleDateString('en-GB'); // DD/MM/YYYY
+            let dayIn = 0; let dayOut = 0;
+            let dayTxHtml = "";
+            
             cbTransactions.forEach(t => {
-                if(t.mode === 'Cash') {
-                    if(t.type === 'IN') totalCashBal += parseFloat(t.amount);
-                    if(t.type === 'OUT') totalCashBal -= parseFloat(t.amount);
+                let d = new Date(t.date);
+                if(!isNaN(d) && d.toLocaleDateString('en-GB') === todayStr) {
+                    let amt = parseFloat(t.amount) || 0;
+                    if(t.type === 'IN') dayIn += amt;
+                    if(t.type === 'OUT') dayOut += amt;
+                    
+                    let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)';
+                    let sign = t.type === 'IN' ? '+' : '-';
+                    dayTxHtml += `
+                    <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f0f4f9;">
+                        <div>
+                            <div style="font-weight:600; font-size:13px; color:var(--text-dark);">${t.category || t.details || 'Entry'}</div>
+                            <div style="font-size:11px; color:var(--text-muted);">${t.mode}</div>
+                        </div>
+                        <div style="color:${color}; font-weight:700; font-size:14px;">${sign}₹${amt}</div>
+                    </div>`;
                 }
             });
             
-            if(document.getElementById('cb-cash-bal')) document.getElementById('cb-cash-bal').innerText = "₹ " + totalCashBal.toLocaleString('en-IN');
-            if(document.getElementById('cb-bank-bal')) document.getElementById('cb-bank-bal').innerText = "₹ " + totalBankBal.toLocaleString('en-IN');
-        }
-
-        window.switchCbTab = function(tab) {
-            currentCbTab = tab;
-            document.getElementById('cb-tab-tx').classList.toggle('active', tab === 'tx');
-            document.getElementById('cb-tab-banks').classList.toggle('active', tab === 'banks');
-            renderCbTab();
-        }
-
-        window.renderCbTab = function() {
-            let area = document.getElementById('cb-scroll-area');
-            let html = "";
-            if(currentCbTab === 'banks') {
-                if(cbBanks.length === 0) {
-                    html = `<div style="text-align:center; padding:40px 20px; color:gray;">No bank accounts added yet.</div>`;
-                } else {
-                    cbBanks.forEach(b => {
-                        html += `
-                        <div class="entry-card" style="padding:16px; border:1px solid var(--border); margin-bottom:12px; align-items:center; display:flex;">
-                            <div style="width:40px; height:40px; background:#e8f0fe; color:var(--primary-dark); border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:20px; margin-right:12px;" class="material-symbols-rounded">account_balance</div>
-                            <div style="flex:1;">
-                                <div style="font-weight:700; font-size:15px; color:var(--text-dark);">${b.name}</div>
-                                <div style="font-size:11px; color:var(--text-muted);">Bank Account</div>
-                            </div>
-                            <div style="text-align:right;">
-                                <div style="color:var(--primary-dark); font-weight:800; font-size:16px;">₹${parseFloat(b.balance).toLocaleString('en-IN')}</div>
-                                <button onclick="deleteCbBank('${b.key}')" style="background:transparent; border:none; color:var(--danger); font-size:12px; margin-top:4px; cursor:pointer;">Delete</button>
-                            </div>
-                        </div>`;
-                    });
-                }
+            html = `
+            <div class="form-panel" style="background:white; border-radius:16px; padding:16px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                <h3 style="font-size:14px; margin-bottom:12px; color:var(--primary-dark); font-family:'Product Sans', sans-serif;">Today's Summary (${todayStr})</h3>
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13px;"><span style="color:var(--text-muted);">Total IN:</span> <span style="font-weight:700; color:var(--success);">+ ₹${dayIn.toLocaleString()}</span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:13px;"><span style="color:var(--text-muted);">Total OUT:</span> <span style="font-weight:700; color:var(--danger);">- ₹${dayOut.toLocaleString()}</span></div>
+                <div style="border-top:1px dashed #e0e2e0; padding-top:12px;">
+                    <div style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:8px;">TODAY'S TRANSACTIONS</div>
+                    ${dayTxHtml || '<div style="font-size:12px; color:gray; text-align:center; padding:10px;">No transactions today</div>'}
+                </div>
+            </div>`;
+            
+        } else if (currentCbTab === 'banks') {
+            if(cbBanks.length === 0) {
+                html = `<div style="text-align:center; padding:40px 20px; color:gray;">No bank accounts added.</div>`;
             } else {
-                if(cbTransactions.length === 0) {
-                    html = `<div style="text-align:center; padding:40px 20px; color:gray;">No transactions found.</div>`;
-                } else {
-                    let sortedTx = [...cbTransactions].sort((a,b) => new Date(b.date) - new Date(a.date));
-                    sortedTx.forEach(t => {
-                        let d = new Date(t.date);
-                        let dateStr = isNaN(d) ? t.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
-                        let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)';
-                        let sign = t.type === 'IN' ? '+' : '-';
-                        let icon = t.mode === 'Cash' ? 'payments' : 'account_balance';
-                        
-                        html += `
-                        <div class="entry-card" style="padding:14px; border:1px solid var(--border); margin-bottom:10px; align-items:center; display:flex;">
-                            <div style="width:36px; height:36px; background:#f0f4f9; color:var(--text-muted); border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:18px; margin-right:12px;" class="material-symbols-rounded">${icon}</div>
-                            <div style="flex:1;">
-                                <div style="font-weight:600; font-size:14px; color:var(--text-dark);">${t.details || 'Entry'}</div>
-                                <div style="font-size:11px; color:var(--text-muted);">${dateStr} • ${t.mode}</div>
-                            </div>
-                            <div style="text-align:right;">
-                                <div style="color:${color}; font-weight:700; font-size:15px;">${sign}₹${parseFloat(t.amount).toLocaleString('en-IN')}</div>
-                                <button onclick="deleteCbTransaction('${t.key}', '${t.type}', ${t.amount}, '${t.modeKey}')" style="background:transparent; border:none; color:var(--danger); font-size:20px; margin-top:4px; cursor:pointer;" class="material-symbols-rounded">delete</button>
-                            </div>
-                        </div>`;
-                    });
+                cbBanks.forEach(b => {
+                    html += `
+                    <div class="entry-card" style="padding:16px; border:1px solid var(--border); margin-bottom:12px; align-items:center; display:flex;">
+                        <div style="width:40px; height:40px; background:#e8f0fe; color:var(--primary-dark); border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:20px; margin-right:12px;" class="material-symbols-rounded">account_balance</div>
+                        <div style="flex:1;">
+                            <div style="font-weight:700; font-size:15px; color:var(--text-dark);">${b.name}</div>
+                            <div style="font-size:11px; color:var(--text-muted);">Bank Account</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="color:var(--primary-dark); font-weight:800; font-size:16px;">₹${parseFloat(b.balance).toLocaleString('en-IN')}</div>
+                            <button onclick="deleteCbBank('${b.key}')" style="background:transparent; border:none; color:var(--danger); font-size:12px; margin-top:4px; cursor:pointer;">Delete</button>
+                        </div>
+                    </div>`;
+                });
+            }
+        } else {
+            // ALL TRANSACTIONS
+            if(cbTransactions.length === 0) {
+                html = `<div style="text-align:center; padding:40px 20px; color:gray;">No transactions found.</div>`;
+            } else {
+                let sortedTx = [...cbTransactions].sort((a,b) => new Date(b.date) - new Date(a.date));
+                sortedTx.forEach(t => {
+                    let d = new Date(t.date);
+                    let dateStr = isNaN(d) ? t.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
+                    let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)';
+                    let sign = t.type === 'IN' ? '+' : '-';
+                    let icon = t.mode === 'Cash' ? 'payments' : 'account_balance';
+                    
+                    html += `
+                    <div class="entry-card" style="padding:14px; border:1px solid var(--border); margin-bottom:10px; align-items:center; display:flex;">
+                        <div style="width:36px; height:36px; background:#f0f4f9; color:var(--text-muted); border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:18px; margin-right:12px;" class="material-symbols-rounded">${icon}</div>
+                        <div style="flex:1;">
+                            <div style="font-weight:600; font-size:14px; color:var(--text-dark);">${t.category || 'Entry'}</div>
+                            <div style="font-size:11px; color:var(--text-muted);">${dateStr} • ${t.mode} • ${t.details || ''}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="color:${color}; font-weight:700; font-size:15px;">${sign}₹${parseFloat(t.amount).toLocaleString('en-IN')}</div>
+                            <button onclick="deleteCbTransaction('${t.key}', '${t.type}', ${t.amount}, '${t.modeKey}')" style="background:transparent; border:none; color:var(--danger); font-size:20px; margin-top:4px; cursor:pointer;" class="material-symbols-rounded">delete</button>
+                        </div>
+                    </div>`;
+                });
+            }
+        }
+        area.innerHTML = html;
+    }
+
+    window.saveNewBank = function() {
+        let name = document.getElementById('cb-new-bank-name').value.trim();
+        let bal = parseFloat(document.getElementById('cb-new-bank-bal').value) || 0;
+        if(!name) return alert("Please enter Bank Name!");
+        
+        push(ref(db, 'CashBankBook/Banks'), {
+            name: name, balance: bal, createdAt: new Date().toISOString()
+        }).then(() => {
+            document.getElementById('cb-new-bank-name').value = '';
+            document.getElementById('cb-new-bank-bal').value = '';
+            document.getElementById('cb-bank-form').classList.add('form-hidden');
+            switchCbTab('banks');
+            if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Bank Added Successfully!");
+        });
+    }
+
+    window.deleteCbBank = function(key) {
+        window.showCustomConfirm("Delete Bank?", "क्या आप इस बैंक अकाउंट को डिलीट करना चाहते हैं?", function() {
+            remove(ref(db, 'CashBankBook/Banks/' + key)).then(() => {
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Bank Account Deleted! ✅");
+            });
+        });
+    }
+
+    window.openCbEntryModal = function(type) {
+        document.getElementById('cb-entry-type').value = type;
+        let title = document.getElementById('cb-entry-title');
+        let btn = document.getElementById('cb-entry-save-btn');
+        let upiBtn = document.getElementById('cb-upi-btn');
+        let catSelect = document.getElementById('cb-entry-category');
+        
+        let catHtml = '';
+        if(type === 'IN') {
+            title.innerText = "Money IN (पैसे आये)";
+            title.style.color = "var(--success)";
+            btn.style.background = "var(--success)";
+            upiBtn.style.display = 'none'; // Only out for UPI
+            incomeCategories.forEach(c => catHtml += `<option value="${c}">${c}</option>`);
+        } else {
+            title.innerText = "Money OUT (खर्चा / पैसे गए)";
+            title.style.color = "var(--danger)";
+            btn.style.background = "var(--danger)";
+            upiBtn.style.display = 'flex'; // Show UPI for expenses
+            expenseCategories.forEach(c => catHtml += `<option value="${c}">${c}</option>`);
+        }
+        catSelect.innerHTML = catHtml;
+
+        document.getElementById('cb-entry-amount').value = '';
+        document.getElementById('cb-entry-details').value = '';
+        
+        let modeSelect = document.getElementById('cb-entry-mode');
+        let modeHtml = `<option value="Cash">Cash (गल्ला)</option>`;
+        cbBanks.forEach(b => { modeHtml += `<option value="${b.key}">${b.name} (Bank)</option>`; });
+        modeSelect.innerHTML = modeHtml;
+
+        document.getElementById('cb-entry-modal').style.display = 'flex';
+    }
+
+    window.saveCbEntry = function() {
+        let type = document.getElementById('cb-entry-type').value;
+        let amount = parseFloat(document.getElementById('cb-entry-amount').value);
+        let category = document.getElementById('cb-entry-category').value;
+        let modeKey = document.getElementById('cb-entry-mode').value;
+        let details = document.getElementById('cb-entry-details').value.trim();
+
+        if(isNaN(amount) || amount <= 0) return alert("Please enter a valid amount!");
+        if(!details) details = type === 'IN' ? 'Money Received' : 'Expense/Money Sent';
+
+        let modeName = "Cash";
+        
+        if(modeKey !== 'Cash') {
+            let bank = cbBanks.find(b => b.key === modeKey);
+            if(bank) {
+                modeName = bank.name;
+                let newBal = type === 'IN' ? (bank.balance + amount) : (bank.balance - amount);
+                update(ref(db, 'CashBankBook/Banks/' + bank.key), { balance: newBal });
+            }
+        }
+
+        push(ref(db, 'CashBankBook/Transactions'), {
+            date: new Date().toISOString(), type: type, amount: amount, category: category,
+            mode: modeName, modeKey: modeKey, details: details
+        }).then(() => {
+            document.getElementById('cb-entry-modal').style.display = 'none';
+            switchCbTab('day');
+            if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Entry Saved Fast! ⚡");
+        });
+    }
+
+    window.payExpenseViaUPI = function() {
+        let amount = parseFloat(document.getElementById('cb-entry-amount').value);
+        if(isNaN(amount) || amount <= 0) return alert("Pehle Expense ka Amount likhein!");
+        
+        // Save the entry immediately since we assume UPI intent will fire
+        saveCbEntry();
+        
+        // Fire UPI Intent (Opens PhonePe/GPay on mobile)
+        window.location.href = `upi://pay?am=${amount}&cu=INR`;
+    }
+
+    window.openCbContraModal = function() {
+        let fromSelect = document.getElementById('cb-contra-from');
+        let toSelect = document.getElementById('cb-contra-to');
+        
+        let options = `<option value="Cash">Cash (गल्ला)</option>`;
+        cbBanks.forEach(b => { options += `<option value="${b.key}">${b.name}</option>`; });
+        
+        fromSelect.innerHTML = options;
+        toSelect.innerHTML = options;
+        
+        document.getElementById('cb-contra-amount').value = '';
+        document.getElementById('cb-contra-details').value = '';
+        document.getElementById('cb-contra-modal').style.display = 'flex';
+    }
+
+    window.saveCbContra = function() {
+        let amount = parseFloat(document.getElementById('cb-contra-amount').value);
+        let fromKey = document.getElementById('cb-contra-from').value;
+        let toKey = document.getElementById('cb-contra-to').value;
+        let details = document.getElementById('cb-contra-details').value.trim() || "Bank-Cash Transfer";
+
+        if(isNaN(amount) || amount <= 0) return alert("Please enter valid amount!");
+        if(fromKey === toKey) return alert("From aur To dono same nahi ho sakte!");
+
+        let fromName = "Cash"; let toName = "Cash";
+        let promises = [];
+
+        // Deduct from 'From'
+        if(fromKey !== 'Cash') {
+            let b = cbBanks.find(x => x.key === fromKey);
+            if(b) { fromName = b.name; promises.push(update(ref(db, 'CashBankBook/Banks/' + b.key), { balance: b.balance - amount })); }
+        }
+        // Add to 'To'
+        if(toKey !== 'Cash') {
+            let b = cbBanks.find(x => x.key === toKey);
+            if(b) { toName = b.name; promises.push(update(ref(db, 'CashBankBook/Banks/' + b.key), { balance: b.balance + amount })); }
+        }
+
+        // Save Txn
+        promises.push(push(ref(db, 'CashBankBook/Transactions'), {
+            date: new Date().toISOString(), type: 'CONTRA', amount: amount, category: 'Transfer',
+            mode: `${fromName} ➔ ${toName}`, modeKey: 'CONTRA', details: details
+        }));
+
+        Promise.all(promises).then(() => {
+            document.getElementById('cb-contra-modal').style.display = 'none';
+            switchCbTab('day');
+            if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Transfer Successful! 🔄");
+        });
+    }
+
+    window.deleteCbTransaction = function(txKey, type, amount, modeKey) {
+        window.showCustomConfirm("Delete Transaction?", "क्या आप इस एंट्री को डिलीट करना चाहते हैं?", function() {
+            if(modeKey && modeKey !== 'Cash' && modeKey !== 'CONTRA') {
+                let bank = cbBanks.find(b => b.key === modeKey);
+                if(bank) {
+                    let newBal = type === 'IN' ? (bank.balance - amount) : (bank.balance + amount);
+                    update(ref(db, 'CashBankBook/Banks/' + bank.key), { balance: newBal });
                 }
             }
-            area.innerHTML = html;
-        }
-
-        window.saveNewBank = function() {
-            let name = document.getElementById('cb-new-bank-name').value.trim();
-            let bal = parseFloat(document.getElementById('cb-new-bank-bal').value) || 0;
-            if(!name) return alert("Please enter Bank Name!");
-            
-            push(ref(db, 'CashBankBook/Banks'), {
-                name: name,
-                balance: bal,
-                createdAt: new Date().toISOString()
-            }).then(() => {
-                document.getElementById('cb-new-bank-name').value = '';
-                document.getElementById('cb-new-bank-bal').value = '';
-                document.getElementById('cb-bank-form').classList.add('form-hidden');
-                switchCbTab('banks');
-                alert("Bank Account Added!");
+            remove(ref(db, 'CashBankBook/Transactions/' + txKey)).then(() => {
+                if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Transaction Deleted! ✅");
             });
-        }
-
-        window.deleteCbBank = function(key) {
-            window.showCustomConfirm("Delete Bank?", "क्या आप इस बैंक अकाउंट को डिलीट करना चाहते हैं?", function() {
-                remove(ref(db, 'CashBankBook/Banks/' + key)).then(() => {
-                    if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Bank Account Deleted! ✅");
-                });
-            });
-        }
+        });
+    }
+    // ==============================================================================
 
         window.openCbEntryModal = function(type) {
             document.getElementById('cb-entry-type').value = type;
@@ -5968,7 +6220,6 @@ window.showTargetCelebration = function() {
                 });
             });
         }
-        // ==========================================================
         
            </script>
             

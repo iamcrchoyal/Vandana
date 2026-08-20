@@ -1005,6 +1005,13 @@
                             </div>
                         </div>
                         
+                        <div id="online-bank-container" style="display:none; margin-bottom:16px; background:#e8f0fe; padding:12px; border-radius:12px; border:1px solid #c2e7ff;">
+                            <label class="form-label" style="font-size:12px; color:var(--primary-dark); font-weight:700; margin-bottom:8px;">🏦 Select Bank for Online Payment</label>
+                            <select id="inv-bank-select" class="form-control" style="border-radius:10px; border:1px solid var(--border); background:white; color:var(--text-dark); font-weight:600;">
+                                <option value="">Select Bank Account</option>
+                            </select>
+                        </div>
+                        
                         <div id="pos-dynamic-qr-box" style="display:none; text-align:center; padding:20px; background:white; border:2px solid #0a56d0; border-radius:16px; box-shadow:0 8px 20px rgba(10,86,208,0.15); position:relative; margin-top:10px;">
                             <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:#0a56d0; color:white; padding:4px 14px; border-radius:20px; font-size:11px; font-weight:800; letter-spacing:1px; display:flex; align-items:center; gap:4px;"><span class="material-symbols-rounded" style="font-size:14px;">qr_code_scanner</span> SCAN TO PAY</div>
                             <div style="font-size:14px; font-weight:600; color:var(--text-muted); margin-bottom:8px; margin-top:8px;">Amount to be paid</div>
@@ -4054,7 +4061,7 @@
 
         let currentCart = []; let grandInvoiceTotal = 0; let invoiceBoxCount = 0;
         
-        // 🌟 NEW PAYMENT MODES & DYNAMIC QR LOGIC
+        // 🌟 NEW PAYMENT MODES & BANK DROPDOWN LOGIC
         window.setPaymentMode = function(mode) {
             window.currentPaymentMode = mode;
             let btnPending = document.getElementById('pm-pending');
@@ -4068,6 +4075,8 @@
 
             document.getElementById('half-payment-container').style.display = 'none';
             document.getElementById('pos-dynamic-qr-box').style.display = 'none';
+            let bankCont = document.getElementById('online-bank-container');
+            if(bankCont) bankCont.style.display = 'none';
 
             if(mode === 'pending') {
                 if(btnPending) { btnPending.style.background = '#fdf2f2'; btnPending.style.color = 'var(--danger)'; btnPending.style.borderColor = 'var(--danger)'; }
@@ -4075,11 +4084,29 @@
                 if(btnCash) { btnCash.style.background = '#e6f4ea'; btnCash.style.color = 'var(--success)'; btnCash.style.borderColor = 'var(--success)'; }
             } else if(mode === 'online') {
                 if(btnOnline) { btnOnline.style.background = '#e8f0fe'; btnOnline.style.color = 'var(--primary)'; btnOnline.style.borderColor = 'var(--primary)'; }
+                if(bankCont) bankCont.style.display = 'block';
+                populatePosBankDropdown();
             } else if(mode === 'half') {
                 if(btnHalf) { btnHalf.style.background = '#fdf4e5'; btnHalf.style.color = '#b36b00'; btnHalf.style.borderColor = '#f29900'; }
                 document.getElementById('half-payment-container').style.display = 'flex';
+                if(bankCont) bankCont.style.display = 'block';
+                populatePosBankDropdown();
             }
             window.updateDynamicQR();
+        }
+
+        window.populatePosBankDropdown = function() {
+            let select = document.getElementById('inv-bank-select');
+            if(!select) return;
+            let options = '<option value="">Select Bank Account</option>';
+            if(typeof cbBanks !== 'undefined' && cbBanks.length > 0) {
+                cbBanks.forEach(b => {
+                    options += `<option value="${b.key}">${b.name} (₹${parseFloat(b.balance).toLocaleString('en-IN')})</option>`;
+                });
+            } else {
+                options = '<option value="">No Bank Accounts Added Yet!</option>';
+            }
+            select.innerHTML = options;
         }
 
         window.updateDynamicQR = function() {
@@ -4663,6 +4690,21 @@
             let totalReceived = cAmt + oAmt;
             if(totalReceived > grandInvoiceTotal) return alert("Received amount cannot be greater than Total Bill amount!");
 
+            // 🌟 CHECK BANK SELECTION
+            window.selBankKeyForBill = '';
+            window.selBankNameForBill = '';
+            if (oAmt > 0) {
+                let bankSelect = document.getElementById('inv-bank-select');
+                if(!bankSelect || !bankSelect.value) {
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Error: Please select a Bank Account! 🏦");
+                    else alert("Please select a Bank Account for Online Payment!");
+                    return; // Code yahin ruk jayega!
+                }
+                window.selBankKeyForBill = bankSelect.value;
+                let selectedBank = cbBanks.find(b => b.key === window.selBankKeyForBill);
+                window.selBankNameForBill = selectedBank ? selectedBank.name : "Bank";
+            }
+
             let exists = globalCustomers.find(c => c.name.toLowerCase() === partyName.toLowerCase()); 
             if(!exists) { push(ref(db, 'Customers'), { name: partyName, phone: partyPhone, address: "", date: new Date().toISOString(), status: "Active", type: "Customer" }); } 
             
@@ -4756,13 +4798,33 @@
 
             savePromise.then(() => {
                 let paymentPromises = [];
+                
                 if(cAmt > 0) {
+                    // 1. Customer Ledger Entry (Cash)
                     let cashEntry = { date: finalDateTime, name: partyName, type: "Got", amount: cAmt, details: `Cash Received (Bill #${tempBillNo})` };
                     paymentPromises.push(push(ref(db, 'Ledger'), cashEntry));
+                    
+                    // 2. Cashbook Entry (Galla Plus Hoga)
+                    paymentPromises.push(push(ref(db, 'CashBankBook/Transactions'), {
+                        date: finalDateTime, type: 'IN', amount: cAmt, mode: 'Cash', modeKey: 'Cash', details: `Bill Payment - ${partyName} (#${tempBillNo})`
+                    }));
                 }
+                
                 if(oAmt > 0) {
-                    let onlineEntry = { date: finalDateTime, name: partyName, type: "Got", amount: oAmt, details: `Online Payment Received (Bill #${tempBillNo})` };
+                    // 1. Customer Ledger Entry (Online)
+                    let onlineEntry = { date: finalDateTime, name: partyName, type: "Got", amount: oAmt, details: `Online via ${window.selBankNameForBill} (Bill #${tempBillNo})` };
                     paymentPromises.push(push(ref(db, 'Ledger'), onlineEntry));
+                    
+                    // 2. Bank Transaction Entry
+                    paymentPromises.push(push(ref(db, 'CashBankBook/Transactions'), {
+                        date: finalDateTime, type: 'IN', amount: oAmt, mode: window.selBankNameForBill, modeKey: window.selBankKeyForBill, details: `Bill Payment - ${partyName} (#${tempBillNo})`
+                    }));
+                    
+                    // 3. Bank Account Balance Update (Superfast)
+                    let targetBank = cbBanks.find(b => b.key === window.selBankKeyForBill);
+                    if(targetBank) {
+                        paymentPromises.push(update(ref(db, 'CashBankBook/Banks/' + targetBank.key), { balance: targetBank.balance + oAmt }));
+                    }
                 }
 
                 Promise.all(paymentPromises).then(() => {

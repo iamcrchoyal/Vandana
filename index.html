@@ -1052,7 +1052,10 @@
         <div class="fixed-top-section">
             <div class="form-panel anim-form form-hidden" id="cb-bank-form" style="margin-bottom:10px; border-color:var(--primary-dark) !important;">
                 <div class="form-group" style="margin-bottom:12px;">
-                    <input type="text" id="cb-new-bank-name" class="form-control" placeholder="Bank Name (e.g. SBI, PhonePe)">
+                    <input type="text" id="cb-new-bank-name" class="form-control" placeholder="Bank Name (e.g. SBI, HDFC, PhonePe)">
+                </div>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <input type="text" id="cb-new-bank-holder" class="form-control" placeholder="Account Holder Name (e.g. Rahul)">
                 </div>
                 <div class="form-group" style="margin-bottom:12px;">
                     <input type="number" id="cb-new-bank-bal" class="form-control" placeholder="Opening Balance (₹)">
@@ -1061,13 +1064,15 @@
             </div>
             
             <div style="display:flex; gap:10px; margin-bottom:16px;">
-                <div style="flex:1; background:#e6f4ea; border:1px solid #cce8d6; border-radius:16px; padding:16px; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.02);">
-                    <div style="font-size:11px; color:#146c2e; font-weight:600; text-transform:uppercase; margin-bottom:4px;">Cash in Hand (गल्ला)</div>
-                    <div style="font-size:22px; font-weight:700; color:#146c2e; font-family:'Product Sans', sans-serif;" id="cb-cash-bal">₹ 0</div>
+                <div style="flex:1; background:linear-gradient(135deg, #e6f4ea 0%, #cce8d6 100%); border-radius:16px; padding:20px 16px; text-align:left; position:relative; overflow:hidden; box-shadow:0 4px 10px rgba(20, 108, 46, 0.1);">
+                    <span class="material-symbols-rounded" style="position:absolute; right:-10px; bottom:-15px; font-size:75px; color:#146c2e; opacity:0.1; transform:rotate(-15deg);">payments</span>
+                    <div style="font-size:24px; font-weight:800; color:#146c2e; font-family:'Product Sans', sans-serif; line-height:1; margin-bottom:6px;" id="cb-cash-bal">₹ 0</div>
+                    <div style="font-size:11px; color:#146c2e; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; opacity:0.8;">Cash in Hand</div>
                 </div>
-                <div style="flex:1; background:#e8f0fe; border:1px solid #c2e7ff; border-radius:16px; padding:16px; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.02);">
-                    <div style="font-size:11px; color:#0a56d0; font-weight:600; text-transform:uppercase; margin-bottom:4px;">Total Bank Balance</div>
-                    <div style="font-size:22px; font-weight:700; color:#0a56d0; font-family:'Product Sans', sans-serif;" id="cb-bank-bal">₹ 0</div>
+                <div style="flex:1; background:linear-gradient(135deg, #e8f0fe 0%, #c2e7ff 100%); border-radius:16px; padding:20px 16px; text-align:left; position:relative; overflow:hidden; box-shadow:0 4px 10px rgba(10, 86, 208, 0.1);">
+                    <span class="material-symbols-rounded" style="position:absolute; right:-10px; bottom:-15px; font-size:75px; color:#0a56d0; opacity:0.1; transform:rotate(-15deg);">account_balance</span>
+                    <div style="font-size:24px; font-weight:800; color:#0a56d0; font-family:'Product Sans', sans-serif; line-height:1; margin-bottom:6px;" id="cb-bank-bal">₹ 0</div>
+                    <div style="font-size:11px; color:#0a56d0; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; opacity:0.8;">Total Bank Balance</div>
                 </div>
             </div>
             
@@ -1086,11 +1091,11 @@
             <button class="btn-submit" style="flex:1; background:#f0f4f9; color:var(--primary-dark); border:1px solid var(--primary-dark); border-radius:14px; font-size:12px; display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px;" onclick="openCbContraModal()">
                 <span class="material-symbols-rounded" style="font-size:18px;">sync_alt</span> Contra
             </button>
-            <button class="btn-submit" style="flex:1.5; background:#fdf2f2; color:var(--danger); border-radius:14px; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px; box-shadow:none;" onclick="openCbEntryModal('OUT')">
-                <span class="material-symbols-rounded" style="font-size:18px;">remove_circle</span> Money OUT
+            <button class="btn-submit" style="flex:1.5; background:#fdf2f2; color:var(--danger); border-radius:14px; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px; box-shadow:none; white-space:nowrap;" onclick="openCbEntryModal('OUT')">
+                <span class="material-symbols-rounded" style="font-size:18px;">remove_circle</span> Money Out
             </button>
-            <button class="btn-submit" style="flex:1.5; background:#e6f4ea; color:var(--success); border-radius:14px; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px; box-shadow:none;" onclick="openCbEntryModal('IN')">
-                <span class="material-symbols-rounded" style="font-size:18px;">add_circle</span> Money IN
+            <button class="btn-submit" style="flex:1.5; background:#e6f4ea; color:var(--success); border-radius:14px; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px; box-shadow:none; white-space:nowrap;" onclick="openCbEntryModal('IN')">
+                <span class="material-symbols-rounded" style="font-size:18px;">add_circle</span> Money In
             </button>
         </div>
 
@@ -5886,6 +5891,45 @@ window.showTargetCelebration = function() {
         renderCbTab();
     }
 
+    // 🌟 1.5 SEC LONG PRESS ENGINE FOR BANKS
+    window.bankHoldTimer = null;
+    window.isBankTouchDetected = false;
+
+    window.startBankHold = function(key, safeId, bankName, event) {
+        if (event.type === 'touchstart') window.isBankTouchDetected = true;
+        if (event.type === 'mousedown' && window.isBankTouchDetected) return;
+        
+        window.bankHoldTimer = setTimeout(() => {
+            let overlay = document.getElementById('del-bank-overlay-' + safeId);
+            if(overlay) {
+                overlay.style.display = 'flex';
+                if (navigator.vibrate) navigator.vibrate(50);
+            }
+        }, 1500); // Exactly 1.5 Seconds
+    };
+
+    window.endBankHold = function() {
+        if (window.bankHoldTimer) {
+            clearTimeout(window.bankHoldTimer);
+            window.bankHoldTimer = null;
+        }
+    };
+
+    window.cancelBankOverlay = function(safeId, event) {
+        event.stopPropagation();
+        let overlay = document.getElementById('del-bank-overlay-' + safeId);
+        if(overlay) overlay.style.display = 'none';
+    };
+
+    window.confirmDeleteBank = function(key, bankName, event) {
+        event.stopPropagation();
+        window.showCustomConfirm("Delete Bank?", `Kya aap sach me '${bankName}' aur iska hisaab delete karna chahte hain?`, function() {
+            remove(ref(db, 'CashBankBook/Banks/' + key)).then(() => {
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Bank Account Deleted! ✅");
+            });
+        });
+    };
+
     // 🌟 SMART BANK LOGO ENGINE (100% Professional)
     window.getBankLogoHTML = function(bankName) {
         let name = bankName.toLowerCase();
@@ -5906,9 +5950,9 @@ window.showTargetCelebration = function() {
         else if (name.includes('indusind')) logoUrl = 'https://upload.wikimedia.org/wikipedia/commons/4/4b/IndusInd_Bank_logo.svg';
         
         if (logoUrl) {
-            return `<img src="${logoUrl}" style="width:24px; height:24px; object-fit:contain;">`;
+            return `<img src="${logoUrl}" style="width:26px; height:26px; object-fit:contain;">`;
         } else {
-            return `<span class="material-symbols-rounded" style="font-size:20px; color:var(--primary-dark);">account_balance</span>`;
+            return `<span class="material-symbols-rounded" style="font-size:22px; color:var(--primary-dark);">account_balance</span>`;
         }
     }
 
@@ -5918,8 +5962,8 @@ window.showTargetCelebration = function() {
         let html = "";
         
         if (currentCbTab === 'day') {
-            // 🌟 FAST DAY-BOOK LOGIC
-            let todayStr = new Date().toLocaleDateString('en-GB'); // DD/MM/YYYY
+            // 🌟 FAST DAY-BOOK LOGIC (Corporate UI)
+            let todayStr = new Date().toLocaleDateString('en-GB'); 
             let dayIn = 0; let dayOut = 0;
             let dayTxHtml = "";
             
@@ -5932,25 +5976,45 @@ window.showTargetCelebration = function() {
                     
                     let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)';
                     let sign = t.type === 'IN' ? '+' : '-';
+                    let iconHtml = t.mode === 'Cash' 
+                        ? `<span class="material-symbols-rounded" style="font-size:18px; color:var(--text-muted);">payments</span>` 
+                        : (t.mode.includes('➔') ? `<span class="material-symbols-rounded" style="font-size:18px; color:var(--primary);">sync_alt</span>` : getBankLogoHTML(t.mode));
+
                     dayTxHtml += `
-                    <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f0f4f9;">
-                        <div>
-                            <div style="font-weight:600; font-size:13px; color:var(--text-dark);">${t.category || t.details || 'Entry'}</div>
-                            <div style="font-size:11px; color:var(--text-muted);">${t.mode}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid #f0f4f9;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div style="width:36px; height:36px; background:#f8fafd; border-radius:50%; display:flex; justify-content:center; align-items:center; border:1px solid #e0e2e0;">
+                                ${iconHtml}
+                            </div>
+                            <div>
+                                <div style="font-weight:700; font-size:14px; color:var(--text-dark);">${t.category || t.details || 'Entry'}</div>
+                                <div style="font-size:11px; color:var(--text-muted); font-weight:500;">${t.mode}</div>
+                            </div>
                         </div>
-                        <div style="color:${color}; font-weight:700; font-size:14px;">${sign}₹${amt}</div>
+                        <div style="color:${color}; font-weight:800; font-size:15px; font-family:'Product Sans', sans-serif;">${sign}₹${amt.toLocaleString('en-IN')}</div>
                     </div>`;
                 }
             });
             
             html = `
-            <div class="form-panel" style="background:white; border-radius:16px; padding:16px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-                <h3 style="font-size:14px; margin-bottom:12px; color:var(--primary-dark); font-family:'Product Sans', sans-serif;">Today's Summary (${todayStr})</h3>
-                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13px;"><span style="color:var(--text-muted);">Total IN:</span> <span style="font-weight:700; color:var(--success);">+ ₹${dayIn.toLocaleString()}</span></div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:13px;"><span style="color:var(--text-muted);">Total OUT:</span> <span style="font-weight:700; color:var(--danger);">- ₹${dayOut.toLocaleString()}</span></div>
-                <div style="border-top:1px dashed #e0e2e0; padding-top:12px;">
-                    <div style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:8px;">TODAY'S TRANSACTIONS</div>
-                    ${dayTxHtml || '<div style="font-size:12px; color:gray; text-align:center; padding:10px;">No transactions today</div>'}
+            <div style="background:linear-gradient(135deg, #ffffff 0%, #f8fafd 100%); border-radius:20px; padding:20px; box-shadow:0 4px 20px rgba(0,0,0,0.03); border:1px solid #c2e7ff; margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid #e0e2e0; padding-bottom:12px;">
+                    <h3 style="font-size:16px; margin:0; color:var(--text-dark); font-family:'Product Sans', sans-serif; font-weight:800;">📅 Day Book Report</h3>
+                    <span style="background:#e8f0fe; color:var(--primary-dark); padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700;">${todayStr}</span>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;">
+                    <div style="background:#e6f4ea; padding:16px; border-radius:14px; border:1px solid #cce8d6; text-align:center;">
+                        <div style="font-size:11px; color:#146c2e; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">CASH IN (+)</div>
+                        <div style="font-size:20px; font-weight:800; color:#146c2e; font-family:'Product Sans', sans-serif;">₹${dayIn.toLocaleString('en-IN')}</div>
+                    </div>
+                    <div style="background:#fdf2f2; padding:16px; border-radius:14px; border:1px solid #f8cbcb; text-align:center;">
+                        <div style="font-size:11px; color:#b3261e; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">CASH OUT (-)</div>
+                        <div style="font-size:20px; font-weight:800; color:#b3261e; font-family:'Product Sans', sans-serif;">₹${dayOut.toLocaleString('en-IN')}</div>
+                    </div>
+                </div>
+                <div style="border-top:1px dashed #c2e7ff; padding-top:16px;">
+                    <div style="font-size:11px; font-weight:800; color:var(--primary-dark); margin-bottom:8px; text-transform:uppercase; letter-spacing:1px;">Today's Transactions</div>
+                    ${dayTxHtml || '<div style="font-size:13px; color:var(--text-muted); text-align:center; padding:16px; font-weight:600; background:white; border-radius:12px; border:1px solid #e0e2e0;">☕ Aaj ki pehli entry add karein!</div>'}
                 </div>
             </div>`;
             
@@ -5959,19 +6023,30 @@ window.showTargetCelebration = function() {
                 html = `<div style="text-align:center; padding:40px 20px; color:gray;">No bank accounts added.</div>`;
             } else {
                 cbBanks.forEach(b => {
+                    let safeId = 'bank_' + b.key.replace(/[^a-zA-Z0-9]/g, '_');
                     let logoHtml = getBankLogoHTML(b.name);
+                    
+                    // 🌟 IF HOLDER NAME EXISTS, SHOW HOLDER NAME, ELSE SHOW BANK NAME
+                    let displayName = b.holderName ? b.holderName : b.name;
+                    let subText = b.holderName ? b.name : "Bank Account";
+
                     html += `
-                    <div class="entry-card" style="padding:16px; border:1px solid var(--border); margin-bottom:12px; align-items:center; display:flex; box-shadow:0 2px 5px rgba(0,0,0,0.02);">
-                        <div style="width:44px; height:44px; background:#f8fafd; border-radius:50%; display:flex; justify-content:center; align-items:center; margin-right:14px; border:1px solid #e0e2e0; box-shadow:inset 0 2px 4px rgba(0,0,0,0.05);">
+                    <div class="entry-card" style="padding:16px; border:1px solid var(--border); margin-bottom:12px; align-items:center; display:flex; box-shadow:0 2px 5px rgba(0,0,0,0.02); position:relative;" onmousedown="startBankHold('${b.key}', '${safeId}', '${displayName}', event)" onmouseup="endBankHold()" onmouseleave="endBankHold()" ontouchstart="startBankHold('${b.key}', '${safeId}', '${displayName}', event)" ontouchend="endBankHold()">
+                        
+                        <div id="del-bank-overlay-${safeId}" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.95); z-index:10; align-items:center; justify-content:center; border-radius:12px; backdrop-filter:blur(3px); gap:10px; box-shadow:0 4px 15px rgba(0,0,0,0.1);">
+                            <button class="btn-submit" style="background:var(--danger); padding:8px 14px; font-size:13px; font-weight:700; box-shadow:none; border-radius:10px;" onclick="confirmDeleteBank('${b.key}', '${displayName}', event)">🗑️ Delete Account</button>
+                            <button class="btn-outline" style="padding:6px 10px; font-size:16px; border-color:var(--text-muted); color:var(--text-muted); border-radius:10px;" onclick="cancelBankOverlay('${safeId}', event)">✕</button>
+                        </div>
+
+                        <div style="width:48px; height:48px; background:#f8fafd; border-radius:50%; display:flex; justify-content:center; align-items:center; margin-right:14px; border:1px solid #e0e2e0; box-shadow:inset 0 2px 4px rgba(0,0,0,0.05);">
                             ${logoHtml}
                         </div>
                         <div style="flex:1;">
-                            <div style="font-weight:800; font-size:15px; color:var(--text-dark); font-family:'Product Sans', sans-serif;">${b.name}</div>
-                            <div style="font-size:11px; color:var(--text-muted); font-weight:500;">Active Account</div>
+                            <div style="font-weight:800; font-size:16px; color:var(--text-dark); font-family:'Product Sans', sans-serif; letter-spacing:-0.3px;">${displayName}</div>
+                            <div style="font-size:11px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">${subText}</div>
                         </div>
                         <div style="text-align:right;">
-                            <div style="color:var(--primary-dark); font-weight:800; font-size:17px; font-family:'Product Sans', sans-serif;">₹${parseFloat(b.balance).toLocaleString('en-IN')}</div>
-                            <button onclick="deleteCbBank('${b.key}')" style="background:transparent; border:none; color:var(--danger); font-size:12px; margin-top:4px; cursor:pointer; font-weight:700;">Delete</button>
+                            <div style="color:var(--primary-dark); font-weight:800; font-size:18px; font-family:'Product Sans', sans-serif;">₹${parseFloat(b.balance).toLocaleString('en-IN')}</div>
                         </div>
                     </div>`;
                 });
@@ -5989,18 +6064,18 @@ window.showTargetCelebration = function() {
                     let sign = t.type === 'IN' ? '+' : '-';
                     
                     let iconHtml = t.mode === 'Cash' 
-                        ? `<span class="material-symbols-rounded" style="font-size:18px;">payments</span>` 
-                        : (t.mode.includes('➔') ? `<span class="material-symbols-rounded" style="font-size:18px;">sync_alt</span>` : getBankLogoHTML(t.mode));
+                        ? `<span class="material-symbols-rounded" style="font-size:20px; color:var(--text-muted);">payments</span>` 
+                        : (t.mode.includes('➔') ? `<span class="material-symbols-rounded" style="font-size:20px; color:var(--primary);">sync_alt</span>` : getBankLogoHTML(t.mode));
                     
                     html += `
                     <div class="entry-card" style="padding:14px; border:1px solid var(--border); margin-bottom:10px; align-items:center; display:flex;">
-                        <div style="width:36px; height:36px; background:#f0f4f9; color:var(--text-muted); border-radius:50%; display:flex; justify-content:center; align-items:center; margin-right:12px;">${iconHtml}</div>
+                        <div style="width:40px; height:40px; background:#f0f4f9; border-radius:50%; display:flex; justify-content:center; align-items:center; margin-right:12px; border:1px solid #e0e2e0;">${iconHtml}</div>
                         <div style="flex:1;">
                             <div style="font-weight:700; font-size:14px; color:var(--text-dark);">${t.category || 'Entry'}</div>
                             <div style="font-size:11px; color:var(--text-muted); font-weight:500;">${dateStr} • ${t.mode} • ${t.details || ''}</div>
                         </div>
                         <div style="text-align:right;">
-                            <div style="color:${color}; font-weight:800; font-size:15px; font-family:'Product Sans', sans-serif;">${sign}₹${parseFloat(t.amount).toLocaleString('en-IN')}</div>
+                            <div style="color:${color}; font-weight:800; font-size:16px; font-family:'Product Sans', sans-serif;">${sign}₹${parseFloat(t.amount).toLocaleString('en-IN')}</div>
                             <button onclick="deleteCbTransaction('${t.key}', '${t.type}', ${t.amount}, '${t.modeKey}')" style="background:transparent; border:none; color:var(--danger); font-size:20px; margin-top:4px; cursor:pointer;" class="material-symbols-rounded">delete</button>
                         </div>
                     </div>`;
@@ -6010,11 +6085,14 @@ window.showTargetCelebration = function() {
         area.innerHTML = html;
     }
 
-    // 🌟 FIX: BANK SAVE NOW ADDS OPENING BALANCE CORRECTLY
+    // 🌟 FIX: BANK SAVE NOW SAVES HOLDER NAME & BALANCE CORRECTLY
     window.saveNewBank = function() {
         let nameInput = document.getElementById('cb-new-bank-name');
+        let holderInput = document.getElementById('cb-new-bank-holder');
         let balInput = document.getElementById('cb-new-bank-bal');
+        
         let name = nameInput.value.trim();
+        let holder = holderInput ? holderInput.value.trim() : "";
         let bal = parseFloat(balInput.value) || 0;
         
         if(!name) return alert("Please enter Bank Name!");
@@ -6026,6 +6104,7 @@ window.showTargetCelebration = function() {
         let newBankRef = push(ref(db, 'CashBankBook/Banks'));
         set(newBankRef, {
             name: name, 
+            holderName: holder,
             balance: bal, 
             createdAt: new Date().toISOString()
         }).then(() => {
@@ -6043,6 +6122,7 @@ window.showTargetCelebration = function() {
             }
             
             nameInput.value = '';
+            if(holderInput) holderInput.value = '';
             balInput.value = '';
             document.getElementById('cb-bank-form').classList.add('form-hidden');
             btn.innerText = oldText;

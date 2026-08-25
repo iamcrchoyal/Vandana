@@ -974,7 +974,10 @@
 
                         <div class="input-btn-group" id="pos-dynamic-inputs" style="margin-bottom: 16px;">
                             </div>
-                        <button class="btn-submit" style="background:linear-gradient(135deg, #0a56d0 0%, #0842a0 100%); display:flex; align-items:center; justify-content:center; gap:8px; border-radius:16px; font-size:15px; box-shadow:0 4px 12px rgba(10,86,208,0.25); padding:14px;" onclick="addCartItem()"><span class="material-symbols-rounded" style="font-size:22px;">add_shopping_cart</span> Add Product</button>
+                        <!-- 🌟 POINT 15: SMART ADD BUTTON 🌟 -->
+                        <button id="smart-add-btn" class="btn-submit" style="background:#e0e2e0; color:#a8aaaa; display:flex; align-items:center; justify-content:center; gap:8px; border-radius:16px; font-size:15px; box-shadow:none; padding:14px; transition:all 0.3s ease; pointer-events:none;" onclick="addCartItem()">
+                            <span class="material-symbols-rounded" style="font-size:22px;">add_shopping_cart</span> Add Product
+                        </button>
                     </div>
                 </div>
                 
@@ -4292,8 +4295,8 @@
             }
 
             // 🌟 1. THE CONE & INTEGER ENGINE (NO DECIMALS ALLOWED)
-            if(cat === 'Thread' || cat === 'Zari' || cat === 'Cotton') {
-                qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px; font-weight:600;" oninput="this.value = this.value.replace(/[^0-9]/g, '')"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px; font-weight:600;">`;
+            if(cat === 'Thread' || cat === 'Cotton' || cat === 'Zari') {
+                qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-cone" placeholder="Cone" style="border-radius:12px; font-weight:600;" oninput="this.value = this.value.replace(/[^0-9]/g, ''); validateSmartButton();" onkeypress="handleEnterKey(event)"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px; font-weight:600;" oninput="validateSmartButton()" onkeypress="handleEnterKey(event)">`;
                 
                 if (cat === 'Thread') {
                     label.innerText = 'NUMBER';
@@ -4305,7 +4308,7 @@
             } 
             // 🌟 2. THE KG & DECIMAL ENGINE (DECIMALS ALLOWED)
             else {
-                qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-kg" placeholder="KG" step="0.01" style="border-radius:12px; font-weight:600;"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px; font-weight:600;">`;
+                qtyGroup.innerHTML = `<input type="number" class="form-control" id="inv-kg" placeholder="KG" step="0.01" style="border-radius:12px; font-weight:600;" oninput="validateSmartButton()" onkeypress="handleEnterKey(event)"><input type="number" class="form-control" id="inv-rate" placeholder="Rate (₹)" style="border-radius:12px; font-weight:600;" oninput="validateSmartButton()" onkeypress="handleEnterKey(event)">`;
                 
                 if (cat === 'Nylon') {
                     shadeWrapper.style.display = 'none';
@@ -4317,6 +4320,48 @@
                 } else {
                     label.innerText = 'SUB-PRODUCT';
                     shadeInput.placeholder = 'Tap to search Sub-Product...';
+                }
+            }
+            validateSmartButton(); // Reset button state on shade change
+        }
+
+        // 🌟 POINT 15: SMART BUTTON & ENTER KEY LOGIC 🌟
+        window.validateSmartButton = function() {
+            let btn = document.getElementById('smart-add-btn');
+            if(!btn) return;
+
+            let cat = document.getElementById('inv-cat').value;
+            let shade = document.getElementById('inv-shade').value;
+            let cone = parseFloat(document.getElementById('inv-cone') ? document.getElementById('inv-cone').value : 0) || 0;
+            let kg = parseFloat(document.getElementById('inv-kg') ? document.getElementById('inv-kg').value : 0) || 0;
+            let rate = parseFloat(document.getElementById('inv-rate') ? document.getElementById('inv-rate').value : 0) || 0;
+
+            let isKgItem = (cat === 'Cording' || cat === 'Nylon' || cat === 'Bobbin');
+            let isQtyValid = isKgItem ? (kg > 0) : (cone > 0);
+
+            if (cat && shade && isQtyValid && rate > 0) {
+                // Ready to Add (Make it Blue/Active)
+                btn.style.background = 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)';
+                btn.style.color = 'white';
+                btn.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
+                btn.style.pointerEvents = 'auto';
+            } else {
+                // Not Ready (Make it Grey/Disabled)
+                btn.style.background = '#e0e2e0';
+                btn.style.color = '#a8aaaa';
+                btn.style.boxShadow = 'none';
+                btn.style.pointerEvents = 'none';
+            }
+        }
+
+        window.handleEnterKey = function(event) {
+            // If user presses 'Enter' or 'Done' on mobile keyboard
+            if (event.key === 'Enter' || event.keyCode === 13) {
+                event.preventDefault();
+                let btn = document.getElementById('smart-add-btn');
+                // Only add if the button is active
+                if(btn.style.pointerEvents === 'auto') {
+                    addCartItem();
                 }
             }
         }

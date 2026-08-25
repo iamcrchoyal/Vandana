@@ -1269,12 +1269,12 @@
                 <!-- 🌟 SMART SIGNATURE UPLOAD (POINT 10) 🌟 -->
                 <div class="form-group" style="background:#f8fafd; padding:12px; border-radius:12px; border:1px dashed #c2e7ff; text-align:center;">
                     <label class="form-label" style="font-size:11px; font-weight:700; color:var(--primary); margin-bottom:8px;">INVOICE SIGNATURE (पारदर्शी PNG अपलोड करें)</label>
-                    <div id="admin-sign-preview" style="height:45px; display:flex; justify-content:center; align-items:center; margin-bottom:10px; font-family:'Brush Script MT', cursive; font-size:24px; color:#0a56d0; overflow:hidden;">Vandana Ent.</div>
-                    <button class="btn-outline" onclick="document.getElementById('admin-sign-hidden').click()" style="padding:8px 16px; font-size:12px; border-radius:10px; display:inline-flex; align-items:center; gap:4px; border-color:var(--primary); color:var(--primary);"><span class="material-symbols-rounded" style="font-size:16px;">draw</span> Upload Signature</button>
+                    <button class="btn-outline" onclick="document.getElementById('admin-sign-hidden').click()" style="padding:8px 16px; margin-bottom:10px; font-size:12px; border-radius:10px; display:inline-flex; align-items:center; gap:4px; border-color:var(--primary); color:var(--primary);"><span class="material-symbols-rounded" style="font-size:16px;">draw</span> Upload Signature</button>
                     <input type="file" id="admin-sign-hidden" accept="image/*" style="display:none;" onchange="handleAdminSign(event)">
+                    <div id="admin-sign-preview" style="height:45px; display:flex; justify-content:center; align-items:center; font-family:'Brush Script MT', cursive; font-size:24px; color:#0a56d0; overflow:hidden;">Vandana Ent.</div>
                 </div>
                 
-                <button class="btn-submit" onclick="saveAdminProfile()" style="border-radius:12px; margin-top:8px;">💾 Save Changes</button>
+                <button class="btn-submit" onclick="saveAdminProfile()" style="border-radius:12px; margin-top:8px;">💾 Profile Update</button>
             </div>
         </div>
     </div>
@@ -3026,7 +3026,7 @@
                             localStorage.setItem('v_adminSign', downloadURL);
                             update(ref(db, 'BusinessProfile'), { sign: downloadURL }).then(() => {
                                 loadAdminProfile();
-                                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Signature Uploaded Successfully! ✅");
+                                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Upload Successfully ✅");
                             });
                         });
                     }).catch((error) => alert("Upload failed: " + error.message));

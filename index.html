@@ -3768,6 +3768,11 @@
                 
                 window.setPaymentMode('pending'); 
                 renderCartUi(); 
+
+                // 🌟 POINT 8 FIX: Add Product Section को ज़बरदस्ती Show करवाना 🌟
+                if(typeof checkPosStep1 === 'function') checkPosStep1();
+                document.getElementById('pos-add-product-section').style.display = 'block';
+
                 navTo('pos-page', null); 
                 document.getElementById('billing-form-area').style.display = 'block'; 
                 document.getElementById('post-bill-area').style.display = 'none'; 

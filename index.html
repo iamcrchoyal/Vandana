@@ -664,8 +664,12 @@
                 <p>Manage your inventory, billing, and ledger details seamlessly</p>
             </div>
             <div class="dash-date-wrapper">
-                <div class="google-date-pill">
-                    <input type="date" id="dash-date-picker">
+                <div class="google-date-pill" style="cursor: pointer; position: relative; padding: 8px 16px;">
+                    <span class="material-symbols-rounded" style="color: var(--primary); font-size: 18px; margin-right: 6px;">calendar_month</span>
+                    <input type="date" id="dash-date-picker" style="position: relative; z-index: 2; width: 110px; padding: 0; background: transparent;">
+                    <span class="material-symbols-rounded" style="color: var(--text-muted); font-size: 18px; margin-left: 2px;">arrow_drop_down</span>
+                    <!-- CSS Trick for Superfast Native Click -->
+                    <style>.google-date-pill input::-webkit-calendar-picker-indicator { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10; }</style>
                 </div>
             </div>
             

@@ -1266,6 +1266,14 @@
                 <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">UPI ID (For QR)</label><input type="text" class="form-control" id="ap-upi" placeholder="e.g. mobile@upi" style="border-radius:10px;"></div>
                 <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">FULL ADDRESS</label><textarea class="form-control" id="ap-address" rows="3" style="border-radius:10px;"></textarea></div>
                 
+                <!-- 🌟 SMART SIGNATURE UPLOAD (POINT 10) 🌟 -->
+                <div class="form-group" style="background:#f8fafd; padding:12px; border-radius:12px; border:1px dashed #c2e7ff; text-align:center;">
+                    <label class="form-label" style="font-size:11px; font-weight:700; color:var(--primary); margin-bottom:8px;">INVOICE SIGNATURE (पारदर्शी PNG अपलोड करें)</label>
+                    <div id="admin-sign-preview" style="height:45px; display:flex; justify-content:center; align-items:center; margin-bottom:10px; font-family:'Brush Script MT', cursive; font-size:24px; color:#0a56d0; overflow:hidden;">Vandana Ent.</div>
+                    <button class="btn-outline" onclick="document.getElementById('admin-sign-hidden').click()" style="padding:8px 16px; font-size:12px; border-radius:10px; display:inline-flex; align-items:center; gap:4px; border-color:var(--primary); color:var(--primary);"><span class="material-symbols-rounded" style="font-size:16px;">draw</span> Upload Signature</button>
+                    <input type="file" id="admin-sign-hidden" accept="image/*" style="display:none;" onchange="handleAdminSign(event)">
+                </div>
+                
                 <button class="btn-submit" onclick="saveAdminProfile()" style="border-radius:12px; margin-top:8px;">💾 Save Changes</button>
             </div>
         </div>
@@ -2456,6 +2464,7 @@
                         if(data.address) localStorage.setItem('v_adminAddr', data.address);
                         if(data.upi) localStorage.setItem('v_adminUpi', data.upi);
                         if(data.pic) localStorage.setItem('v_adminPic', data.pic);
+                        if(data.sign) localStorage.setItem('v_adminSign', data.sign);
                         
                         loadAdminProfile();
                         if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
@@ -2939,6 +2948,11 @@
             let pAddr = localStorage.getItem('v_adminAddr') || ""; 
             let pUpi = localStorage.getItem('v_adminUpi') || ""; // ✨ UPI ID LOAD
             let pPic = localStorage.getItem('v_adminPic'); 
+            let pSign = localStorage.getItem('v_adminSign'); 
+
+            if(document.getElementById('admin-sign-preview') && pSign) {
+                document.getElementById('admin-sign-preview').innerHTML = `<img src="${pSign}" style="max-height:100%; max-width:100%; object-fit:contain;">`;
+            }
 
             if(document.getElementById('ap-name')) document.getElementById('ap-name').value = pName; 
             if(document.getElementById('ap-phone')) document.getElementById('ap-phone').value = pPhone; 
@@ -2997,6 +3011,28 @@
                 if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Business Profile Permanently Saved!");
                 else alert("Profile Saved Successfully!"); 
             }).catch(err => alert("Error saving profile: " + err.message));
+        }
+
+        // 🌟 POINT 10: FAST SIGNATURE UPLOAD LOGIC 🌟
+        window.handleAdminSign = function(event) {
+            let file = event.target.files[0];
+            if(file) {
+                if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Uploading Signature... Please Wait!");
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    const signRef = storageRef(storage, 'ProfileImages/admin_sign_' + Date.now() + '.png');
+                    uploadString(signRef, e.target.result, 'data_url').then((snapshot) => {
+                        getDownloadURL(snapshot.ref).then((downloadURL) => {
+                            localStorage.setItem('v_adminSign', downloadURL);
+                            update(ref(db, 'BusinessProfile'), { sign: downloadURL }).then(() => {
+                                loadAdminProfile();
+                                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Signature Uploaded Successfully! ✅");
+                            });
+                        });
+                    }).catch((error) => alert("Upload failed: " + error.message));
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         window.handleAdminPic = function(event) { let file = event.target.files[0]; if(file) { let reader = new FileReader(); reader.onload = function(e) { document.getElementById('crop-modal').style.display = 'flex'; let img = document.getElementById('crop-image'); img.src = e.target.result; if(cropper) cropper.destroy(); setTimeout(() => { cropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, background: false }); }, 200); }; reader.readAsDataURL(file); } }
@@ -5031,6 +5067,20 @@
             let gst = localStorage.getItem('v_adminGst');
             document.getElementById('pdf-biz-gst').innerText = gst ? "GSTIN: " + gst : "";
             document.getElementById('pdf-biz-gst').style.display = gst ? "block" : "none";
+            
+            // 🌟 POINT 10: INJECT SIGNATURE IN PDF 🌟
+            let pSign = localStorage.getItem('v_adminSign');
+            let adminName = localStorage.getItem('v_adminName') || "Vandana Ent.";
+            let signDivs = document.querySelectorAll('div[style*="Brush Script MT"]');
+            signDivs.forEach(div => {
+                if(pSign) {
+                    div.innerHTML = `<img src="${pSign}" style="height:40px; object-fit:contain;">`;
+                    div.style.fontFamily = 'inherit'; // Reset font since it's an image
+                } else {
+                    div.innerHTML = adminName;
+                    div.style.fontFamily = "'Brush Script MT', cursive";
+                }
+            });
             
             let d = new Date(currentEntryData.date); 
             document.getElementById('pdf-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleDateString('en-GB'); 

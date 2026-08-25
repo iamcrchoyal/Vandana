@@ -4959,7 +4959,9 @@
             currentEntryData = window.lastGeneratedEntryData;
             preparePDFData(); // ensure data is fresh
             let elem = document.getElementById('pdf-invoice-template');
-            let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } };
+            let isSupplier = (globalCustomers.find(c => c.name === currentEntryData.name)?.type === 'Supplier');
+            let fName = `${isSupplier ? 'Purchase' : 'Sale'}_Invoice_${currentEntryData.billNo ? currentEntryData.billNo.replace(' ', '_') : currentEntryData.name.replace(/\s+/g, '_')}.pdf`;
+            let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: fName, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } };
             
             if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Preparing Fast PDF... Please wait.");
             
@@ -5144,8 +5146,10 @@
         window.downloadPDFFromEntry = function() { 
             if(!currentEntryData) return; 
             preparePDFData(); 
-            let elem = document.getElementById('pdf-invoice-template'); 
-            let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
+            let elem = document.getElementById('pdf-invoice-template');
+            let isSupplier = (globalCustomers.find(c => c.name === currentEntryData.name)?.type === 'Supplier');
+            let fName = `${isSupplier ? 'Purchase' : 'Sale'}_Invoice_${currentEntryData.billNo ? currentEntryData.billNo.replace(' ', '_') : currentEntryData.name.replace(/\s+/g, '_')}.pdf`;
+            let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: fName, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
             if(typeof window.showSaaSToast === 'function') window.showSaaSToast("PDF डाउनलोड हो रहा है... कृपया प्रतीक्षा करें।"); else alert("Downloading PDF...");
             setTimeout(() => { html2pdf().set(opt).from(elem).save(); }, 200); 
         }
@@ -5153,8 +5157,10 @@
         window.shareCurrentEntryPDF = async function() { 
             if(!currentEntryData) return; 
             preparePDFData(); 
-            let elem = document.getElementById('pdf-invoice-template'); 
-            let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: `Invoice_${currentEntryData.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
+            let elem = document.getElementById('pdf-invoice-template');
+            let isSupplier = (globalCustomers.find(c => c.name === currentEntryData.name)?.type === 'Supplier');
+            let fName = `${isSupplier ? 'Purchase' : 'Sale'}_Invoice_${currentEntryData.billNo ? currentEntryData.billNo.replace(' ', '_') : currentEntryData.name.replace(/\s+/g, '_')}.pdf`;
+            let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: fName, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
             if(typeof window.showSaaSToast === 'function') window.showSaaSToast("PDF शेयर करने के लिए तैयार हो रहा है... कृपया प्रतीक्षा करें।"); else alert("Preparing PDF...");
             setTimeout(async () => {
                 try { 

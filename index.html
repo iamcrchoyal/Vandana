@@ -255,7 +255,14 @@
         
         .anim-float { animation: float-icon 3s ease-in-out infinite; }
         .anim-pulse { animation: pulse-icon 2s ease-in-out infinite; }
-        
+		
+/* ================= POINT 16: SPLASH SCREEN CSS ================= */
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        #splash-screen.fade-out { opacity: 0; transform: scale(1.05); pointer-events: none; }
+        .splash-logo-text { color: white; font-family: 'Product Sans', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin-top: 16px; opacity: 0; animation: fadeUp 0.8s ease-out 0.5s forwards; }
+        .splash-sub-text { color: rgba(255, 255, 255, 0.7); font-size: 14px; font-weight: 500; margin-top: 8px; opacity: 0; animation: fadeUp 0.8s ease-out 0.7s forwards; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+		
         /* Premium SaaS Login Styles */
         .saas-login-bg { background: linear-gradient(45deg, var(--primary), var(--primary-dark), #c7d2fe); background-size: 400% 400%; animation: gemini-mesh 10s ease infinite; }
         .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.5); }
@@ -263,6 +270,13 @@
         <script src="https://cdn.lordicon.com/lordicon.js" defer></script>
 </head>
 <body>
+
+	<!-- 🚀 SPLASH SCREEN (POINT 16) -->
+    <div id="splash-screen">
+        <lord-icon src="https://cdn.lordicon.com/jvucoldz.json" trigger="loop" delay="500" colors="primary:#ffffff,secondary:#c2e7ff" style="width:120px;height:120px"></lord-icon>
+        <div class="splash-logo-text">Vandana Enterprises</div>
+        <div class="splash-sub-text">Smart Inventory & ERP</div>
+    </div>
 
     <!-- 🔒 PRO LOGIN OVERLAY -->
     <div id="login-overlay" class="saas-login-bg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
@@ -6533,7 +6547,19 @@ window.showTargetCelebration = function() {
                 });
             });
         }
-        
+
+		// ================= POINT 16: SPLASH SCREEN LOGIC =================
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                let splash = document.getElementById('splash-screen');
+                if(splash) {
+                    splash.classList.add('fade-out');
+                    setTimeout(() => { splash.style.display = 'none'; }, 600); // 0.6s baad element ko puri tarah hata denge
+                }
+            }, 2500); // 2.5 seconds tak dikhega
+        });
+
+		
            </script>
             
 <div class="page flex-page" id="payment-screen-page" style="background: #ffffff; z-index: 99999;">

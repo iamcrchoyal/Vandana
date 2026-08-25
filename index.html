@@ -4838,7 +4838,26 @@
                 }
             }
 
-            let breakdownData = { cash: cAmt, online: oAmt, pending: grandInvoiceTotal - totalReceived };
+            // 🌟 SMART PAYMENT ADJUSTMENT (POINT 7) 🌟
+            // अगर पुराना बिल एडिट हो रहा है, तो पुरानी पेमेंट को सुरक्षित रखना है और नया बैलेंस निकालना है
+            let breakdownData = {};
+            if (window.editingEntryKey && currentEntryData && currentEntryData.breakdown) {
+                let oldCash = parseFloat(currentEntryData.breakdown.cash) || 0;
+                let oldOnline = parseFloat(currentEntryData.breakdown.online) || 0;
+                
+                // अगर एडिट करते समय कस्टमर ने कुछ और पैसे भी दिए हैं, तो उन्हें पुराने पैसों में जोड़ दें
+                let updatedCash = oldCash + cAmt;
+                let updatedOnline = oldOnline + oAmt;
+                let totalPaidNow = updatedCash + updatedOnline;
+                
+                breakdownData = { 
+                    cash: updatedCash, 
+                    online: updatedOnline, 
+                    pending: grandInvoiceTotal - totalPaidNow 
+                };
+            } else {
+                breakdownData = { cash: cAmt, online: oAmt, pending: grandInvoiceTotal - totalReceived };
+            }
 
             // 🌟 Professional Total Qty for Database Details
             let tCones = 0; let tKgs = 0;

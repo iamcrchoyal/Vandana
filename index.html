@@ -942,8 +942,8 @@
                 
                 <div id="pos-add-product-section" style="display:none;">
                     <div class="form-panel" style="border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
-                        <!-- 🌟 POINT 14: CONSISTENT LABEL 🌟 -->
-                        <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">📦 Product Details</label>
+                        <!-- 🌟 POINT 14: PRODUCT NAME LABEL 🌟 -->
+                        <label class="form-label" style="font-family: 'Product Sans', sans-serif; font-size:14px; font-weight:700; color:#1f1f1f; margin-bottom:12px;">📦 Product Name</label>
                     
                         <select class="form-control" id="inv-cat" style="margin-bottom: 12px; border-radius:12px; border:1px solid #c2e7ff; background:#f8fafd; font-weight:600;" onchange="updatePosShades()">
                             <option value="">Select Category</option>
@@ -981,7 +981,7 @@
                 <div id="pos-cart-payment-section" style="display:none;">
                     <div style="overflow-x:auto; margin-bottom:16px; border-radius:16px; border:1px solid var(--border); background:white; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
                         <table class="invoice-table" style="margin-bottom: 0; border:none; min-width: 400px;">
-                            <thead><tr style="background:#f8fafd;"><th>Details</th><th style="text-align:center;">Qty</th><th style="text-align:center;">Rate</th><th style="text-align:right;">Total</th><th style="text-align:center;">Action</th></tr></thead>
+                            <thead><tr style="background:#f8fafd;"><th>Product Name</th><th style="text-align:center;">Qty</th><th style="text-align:center;">Rate</th><th style="text-align:right;">Total</th><th style="text-align:center;">Action</th></tr></thead>
                             <tbody id="cart-rows"><tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted); font-weight:500;">🛒 Cart is empty. Add a product above.</td></tr></tbody>
                         </table>
                     </div>
@@ -5195,7 +5195,7 @@
                 document.getElementById('pdf-table-header').innerHTML = `
                     <tr style="background:#0a56d0; color:white;">
                         <th style="padding:12px; text-align:center; font-size:14px; border:1px solid #0a56d0; width:65px; white-space:nowrap;">Sr. No.</th>
-                        <th style="padding:12px; text-align:left; font-size:14px; border:1px solid #0a56d0;">Product Details</th>
+                        <th style="padding:12px; text-align:left; font-size:14px; border:1px solid #0a56d0;">Product Name</th>
                         <th style="padding:12px; text-align:center; font-size:14px; border:1px solid #0a56d0; width:80px;">Qty</th>
                         <th style="padding:12px; text-align:right; font-size:14px; border:1px solid #0a56d0;">Rate</th>
                         <th style="padding:12px; text-align:right; font-size:14px; border:1px solid #0a56d0;">Total Amount</th>
@@ -5675,7 +5675,7 @@ window.showTargetCelebration = function() {
                         <table style="width:100%; border-collapse:collapse; margin-bottom:40px;">
                             <thead>
                                 <tr style="background:#0a56d0; color:white;">
-                                    <th style="padding:12px; text-align:left; font-size:14px; border:1px solid #0a56d0;">Product Details</th>
+                                    <th style="padding:12px; text-align:left; font-size:14px; border:1px solid #0a56d0;">Product Name</th>
                                     <th style="padding:12px; text-align:center; font-size:14px; border:1px solid #0a56d0;">Qty</th>
                                     <th style="padding:12px; text-align:right; font-size:14px; border:1px solid #0a56d0;">Rate</th>
                                     <th style="padding:12px; text-align:right; font-size:14px; border:1px solid #0a56d0;">Total Amount</th>
@@ -6638,7 +6638,7 @@ window.showTargetCelebration = function() {
             
             <div style="background:#f8fafd; border:1px solid #c2e7ff; padding:12px; border-radius:12px; margin-bottom:16px;">
                 <div style="font-size:12px; color:var(--text-muted); font-weight:600; display:flex; justify-content:space-between; align-items:center;">
-                    <span>Product Name & Details</span>
+                    <span>Product Name</span>
                     <span id="ei-live-stock" style="background:#e6f4ea; color:var(--success); padding:2px 8px; border-radius:6px; font-size:11px; font-weight:800;">🟢 Stock: 0</span>
                 </div>
                 <div id="ei-title" style="font-size:16px; font-weight:700; color:var(--primary-dark); margin-top:4px;">Thread - 105</div>

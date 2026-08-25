@@ -3733,7 +3733,13 @@
             document.getElementById('ed-amount').style.color = color; 
             document.getElementById('ed-type').innerText = typeText; 
             document.getElementById('ed-type').style.color = color; 
-            document.getElementById('ed-details-text').innerText = currentEntryData.details || "App Entry"; 
+            
+            // 🌟 SHOW AUDIT TRAIL IN ENTRY DETAILS (POINT 9) 🌟
+            let detailsHtml = currentEntryData.details || "App Entry";
+            if (currentEntryData.editHistory) {
+                detailsHtml += `<br><span style="display:inline-block; margin-top:8px; font-size:11px; background:#fff3cd; color:#856404; padding:4px 8px; border-radius:6px; font-weight:600; border:1px solid #ffeeba;">📝 ${currentEntryData.editHistory}</span>`;
+            }
+            document.getElementById('ed-details-text').innerHTML = detailsHtml; 
             
             // Phase 1: Dynamic Header Title Update
             let titleElem = document.getElementById('entry-page-header-title');
@@ -4872,10 +4878,18 @@
             else if (tCones > 0) qtyDetailsStr = `${tCones} Cone`;
             else if (tKgs > 0) qtyDetailsStr = `${tKgs} KG`;
 
+            // 🌟 SMART AUDIT TRAIL (POINT 9) 🌟
+            let auditText = "";
+            if (window.editingEntryKey && currentEntryData) {
+                let editTime = new Date().toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
+                let createTime = currentEntryData.editHistory ? currentEntryData.editHistory.split(' | ')[0] : `Created: ${new Date(currentEntryData.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'})}`;
+                auditText = `${createTime} | Last Edit: ${editTime}`;
+            }
+
             let newEntry = { 
                 date: finalDateTime, name: partyName, type: "Gave", amount: grandInvoiceTotal, 
                 details: `Invoice #${tempBillNo} - ${qtyDetailsStr}`, cart: currentCart, 
-                billNo: tempBillNo, breakdown: breakdownData 
+                billNo: tempBillNo, breakdown: breakdownData, editHistory: auditText
             };
             
             document.getElementById('success-msg-title').innerText = isUpdating ? "Invoice Updated Successfully!" : "Invoice Generated Successfully!";

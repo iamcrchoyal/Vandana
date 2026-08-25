@@ -927,7 +927,9 @@
                         
                         <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Customer Details</label>
                         <div class="input-btn-group" style="margin-bottom:12px; position:relative;">
-                            <input type="text" id="inv-party" class="form-control" autocomplete="off" placeholder="Enter Customer Name" onkeyup="handleCustomerSearch('name')" onfocus="handleCustomerSearch('name')">
+                            <!-- 🌟 POINT 12: AUTO-CAPITALIZE (INVOICE) 🌟 -->
+                        <div class="input-btn-group" style="margin-bottom:12px; position:relative;">
+                            <input type="text" id="inv-party" class="form-control" autocomplete="off" placeholder="Enter Customer Name" oninput="this.value = this.value.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())" onkeyup="handleCustomerSearch('name')" onfocus="handleCustomerSearch('name')">
                             <button class="action-btn material-symbols-rounded" onclick="openPhonebook('inv-party', 'inv-phone'); setTimeout(checkPosStep1, 1000);" style="width:48px; border-radius:8px; flex-shrink:0;">contacts</button>
                             <div id="name-suggestion-box" style="display:none; position:absolute; top:100%; left:0; width:calc(100% - 58px); background:white; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.15); z-index:9999; max-height:220px; overflow-y:auto;"></div>
                         </div>
@@ -1298,7 +1300,8 @@
                 </div>
             </div>
             <div class="form-panel" style="border-radius:18px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
-                <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">FULL NAME</label><input type="text" class="form-control" id="cp-edit-name" style="border-radius:10px;"></div>
+                <!-- 🌟 POINT 12: AUTO-CAPITALIZE (PROFILE) 🌟 -->
+                <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">FULL NAME</label><input type="text" class="form-control" id="cp-edit-name" style="border-radius:10px;" oninput="this.value = this.value.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())"></div>
                 <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">MOBILE NUMBER</label><input type="tel" class="form-control" id="cp-edit-phone" style="border-radius:10px;"></div>
                 <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">EMAIL ADDRESS</label><input type="email" class="form-control" id="cp-edit-email" placeholder="e.g. name@gmail.com" style="border-radius:10px;"></div>
                 <div class="form-group"><label class="form-label" style="font-size:11px; font-weight:600;">ADDRESS</label><textarea class="form-control" id="cp-edit-address" rows="3" style="border-radius:10px;"></textarea></div>
@@ -3448,7 +3451,8 @@
             window.showSaaSToast("Profile Updated Successfully!"); 
             closePage('customer-profile-page'); 
         }
-        window.addCustomerToCloud = function() { let name = document.getElementById('new-party-name').value.trim(); let phone = document.getElementById('new-party-phone').value; let address = document.getElementById('new-party-address').value; if(!name) return alert("Please enter Name!"); push(ref(db, 'Customers'), { name, phone, address, date: new Date().toISOString(), status: "Active", type: currentTabType }); closePage('add-party-page'); document.getElementById('new-party-name').value = ''; document.getElementById('new-party-phone').value = ''; document.getElementById('new-party-address').value = ''; }
+        // 🌟 POINT 12: AUTO-CAPITALIZE (DB SAVE) 🌟
+        window.addCustomerToCloud = function() { let rawName = document.getElementById('new-party-name').value.trim(); let name = rawName ? rawName.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) : ""; let phone = document.getElementById('new-party-phone').value; let address = document.getElementById('new-party-address').value; if(!name) return alert("Please enter Name!"); push(ref(db, 'Customers'), { name, phone, address, date: new Date().toISOString(), status: "Active", type: currentTabType }); closePage('add-party-page'); document.getElementById('new-party-name').value = ''; document.getElementById('new-party-phone').value = ''; document.getElementById('new-party-address').value = ''; }
         window.deleteCurrentCustomer = function() { 
             window.showCustomConfirm("Delete Customer?", `क्या आप सच में ${currentPartyName} और उनका सारा डेटा हमेशा के लिए डिलीट करना चाहते हैं?`, function() {
                 // 1. Customer को डिलीट करें

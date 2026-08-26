@@ -959,7 +959,8 @@
                     <option value="Bobbin">Bobbin</option>
                     <option value="Coding">Coding</option>
                 </select>
-                <input type="text" id="gd-item" class="form-control" placeholder="Item Name / Shade No." style="margin-bottom:12px;">
+                <!-- 🌟 SMART AUTO-FILL TRIGGER ADDED HERE 🌟 -->
+                <input type="text" id="gd-item" class="form-control" placeholder="Item Name / Shade No." style="margin-bottom:12px;" onkeyup="autoFillRate(document.getElementById('gd-cat').value, this.value.trim(), true)">
                 <div class="input-btn-group" style="margin-bottom: 16px;">
                     <input type="number" id="gd-qty" class="form-control" placeholder="Total Cones">
                     <input type="number" id="gd-rate" class="form-control" placeholder="Rate (₹)">
@@ -2393,13 +2394,30 @@
                     customLimit = parseInt(catObj.lowStockLimit);
                 }
 
-                if(coneQty <= customLimit && coneQty > 0) { 
+                // 🌟 POINT 2: ZERO STOCK / OUT OF STOCK FIX (SUPERFAST) 🌟
+                // हमने "&& coneQty > 0" हटा दिया है ताकि 0 स्टॉक वाले भी अलर्ट में आएँ
+                if(coneQty <= customLimit) { 
                     lowstockCount++; lowstockItemsCount++;
-                    lowstockHtml += `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)" style="border-color:#f8cbcb;" onmousedown="startHold('${key}', '${safeKeyId}', event)" onmouseup="endHold()" onmouseleave="endHold()" ontouchstart="startHold('${key}', '${safeKeyId}', event)" ontouchend="endHold()">
+                    
+                    // 🎯 SMART UI: 0 स्टॉक वालों को डार्क रेड अलर्ट देंगे
+                    let isZero = (coneQty === 0 && kgQty === 0);
+                    let alertMsg = isZero ? "🚨 OUT OF STOCK" : `Limit: ${customLimit} - Time to re-order!`;
+                    let alertColor = isZero ? "white" : "var(--danger)";
+                    let alertBg = isZero ? "var(--danger)" : "transparent";
+                    let qtyStyle = isZero ? "color:white; background:var(--danger);" : "color:var(--danger); background:#fdf2f2;";
+
+                    let cardHtml = `<div class="inv-card stock-row" data-name="${shade.toUpperCase()}" onclick="toggleInvCard(this)" style="border-color:#f8cbcb;" onmousedown="startHold('${key}', '${safeKeyId}', event)" onmouseup="endHold()" onmouseleave="endHold()" ontouchstart="startHold('${key}', '${safeKeyId}', event)" ontouchend="endHold()">
                         ${overlayHtml}
-                        <div class="inv-card-header"><div class="inv-card-title">${shade} <span style="font-size:10px;color:gray;">(${cat})</span></div><div class="inv-card-qty" style="color:var(--danger); background:#fdf2f2; font-size:11px;">${displayQty}</div></div>
-                        <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:var(--danger); font-weight:600;">Limit: ${customLimit} - Time to re-order!</div></div>
+                        <div class="inv-card-header"><div class="inv-card-title">${shade} <span style="font-size:10px;color:gray;">(${cat})</span></div><div class="inv-card-qty" style="${qtyStyle} font-size:11px;">${displayQty}</div></div>
+                        <div class="inv-tx-list" onclick="event.stopPropagation()"><div class="inv-tx-item" style="justify-content:center; color:${alertColor}; background:${alertBg}; font-weight:800; border-radius:6px; padding:4px;">${alertMsg}</div></div>
                     </div>`;
+                    
+                    // 🎯 SMART SORTING (Fast Speed): 0 स्टॉक वालों को लिस्ट के टॉप (शुरू) में जोड़ेगा
+                    if(isZero) {
+                        lowstockHtml = cardHtml + lowstockHtml; 
+                    } else {
+                        lowstockHtml += cardHtml; 
+                    }
                 } 
             } 
             
@@ -4750,32 +4768,54 @@
             });
         }
 
-        // 🌟 POINT 13: SMART RATE MEMORY ENGINE 🌟
-        window.autoFillRate = function(category, shade) {
-            let partyName = document.getElementById('inv-party').value.trim();
+        // 🌟 POINT 1: SMART RATE AUTO-FILL ENGINE (SUPERFAST) 🌟
+        window.autoFillRate = function(category, shade, isPurchase = false) {
+            if (!category || !shade) return;
             let foundRate = "";
             
-            // 1. Customer-specific Rate (क्या इस कस्टमर ने यह आइटम पहले खरीदा है?)
-            if(partyName) {
-                let custEntries = allLedgerData.filter(e => e.name === partyName && e.type === 'Gave' && e.cart);
-                for(let i=0; i<custEntries.length; i++){
-                    let item = custEntries[i].cart.find(c => c.cat === category && c.shade === shade);
-                    if(item && item.rate) { foundRate = item.rate; break; }
+            if (isPurchase) {
+                // 🎯 1. PURCHASE RATE (For Godown / Shop-to-Shop)
+                // सबसे लेटेस्ट गोडाउन ट्रांसफर एंट्री में से खरीद रेट (Purchase Rate) निकालेगा
+                for (let i = 0; i < allGodownTransfers.length; i++) {
+                    let t = allGodownTransfers[i];
+                    if (t.cat === category && t.item.toUpperCase() === shade.toUpperCase() && t.rate > 0) {
+                        foundRate = t.rate;
+                        break; // मिलते ही लूप रोक देगा (Fast Speed)
+                    }
+                }
+            } else {
+                // 🎯 2. SALE RATE (For Billing / Invoice)
+                let partyElem = document.getElementById('inv-party');
+                let partyName = partyElem ? partyElem.value.trim() : "";
+                
+                // पहले कस्टमर की पर्सनल हिस्ट्री चेक करेगा
+                if (partyName) {
+                    for (let i = 0; i < allLedgerData.length; i++) {
+                        let e = allLedgerData[i];
+                        if (e.name === partyName && e.type === 'Gave' && e.cart) {
+                            let match = e.cart.find(c => c.cat === category && c.shade.toUpperCase() === shade.toUpperCase());
+                            if (match && match.rate > 0) { foundRate = match.rate; break; }
+                        }
+                    }
+                }
+                
+                // अगर नया कस्टमर है, तो जनरल मार्केट की लास्ट सेल रेट निकाल लेगा
+                if (!foundRate) {
+                    for (let i = 0; i < allLedgerData.length; i++) {
+                        let e = allLedgerData[i];
+                        if (e.type === 'Gave' && e.cart) {
+                            let match = e.cart.find(c => c.cat === category && c.shade.toUpperCase() === shade.toUpperCase());
+                            if (match && match.rate > 0) { foundRate = match.rate; break; }
+                        }
+                    }
                 }
             }
             
-            // 2. Global Rate (अगर इस कस्टमर ने नहीं, तो मार्केट में लास्ट किस रेट पर बिका?)
-            if(!foundRate) {
-                let allEntries = allLedgerData.filter(e => e.type === 'Gave' && e.cart);
-                for(let i=0; i<allEntries.length; i++){
-                    let item = allEntries[i].cart.find(c => c.cat === category && c.shade === shade);
-                    if(item && item.rate) { foundRate = item.rate; break; }
-                }
-            }
-            
-            // 3. Auto-fill instantly
-            if(document.getElementById('inv-rate')) {
-                document.getElementById('inv-rate').value = foundRate || "";
+            // 🎯 3. AUTO FILL IN UI INSTANTLY
+            let targetInput = isPurchase ? document.getElementById('gd-rate') : document.getElementById('inv-rate');
+            if (targetInput) {
+                targetInput.value = foundRate || "";
+                if (!isPurchase && typeof validateSmartButton === 'function') validateSmartButton();
             }
         }
 

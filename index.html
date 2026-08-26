@@ -4616,6 +4616,7 @@
         }
 
         // 🌟 ADD CART ITEM (Modified for Cone vs Kg strict separation)
+        // 🌟 POINT 3: ADD CART ITEM (Smart Auto-Merge Duplicate Logic) 🌟
         window.addCartItem = function() { 
             const cat = document.getElementById('inv-cat').value; 
             const shade = document.getElementById('inv-shade').value; 
@@ -4623,7 +4624,7 @@
             let coneEl = document.getElementById('inv-cone');
             let kgEl = document.getElementById('inv-kg');
             
-            let cone = coneEl ? (parseInt(coneEl.value) || 0) : 0;
+            let cone = coneEl ? (parseFloat(coneEl.value) || 0) : 0;
             let kg = kgEl ? (parseFloat(kgEl.value) || 0) : 0;
             let rate = parseFloat(document.getElementById('inv-rate') ? document.getElementById('inv-rate').value : 0) || 0;
 
@@ -4646,16 +4647,38 @@
                 }
             }
 
-            let displayQty = "";
-            if (cone > 0 && kg > 0) displayQty = `${cone} Cone, ${kg} KG`;
-            else if (cone > 0) displayQty = `${cone} Cone`;
-            else if (kg > 0) displayQty = `${kg} KG`;
+            // 🚀 SMART MERGE LOGIC (Point 3) - Duplicate Entry Rokega aur Plus Karega
+            // .findIndex बहुत फ़ास्ट होता है
+            let existingIndex = currentCart.findIndex(item => item.cat === cat && item.shade.toUpperCase() === shade.toUpperCase());
 
-            let itemTotal = kg > 0 ? (kg * rate) : (cone * rate);
+            if (existingIndex > -1) {
+                // Item पहले से बिल में है, बस Quantity जोड़ो और Rate अपडेट करो
+                let exItem = currentCart[existingIndex];
+                exItem.rawCone += cone;
+                exItem.rawKg += kg;
+                exItem.rate = rate; 
+                
+                if (exItem.rawCone > 0 && exItem.rawKg > 0) exItem.qty = `${exItem.rawCone} Cone, ${exItem.rawKg} KG`;
+                else if (exItem.rawCone > 0) exItem.qty = `${exItem.rawCone} Cone`;
+                else if (exItem.rawKg > 0) exItem.qty = `${exItem.rawKg} KG`;
 
-            currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty: displayQty, rawCone: cone, rawKg: kg, rate: rate, itemTotal: itemTotal }); 
+                exItem.itemTotal = exItem.rawKg > 0 ? (exItem.rawKg * exItem.rate) : (exItem.rawCone * exItem.rate);
+                
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Quantity Merged in Cart! 🔄");
+            } else {
+                // नया आइटम है, नॉर्मल ऐड करो
+                let displayQty = "";
+                if (cone > 0 && kg > 0) displayQty = `${cone} Cone, ${kg} KG`;
+                else if (cone > 0) displayQty = `${cone} Cone`;
+                else if (kg > 0) displayQty = `${kg} KG`;
+
+                let itemTotal = kg > 0 ? (kg * rate) : (cone * rate);
+
+                currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty: displayQty, rawCone: cone, rawKg: kg, rate: rate, itemTotal: itemTotal }); 
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Product Added to Cart! ✅");
+            }
             
-            // UI Reset
+            // UI Reset (Clearing boxes)
             if(coneEl) coneEl.value=''; 
             if(kgEl) kgEl.value=''; 
             if(document.getElementById('inv-rate')) document.getElementById('inv-rate').value=''; 
@@ -4669,7 +4692,6 @@
             if(badge) badge.style.display = 'none';
 
             renderCartUi(); 
-            if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Product Added to Cart! ✅");
         }
 
         // 🌟 LIVE CART-AWARE STOCK CALCULATOR (Advanced Edit Support)
@@ -4850,52 +4872,6 @@
             }, 100);
         }
         // ===================================================================
-
-        window.addCartItem = function() { 
-            const cat = document.getElementById('inv-cat').value; 
-            const shade = document.getElementById('inv-shade').value; 
-            let cone = parseFloat(document.getElementById('inv-cone').value) || 0;
-            let rate = parseFloat(document.getElementById('inv-rate').value) || 0;
-            let kg = document.getElementById('inv-kg') ? (parseFloat(document.getElementById('inv-kg').value) || 0) : 0;
-
-            if (!cat || !shade) return alert("Select Category and Item first!"); 
-            if (cone <= 0 || rate <= 0) return alert("Enter valid Cone & Rate!"); 
-
-            // 🌟 Live Cart-Aware Stock Check (कार्ट का माइनस करने के बाद का स्टॉक)
-            let availStock = getAvailableStock(cat, shade);
-
-            if(cone > availStock.cone) { 
-                if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.cone} Cone bache hain. ⚠️`);
-                else alert(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.cone} Cone bache hain.`);
-                return; 
-            } 
-            if (cat === 'Nylon' || cat === 'Coding' || cat === 'Bobbin') {
-                if (kg > 0 && kg > availStock.kg) {
-                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.kg} Kg bache hain. ⚠️`);
-                    else alert(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.kg} Kg bache hain.`);
-                    return; 
-                }
-            }
-
-            let displayQty = kg > 0 ? `${cone} Cone, ${kg} KG` : `${cone} Cone`;
-            let itemTotal = kg > 0 ? (kg * rate) : (cone * rate); // If KG is provided, rate applies to KG, else Cone
-
-            currentCart.push({ cat: cat, shade: shade, title: `${cat} - ${shade}`, qty: displayQty, rawCone: cone, rawKg: kg, rate: rate, itemTotal: itemTotal }); 
-            
-            // UI साफ़ करना और Live Badge को तुरंत छुपाना
-            if(document.getElementById('inv-cone')) document.getElementById('inv-cone').value=''; 
-            if(document.getElementById('inv-kg')) document.getElementById('inv-kg').value=''; 
-            if(document.getElementById('inv-rate')) document.getElementById('inv-rate').value=''; 
-            if(document.getElementById('inv-shade')) {
-                document.getElementById('inv-shade').value=''; 
-                document.getElementById('inv-shade').placeholder='Tap to select item...';
-            }
-            let badge = document.getElementById('live-stock-badge');
-            if(badge) badge.style.display = 'none';
-
-            renderCartUi(); 
-            if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Product Added to Cart! ✅");
-        }
         // 🌟 EDITABLE CART LOGIC WITH PROFESSIONAL ICONS & RE-CONFIRMATION
         window.removeCartItem = function(index) {
             window.showCustomConfirm("Delete Item?", "Kya aap sach mein is item ko bill se hatana chahte hain?", function() {

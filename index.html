@@ -1040,7 +1040,7 @@
                         <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Customer Details</label>
                         <div class="input-btn-group" style="margin-bottom:12px; position:relative;">
                             <!-- 🌟 POINT 12: AUTO-CAPITALIZE (INVOICE) 🌟 -->
-                        <div class="input-btn-group" style="margin-bottom:12px; position:relative;">
+                
                             <input type="text" id="inv-party" class="form-control" autocomplete="off" placeholder="Enter Customer Name" oninput="this.value = this.value.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())" onkeyup="handleCustomerSearch('name')" onfocus="handleCustomerSearch('name')">
                             <button class="action-btn material-symbols-rounded" onclick="openPhonebook('inv-party', 'inv-phone'); setTimeout(checkPosStep1, 1000);" style="width:48px; border-radius:8px; flex-shrink:0;">contacts</button>
                             <div id="name-suggestion-box" style="display:none; position:absolute; top:100%; left:0; width:calc(100% - 58px); background:white; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.15); z-index:9999; max-height:220px; overflow-y:auto;"></div>
@@ -2610,14 +2610,6 @@
                     window.allWastageData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse();
                     if(typeof calculateGrandTotals === 'function') calculateGrandTotals();
                     if(typeof renderWastageList === 'function') renderWastageList();
-                });
-
-                // 🌟 NEW: Wastage/Damage Data Listener
-                window.allWastageData = [];
-                onValue(ref(db, 'WastageLog'), (snapshot) => {
-                    let data = snapshot.val() || {};
-                    window.allWastageData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse();
-                    if(typeof calculateGrandTotals === 'function') calculateGrandTotals();
                 });
                 
                 onValue(ref(db, 'Customers'), (snapshot) => { 
@@ -6623,83 +6615,7 @@ window.showTargetCelebration = function() {
             });
         });
     }
-    // ==============================================================================
-
-        window.openCbEntryModal = function(type) {
-            document.getElementById('cb-entry-type').value = type;
-            let title = document.getElementById('cb-entry-title');
-            let btn = document.getElementById('cb-entry-save-btn');
-            
-            if(type === 'IN') {
-                title.innerText = "Money IN (पैसे आये)";
-                title.style.color = "var(--success)";
-                btn.style.background = "var(--success)";
-            } else {
-                title.innerText = "Money OUT (पैसे गए)";
-                title.style.color = "var(--danger)";
-                btn.style.background = "var(--danger)";
-            }
-
-            document.getElementById('cb-entry-amount').value = '';
-            document.getElementById('cb-entry-details').value = '';
-            
-            let modeSelect = document.getElementById('cb-entry-mode');
-            let modeHtml = `<option value="Cash">Cash (गल्ला)</option>`;
-            cbBanks.forEach(b => {
-                modeHtml += `<option value="${b.key}">${b.name} (Bank)</option>`;
-            });
-            modeSelect.innerHTML = modeHtml;
-
-            document.getElementById('cb-entry-modal').style.display = 'flex';
-        }
-
-        window.saveCbEntry = function() {
-            let type = document.getElementById('cb-entry-type').value;
-            let amount = parseFloat(document.getElementById('cb-entry-amount').value);
-            let modeKey = document.getElementById('cb-entry-mode').value;
-            let details = document.getElementById('cb-entry-details').value.trim();
-
-            if(isNaN(amount) || amount <= 0) return alert("Please enter a valid amount!");
-            if(!details) details = type === 'IN' ? 'Money Received' : 'Money Sent';
-
-            let modeName = "Cash";
-            
-            if(modeKey !== 'Cash') {
-                let bank = cbBanks.find(b => b.key === modeKey);
-                if(bank) {
-                    modeName = bank.name;
-                    let newBal = type === 'IN' ? (bank.balance + amount) : (bank.balance - amount);
-                    update(ref(db, 'CashBankBook/Banks/' + bank.key), { balance: newBal });
-                }
-            }
-
-            push(ref(db, 'CashBankBook/Transactions'), {
-                date: new Date().toISOString(),
-                type: type,
-                amount: amount,
-                mode: modeName,
-                modeKey: modeKey,
-                details: details
-            }).then(() => {
-                document.getElementById('cb-entry-modal').style.display = 'none';
-                switchCbTab('tx');
-            });
-        }
-
-        window.deleteCbTransaction = function(txKey, type, amount, modeKey) {
-            window.showCustomConfirm("Delete Transaction?", "क्या आप इस पेमेंट/ट्रांज़ैक्शन को डिलीट करना चाहते हैं?", function() {
-                if(modeKey && modeKey !== 'Cash') {
-                    let bank = cbBanks.find(b => b.key === modeKey);
-                    if(bank) {
-                        let newBal = type === 'IN' ? (bank.balance - amount) : (bank.balance + amount);
-                        update(ref(db, 'CashBankBook/Banks/' + bank.key), { balance: newBal });
-                    }
-                }
-                remove(ref(db, 'CashBankBook/Transactions/' + txKey)).then(() => {
-                    if (typeof window.showSaaSToast === 'function') window.showSaaSToast("Transaction Deleted! ✅");
-                });
-            });
-        }
+		
 
 		// ================= POINT 16: SPLASH SCREEN LOGIC =================
         window.addEventListener('load', function() {

@@ -3532,27 +3532,8 @@
             window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet }; updateLedgerTotalsUI(); if(document.getElementById('parties-page').classList.contains('active')) { renderCustomerList(globalCustomers); }
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
 
-            // 🌟 FINANCIAL WASTAGE DASHBOARD LOGIC
-            let currentMonthWastage = 0;
-            if(window.allWastageData) {
-                window.allWastageData.forEach(w => {
-                    if(w.date && w.date.startsWith(currentMonth)) {
-                        currentMonthWastage += (parseFloat(w.lossValue) || 0);
-                    }
-                });
-            }
-            
-            let saleCard = document.getElementById('dash-card-sale-value');
-            if (saleCard && window.currentUserRole === 'admin') {
-                if (!document.getElementById('dash-wastage-value')) {
-                    let wasteDiv = document.createElement('div');
-                    wasteDiv.innerHTML = `<div style="font-size:12px; color:var(--danger); font-weight:700; margin-top:8px; display:flex; align-items:center; gap:4px; background:#fdf2f2; padding:4px 8px; border-radius:6px; width:max-content; border:1px solid #f8cbcb;">
-                        <span class="material-symbols-rounded" style="font-size:14px;">warning</span> Damage Loss: <span id="dash-wastage-value">₹0</span>
-                    </div>`;
-                    saleCard.parentNode.appendChild(wasteDiv);
-                }
-                document.getElementById('dash-wastage-value').innerText = `₹${currentMonthWastage.toLocaleString('en-IN')}`;
-            }
+            // 🌟 POINT 18: DAMAGE LOSS HIDDEN FROM DASHBOARD (Clean UI) 🌟
+            // (अब डैमेज का हिसाब सिर्फ साइडबार के 'Damage & Wastage' पेज पर सुरक्षित रहेगा)
 
             // ============== SMART DYNAMIC TITLE LOGIC ==============
             let selectedDateObj = new Date(selectedDateString);

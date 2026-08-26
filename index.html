@@ -2977,9 +2977,21 @@
             }
         }
 
-        // 📊 REPORTS LOGIC (WITH PREVIEW)
-        window.openReportModal = function(type) { document.getElementById('report-modal-type').value = type; document.getElementById('report-modal-title').innerText = type === 'ledger' ? 'Account Statement' : 'Daily Stock Report'; document.getElementById('report-modal').style.display = 'flex'; }
-        window.downloadReport = function() { let fromD = document.getElementById('rep-from').value; let toD = document.getElementById('rep-to').value; let type = document.getElementById('report-modal-type').value; if(!fromD || !toD) return alert("Please select both dates!"); document.getElementById('report-modal').style.display = 'none'; if(type === 'ledger') generateAccountStatement(fromD, toD); else generateStockReport(fromD, toD); }
+        // 📊 REPORTS LOGIC (WITH PREVIEW & RBAC)
+        window.openReportModal = function(type) { 
+            document.getElementById('report-modal-type').value = type; 
+            document.getElementById('report-modal-title').innerText = type === 'ledger' ? 'Account Statement' : (type === 'godown' ? 'Godown Transfer Report' : 'Daily Stock Report'); 
+            document.getElementById('report-modal').style.display = 'flex'; 
+        }
+        window.downloadReport = function() { 
+            let fromD = document.getElementById('rep-from').value; 
+            let toD = document.getElementById('rep-to').value; 
+            let type = document.getElementById('report-modal-type').value; 
+            if(!fromD || !toD) return alert("Please select both dates!"); 
+            document.getElementById('report-modal').style.display = 'none'; 
+            if(type === 'ledger') generateAccountStatement(fromD, toD); 
+            else generateStockReport(fromD, toD, type); // ⚡ Type (godown/stock) पास कर रहे हैं 
+        }
 
         function generateAccountStatement(fromD, toD) {
             let fromTime = new Date(fromD).getTime(); let toTime = new Date(toD + "T23:59:59").getTime();
@@ -3027,16 +3039,53 @@
             openPage('report-preview-page');
         }
 
-        function generateStockReport(fromD, toD) {
-            let fromTime = new Date(fromD).getTime(); let toTime = new Date(toD + "T23:59:59").getTime(); let stockHtml = "";
+        function generateStockReport(fromD, toD, reportType = 'all') {
+            // 🛡️ SECURITY CHECK: Only Admin can access Stock/Godown Reports
+            if(window.currentUserRole !== 'admin') {
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Error: Access Denied! 🚫");
+                else alert("Access Denied!");
+                return;
+            }
+
+            let fromTime = new Date(fromD).getTime(); 
+            let toTime = new Date(toD + "T23:59:59").getTime(); 
+            let stockHtml = "";
+            
+            // 1. गोडाउन ट्रांसफर का डेटा (Godown Data)
             let filteredTransfers = allGodownTransfers.filter(t => { let eTime = new Date(t.date).getTime(); return eTime >= fromTime && eTime <= toTime; });
-            filteredTransfers.forEach(t => { let dStr = new Date(t.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); let action = t.type === 'IN' ? 'Transfer IN' : 'Transfer OUT'; stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">${action}</td><td style="padding:10px; border:1px solid #e0e2e0;">${t.item} (${t.cat})</td><td style="padding:10px; border:1px solid #e0e2e0;">Godown</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${t.qty}</td></tr>`; });
-            let salesEntries = allLedgerData.filter(e => { let eTime = new Date(e.date).getTime(); return eTime >= fromTime && eTime <= toTime && e.cart && e.type === 'Gave'; });
-            salesEntries.forEach(entry => { let dStr = new Date(entry.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); entry.cart.forEach(item => { stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">Sale (OUT)</td><td style="padding:10px; border:1px solid #e0e2e0;">${item.shade} (${item.cat})</td><td style="padding:10px; border:1px solid #e0e2e0;">${entry.name}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${item.qty}</td></tr>`; }); });
+            filteredTransfers.forEach(t => { 
+                let dStr = new Date(t.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); 
+                let action = t.type === 'IN' ? 'Transfer IN' : 'Transfer OUT'; 
+                stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">${action}</td><td style="padding:10px; border:1px solid #e0e2e0;">${t.item} (${t.cat})</td><td style="padding:10px; border:1px solid #e0e2e0;">Godown</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${t.qty}</td></tr>`; 
+            });
+
+            // 2. सेल्स का डेटा (सिर्फ तब जब 'all' रिपोर्ट मांगी गई हो)
+            if (reportType !== 'godown') {
+                let salesEntries = allLedgerData.filter(e => { let eTime = new Date(e.date).getTime(); return eTime >= fromTime && eTime <= toTime && e.cart && e.type === 'Gave'; });
+                salesEntries.forEach(entry => { 
+                    let dStr = new Date(entry.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); 
+                    entry.cart.forEach(item => { 
+                        stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0; color:var(--danger); font-weight:600;">Sale (OUT)</td><td style="padding:10px; border:1px solid #e0e2e0;">${item.shade} (${item.cat})</td><td style="padding:10px; border:1px solid #e0e2e0;">${entry.name}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${item.qty}</td></tr>`; 
+                    }); 
+                });
+            }
+
             if(!stockHtml) stockHtml = `<tr><td colspan="5" style="text-align:center; padding:20px;">No stock movement found for these dates.</td></tr>`;
-            document.getElementById('psr-date-range').innerText = `From: ${new Date(fromD).toLocaleDateString('en-GB')} To: ${new Date(toD).toLocaleDateString('en-GB')}`; document.getElementById('psr-table-body').innerHTML = stockHtml;
-            let previewHtml = document.getElementById('pdf-stock-template').innerHTML; document.getElementById('preview-render-area').innerHTML = previewHtml; window.currentReportElemId = 'pdf-stock-template'; window.currentReportFilename = `Stock_Report_${fromD}.pdf`; openPage('report-preview-page');
+            
+            // UI Update & PDF Generation
+            let reportTitle = reportType === 'godown' ? "GODOWN TRANSFER REPORT" : "DAILY STOCK REPORT";
+            document.querySelector('#pdf-stock-template h2').innerText = reportTitle;
+            document.getElementById('psr-date-range').innerText = `From: ${new Date(fromD).toLocaleDateString('en-GB')} To: ${new Date(toD).toLocaleDateString('en-GB')}`; 
+            document.getElementById('psr-table-body').innerHTML = stockHtml;
+            
+            let previewHtml = document.getElementById('pdf-stock-template').innerHTML; 
+            document.getElementById('preview-render-area').innerHTML = previewHtml; 
+            
+            window.currentReportElemId = 'pdf-stock-template'; 
+            window.currentReportFilename = `${reportTitle.replace(/\s+/g, '_')}_${fromD}.pdf`; 
+            openPage('report-preview-page');
         }
+		
 
         window.executeReportDownload = function() { let elem = document.getElementById(window.currentReportElemId); let opt = { margin: 0.4, filename: window.currentReportFilename, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; alert("Downloading PDF... Please wait."); html2pdf().set(opt).from(elem).save(); }
         
@@ -3357,7 +3406,7 @@
             let fromD = document.getElementById('gd-from').value;
             let toD = document.getElementById('gd-to').value;
             if(!fromD || !toD) return alert('Please select From Date and To Date!');
-            generateStockReport(fromD, toD);
+            generateStockReport(fromD, toD, 'godown'); // ⚡ सिर्फ गोडाउन का डेटा लाएगा
         }
 
         window.renderGodownHistory = function() { 

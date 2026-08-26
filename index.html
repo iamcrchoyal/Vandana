@@ -2207,7 +2207,8 @@
                     if(typeof cur === 'number') cur = { cone: cur, kg: 0 }; 
                     let oldCone = parseFloat(cur.cone) || 0;
                     let oldKg = parseFloat(cur.kg) || 0;
-                    set(itemRef, { cone: oldCone + cone, kg: oldKg + kg }); 
+                    // 🌟 POINT 5: AGAR INACTIVE ITEM THA TO WAPAS ACTIVE KAR DO
+                    set(itemRef, { cone: oldCone + cone, kg: oldKg + kg, isInactive: null }); 
                 }); 
                 if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Stock Added (IN) Successfully! 🟢");
             }
@@ -2340,7 +2341,9 @@
             let lowstockHtml = ""; let lowstockItemsCount = 0; let lowstockCount = 0;
             
             for (let key in smartInventory) { 
-                let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; let data = smartInventory[key]; 
+                let data = smartInventory[key];
+                if(data && data.isInactive) continue; // 🌟 POINT 5: INACTIVE ITEMS KO UI SE CHHUPAYEN
+                let parts = key.split("_"); let cat = parts[0]; let shade = parts[1] || ""; 
                 
                 let coneQty = typeof data === 'object' ? (parseFloat(data.cone) || 0) : (parseFloat(data) || 0);
                 let kgQty = typeof data === 'object' ? (parseFloat(data.kg) || 0) : 0;
@@ -2485,11 +2488,39 @@
 
         window.confirmDeleteStock = function(key, shadeName, event) {
             event.stopPropagation();
-            // User se aakhiri confirmation lenge
-            window.showCustomConfirm("Delete Product?", `Kya aap sach me '${shadeName}' ko Inventory se completely delete karna chahte hain?`, function() {
-                remove(ref(db, 'Inventory/' + key)).then(() => {
-                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Product Deleted Completely! ✅");
-                }).catch(err => alert("Error deleting: " + err.message));
+            window.showCustomConfirm("Delete Product?", `Kya aap sach me '${shadeName}' ko Inventory se delete karna chahte hain?`, function() {
+                // 🌟 POINT 5: SUPERFAST HISTORY CHECK 🌟
+                let parts = key.split("_"); let cat = parts[0]; let shade = parts[1];
+                let hasHistory = false;
+                
+                // Check Godown Transfer History
+                for(let i=0; i<allGodownTransfers.length; i++) {
+                    if(allGodownTransfers[i].cat === cat && allGodownTransfers[i].item.toUpperCase() === shade.toUpperCase()) { hasHistory = true; break; }
+                }
+                // Check Ledger (Sales) History
+                if(!hasHistory) {
+                    for(let i=0; i<allLedgerData.length; i++) {
+                        let e = allLedgerData[i];
+                        if(e.cart) {
+                            for(let j=0; j<e.cart.length; j++) {
+                                if(e.cart[j].cat === cat && e.cart[j].shade.toUpperCase() === shade.toUpperCase()) { hasHistory = true; break; }
+                            }
+                        }
+                        if(hasHistory) break;
+                    }
+                }
+
+                if(hasHistory) {
+                    // 🛑 SOFT DELETE (Mark Inactive)
+                    update(ref(db, 'Inventory/' + key), { isInactive: true, cone: 0, kg: 0 }).then(() => {
+                        if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Product Safe-Deleted (Made Inactive)! ✅");
+                    }).catch(err => alert("Error: " + err.message));
+                } else {
+                    // 🗑️ HARD DELETE (Permanent)
+                    remove(ref(db, 'Inventory/' + key)).then(() => {
+                        if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Product Permanently Deleted! ✅");
+                    }).catch(err => alert("Error: " + err.message));
+                }
             });
         };
 
@@ -4740,6 +4771,8 @@
             let itemsFound = false;
 
             for (let key in smartInventory) { 
+                let data = smartInventory[key];
+                if(data && data.isInactive) continue; // 🌟 POINT 5: INACTIVE ITEMS KO SEARCH SE CHHUPAYEN
                 let parts = key.split("_"); 
                 if(parts[0] === cat) { 
                     // 🌟 Use Smart Available Stock (DB Stock - Cart Stock)

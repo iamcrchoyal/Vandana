@@ -266,6 +266,19 @@
         /* Premium SaaS Login Styles */
         .saas-login-bg { background: linear-gradient(45deg, var(--primary), var(--primary-dark), #c7d2fe); background-size: 400% 400%; animation: gemini-mesh 10s ease infinite; }
         .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.5); }
+
+        /* ================= POINT 19: SMART 3D MENU STYLES ================= */
+        .menu-scroll-strip { display: flex; overflow-x: auto; gap: 12px; padding: 16px 16px 20px 16px; scrollbar-width: none; background: linear-gradient(to right, #f8fafd, #e0e7ff); border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+        .menu-scroll-strip::-webkit-scrollbar { display: none; }
+        .mu-card { background: white; min-width: 105px; padding: 14px 10px; border-radius: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; border: 1px solid var(--border); transition: transform 0.2s; }
+        .mu-card:active { transform: scale(0.95); }
+        .mu-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 24px; margin-bottom: 4px; }
+        
+        .menu-3d-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 10px 16px 100px 16px; }
+        .m3d-card { background: linear-gradient(145deg, #ffffff, #f0f4f9); border-radius: 20px; padding: 18px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px; box-shadow: 6px 6px 12px #e0e2e0, -6px -6px 12px #ffffff; border: 1px solid white; cursor: pointer; transition: all 0.2s ease; }
+        .m3d-card:active { box-shadow: inset 5px 5px 10px #e0e2e0, inset -5px -5px 10px #ffffff; transform: translateY(2px); }
+        .m3d-icon { color: var(--primary); font-size: 32px; margin-bottom: 4px; }
+        .m3d-text { font-size: 13px; font-weight: 700; color: var(--text-dark); font-family: 'Product Sans', sans-serif; line-height: 1.2; }
     </style>
         <script src="https://cdn.lordicon.com/lordicon.js" defer></script>
 </head>
@@ -675,7 +688,7 @@
     <!-- 📱 PERMANENT GLOBAL APP BAR -->
     <header class="global-app-bar" id="main-app-bar">
         <div class="app-bar-left">
-            <div class="hamburger material-symbols-rounded" id="main-hamburger" onclick="openSidebar()">menu</div>
+            <div class="hamburger material-symbols-rounded" id="main-hamburger" onclick="navTo('smart-menu-page', null)">grid_view</div>
             <div class="app-title"><span>Vandana</span> Enterprises</div>
         </div>
         <div class="google-profile-ring" onclick="openProfileModal()">
@@ -757,18 +770,89 @@
         <div class="nav-item active" id="nav-btn-home" onclick="navTo('home', this)">
             <div class="nav-icon-wrap material-symbols-rounded">home</div><span>Home</span>
         </div>
-           <div class="nav-item" id="nav-btn-mybills" onclick="navTo('mybills-page', this)">
+        <div class="nav-item" id="nav-btn-mybills" onclick="navTo('mybills-page', this)">
             <div class="nav-icon-wrap material-symbols-rounded">receipt_long</div><span>My Bills</span>
         </div>
-        
         <div class="nav-item" id="nav-btn-inventory" onclick="navTo('items-page', this)">
             <div class="nav-icon-wrap material-symbols-rounded">inventory_2</div><span>Inventory</span>
         </div>
         <div class="nav-item" id="nav-btn-ledger" onclick="navTo('parties-page', this)">
             <div class="nav-icon-wrap material-symbols-rounded">menu_book</div><span>Ledger</span>
         </div>
+        <div class="nav-item" id="nav-btn-menu" onclick="navTo('smart-menu-page', this)">
+            <div class="nav-icon-wrap material-symbols-rounded">grid_view</div><span>Menu</span>
+        </div>
     </div>
 
+<!-- 📱 SMART 3D MENU PAGE (POINT 19) -->
+    <div class="page flex-page" id="smart-menu-page">
+        <div class="sub-header" style="box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: none;">
+            <h2 class="page-title" style="flex:1; padding-left: 16px; font-weight: 800; color: var(--primary-dark);">App Menu</h2>
+            <button class="material-symbols-rounded" style="background:none; border:none; font-size:28px; padding-right:16px; color: var(--primary);" onclick="openAdminProfile()">account_circle</button>
+        </div>
+        
+        <div class="scroll-content" style="padding:0; background: var(--bg-color);">
+            <!-- Most Used Strip -->
+            <div style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; padding: 16px 16px 0 16px; letter-spacing:0.5px;">⭐ Most Used Features</div>
+            <div class="menu-scroll-strip">
+                <div class="mu-card" onclick="navTo('pos-page', null)">
+                    <div class="mu-icon" style="background:#e8f0fe; color:var(--primary);"><span class="material-symbols-rounded">add_shopping_cart</span></div>
+                    <span style="font-size:12px; font-weight:700; color:var(--text-dark);">New Bill</span>
+                </div>
+                <div class="mu-card" onclick="navTo('godown-page', null)">
+                    <div class="mu-icon" style="background:#fdf2f2; color:var(--danger);"><span class="material-symbols-rounded">storefront</span></div>
+                    <span style="font-size:12px; font-weight:700; color:var(--text-dark);">Shop Transfer</span>
+                </div>
+                <div class="mu-card" onclick="navTo('cashbook-page', null)">
+                    <div class="mu-icon" style="background:#e6f4ea; color:var(--success);"><span class="material-symbols-rounded">account_balance</span></div>
+                    <span style="font-size:12px; font-weight:700; color:var(--text-dark);">Cashbook</span>
+                </div>
+                <div class="mu-card" onclick="openReportModal('stock')">
+                    <div class="mu-icon" style="background:#fef3c7; color:#d97706;"><span class="material-symbols-rounded">bar_chart</span></div>
+                    <span style="font-size:12px; font-weight:700; color:var(--text-dark);">Stock Report</span>
+                </div>
+            </div>
+
+            <!-- 3D Grid -->
+            <div style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; padding: 0 16px; letter-spacing:0.5px;">🎛️ All Options</div>
+            <div class="menu-3d-grid">
+                <div class="m3d-card" onclick="navTo('items-page', null)">
+                    <span class="material-symbols-rounded m3d-icon">inventory_2</span>
+                    <span class="m3d-text">Master<br>Inventory</span>
+                </div>
+                <div class="m3d-card" onclick="navTo('parties-page', null)">
+                    <span class="material-symbols-rounded m3d-icon">menu_book</span>
+                    <span class="m3d-text">Ledger<br>Book</span>
+                </div>
+                <div class="m3d-card" onclick="openAbsentCustomers()">
+                    <span class="material-symbols-rounded m3d-icon" style="color:#d97706;">person_off</span>
+                    <span class="m3d-text">Absent<br>Today</span>
+                </div>
+                <div class="m3d-card" onclick="navTo('wastage-page', null)">
+                    <span class="material-symbols-rounded m3d-icon" style="color:var(--danger);">delete_sweep</span>
+                    <span class="m3d-text">Damage &<br>Wastage</span>
+                </div>
+                <div class="m3d-card" onclick="navTo('recycle-page', null)">
+                    <span class="material-symbols-rounded m3d-icon" style="color:var(--text-muted);">delete</span>
+                    <span class="m3d-text">Recycle<br>Bin</span>
+                </div>
+                <div class="m3d-card manage-users-btn-menu" onclick="navTo('manage-users-page', null)" style="display:none;">
+                    <span class="material-symbols-rounded m3d-icon" style="color:#9333ea;">group</span>
+                    <span class="m3d-text">Manage<br>Users</span>
+                </div>
+                <div class="m3d-card" onclick="openAdminProfile()">
+                    <span class="material-symbols-rounded m3d-icon" style="color:#4f46e5;">settings</span>
+                    <span class="m3d-text">App<br>Settings</span>
+                </div>
+                <div class="m3d-card" onclick="manualLogout()">
+                    <span class="material-symbols-rounded m3d-icon" style="color:var(--danger);">logout</span>
+                    <span class="m3d-text">Logout<br>Account</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+	
 <!-- 📄 MY BILLS PAGE (CUSTOMER PORTAL) -->
     <div class="page flex-page" id="mybills-page">
         
@@ -2799,7 +2883,7 @@
             if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
-        const allPagesList = ['items-page', 'wastage-page', 'manage-categories-page', 'dynamic-stock-page', 'parties-page', 'cashbook-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'coding-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'home'];
+        const allPagesList = ['smart-menu-page', 'items-page', 'wastage-page', 'manage-categories-page', 'dynamic-stock-page', 'parties-page', 'cashbook-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'coding-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'home'];
         
         window.openPage = function(id, isBack = false) { 
             if(!isBack && window.pageStack[window.pageStack.length-1] !== id) {
@@ -2818,6 +2902,7 @@
             
             // UPDATE: कस्टमर जब सीधे लेजर के अंदर जाएगा, तब भी नीचे वाला बटन नीला (Active) रहना चाहिए
             if(id === 'parties-page' || id === 'ledger-deep-page') document.getElementById('nav-btn-ledger')?.classList.add('active');
+            if(id === 'smart-menu-page') document.getElementById('nav-btn-menu')?.classList.add('active');
             
             if(id === 'mybills-page') { 
                 document.getElementById('nav-btn-mybills')?.classList.add('active'); 
@@ -5609,6 +5694,10 @@
             // 10. 🔥 एडमिन के लिए "Manage Users" बटन दिखाएं
             let manageUsersNav = document.getElementById('manage-users-nav');
             if(manageUsersNav) manageUsersNav.style.display = isAdmin ? 'flex' : 'none';
+            
+            // 11. 🔥 Smart 3D Menu - Role Access
+            let manageUsersMenuBtn = document.querySelector('.manage-users-btn-menu');
+            if(manageUsersMenuBtn) manageUsersMenuBtn.style.display = isAdmin ? 'flex' : 'none';
         }
         // ====================================================================
 window.showTargetCelebration = function() {

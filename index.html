@@ -688,7 +688,6 @@
     <!-- 📱 PERMANENT GLOBAL APP BAR -->
     <header class="global-app-bar" id="main-app-bar">
         <div class="app-bar-left">
-            <div class="hamburger material-symbols-rounded" id="main-hamburger" onclick="navTo('smart-menu-page', null)">grid_view</div>
             <div class="app-title"><span>Vandana</span> Enterprises</div>
         </div>
         <div class="google-profile-ring" onclick="openProfileModal()">
@@ -780,14 +779,15 @@
             <div class="nav-icon-wrap material-symbols-rounded">menu_book</div><span>Ledger</span>
         </div>
         <div class="nav-item" id="nav-btn-menu" onclick="navTo('smart-menu-page', this)">
-            <div class="nav-icon-wrap material-symbols-rounded">grid_view</div><span>Menu</span>
+            <div class="nav-icon-wrap material-symbols-rounded">menu</div><span>More</span>
         </div>
     </div>
 
 <!-- 📱 SMART 3D MENU PAGE (POINT 19) -->
     <div class="page flex-page" id="smart-menu-page">
         <div class="sub-header" style="box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: none;">
-            <h2 class="page-title" style="flex:1; padding-left: 16px; font-weight: 800; color: var(--primary-dark);">App Menu</h2>
+            <button class="back-btn material-symbols-rounded" onclick="closePage('smart-menu-page')">arrow_back</button>
+            <h2 class="page-title" style="flex:1; padding-left: 4px; font-weight: 800; color: var(--primary-dark);">App Menu</h2>
             <button class="material-symbols-rounded" style="background:none; border:none; font-size:28px; padding-right:16px; color: var(--primary);" onclick="openAdminProfile()">account_circle</button>
         </div>
         

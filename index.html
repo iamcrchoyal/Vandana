@@ -1333,7 +1333,8 @@
 <!-- ➕ POINT 8: ADD NEW PARTY (CUSTOMER/SUPPLIER) PAGE -->
     <div class="page flex-page" id="add-party-page">
         <div class="sub-header">
-            <button class="back-btn material-symbols-rounded" onclick="closePage('add-party-page')">arrow_back</button>
+            <!-- ⚡ FAST BACK BUTTON FIX -->
+            <button class="back-btn material-symbols-rounded" onclick="document.getElementById('add-party-page').classList.remove('active'); navTo('parties-page', null);">arrow_back</button>
             <h2 class="page-title">Add New Party</h2>
         </div>
         <div class="scroll-content" style="padding-top:16px;">
@@ -1352,13 +1353,21 @@
                     </div>
                 </div>
                 
+                <!-- 🌟 FACTORY ADDRESS UPDATE -->
                 <div class="form-group">
                     <label class="form-label" style="font-size:12px; font-weight:700; color:var(--primary-dark);">ADDRESS (Optional)</label>
-                    <textarea class="form-control" id="new-party-address" rows="3" placeholder="Enter Shop / Godown Address" style="border-radius:12px; font-weight:500;"></textarea>
+                    <textarea class="form-control" id="new-party-address" rows="3" placeholder="Enter Factory Address" style="border-radius:12px; font-weight:500;"></textarea>
+                </div>
+
+                <!-- 🌟 NEW REFERENCE FIELD ADDED HERE -->
+                <div class="form-group">
+                    <label class="form-label" style="font-size:12px; font-weight:700; color:var(--primary-dark);">REFERENCE (Optional)</label>
+                    <input type="text" class="form-control" id="new-party-ref" placeholder="Reference by / Transport / Agent" style="border-radius:12px; font-weight:600;">
                 </div>
                 
+                <!-- 🌟 BUTTON TEXT CHANGED TO 'Save Party' -->
                 <button class="btn-submit" onclick="addCustomerToCloud()" style="width:100%; border-radius:16px; padding:16px; font-size:15px; font-weight:700; background:var(--primary); box-shadow:0 4px 15px rgba(10,86,208,0.3); display:flex; align-items:center; justify-content:center; gap:8px; margin-top:10px;">
-                    <span class="material-symbols-rounded" style="font-size:20px;">person_add</span> Save Record
+                    <span class="material-symbols-rounded" style="font-size:20px;">person_add</span> Save Party
                 </button>
             </div>
         </div>
@@ -3832,8 +3841,31 @@
             window.showSaaSToast("Profile Updated Successfully!"); 
             closePage('customer-profile-page'); 
         }
-        // 🌟 POINT 12: AUTO-CAPITALIZE (DB SAVE) 🌟
-        window.addCustomerToCloud = function() { let rawName = document.getElementById('new-party-name').value.trim(); let name = rawName ? rawName.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) : ""; let phone = document.getElementById('new-party-phone').value; let address = document.getElementById('new-party-address').value; if(!name) return alert("Please enter Name!"); push(ref(db, 'Customers'), { name, phone, address, date: new Date().toISOString(), status: "Active", type: currentTabType }); closePage('add-party-page'); document.getElementById('new-party-name').value = ''; document.getElementById('new-party-phone').value = ''; document.getElementById('new-party-address').value = ''; }
+        // 🌟 POINT 12: AUTO-CAPITALIZE (DB SAVE) & REFERENCE FIX 🌟
+        window.addCustomerToCloud = function() { 
+            let rawName = document.getElementById('new-party-name').value.trim(); 
+            let name = rawName ? rawName.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) : ""; 
+            let phone = document.getElementById('new-party-phone').value; 
+            let address = document.getElementById('new-party-address').value; 
+            let reference = document.getElementById('new-party-ref') ? document.getElementById('new-party-ref').value : ""; 
+            
+            if(!name) return alert("Please enter Name!"); 
+            
+            // ⚡ FAST SAVE TO FIREBASE
+            push(ref(db, 'Customers'), { name, phone, address, reference, date: new Date().toISOString(), status: "Active", type: currentTabType }); 
+            
+            // ⚡ FAST CLOSE & REDIRECT
+            document.getElementById('add-party-page').classList.remove('active');
+            navTo('parties-page', null); 
+            
+            // UI RESET
+            document.getElementById('new-party-name').value = ''; 
+            document.getElementById('new-party-phone').value = ''; 
+            document.getElementById('new-party-address').value = ''; 
+            if(document.getElementById('new-party-ref')) document.getElementById('new-party-ref').value = ''; 
+            
+            if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Party Saved Successfully! ✅");
+        }
         window.deleteCurrentCustomer = function() { 
             window.showCustomConfirm("Delete Customer?", `क्या आप सच में ${currentPartyName} और उनका सारा डेटा हमेशा के लिए डिलीट करना चाहते हैं?`, function() {
                 // 1. Customer को डिलीट करें

@@ -1355,7 +1355,7 @@
                 
                 <!-- 1. Party Name (Floating Label matching 122895.jpg) -->
                 <div class="floating-box">
-                    <input type="text" id="new-party-name" class="float-input" placeholder="e.g. Ram Prasad" oninput="this.value = this.value.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()); checkPartyNameFill();" onchange="checkPartyNameFill()">
+                    <input type="text" id="new-party-name" class="float-input" placeholder="e.g. Vandana Enterprises" oninput="this.value = this.value.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()); checkPartyNameFill();" onchange="checkPartyNameFill()">
                     <label class="float-label">Party Name*</label>
                     <button class="material-symbols-rounded icon-inside" onclick="openPhonebook('new-party-name', 'new-party-phone'); setTimeout(checkPartyNameFill, 1500);">contacts</button>
                 </div>

@@ -1330,6 +1330,40 @@
         <button class="kb-fab" id="main-fab" onclick="openPage('add-party-page')"><span class="material-symbols-rounded" style="font-size:20px; margin-right:4px;">add</span><span class="fab-text" id="fab-text">Add Customer</span></button>
     </div>
 
+<!-- ➕ POINT 8: ADD NEW PARTY (CUSTOMER/SUPPLIER) PAGE -->
+    <div class="page flex-page" id="add-party-page">
+        <div class="sub-header">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('add-party-page')">arrow_back</button>
+            <h2 class="page-title">Add New Party</h2>
+        </div>
+        <div class="scroll-content" style="padding-top:16px;">
+            <div class="form-panel" style="border-radius:18px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
+                
+                <div class="form-group">
+                    <label class="form-label" style="font-size:12px; font-weight:700; color:var(--primary-dark);">FULL NAME *</label>
+                    <input type="text" class="form-control" id="new-party-name" placeholder="Enter Full Name" style="border-radius:12px; font-weight:600;" oninput="this.value = this.value.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())">
+                </div>
+                
+                <div class="form-group" style="position:relative;">
+                    <label class="form-label" style="font-size:12px; font-weight:700; color:var(--primary-dark);">MOBILE NUMBER</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="tel" class="form-control" id="new-party-phone" placeholder="10-digit mobile number" style="border-radius:12px; font-weight:600; flex:1;">
+                        <button class="action-btn material-symbols-rounded" onclick="openPhonebook('new-party-name', 'new-party-phone')" style="width:52px; border-radius:12px; flex-shrink:0; background:#e8f0fe; color:var(--primary); box-shadow:0 2px 4px rgba(10,86,208,0.1);">contacts</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" style="font-size:12px; font-weight:700; color:var(--primary-dark);">ADDRESS (Optional)</label>
+                    <textarea class="form-control" id="new-party-address" rows="3" placeholder="Enter Shop / Godown Address" style="border-radius:12px; font-weight:500;"></textarea>
+                </div>
+                
+                <button class="btn-submit" onclick="addCustomerToCloud()" style="width:100%; border-radius:16px; padding:16px; font-size:15px; font-weight:700; background:var(--primary); box-shadow:0 4px 15px rgba(10,86,208,0.3); display:flex; align-items:center; justify-content:center; gap:8px; margin-top:10px;">
+                    <span class="material-symbols-rounded" style="font-size:20px;">person_add</span> Save Record
+                </button>
+            </div>
+        </div>
+    </div>
+	
     <!-- 🔥 KHATABOOK DEEP LEDGER PAGE -->
     <div class="page flex-page" id="ledger-deep-page">
         <div class="fixed-top-section" style="padding:0;">

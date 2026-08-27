@@ -1326,50 +1326,111 @@
                 </div>
             </div>
         </div>
-        <div class="scroll-content" id="kb-customer-list" style="padding-top:15px; background:var(--bg-color);"></div>
-        <button class="kb-fab" id="main-fab" onclick="openPage('add-party-page')"><span class="material-symbols-rounded" style="font-size:20px; margin-right:4px;">add</span><span class="fab-text" id="fab-text">Add Customer</span></button>
+        <div class="scroll-content" id="kb-customer-list" style="padding-top:15px; background:var(--bg-color);" onscroll="handleFabScroll()"></div>
+        <!-- 🌟 SMART ANIMATED FAB 🌟 -->
+        <button class="kb-fab" id="main-fab" onclick="openPage('add-party-page')" style="transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 0 20px;">
+            <span class="material-symbols-rounded" style="font-size:22px;">person_add</span>
+            <span class="fab-text" id="fab-text" style="white-space: nowrap; transition: max-width 0.3s ease, opacity 0.3s ease, margin-left 0.3s ease; max-width: 150px; opacity: 1; margin-left: 8px;">Add New Party</span>
+        </button>
     </div>
 
-<!-- ➕ POINT 8: ADD NEW PARTY (CUSTOMER/SUPPLIER) PAGE -->
+<!-- 🌟 POINT 8-14: ADVANCED PROGRESSIVE ADD PARTY PAGE 🌟 -->
     <div class="page flex-page" id="add-party-page">
         <div class="sub-header">
-            <!-- ⚡ FAST BACK BUTTON FIX -->
             <button class="back-btn material-symbols-rounded" onclick="document.getElementById('add-party-page').classList.remove('active'); navTo('parties-page', null);">arrow_back</button>
             <h2 class="page-title">Add New Party</h2>
         </div>
-        <div class="scroll-content" style="padding-top:16px;">
-            <div class="form-panel" style="border-radius:18px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">
+        <div class="scroll-content" style="padding-top:20px; padding-bottom:90px;">
+            <div class="form-panel" style="border-radius:20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #e0e2e0; padding: 20px;">
                 
-                <div class="form-group">
-                    <label class="form-label" style="font-size:12px; font-weight:700; color:var(--primary-dark);">FULL NAME *</label>
-                    <input type="text" class="form-control" id="new-party-name" placeholder="Enter Full Name" style="border-radius:12px; font-weight:600;" oninput="this.value = this.value.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())">
-                </div>
-                
-                <div class="form-group" style="position:relative;">
-                    <label class="form-label" style="font-size:12px; font-weight:700; color:var(--primary-dark);">MOBILE NUMBER</label>
-                    <div style="display:flex; gap:10px;">
-                        <input type="tel" class="form-control" id="new-party-phone" placeholder="10-digit mobile number" style="border-radius:12px; font-weight:600; flex:1;">
-                        <button class="action-btn material-symbols-rounded" onclick="openPhonebook('new-party-name', 'new-party-phone')" style="width:52px; border-radius:12px; flex-shrink:0; background:#e8f0fe; color:var(--primary); box-shadow:0 2px 4px rgba(10,86,208,0.1);">contacts</button>
+                <!-- 1. Party Name (Always Visible, Floating Label Style with Contact Icon) -->
+                <div style="position:relative; margin-bottom:16px;">
+                    <div style="border: 2px solid var(--primary); border-radius: 14px; padding: 12px 14px; display:flex; align-items:center; background: white; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                        <div style="flex:1; position:relative;">
+                            <label style="position:absolute; top:-22px; left:0; background:white; padding:0 6px; font-size:11px; font-weight:800; color:var(--primary); letter-spacing:0.5px;">PARTY NAME *</label>
+                            <input type="text" id="new-party-name" placeholder="Type Name or Select Contact..." style="width:100%; border:none; outline:none; font-size:16px; font-weight:700; color:var(--text-dark); background:transparent; font-family:'Product Sans', sans-serif;" oninput="this.value = this.value.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()); checkPartyNameFill();" onchange="checkPartyNameFill()">
+                        </div>
+                        <button class="material-symbols-rounded" onclick="openPhonebook('new-party-name', 'new-party-phone'); setTimeout(checkPartyNameFill, 1500);" style="background:#e8f0fe; color:var(--primary); border:none; border-radius:10px; width:40px; height:40px; font-size:22px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow: 0 2px 6px rgba(10,86,208,0.15); transition:0.2s;" onactive="this.style.transform='scale(0.95)'">contacts</button>
                     </div>
                 </div>
-                
-                <!-- 🌟 FACTORY ADDRESS UPDATE -->
-                <div class="form-group">
-                    <label class="form-label" style="font-size:12px; font-weight:700; color:var(--primary-dark);">ADDRESS (Optional)</label>
-                    <textarea class="form-control" id="new-party-address" rows="3" placeholder="Enter Factory Address" style="border-radius:12px; font-weight:500;"></textarea>
-                </div>
 
-                <!-- 🌟 NEW REFERENCE FIELD ADDED HERE -->
-                <div class="form-group">
-                    <label class="form-label" style="font-size:12px; font-weight:700; color:var(--primary-dark);">REFERENCE (Optional)</label>
-                    <input type="text" class="form-control" id="new-party-ref" placeholder="Reference by / Transport / Agent" style="border-radius:12px; font-weight:600;">
+                <!-- 🔽 HIDDEN SECTION (Reveals when name is typed - Progressive Disclosure) 🔽 -->
+                <div id="progressive-party-details" style="display:none; animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);">
+                    
+                    <!-- Mobile Number -->
+                    <div class="form-group" style="margin-bottom:20px;">
+                        <label class="form-label" style="font-size:11px; font-weight:700; color:var(--text-muted);">MOBILE NUMBER</label>
+                        <div style="display:flex; align-items:center; border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; background: var(--bg-color);">
+                            <span style="font-weight:700; color:var(--text-muted); margin-right:8px; border-right:1px solid var(--border); padding-right:8px;">+91</span>
+                            <input type="tel" id="new-party-phone" placeholder="10-digit number" style="width:100%; border:none; outline:none; font-size:16px; font-weight:600; background:transparent;">
+                        </div>
+                    </div>
+
+                    <!-- Opening Balance Section -->
+                    <div style="background:#f8fafd; border: 1px solid #c2e7ff; border-radius: 16px; padding: 16px; margin-bottom: 20px;">
+                        <div style="display:flex; gap:12px; margin-bottom:14px;">
+                            <div style="flex:1;">
+                                <label style="font-size:11px; font-weight:700; color:var(--primary-dark); display:block; margin-bottom:6px;">OPENING BALANCE</label>
+                                <div style="display:flex; align-items:center; border: 1px solid #a8c7fa; border-radius: 10px; padding: 10px; background: white; box-shadow:0 2px 4px rgba(10,86,208,0.05);">
+                                    <span style="font-weight:700; color:var(--text-dark); margin-right:6px; font-size:16px;">₹</span>
+                                    <input type="number" id="new-party-ob" placeholder="0" style="width:100%; border:none; outline:none; font-size:18px; font-weight:800; color:var(--primary-dark); font-family:'Product Sans', sans-serif;">
+                                </div>
+                            </div>
+                            <div style="flex:1;">
+                                <label style="font-size:11px; font-weight:700; color:var(--primary-dark); display:block; margin-bottom:6px;">AS OF DATE</label>
+                                <input type="date" id="new-party-ob-date" style="width:100%; border: 1px solid #a8c7fa; border-radius: 10px; padding: 10px; font-size:14px; font-weight:700; background:white; outline:none; font-family:'Product Sans', sans-serif; box-shadow:0 2px 4px rgba(10,86,208,0.05);">
+                            </div>
+                        </div>
+                        
+                        <!-- To Receive / To Pay Buttons -->
+                        <div style="display:flex; gap:10px;">
+                            <button id="btn-to-receive" class="btn-outline" style="flex:1; padding:10px; border-radius:10px; font-size:13px; font-weight:800; border-color:var(--success); color:var(--success); background:#e6f4ea; transition:0.2s;" onclick="setOBType('receive')">↓ TO RECEIVE</button>
+                            <button id="btn-to-pay" class="btn-outline" style="flex:1; padding:10px; border-radius:10px; font-size:13px; font-weight:800; border-color:var(--border); color:var(--text-muted); background:white; transition:0.2s;" onclick="setOBType('pay')">↑ TO PAY</button>
+                        </div>
+                        <input type="hidden" id="ob-type-value" value="receive">
+                    </div>
+
+                    <!-- Credit Limit Toggle -->
+                    <div style="border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:white; transition:0.2s;" onclick="toggleCreditLimit()" id="cl-toggle-container">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span class="material-symbols-rounded" style="color:var(--text-muted);" id="cl-icon">credit_score</span>
+                            <span style="font-size:14px; font-weight:700; color:var(--text-dark);" id="cl-text">Set Credit Limit</span>
+                        </div>
+                        <div id="cl-toggle-switch" style="width:40px; height:22px; background:#e0e2e0; border-radius:12px; position:relative; transition:background 0.3s ease;">
+                            <div id="cl-toggle-circle" style="width:18px; height:18px; background:white; border-radius:50%; position:absolute; top:2px; left:2px; transition:transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow:0 1px 4px rgba(0,0,0,0.3);"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Credit Limit Box (Hidden by default) -->
+                    <div id="credit-limit-box" style="display:none; margin-bottom:20px; animation: slideDown 0.3s ease-out;">
+                        <label style="font-size:11px; font-weight:800; color:var(--primary); display:block; margin-bottom:6px; letter-spacing:0.5px;">MAXIMUM CREDIT LIMIT (₹)</label>
+                        <div style="display:flex; align-items:center; border: 2px solid #a8c7fa; border-radius: 12px; padding: 10px 14px; background: white; box-shadow:inset 0 2px 4px rgba(0,0,0,0.02);">
+                            <span style="font-weight:700; color:var(--text-dark); margin-right:8px; font-size:18px;">₹</span>
+                            <input type="number" id="new-party-credit-limit" placeholder="e.g. 50000" style="width:100%; border:none; outline:none; font-size:18px; font-weight:800; color:var(--primary-dark); font-family:'Product Sans', sans-serif;">
+                        </div>
+                    </div>
+
+                    <!-- Addresses Section -->
+                    <div style="margin-bottom: 20px; padding-top:16px; border-top:1px dashed #e0e2e0;">
+                        <label style="font-size:11px; font-weight:800; color:var(--text-muted); display:block; margin-bottom:10px; letter-spacing:0.5px;">ADDRESS & CONTACT DETAILS</label>
+                        <textarea id="new-party-address" class="form-control" rows="2" placeholder="Billing / Shop Address" style="border-radius:12px; margin-bottom:10px; font-weight:600; padding:12px;"></textarea>
+                        <textarea id="new-party-factory" class="form-control" rows="2" placeholder="Factory Address" style="border-radius:12px; margin-bottom:10px; font-weight:600; padding:12px;"></textarea>
+                        <input type="email" id="new-party-email" class="form-control" placeholder="Email ID (Optional)" style="border-radius:12px; font-weight:600; padding:12px;">
+                    </div>
+
+                    <!-- Reference -->
+                    <div class="form-group" style="margin-bottom:10px;">
+                        <label style="font-size:11px; font-weight:800; color:var(--text-muted); display:block; margin-bottom:6px; letter-spacing:0.5px;">REFERENCE</label>
+                        <input type="text" id="new-party-ref" class="form-control" placeholder="Reference by / Transport / Agent" style="border-radius:12px; font-weight:600; padding:12px;">
+                    </div>
                 </div>
-                
-                <!-- 🌟 BUTTON TEXT CHANGED TO 'Save Party' -->
-                <button class="btn-submit" onclick="addCustomerToCloud()" style="width:100%; border-radius:16px; padding:16px; font-size:15px; font-weight:700; background:var(--primary); box-shadow:0 4px 15px rgba(10,86,208,0.3); display:flex; align-items:center; justify-content:center; gap:8px; margin-top:10px;">
-                    <span class="material-symbols-rounded" style="font-size:20px;">person_add</span> Save Party
-                </button>
             </div>
+        </div>
+        
+        <!-- Bottom Action Bar (Fixed at bottom) -->
+        <div class="bottom-action-bar" style="justify-content:center; padding: 12px 16px; gap:12px; z-index:9999;">
+            <button class="btn-outline" onclick="savePartyLogic(true)" style="flex:1; border:2px solid var(--primary); color:var(--primary); border-radius:14px; font-weight:800; font-size:13px; font-family:'Product Sans', sans-serif;">Save & Add New</button>
+            <button class="btn-submit" onclick="savePartyLogic(false)" style="flex:1; background:var(--primary); border-radius:14px; font-weight:800; font-size:14px; font-family:'Product Sans', sans-serif; box-shadow:0 4px 12px rgba(10,86,208,0.3);">Save Party</button>
         </div>
     </div>
 	
@@ -3841,31 +3902,181 @@
             window.showSaaSToast("Profile Updated Successfully!"); 
             closePage('customer-profile-page'); 
         }
-        // 🌟 POINT 12: AUTO-CAPITALIZE (DB SAVE) & REFERENCE FIX 🌟
-        window.addCustomerToCloud = function() { 
-            let rawName = document.getElementById('new-party-name').value.trim(); 
-            let name = rawName ? rawName.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) : ""; 
-            let phone = document.getElementById('new-party-phone').value; 
-            let address = document.getElementById('new-party-address').value; 
-            let reference = document.getElementById('new-party-ref') ? document.getElementById('new-party-ref').value : ""; 
+        // 🌟 POINT 12: // ================= POINT 8-14: ADVANCED PARTY CREATION LOGIC =================
+        
+        // 1. Scroll Animation for FAB (Ledger Book Page)
+        let lastLedgerScroll = 0;
+        window.handleFabScroll = function() {
+            let st = document.getElementById('kb-customer-list').scrollTop;
+            let fabText = document.getElementById('fab-text');
+            let fabBtn = document.getElementById('main-fab');
             
-            if(!name) return alert("Please enter Name!"); 
-            
-            // ⚡ FAST SAVE TO FIREBASE
-            push(ref(db, 'Customers'), { name, phone, address, reference, date: new Date().toISOString(), status: "Active", type: currentTabType }); 
-            
-            // ⚡ FAST CLOSE & REDIRECT
-            document.getElementById('add-party-page').classList.remove('active');
-            navTo('parties-page', null); 
-            
-            // UI RESET
-            document.getElementById('new-party-name').value = ''; 
-            document.getElementById('new-party-phone').value = ''; 
-            document.getElementById('new-party-address').value = ''; 
-            if(document.getElementById('new-party-ref')) document.getElementById('new-party-ref').value = ''; 
-            
-            if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Party Saved Successfully! ✅");
+            if(!fabText || !fabBtn) return;
+
+            if (st > 20 && st > lastLedgerScroll) {
+                // Scrolling Down -> Shrink
+                fabText.style.maxWidth = '0px';
+                fabText.style.opacity = '0';
+                fabText.style.marginLeft = '0px';
+                fabBtn.style.padding = '0 16px';
+            } else if (st < lastLedgerScroll - 5 || st <= 20) {
+                // Scrolling Up -> Expand
+                fabText.style.maxWidth = '150px';
+                fabText.style.opacity = '1';
+                fabText.style.marginLeft = '8px';
+                fabBtn.style.padding = '0 20px';
+            }
+            lastLedgerScroll = st;
         }
+
+        // 2. Progressive Disclosure (Show form when name is typed)
+        window.checkPartyNameFill = function() {
+            let nameInput = document.getElementById('new-party-name').value.trim();
+            let detailsDiv = document.getElementById('progressive-party-details');
+            if (nameInput.length > 0) {
+                if (detailsDiv.style.display === 'none') {
+                    detailsDiv.style.display = 'block';
+                    // Auto set today's date for Opening Balance
+                    let todayDate = new Date().toISOString().split('T')[0];
+                    document.getElementById('new-party-ob-date').value = todayDate;
+                }
+            } else {
+                detailsDiv.style.display = 'none';
+            }
+        }
+
+        // 3. To Receive / To Pay Logic
+        window.setOBType = function(type) {
+            document.getElementById('ob-type-value').value = type;
+            let btnRec = document.getElementById('btn-to-receive');
+            let btnPay = document.getElementById('btn-to-pay');
+            
+            if (type === 'receive') {
+                btnRec.style.background = '#e6f4ea'; btnRec.style.color = 'var(--success)'; btnRec.style.borderColor = 'var(--success)';
+                btnPay.style.background = 'white'; btnPay.style.color = 'var(--text-muted)'; btnPay.style.borderColor = 'var(--border)';
+            } else {
+                btnPay.style.background = '#fdf2f2'; btnPay.style.color = 'var(--danger)'; btnPay.style.borderColor = 'var(--danger)';
+                btnRec.style.background = 'white'; btnRec.style.color = 'var(--text-muted)'; btnRec.style.borderColor = 'var(--border)';
+            }
+        }
+
+        // 4. Credit Limit Toggle Animation
+        window.toggleCreditLimit = function() {
+            let box = document.getElementById('credit-limit-box');
+            let circle = document.getElementById('cl-toggle-circle');
+            let bg = document.getElementById('cl-toggle-switch');
+            let icon = document.getElementById('cl-icon');
+            let container = document.getElementById('cl-toggle-container');
+            
+            if (box.style.display === 'none') {
+                box.style.display = 'block';
+                circle.style.transform = 'translateX(18px)';
+                bg.style.background = 'var(--primary)';
+                icon.style.color = 'var(--primary)';
+                container.style.borderColor = 'var(--primary)';
+                container.style.boxShadow = '0 2px 8px rgba(10,86,208,0.1)';
+            } else {
+                box.style.display = 'none';
+                circle.style.transform = 'translateX(0px)';
+                bg.style.background = '#e0e2e0';
+                icon.style.color = 'var(--text-muted)';
+                container.style.borderColor = 'var(--border)';
+                container.style.boxShadow = 'none';
+                document.getElementById('new-party-credit-limit').value = ''; // Reset value
+            }
+        }
+
+        // 5. THE SUPERFAST SAVE LOGIC WITH DUPLICATE CHECK
+        window.savePartyLogic = function(isAddNew) {
+            let rawName = document.getElementById('new-party-name').value.trim();
+            let name = rawName ? rawName.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) : "";
+            let phone = document.getElementById('new-party-phone').value.trim();
+            
+            if(!name) return alert("Please enter Party Name!");
+
+            // ⚡ DUPLICATE CHECK: Check if Name or Phone already exists in globalCustomers
+            let isDuplicate = globalCustomers.find(c => 
+                (c.name.toLowerCase() === name.toLowerCase()) || 
+                (phone && c.phone === phone)
+            );
+
+            if (isDuplicate) {
+                let matchReason = (isDuplicate.name.toLowerCase() === name.toLowerCase()) ? "Name" : "Mobile Number";
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: This ${matchReason} is already saved as '${isDuplicate.name}'.`);
+                else alert(`Error: This ${matchReason} is already saved as '${isDuplicate.name}'.`);
+                return; // Stop Saving
+            }
+
+            // Fetch all other details
+            let obAmount = parseFloat(document.getElementById('new-party-ob').value) || 0;
+            let obDate = document.getElementById('new-party-ob-date').value;
+            let obType = document.getElementById('ob-type-value').value; // 'receive' or 'pay'
+            let creditLimit = parseFloat(document.getElementById('new-party-credit-limit').value) || 0;
+            let address = document.getElementById('new-party-address').value.trim();
+            let factory = document.getElementById('new-party-factory').value.trim();
+            let email = document.getElementById('new-party-email').value.trim();
+            let reference = document.getElementById('new-party-ref').value.trim();
+
+            // 1. SAVE CUSTOMER TO DB
+            let newPartyRef = push(ref(db, 'Customers'));
+            set(newPartyRef, {
+                name: name,
+                phone: phone,
+                address: address,
+                factoryAddress: factory,
+                email: email,
+                reference: reference,
+                creditLimit: creditLimit,
+                date: new Date().toISOString(),
+                status: "Active",
+                type: currentTabType // Picks Customer/Supplier based on current tab
+            });
+
+            // 2. SAVE OPENING BALANCE TO LEDGER (If any)
+            if (obAmount > 0) {
+                let [year, month, day] = obDate.split('-');
+                let dObj = new Date(); dObj.setFullYear(year, month - 1, day);
+                let finalIsoString = dObj.toISOString();
+
+                // 'receive' means they owe us -> We 'Gave' them money/goods
+                // 'pay' means we owe them -> We 'Got' money/goods from them
+                let ledgerType = obType === 'receive' ? 'Gave' : 'Got';
+                
+                push(ref(db, 'Ledger'), {
+                    date: finalIsoString,
+                    name: name,
+                    type: ledgerType,
+                    amount: obAmount,
+                    details: 'Opening Balance'
+                });
+            }
+
+            if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Party '${name}' Saved! ✅`);
+
+            // 3. POST-SAVE ACTION (Save & New OR Save & Close)
+            if (isAddNew) {
+                // Reset everything to add another
+                document.getElementById('new-party-name').value = '';
+                document.getElementById('new-party-phone').value = '';
+                document.getElementById('new-party-ob').value = '';
+                if(document.getElementById('credit-limit-box').style.display === 'block') toggleCreditLimit();
+                document.getElementById('new-party-address').value = '';
+                document.getElementById('new-party-factory').value = '';
+                document.getElementById('new-party-email').value = '';
+                document.getElementById('new-party-ref').value = '';
+                checkPartyNameFill(); // Hide form again
+                document.getElementById('new-party-name').focus();
+            } else {
+                // Close Page
+                document.getElementById('add-party-page').classList.remove('active');
+                navTo('parties-page', null);
+                setTimeout(() => {
+                    document.getElementById('new-party-name').value = '';
+                    checkPartyNameFill();
+                }, 300);
+            }
+        }
+        // ==============================================================================
         window.deleteCurrentCustomer = function() { 
             window.showCustomConfirm("Delete Customer?", `क्या आप सच में ${currentPartyName} और उनका सारा डेटा हमेशा के लिए डिलीट करना चाहते हैं?`, function() {
                 // 1. Customer को डिलीट करें

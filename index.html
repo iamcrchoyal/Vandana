@@ -2881,11 +2881,19 @@
                     }
                 });
 
+                // 🌟 ZERO-LATENCY CACHE LOADER 🌟
+                try {
+                    let cachedInv = localStorage.getItem('v_offline_inventory');
+                    if(cachedInv) { smartInventory = JSON.parse(cachedInv); renderInventoryList(); updatePosShades(); window.removeSplashScreen(); }
+                } catch(e) {}
+
                 onValue(ref(db, 'Inventory'), (snapshot) => { 
                     smartInventory = snapshot.val() || {}; 
+                    localStorage.setItem('v_offline_inventory', JSON.stringify(smartInventory)); // Save to Cache
                     renderInventoryList(); 
                     updatePosShades(); 
                     checkRestore(); 
+                    window.removeSplashScreen(); // Hide splash as soon as live data hits
                 });
 
                 // 🌟 NEW: Wastage/Damage Data Listener
@@ -7158,17 +7166,19 @@ window.showTargetCelebration = function() {
     }
 		
 
-		// ================= POINT 16: SPLASH SCREEN LOGIC =================
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                let splash = document.getElementById('splash-screen');
-                if(splash) {
-                    splash.classList.add('fade-out');
-                    setTimeout(() => { splash.style.display = 'none'; }, 600); // 0.6s baad element ko puri tarah hata denge
-                }
-            }, 2500); // 2.5 seconds tak dikhega
-        });
+		// ================= POINT 1: SMART SPLASH & ZERO-LATENCY CACHE =================
+        window.removeSplashScreen = function() {
+            let splash = document.getElementById('splash-screen');
+            if(splash && !splash.classList.contains('fade-out')) {
+                splash.classList.add('fade-out');
+                setTimeout(() => { splash.style.display = 'none'; }, 600);
+            }
+        };
 
+        // Fallback: अगर इंटरनेट बहुत धीमा है, तो मैक्सिमम 3 सेकंड बाद स्प्लैश स्क्रीन हटा दें
+        window.addEventListener('load', function() {
+            setTimeout(window.removeSplashScreen, 3000);
+        });
 		
            </script>
             

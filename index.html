@@ -575,8 +575,8 @@
                         <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Date & Time</th>
                         <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Action Type</th>
                         <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Item Detail</th>
-                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Party / Location</th>
-                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:right;">Qty (Box)</th>
+                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Location</th>
+                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:right;">Qty</th>
                     </tr>
                 </thead>
                 <tbody id="psr-table-body"></tbody>
@@ -984,8 +984,8 @@
                 </div>
             </div>
 
-            <!-- 🌟 POINT 6: DYNAMIC MONTH BOX & FAST REPORT TRIGGER 🌟 -->
-            <fieldset onclick="openMonthlyGodownReport()" style="cursor: pointer; border: 1px solid var(--primary); border-radius: 16px; padding: 12px; margin-bottom: 16px; background: white; box-shadow: 0 4px 15px rgba(10,86,208,0.05); display: flex; justify-content: space-between; text-align: center; position: relative;">
+            <!-- 🌟 DYNAMIC MONTH BOX & FAST REPORT TRIGGER 🌟 -->
+            <fieldset onclick="openMonthlyGodownReport()" style="cursor: pointer; border: 1px solid var(--primary); border-radius: 16px; padding: 12px; margin-bottom: 12px; background: white; box-shadow: 0 4px 15px rgba(10,86,208,0.05); display: flex; justify-content: space-between; text-align: center; position: relative;">
                 <legend style="color: var(--primary); font-family: 'Product Sans', sans-serif; font-weight: 800; font-size: 13px; padding: 0 8px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px;">📦 <span id="gd-dynamic-legend">Transfer Summary</span></legend>
                 
                 <!-- Download/View Icon Overlay -->
@@ -3375,7 +3375,9 @@
             filteredTransfers.forEach(t => { 
                 let dStr = new Date(t.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); 
                 let action = t.type === 'IN' ? 'Transfer IN' : 'Transfer OUT'; 
-                stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">${action}</td><td style="padding:10px; border:1px solid #e0e2e0;">${t.item} (${t.cat})</td><td style="padding:10px; border:1px solid #e0e2e0;">Godown</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${t.qty}</td></tr>`; 
+                let isKg = (t.cat === 'Nylon' || t.cat === 'Bobbin' || t.cat === 'Coding' || t.cat === 'Cording');
+                let unitStr = isKg ? 'Kg' : 'Cone';
+                stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">${action}</td><td style="padding:10px; border:1px solid #e0e2e0;">${t.item} (${t.cat})</td><td style="padding:10px; border:1px solid #e0e2e0;">Godown</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${t.qty} ${unitStr}</td></tr>`; 
             });
 
             // 2. सेल्स का डेटा (सिर्फ तब जब 'all' रिपोर्ट मांगी गई हो)
@@ -3392,7 +3394,7 @@
             if(!stockHtml) stockHtml = `<tr><td colspan="5" style="text-align:center; padding:20px;">No stock movement found for these dates.</td></tr>`;
             
             // UI Update & PDF Generation
-            let reportTitle = reportType === 'godown' ? "GODOWN TRANSFER REPORT" : "DAILY STOCK REPORT";
+            let reportTitle = reportType === 'godown' ? "SHOP TO SHOP STOCK TRANSFER" : "DAILY STOCK REPORT";
             document.querySelector('#pdf-stock-template h2').innerText = reportTitle;
             document.getElementById('psr-date-range').innerText = `From: ${new Date(fromD).toLocaleDateString('en-GB')} To: ${new Date(toD).toLocaleDateString('en-GB')}`; 
             document.getElementById('psr-table-body').innerHTML = stockHtml;
@@ -3738,12 +3740,9 @@
                 if(!val) return;
                 let [yyyy, mm] = val.split('-');
                 
-                // महीने की पहली तारीख
                 let firstDay = new Date(yyyy, parseInt(mm)-1, 1);
-                // महीने की आखिरी तारीख (Trick: Agle mahine ki '0' tarikh)
                 let lastDay = new Date(yyyy, parseInt(mm), 0);
 
-                // Date format change fastly
                 fromD = firstDay.getFullYear() + "-" + String(firstDay.getMonth() + 1).padStart(2, '0') + "-" + String(firstDay.getDate()).padStart(2, '0');
                 toD = lastDay.getFullYear() + "-" + String(lastDay.getMonth() + 1).padStart(2, '0') + "-" + String(lastDay.getDate()).padStart(2, '0');
             } else {
@@ -3752,8 +3751,6 @@
             }
 
             if (!fromD || !toD) return alert("Please select a date range first!");
-
-            // Call your existing report function instantly
             generateStockReport(fromD, toD, 'godown');
         }
 		
@@ -3825,6 +3822,20 @@
             if(netBal > 0) { balEl.style.color = "var(--danger)"; } 
             else if (netBal < 0) { balEl.style.color = "var(--success)"; } 
             else { balEl.style.color = "var(--primary)"; }
+
+            // 🌟 FAST DYNAMIC MONTH LEGEND UPDATE 🌟
+            let legendEl = document.getElementById('gd-dynamic-legend');
+            if (mode === 'month') {
+                let val = document.getElementById('godown-date-picker').value;
+                let displayStr = "This Month";
+                if(val) {
+                    let [yyyy, mm] = val.split('-');
+                    displayStr = new Date(yyyy, parseInt(mm)-1, 1).toLocaleString('default', { month: 'short' }) + " " + yyyy;
+                }
+                if(legendEl) legendEl.innerText = displayStr + " Summary";
+            } else {
+                if(legendEl) legendEl.innerText = "Custom Dates Summary";
+            }
 
             // 🌟 POINT 6 FIX: CLEAN DYNAMIC MONTH LABELS & FAST REPORT LOGIC 🌟
             let legendEl = document.getElementById('gd-dynamic-legend');

@@ -984,20 +984,23 @@
                 </div>
             </div>
 
-            <!-- 🌟 POINT 6: DYNAMIC MONTH BOX (SHOP TRANSFER) 🌟 -->
-            <fieldset style="border: 1px solid var(--border); border-radius: 16px; padding: 12px; margin-bottom: 16px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.02); display: flex; justify-content: space-between; text-align: center;">
-                <legend style="color: var(--text-dark); font-family: 'Product Sans', sans-serif; font-weight: 800; font-size: 12px; padding: 0 8px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px;">📦 <span id="gd-dynamic-legend">Transfer Summary</span></legend>
+            <!-- 🌟 POINT 6: DYNAMIC MONTH BOX & FAST REPORT TRIGGER 🌟 -->
+            <fieldset onclick="openMonthlyGodownReport()" style="cursor: pointer; border: 1px solid var(--primary); border-radius: 16px; padding: 12px; margin-bottom: 16px; background: white; box-shadow: 0 4px 15px rgba(10,86,208,0.05); display: flex; justify-content: space-between; text-align: center; position: relative;">
+                <legend style="color: var(--primary); font-family: 'Product Sans', sans-serif; font-weight: 800; font-size: 13px; padding: 0 8px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px;">📦 <span id="gd-dynamic-legend">Transfer Summary</span></legend>
                 
-                <div style="flex:1; border-right:1px solid #f0f4f9;">
-                    <div id="gd-lbl-in" style="font-size:10px; color:var(--success); font-weight:800; margin-bottom:4px; text-transform:uppercase;">THIS MONTH IN</div>
+                <!-- Download/View Icon Overlay -->
+                <div style="position: absolute; right: 10px; top: -14px; background: #e8f0fe; color: var(--primary); padding: 4px; border-radius: 50%; font-size: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" class="material-symbols-rounded">download</div>
+
+                <div style="flex:1; border-right:1px dashed #c2e7ff;">
+                    <div style="font-size:10px; color:var(--success); font-weight:800; margin-bottom:4px; text-transform:uppercase;">TOTAL IN</div>
                     <div style="font-size:16px; font-weight:800; color:var(--success); font-family:'Product Sans', sans-serif;" id="gd-month-in">₹0</div>
                 </div>
-                <div style="flex:1; border-right:1px solid #f0f4f9;">
-                    <div id="gd-lbl-out" style="font-size:10px; color:var(--danger); font-weight:800; margin-bottom:4px; text-transform:uppercase;">THIS MONTH OUT</div>
+                <div style="flex:1; border-right:1px dashed #c2e7ff;">
+                    <div style="font-size:10px; color:var(--danger); font-weight:800; margin-bottom:4px; text-transform:uppercase;">TOTAL OUT</div>
                     <div style="font-size:16px; font-weight:800; color:var(--danger); font-family:'Product Sans', sans-serif;" id="gd-month-out">₹0</div>
                 </div>
                 <div style="flex:1;">
-                    <div id="gd-lbl-due" style="font-size:10px; color:var(--primary); font-weight:800; margin-bottom:4px; text-transform:uppercase;">BALANCE DUE</div>
+                    <div style="font-size:10px; color:var(--primary); font-weight:800; margin-bottom:4px; text-transform:uppercase;">BALANCE DUE</div>
                     <div style="font-size:16px; font-weight:800; color:var(--primary); font-family:'Product Sans', sans-serif;" id="gd-month-bal">₹0</div>
                 </div>
             </fieldset>
@@ -3725,6 +3728,35 @@
             generateStockReport(fromD, toD, 'godown'); // ⚡ सिर्फ गोडाउन का डेटा लाएगा
         }
 
+// 🌟 FAST REPORT GENERATOR LOGIC (On Click of Month Box) 🌟
+        window.openMonthlyGodownReport = function() {
+            let mode = window.currentGdFilterMode || 'month';
+            let fromD = ""; let toD = "";
+
+            if (mode === 'month') {
+                let val = document.getElementById('godown-date-picker').value;
+                if(!val) return;
+                let [yyyy, mm] = val.split('-');
+                
+                // महीने की पहली तारीख
+                let firstDay = new Date(yyyy, parseInt(mm)-1, 1);
+                // महीने की आखिरी तारीख (Trick: Agle mahine ki '0' tarikh)
+                let lastDay = new Date(yyyy, parseInt(mm), 0);
+
+                // Date format change fastly
+                fromD = firstDay.getFullYear() + "-" + String(firstDay.getMonth() + 1).padStart(2, '0') + "-" + String(firstDay.getDate()).padStart(2, '0');
+                toD = lastDay.getFullYear() + "-" + String(lastDay.getMonth() + 1).padStart(2, '0') + "-" + String(lastDay.getDate()).padStart(2, '0');
+            } else {
+                fromD = document.getElementById('gd-from').value;
+                toD = document.getElementById('gd-to').value;
+            }
+
+            if (!fromD || !toD) return alert("Please select a date range first!");
+
+            // Call your existing report function instantly
+            generateStockReport(fromD, toD, 'godown');
+        }
+		
         window.renderGodownHistory = function() { 
             let mode = window.currentGdFilterMode || 'month';
             let searchQuery = document.getElementById('gd-search-history').value.toLowerCase().trim();
@@ -3794,10 +3826,8 @@
             else if (netBal < 0) { balEl.style.color = "var(--success)"; } 
             else { balEl.style.color = "var(--primary)"; }
 
-            // 🌟 POINT 6: DYNAMIC MONTH LABELS UPDATE 🌟
+            // 🌟 POINT 6 FIX: CLEAN DYNAMIC MONTH LABELS & FAST REPORT LOGIC 🌟
             let legendEl = document.getElementById('gd-dynamic-legend');
-            let lblIn = document.getElementById('gd-lbl-in');
-            let lblOut = document.getElementById('gd-lbl-out');
             if (mode === 'month') {
                 let val = document.getElementById('godown-date-picker').value;
                 let displayStr = "This Month";
@@ -3806,12 +3836,8 @@
                     displayStr = new Date(yyyy, parseInt(mm)-1, 1).toLocaleString('default', { month: 'short' }) + " " + yyyy;
                 }
                 if(legendEl) legendEl.innerText = displayStr + " Summary";
-                if(lblIn) lblIn.innerText = displayStr + " IN";
-                if(lblOut) lblOut.innerText = displayStr + " OUT";
             } else {
                 if(legendEl) legendEl.innerText = "Custom Dates Summary";
-                if(lblIn) lblIn.innerText = "CUSTOM IN";
-                if(lblOut) lblOut.innerText = "CUSTOM OUT";
             }
 
             // 3. Render List HTML

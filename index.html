@@ -4149,18 +4149,51 @@
             if(invoicePageTitle) invoicePageTitle.innerText = finalTitle;
             // =======================================================
 
-            // ============== TARGET AND PROGRESS BAR LOGIC ==============
-            let TARGET_AMOUNT = 50000; // 🎯 आप यहाँ अपना टारगेट सेट कर सकते हैं (जैसे 50,000 या 1,00,000)
+            // ============== POINT 3: SMART TOP CUSTOMERS DASHBOARD ==============
+            let TARGET_AMOUNT = 50000;
             let activeSalesData = window.currentTopCustTab === 'current' ? currMonthSales : lastMonthSales; 
+            let compareSalesData = window.currentTopCustTab === 'current' ? lastMonthSales : {}; // To show trend
             let topCustHtml = ""; 
             let allSortedCustomers = Object.entries(activeSalesData).sort((a, b) => b[1] - a[1]); 
 
             if (window.currentUserRole === 'admin') {
                 let top5 = allSortedCustomers.slice(0, 5);
                 if(top5.length === 0) { 
-                    topCustHtml = '<div style="text-align:center; padding:10px; color:gray; font-size:12px;">No sales data available.</div>'; 
+                    topCustHtml = '<div style="text-align:center; padding:20px; color:gray; font-size:13px; background:#f8fafd; border-radius:12px; border:1px dashed #c2e7ff;">No sales data available.</div>'; 
                 } else { 
-                    top5.forEach(cust => { topCustHtml += `<div class="ua-item" onclick="showCelebration('${cust[0]}')"><div class="ua-item-name scroll-text">${cust[0]}</div><div class="ua-item-count scroll-text">₹${cust[1].toLocaleString('en-IN')} <span style="color:var(--text-muted); font-size:16px; vertical-align:middle;" class="material-symbols-rounded">chevron_right</span></div></div>`; }); 
+                    top5.forEach((cust, index) => {
+                        // Ranking Badges 🥇 🥈 🥉
+                        let badge = "";
+                        if(index === 0) badge = "🥇";
+                        else if(index === 1) badge = "🥈";
+                        else if(index === 2) badge = "🥉";
+                        else badge = `<span style="font-size:12px; color:var(--text-muted); font-weight:700;">#${index+1}</span>`;
+
+                        // Trend Indicator ⬆️/⬇️
+                        let prevSale = compareSalesData[cust[0]] || 0;
+                        let trendHtml = "";
+                        if (window.currentTopCustTab === 'current' && prevSale > 0) {
+                            if (cust[1] >= prevSale) trendHtml = `<span style="font-size:10px; color:var(--success); font-weight:700; background:#e6f4ea; padding:2px 6px; border-radius:4px; margin-left:6px;">⬆️ Up</span>`;
+                            else trendHtml = `<span style="font-size:10px; color:var(--danger); font-weight:700; background:#fdf2f2; padding:2px 6px; border-radius:4px; margin-left:6px;">⬇️ Down</span>`;
+                        }
+
+                        // First Letter Avatar
+                        let initial = cust[0] ? cust[0].substring(0,1).toUpperCase() : "C";
+
+                        topCustHtml += `
+                        <div class="ua-item" onclick="openLedgerDetail('${cust[0]}')" style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:white; border:1px solid var(--border); border-radius:14px; margin-bottom:10px; box-shadow:0 2px 4px rgba(0,0,0,0.02); cursor:pointer; transition:all 0.2s;">
+                            <div style="display:flex; align-items:center; gap:10px; flex:1; min-width:0;">
+                                <div style="width:36px; height:36px; border-radius:50%; background:#e8f0fe; color:var(--primary); display:flex; justify-content:center; align-items:center; font-weight:800; font-size:14px; flex-shrink:0;">${initial}</div>
+                                <div style="flex:1; min-width:0;">
+                                    <div style="font-weight:700; font-size:14px; color:var(--text-dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${badge} ${cust[0]}</div>
+                                    <div style="font-size:11px; color:var(--text-muted); font-weight:600; margin-top:2px;">Sale: ₹${cust[1].toLocaleString('en-IN')} ${trendHtml}</div>
+                                </div>
+                            </div>
+                            <div style="background:#f0f4f9; padding:6px; border-radius:50%; display:flex; justify-content:center; align-items:center; flex-shrink:0;">
+                                <span class="material-symbols-rounded" style="color:var(--primary); font-size:18px;">receipt_long</span>
+                            </div>
+                        </div>`;
+                    }); 
                 }
             } else {
                 // Customer View: Progress Bar
@@ -4171,20 +4204,20 @@
                 let percent = Math.min((myTotal / TARGET_AMOUNT) * 100, 100).toFixed(0);
 
                 topCustHtml = `
-                <div style="background:#f8fafd; padding:16px; border-radius:12px; border:1px solid #c2e7ff; margin-bottom:10px;">
-                    <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:12px; font-weight:600; color:var(--text-dark);">
-                        <span>Position: #${myRank}</span>
-                        <span style="color:var(--primary);">₹${myTotal.toLocaleString('en-IN')} / ₹${TARGET_AMOUNT.toLocaleString('en-IN')}</span>
+                <div style="background:#f8fafd; padding:16px; border-radius:16px; border:1px solid #c2e7ff; margin-bottom:10px; box-shadow:0 4px 10px rgba(10,86,208,0.05);">
+                    <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:14px; font-weight:700; color:var(--text-dark);">
+                        <span style="background:white; padding:4px 10px; border-radius:8px; border:1px solid var(--border);">🏆 Rank: #${myRank}</span>
+                        <span style="color:var(--primary); font-family:'Product Sans', sans-serif; font-size:15px;">₹${myTotal.toLocaleString('en-IN')} / ₹${TARGET_AMOUNT.toLocaleString('en-IN')}</span>
                     </div>
-                    <div style="background:rgba(225, 227, 225, 0.5); height:10px; border-radius:5px; overflow:hidden;">
-                        <div style="background:${percent >= 100 ? 'var(--success)' : 'var(--primary)'}; height:100%; border-radius:5px; width:${percent}%; transition:width 1s ease-in-out;"></div>
+                    <div style="background:rgba(225, 227, 225, 0.6); height:12px; border-radius:6px; overflow:hidden;">
+                        <div style="background:linear-gradient(90deg, ${percent >= 100 ? '#10b981, #059669' : 'var(--primary), #818cf8)'}; height:100%; border-radius:6px; width:${percent}%; transition:width 1s cubic-bezier(0.4, 0, 0.2, 1);"></div>
                     </div>
-                    <div style="text-align:center; font-size:12px; margin-top:12px; color:var(--text-muted); font-weight:500;">
-                        ${percent >= 100 ? '🎉 You unlocked 2% Additional Off!' : `Shop for ₹${(TARGET_AMOUNT - myTotal).toLocaleString('en-IN')} more to unlock 2% OFF`}
+                    <div style="text-align:center; font-size:12px; margin-top:14px; color:var(--text-muted); font-weight:600;">
+                        ${percent >= 100 ? '<span style="color:var(--success);">🎉 Target Achieved! You unlocked 2% Extra Off!</span>' : `Shop for ₹${(TARGET_AMOUNT - myTotal).toLocaleString('en-IN')} more to unlock <span style="color:var(--danger);">2% OFF</span>`}
                     </div>
                 </div>`;
 
-                // Firework logic (Session में एक बार ही चलेगा ताकि बार-बार इरिटेट न करे)
+                // Firework logic
                 if (myTotal >= TARGET_AMOUNT && !sessionStorage.getItem('target_celebrated')) {
                     setTimeout(() => { showTargetCelebration(); }, 1000);
                     sessionStorage.setItem('target_celebrated', 'true');

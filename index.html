@@ -1046,25 +1046,28 @@
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('pos-page')">arrow_back</button><h2 class="page-title">Create Invoice</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
             <div id="billing-form-area">
-                <div class="form-panel">
+                <!-- 🌟 POINT 5: PREMIUM SHARE INVOICE UI (FIELDSET DESIGN) 🌟 -->
+                <fieldset style="border: 1px solid var(--primary); border-radius: 16px; padding: 16px; margin-bottom: 16px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.03); position: relative;">
+                    <legend style="color: var(--primary); font-family: 'Product Sans', sans-serif; font-weight: 800; font-size: 13px; padding: 0 8px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px;">📋 Customer Details</legend>
+                    
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Invoice Date</label>
-                        <input type="date" class="form-control" id="inv-date" style="margin-bottom:16px; font-family:'Product Sans', sans-serif;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; background:#f8fafd; padding:6px 10px; border-radius:10px; border:1px solid #e0e2e0;">
+                            <label style="font-size:12px; font-weight:700; color:var(--text-muted); margin:0;">Invoice Date</label>
+                            <input type="date" id="inv-date" style="border:none; outline:none; background:transparent; font-family:'Product Sans', sans-serif; font-size:14px; font-weight:700; color:var(--primary-dark); text-align:right;">
+                        </div>
                         
-                        <label class="form-label" style="font-family: 'Product Sans', sans-serif;">Customer Details</label>
                         <div class="input-btn-group" style="margin-bottom:12px; position:relative;">
-                            <!-- 🌟 POINT 12: AUTO-CAPITALIZE (INVOICE) 🌟 -->
-                
-                            <input type="text" id="inv-party" class="form-control" autocomplete="off" placeholder="Enter Customer Name" oninput="this.value = this.value.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())" onkeyup="handleCustomerSearch('name')" onfocus="handleCustomerSearch('name')">
-                            <button class="action-btn material-symbols-rounded" onclick="openPhonebook('inv-party', 'inv-phone'); setTimeout(checkPosStep1, 1000);" style="width:48px; border-radius:8px; flex-shrink:0;">contacts</button>
+                            <input type="text" id="inv-party" class="form-control" autocomplete="off" placeholder="Enter Customer Name" style="border-radius:12px; font-weight:600;" oninput="this.value = this.value.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())" onkeyup="handleCustomerSearch('name')" onfocus="handleCustomerSearch('name')">
+                            <button class="action-btn material-symbols-rounded" onclick="openPhonebook('inv-party', 'inv-phone'); setTimeout(checkPosStep1, 1000);" style="width:48px; border-radius:12px; background:#e8f0fe; color:var(--primary); flex-shrink:0;">contacts</button>
                             <div id="name-suggestion-box" style="display:none; position:absolute; top:100%; left:0; width:calc(100% - 58px); background:white; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.15); z-index:9999; max-height:220px; overflow-y:auto;"></div>
                         </div>
+                        
                         <div style="position:relative;">
-                            <input type="tel" class="form-control" id="inv-phone" autocomplete="off" placeholder="Mobile Number" onkeyup="handleCustomerSearch('phone')" onfocus="handleCustomerSearch('phone')">
+                            <input type="tel" class="form-control" id="inv-phone" autocomplete="off" placeholder="Mobile Number" style="border-radius:12px; font-weight:600;" onkeyup="handleCustomerSearch('phone')" onfocus="handleCustomerSearch('phone')">
                             <div id="phone-suggestion-box" style="display:none; position:absolute; top:100%; left:0; width:100%; background:white; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.15); z-index:9999; max-height:220px; overflow-y:auto;"></div>
                         </div>
                     </div>
-                </div>
+                </fieldset>
                 
                 <div id="pos-add-product-section" style="display:none;">
                     <div class="form-panel" style="border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e0e2e0;">

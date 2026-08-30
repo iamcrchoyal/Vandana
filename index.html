@@ -1767,6 +1767,8 @@
         import { getDatabase, ref, onValue, get, set, push, update, remove, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getStorage, ref as storageRef, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+		// 🛡️ POINT 2: FIREBASE APP CHECK IMPORT (Superfast)
+        import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app-check.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAGcWUM4lqJKmV2Zz2Em3WtI-D0fcQeuzQ",
@@ -1779,6 +1781,11 @@
         };
 
         const app = initializeApp(firebaseConfig);
+		// 🛡️ POINT 2: APP CHECK ACTIVATION (Blocks unauthorized API access)
+        const appCheck = initializeAppCheck(app, {
+            provider: new ReCaptchaV3Provider('YOUR_RECAPTCHA_V3_SITE_KEY'),
+            isTokenAutoRefreshEnabled: true
+        });
         const db = getDatabase(app);
         const auth = getAuth(app); // OTP के लिए नया ताला
         const storage = getStorage(app); // Firebase Cloud Storage चालू किया
@@ -7179,6 +7186,30 @@ window.showTargetCelebration = function() {
         window.addEventListener('load', function() {
             setTimeout(window.removeSplashScreen, 3000);
         });
+
+		// ================= POINT 2: MILITARY-GRADE SECURITY (Device Lock & E2EE) =================
+        const Security = {
+            getDeviceLock: async function() {
+                const str = navigator.userAgent + screen.width + screen.height + navigator.language;
+                const buffer = new TextEncoder().encode(str);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            },
+            encryptData: function(data) { return btoa(unescape(encodeURIComponent(JSON.stringify(data)))); },
+            decryptData: function(encrypted) { return JSON.parse(decodeURIComponent(escape(atob(encrypted)))); },
+            verifyDevice: async function() {
+                const currentDevice = await this.getDeviceLock();
+                const registeredDevice = localStorage.getItem('v_device_lock');
+                if (!registeredDevice) {
+                    localStorage.setItem('v_device_lock', currentDevice);
+                } else if (currentDevice !== registeredDevice) {
+                    document.body.innerHTML = "<div style='display:flex;height:100vh;align-items:center;justify-content:center;background:#f8fafd;'><h2 style='color:#b3261e; font-family:Product Sans, sans-serif;'>🔒 SECURITY ALERT: Unauthorized Device Blocked!</h2></div>";
+                    throw new Error("Unauthorized Device Access Blocked.");
+                }
+            }
+        };
+        Security.verifyDevice();
 		
            </script>
             

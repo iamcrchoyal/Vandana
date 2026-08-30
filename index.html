@@ -716,32 +716,18 @@
                 </div>
                 <span class="material-symbols-rounded" style="color: #856404;">chevron_right</span>
             </div>
-
-
-			<!-- 🌟 POINT 4: SMART TODAY'S SALE CARD (CASH/CREDIT BREAKDOWN & TREND) 🌟 -->
-            <div class="google-card" onclick="openInvoicesPage()" style="position:relative; overflow:hidden;">
+            <div class="google-card" onclick="openInvoicesPage()">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                     <div>
-                        <div class="card-header" id="dash-sales-label" style="text-transform:uppercase; letter-spacing:0.5px; font-size:12px; color:var(--text-muted);">Today's Billed</div>
-                        <div style="display:flex; align-items:center; gap:10px; margin-top:4px;">
-                            <div class="card-value" id="dash-card-sale-value" style="font-size:32px; color:var(--text-dark); margin:0;">₹0</div>
-                            <div id="dash-trend-badge" style="display:none; font-size:12px; font-weight:800; padding:4px 8px; border-radius:8px; font-family:'Product Sans', sans-serif;">⬆️ 0%</div>
-                        </div>
+                        <div class="card-header" id="dash-sales-label">Total Sales (Today)</div>
+                        <div class="card-value" id="dash-card-sale-value">₹0</div>
                     </div>
-                    <div style="background:#f0f4f9; color:var(--primary); width:44px; height:44px; border-radius:14px; display:flex; align-items:center; justify-content:center; border:1px solid #e0e2e0;">
-                        <span class="material-symbols-rounded" style="font-size:24px;">receipt_long</span>
+                    <div style="background:#e6f4ea; color:var(--success); width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center;" class="anim-pulse">
+                        <span class="material-symbols-rounded">trending_up</span>
                     </div>
                 </div>
-                <div style="display:flex; gap:12px; margin-top:16px; background:#f8fafd; border-radius:12px; padding:12px; border:1px solid #e0e2e0;">
-                    <div style="flex:1; border-right:1px solid #e0e2e0;">
-                        <div style="font-size:10px; color:var(--text-muted); font-weight:700; margin-bottom:4px;">RECEIVED (CASH/ONL)</div>
-                        <div style="font-size:15px; font-weight:800; color:var(--success); font-family:'Product Sans', sans-serif;" id="dash-today-paid">₹0</div>
-                    </div>
-                    <div style="flex:1; padding-left:4px;">
-                        <div style="font-size:10px; color:var(--text-muted); font-weight:700; margin-bottom:4px;">PENDING (UDHAR)</div>
-                        <div style="font-size:15px; font-weight:800; color:var(--danger); font-family:'Product Sans', sans-serif;" id="dash-today-due">₹0</div>
-                    </div>
-                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill"></div></div>
+                <div class="card-subtext">Tap to view today's generated bills</div>
             </div>
             <div class="dash-card-grid" id="admin-action-cards">
 				<div class="dash-card" onclick="navTo('pos-page', null)">
@@ -4121,39 +4107,8 @@
         window.switchTopCustTab = function(type) { window.currentTopCustTab = type; document.getElementById('tc-curr-tab').classList.toggle('active', type === 'current'); document.getElementById('tc-last-tab').classList.toggle('active', type === 'last'); calculateGrandTotals(); }
 
         window.calculateGrandTotals = function() {
-            // 🌟 POINT 4: FAST CASH/CREDIT & TREND LOGIC 🌟
-            let balances = {}; let todayTotalSale = 0; let yesterdayTotalSale = 0; let todayPaid = 0; let todayDue = 0; let currMonthSales = {}; let lastMonthSales = {}; 
-            let selectedDateString = document.getElementById('dash-date-picker').value; 
-            let selectedDateObj = new Date(selectedDateString);
-            let yDate = new Date(selectedDateObj); yDate.setDate(yDate.getDate() - 1);
-            let yesterdayString = yDate.toISOString().split('T')[0];
-            let todayDate = new Date(); let currentMonth = todayDate.toISOString().slice(0, 7); let lmDate = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1); let lastMonth = lmDate.toISOString().slice(0, 7);
-            
-            allLedgerData.forEach(entry => { 
-                let amt = parseFloat(entry.amount) || 0; 
-                let entryDateString = ""; let entryMonthString = ""; 
-                try { let d = new Date(entry.date); if (!isNaN(d)) { entryDateString = d.toISOString().split('T')[0]; entryMonthString = d.toISOString().slice(0, 7); } } catch(e){} 
-                
-                if(!balances[entry.name]) balances[entry.name] = 0; 
-                if(entry.type === 'Gave') balances[entry.name] += amt; 
-                if(entry.type === 'Got') balances[entry.name] -= amt; 
-                
-                if (entry.details && entry.details.includes("Invoice")) { 
-                    if(entryMonthString === currentMonth) { currMonthSales[entry.name] = (currMonthSales[entry.name] || 0) + amt; } 
-                    if(entryMonthString === lastMonth) { lastMonthSales[entry.name] = (lastMonthSales[entry.name] || 0) + amt; } 
-                    
-                    if(entryDateString === selectedDateString){ 
-                        todayTotalSale += amt; 
-                        if(entry.breakdown) {
-                            todayPaid += ((parseFloat(entry.breakdown.cash)||0) + (parseFloat(entry.breakdown.online)||0));
-                            todayDue += (parseFloat(entry.breakdown.pending)||0);
-                        } else {
-                            todayDue += amt;
-                        }
-                    } 
-                    if(entryDateString === yesterdayString) { yesterdayTotalSale += amt; }
-                } 
-            });
+            let balances = {}; let todayTotalSale = 0; let todayTotalBox = 0; let currMonthSales = {}; let lastMonthSales = {}; let selectedDateString = document.getElementById('dash-date-picker').value; let todayDate = new Date(); let currentMonth = todayDate.toISOString().slice(0, 7); let lmDate = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1); let lastMonth = lmDate.toISOString().slice(0, 7);
+            allLedgerData.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let entryDateString = ""; let entryMonthString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) { entryDateString = d.toISOString().split('T')[0]; entryMonthString = d.toISOString().slice(0, 7); } } catch(e){} if(!balances[entry.name]) balances[entry.name] = 0; if(entry.type === 'Gave') balances[entry.name] += amt; if(entry.type === 'Got') balances[entry.name] -= amt; if (entry.details && entry.details.includes("Invoice")) { if(entryMonthString === currentMonth) { currMonthSales[entry.name] = (currMonthSales[entry.name] || 0) + amt; } if(entryMonthString === lastMonth) { lastMonthSales[entry.name] = (lastMonthSales[entry.name] || 0) + amt; } if(entryDateString === selectedDateString){ todayTotalSale += amt; let boxMatch = entry.details.match(/(\d+)\s*Box/i); if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); } } });
             window.globalBalances = balances; 
             let partyTypes = {}; 
             globalCustomers.forEach(c => { if(c.name) partyTypes[c.name.toLowerCase()] = c.type || 'Customer'; }); 
@@ -4170,28 +4125,7 @@
                 } 
             }
             window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet }; updateLedgerTotalsUI(); if(document.getElementById('parties-page').classList.contains('active')) { renderCustomerList(globalCustomers); }
-            // 🌟 UPDATE SMART DASHBOARD VALUES 🌟
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
-            if(document.getElementById('dash-today-paid')) document.getElementById('dash-today-paid').innerText = `₹${todayPaid.toLocaleString('en-IN')}`;
-            if(document.getElementById('dash-today-due')) document.getElementById('dash-today-due').innerText = `₹${todayDue.toLocaleString('en-IN')}`;
-            
-            if(document.getElementById('dash-trend-badge')) {
-                let badge = document.getElementById('dash-trend-badge');
-                if (yesterdayTotalSale > 0) {
-                    let diff = todayTotalSale - yesterdayTotalSale;
-                    let percent = ((diff / yesterdayTotalSale) * 100).toFixed(0);
-                    if (diff >= 0) {
-                        badge.innerHTML = `⬆️ ${percent}%`;
-                        badge.style.background = '#e6f4ea'; badge.style.color = 'var(--success)';
-                    } else {
-                        badge.innerHTML = `⬇️ ${Math.abs(percent)}%`;
-                        badge.style.background = '#fdf2f2'; badge.style.color = 'var(--danger)';
-                    }
-                    badge.style.display = 'inline-block';
-                } else {
-                    badge.style.display = 'none';
-                }
-            }
 
             // 🌟 POINT 18: DAMAGE LOSS HIDDEN FROM DASHBOARD (Clean UI) 🌟
             // (अब डैमेज का हिसाब सिर्फ साइडबार के 'Damage & Wastage' पेज पर सुरक्षित रहेगा)
@@ -4252,8 +4186,7 @@
                                 <div style="width:36px; height:36px; border-radius:50%; background:#e8f0fe; color:var(--primary); display:flex; justify-content:center; align-items:center; font-weight:800; font-size:14px; flex-shrink:0;">${initial}</div>
                                 <div style="flex:1; min-width:0;">
                                     <div style="font-weight:700; font-size:14px; color:var(--text-dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${badge} ${cust[0]}</div>
-                                    <div style="font-size:11px; color:var(--text-muted); font-weight:600; margin-top:2px;">Total Billed: ₹${cust[1].toLocaleString('en-IN')} ${trendHtml}</div>
-                                </div>
+                                    <div style="font-size:11px; color:var(--text-muted); font-weight:600; margin-top:2px;">Sale: ₹${cust[1].toLocaleString('en-IN')} ${trendHtml}</div>
                                 </div>
                             </div>
                             <div style="background:#f0f4f9; padding:6px; border-radius:50%; display:flex; justify-content:center; align-items:center; flex-shrink:0;">

@@ -984,20 +984,23 @@
                 </div>
             </div>
 
-            <div style="background:#f8fafd; border:1px solid #c2e7ff; border-radius:12px; padding:12px; margin-bottom:12px; display:flex; justify-content:space-between; text-align:center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                <div style="flex:1; border-right:1px solid #c2e7ff;">
-                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">THIS MONTH IN</div>
-                    <div style="font-size:16px; font-weight:700; color:var(--success); font-family:'Product Sans', sans-serif;" id="gd-month-in">₹0</div>
+            <!-- 🌟 POINT 6: DYNAMIC MONTH BOX (SHOP TRANSFER) 🌟 -->
+            <fieldset style="border: 1px solid var(--border); border-radius: 16px; padding: 12px; margin-bottom: 16px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.02); display: flex; justify-content: space-between; text-align: center;">
+                <legend style="color: var(--text-dark); font-family: 'Product Sans', sans-serif; font-weight: 800; font-size: 12px; padding: 0 8px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px;">📦 <span id="gd-dynamic-legend">Transfer Summary</span></legend>
+                
+                <div style="flex:1; border-right:1px solid #f0f4f9;">
+                    <div id="gd-lbl-in" style="font-size:10px; color:var(--success); font-weight:800; margin-bottom:4px; text-transform:uppercase;">THIS MONTH IN</div>
+                    <div style="font-size:16px; font-weight:800; color:var(--success); font-family:'Product Sans', sans-serif;" id="gd-month-in">₹0</div>
                 </div>
-                <div style="flex:1; border-right:1px solid #c2e7ff;">
-                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">THIS MONTH OUT</div>
-                    <div style="font-size:16px; font-weight:700; color:var(--danger); font-family:'Product Sans', sans-serif;" id="gd-month-out">₹0</div>
+                <div style="flex:1; border-right:1px solid #f0f4f9;">
+                    <div id="gd-lbl-out" style="font-size:10px; color:var(--danger); font-weight:800; margin-bottom:4px; text-transform:uppercase;">THIS MONTH OUT</div>
+                    <div style="font-size:16px; font-weight:800; color:var(--danger); font-family:'Product Sans', sans-serif;" id="gd-month-out">₹0</div>
                 </div>
                 <div style="flex:1;">
-                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">THIS MONTH DUE</div>
-                    <div style="font-size:16px; font-weight:700; color:var(--primary); font-family:'Product Sans', sans-serif;" id="gd-month-bal">₹0</div>
+                    <div id="gd-lbl-due" style="font-size:10px; color:var(--primary); font-weight:800; margin-bottom:4px; text-transform:uppercase;">BALANCE DUE</div>
+                    <div style="font-size:16px; font-weight:800; color:var(--primary); font-family:'Product Sans', sans-serif;" id="gd-month-bal">₹0</div>
                 </div>
-            </div>
+            </fieldset>
             
             <div class="search-bar-container" style="margin: 0 0 12px 0; border-radius:12px; padding:4px 16px;">
                 <span class="material-symbols-rounded" style="font-size:18px; color:gray;">search</span>
@@ -3790,6 +3793,26 @@
             if(netBal > 0) { balEl.style.color = "var(--danger)"; } 
             else if (netBal < 0) { balEl.style.color = "var(--success)"; } 
             else { balEl.style.color = "var(--primary)"; }
+
+            // 🌟 POINT 6: DYNAMIC MONTH LABELS UPDATE 🌟
+            let legendEl = document.getElementById('gd-dynamic-legend');
+            let lblIn = document.getElementById('gd-lbl-in');
+            let lblOut = document.getElementById('gd-lbl-out');
+            if (mode === 'month') {
+                let val = document.getElementById('godown-date-picker').value;
+                let displayStr = "This Month";
+                if(val) {
+                    let [yyyy, mm] = val.split('-');
+                    displayStr = new Date(yyyy, parseInt(mm)-1, 1).toLocaleString('default', { month: 'short' }) + " " + yyyy;
+                }
+                if(legendEl) legendEl.innerText = displayStr + " Summary";
+                if(lblIn) lblIn.innerText = displayStr + " IN";
+                if(lblOut) lblOut.innerText = displayStr + " OUT";
+            } else {
+                if(legendEl) legendEl.innerText = "Custom Dates Summary";
+                if(lblIn) lblIn.innerText = "CUSTOM IN";
+                if(lblOut) lblOut.innerText = "CUSTOM OUT";
+            }
 
             // 3. Render List HTML
             let html = ""; 

@@ -716,18 +716,28 @@
                 </div>
                 <span class="material-symbols-rounded" style="color: #856404;">chevron_right</span>
             </div>
-            <div class="google-card" onclick="openInvoicesPage()">
+            <!-- 🌟 POINT 4: SMART TODAY'S SALE CARD (CASH vs CREDIT & TREND) 🌟 -->
+            <div class="google-card" style="padding:20px; border:1px solid #c2e7ff; background:linear-gradient(145deg, #ffffff 0%, #f8fafd 100%);" onclick="openInvoicesPage()">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                     <div>
-                        <div class="card-header" id="dash-sales-label">Total Sales (Today)</div>
-                        <div class="card-value" id="dash-card-sale-value">₹0</div>
+                        <div class="card-header" id="dash-sales-label" style="color:var(--text-muted); font-size:13px; text-transform:uppercase; letter-spacing:0.5px;">Today's Billed</div>
+                        <div class="card-value" id="dash-card-sale-value" style="color:var(--primary-dark); font-size:42px;">₹0</div>
                     </div>
-                    <div style="background:#e6f4ea; color:var(--success); width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center;" class="anim-pulse">
-                        <span class="material-symbols-rounded">trending_up</span>
+                    <div id="dash-trend-badge" style="background:#f0f4f9; color:var(--text-muted); padding:6px 12px; border-radius:20px; font-size:12px; font-weight:800; display:flex; align-items:center; gap:4px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                        <span class="material-symbols-rounded" style="font-size:16px;">trending_flat</span> 0%
                     </div>
                 </div>
-                <div class="progress-bar-bg"><div class="progress-bar-fill"></div></div>
-                <div class="card-subtext">Tap to view today's generated bills</div>
+                
+                <div style="display:flex; justify-content:space-between; margin-top:16px; border-top:1px dashed #e0e2e0; padding-top:12px;">
+                    <div>
+                        <div style="font-size:11px; color:var(--text-muted); font-weight:600;">CASH RECEIVED</div>
+                        <div style="font-size:16px; font-weight:800; color:var(--success); font-family:'Product Sans', sans-serif;" id="dash-cash-sale">₹0</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:11px; color:var(--text-muted); font-weight:600;">CREDIT / DUE</div>
+                        <div style="font-size:16px; font-weight:800; color:var(--danger); font-family:'Product Sans', sans-serif;" id="dash-credit-sale">₹0</div>
+                    </div>
+                </div>
             </div>
             <div class="dash-card-grid" id="admin-action-cards">
 				<div class="dash-card" onclick="navTo('pos-page', null)">
@@ -4107,8 +4117,13 @@
         window.switchTopCustTab = function(type) { window.currentTopCustTab = type; document.getElementById('tc-curr-tab').classList.toggle('active', type === 'current'); document.getElementById('tc-last-tab').classList.toggle('active', type === 'last'); calculateGrandTotals(); }
 
         window.calculateGrandTotals = function() {
-            let balances = {}; let todayTotalSale = 0; let todayTotalBox = 0; let currMonthSales = {}; let lastMonthSales = {}; let selectedDateString = document.getElementById('dash-date-picker').value; let todayDate = new Date(); let currentMonth = todayDate.toISOString().slice(0, 7); let lmDate = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1); let lastMonth = lmDate.toISOString().slice(0, 7);
-            allLedgerData.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let entryDateString = ""; let entryMonthString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) { entryDateString = d.toISOString().split('T')[0]; entryMonthString = d.toISOString().slice(0, 7); } } catch(e){} if(!balances[entry.name]) balances[entry.name] = 0; if(entry.type === 'Gave') balances[entry.name] += amt; if(entry.type === 'Got') balances[entry.name] -= amt; if (entry.details && entry.details.includes("Invoice")) { if(entryMonthString === currentMonth) { currMonthSales[entry.name] = (currMonthSales[entry.name] || 0) + amt; } if(entryMonthString === lastMonth) { lastMonthSales[entry.name] = (lastMonthSales[entry.name] || 0) + amt; } if(entryDateString === selectedDateString){ todayTotalSale += amt; let boxMatch = entry.details.match(/(\d+)\s*Box/i); if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); } } });
+            let balances = {}; let todayTotalSale = 0; let yesterdayTotalSale = 0; let todayCash = 0; let todayCredit = 0; let todayTotalBox = 0; let currMonthSales = {}; let lastMonthSales = {}; 
+            let selectedDateString = document.getElementById('dash-date-picker').value; 
+            let selD = new Date(selectedDateString); selD.setDate(selD.getDate() - 1); let yesterdayDateString = selD.toISOString().split('T')[0]; 
+            let todayDate = new Date(); let currentMonth = todayDate.toISOString().slice(0, 7); let lmDate = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1); let lastMonth = lmDate.toISOString().slice(0, 7);
+            
+            allLedgerData.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let entryDateString = ""; let entryMonthString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) { entryDateString = d.toISOString().split('T')[0]; entryMonthString = d.toISOString().slice(0, 7); } } catch(e){} if(!balances[entry.name]) balances[entry.name] = 0; if(entry.type === 'Gave') balances[entry.name] += amt; if(entry.type === 'Got') balances[entry.name] -= amt; if (entry.details && entry.details.includes("Invoice")) { if(entryMonthString === currentMonth) { currMonthSales[entry.name] = (currMonthSales[entry.name] || 0) + amt; } if(entryMonthString === lastMonth) { lastMonthSales[entry.name] = (lastMonthSales[entry.name] || 0) + amt; } if(entryDateString === yesterdayDateString){ yesterdayTotalSale += amt; } if(entryDateString === selectedDateString){ todayTotalSale += amt; if(entry.breakdown){ todayCash += (parseFloat(entry.breakdown.cash)||0) + (parseFloat(entry.breakdown.online)||0); todayCredit += (parseFloat(entry.breakdown.pending)||0); } else { todayCredit += amt; } let boxMatch = entry.details.match(/(\d+)\s*Box/i); if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); } } });
+            
             window.globalBalances = balances; 
             let partyTypes = {}; 
             globalCustomers.forEach(c => { if(c.name) partyTypes[c.name.toLowerCase()] = c.type || 'Customer'; }); 
@@ -4125,7 +4140,32 @@
                 } 
             }
             window.ledgerTotals = { custGive: cGive, custGet: cGet, supGive: sGive, supGet: sGet }; updateLedgerTotalsUI(); if(document.getElementById('parties-page').classList.contains('active')) { renderCustomerList(globalCustomers); }
+            
+            // 🌟 FAST UI UPDATES FOR TREND & SALES BREAKDOWN
             if(document.getElementById('dash-card-sale-value')) document.getElementById('dash-card-sale-value').innerText = `₹${todayTotalSale.toLocaleString('en-IN')}`;
+            if(document.getElementById('dash-cash-sale')) document.getElementById('dash-cash-sale').innerText = `₹${todayCash.toLocaleString('en-IN')}`;
+            if(document.getElementById('dash-credit-sale')) document.getElementById('dash-credit-sale').innerText = `₹${todayCredit.toLocaleString('en-IN')}`;
+            
+            let trendBadge = document.getElementById('dash-trend-badge');
+            if(trendBadge) {
+                if(yesterdayTotalSale === 0 && todayTotalSale === 0) {
+                    trendBadge.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;">trending_flat</span> 0%`;
+                    trendBadge.style.background = '#f0f4f9'; trendBadge.style.color = 'var(--text-muted)';
+                } else if(yesterdayTotalSale === 0 && todayTotalSale > 0) {
+                    trendBadge.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;">trending_up</span> 100%`;
+                    trendBadge.style.background = '#e6f4ea'; trendBadge.style.color = 'var(--success)';
+                } else {
+                    let diff = todayTotalSale - yesterdayTotalSale;
+                    let perc = Math.round(Math.abs(diff) / yesterdayTotalSale * 100);
+                    if(diff >= 0) {
+                        trendBadge.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;">trending_up</span> +${perc}%`;
+                        trendBadge.style.background = '#e6f4ea'; trendBadge.style.color = 'var(--success)';
+                    } else {
+                        trendBadge.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;">trending_down</span> -${perc}%`;
+                        trendBadge.style.background = '#fdf2f2'; trendBadge.style.color = 'var(--danger)';
+                    }
+                }
+            }
 
             // 🌟 POINT 18: DAMAGE LOSS HIDDEN FROM DASHBOARD (Clean UI) 🌟
             // (अब डैमेज का हिसाब सिर्फ साइडबार के 'Damage & Wastage' पेज पर सुरक्षित रहेगा)

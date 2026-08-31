@@ -1025,49 +1025,56 @@
     </div>
 
 	<!-- 📄 NEW DEDICATED MONTHLY GODOWN REPORT PAGE -->
-    <div class="page flex-page" id="godown-report-page" style="z-index: 5200;">
-        <div class="sub-header">
+    <div class="page flex-page" id="godown-report-page" style="z-index: 5200; background:white;">
+        <div class="sub-header" style="box-shadow:0 2px 10px rgba(0,0,0,0.03); border:none;">
             <button class="back-btn material-symbols-rounded" onclick="closePage('godown-report-page')">arrow_back</button>
-            <h2 class="page-title" style="flex:1;">Shop-to-Shop Report</h2>
+            <h2 class="page-title" style="flex:1;">Shop-To-Shop Summary</h2>
         </div>
-        <div class="fixed-top-section" style="padding-top:16px;">
-            <!-- Date Filters -->
-            <div style="display:flex; gap:10px; margin-bottom:16px;">
-                <div style="flex:1;">
-                    <label style="font-size:11px; color:var(--text-muted); font-weight:700;">From Date</label>
-                    <input type="date" id="gr-from" class="form-control" style="padding:10px;" onchange="generateReportData()">
+        <div class="scroll-content" style="padding:16px;">
+            
+            <!-- Summary Cards -->
+            <div style="display:flex; justify-content:space-between; text-align:center; background:#f8fafd; border:1px solid #c2e7ff; border-radius:16px; padding:20px 16px; margin-bottom:24px; box-shadow:0 4px 15px rgba(10,86,208,0.05);">
+                <div style="flex:1; border-right:1px solid #e0e2e0;">
+                    <div style="font-size:11px; color:var(--success); font-weight:800; margin-bottom:6px; letter-spacing:0.5px;">TOTAL IN</div>
+                    <div style="font-size:22px; font-weight:800; color:var(--success); font-family:'Product Sans', sans-serif;" id="gr-month-in">₹0</div>
+                </div>
+                <div style="flex:1; border-right:1px solid #e0e2e0;">
+                    <div style="font-size:11px; color:var(--danger); font-weight:800; margin-bottom:6px; letter-spacing:0.5px;">TOTAL OUT</div>
+                    <div style="font-size:22px; font-weight:800; color:var(--danger); font-family:'Product Sans', sans-serif;" id="gr-month-out">₹0</div>
                 </div>
                 <div style="flex:1;">
-                    <label style="font-size:11px; color:var(--text-muted); font-weight:700;">To Date</label>
-                    <input type="date" id="gr-to" class="form-control" style="padding:10px;" onchange="generateReportData()">
+                    <div style="font-size:11px; color:var(--primary); font-weight:800; margin-bottom:6px; letter-spacing:0.5px;">BALANCE DUE</div>
+                    <div style="font-size:22px; font-weight:800; color:var(--primary); font-family:'Product Sans', sans-serif;" id="gr-month-bal">₹0</div>
                 </div>
             </div>
 
-            <!-- Summary Cards -->
-            <div style="display:flex; justify-content:space-between; text-align:center; background:#f8fafd; border:1px solid #c2e7ff; border-radius:16px; padding:16px; margin-bottom:16px;">
-                <div style="flex:1; border-right:1px solid #e0e2e0;">
-                    <div style="font-size:11px; color:var(--success); font-weight:800; margin-bottom:4px;">TOTAL IN</div>
-                    <div style="font-size:18px; font-weight:800; color:var(--success); font-family:'Product Sans', sans-serif;" id="gr-month-in">₹0</div>
-                </div>
-                <div style="flex:1; border-right:1px solid #e0e2e0;">
-                    <div style="font-size:11px; color:var(--danger); font-weight:800; margin-bottom:4px;">TOTAL OUT</div>
-                    <div style="font-size:18px; font-weight:800; color:var(--danger); font-family:'Product Sans', sans-serif;" id="gr-month-out">₹0</div>
+            <!-- Buttons: 1 & 2 -->
+            <div style="display:flex; gap:10px; margin-bottom:16px;">
+                <button id="btn-gd-sum-month" class="btn-outline" style="flex:1; border-color:var(--primary); color:var(--primary); background:#e8f0fe; padding:12px; border-radius:12px; font-weight:800; font-size:13px; transition:0.3s;" onclick="toggleGdSummaryFilter('month')">1. Month Wise</button>
+                <button id="btn-gd-sum-custom" class="btn-outline" style="flex:1; border-color:var(--border); color:var(--text-muted); background:white; padding:12px; border-radius:12px; font-weight:800; font-size:13px; transition:0.3s;" onclick="toggleGdSummaryFilter('custom')">2. Custom Date</button>
+            </div>
+
+            <!-- Date Filters (Dynamic Toggle) -->
+            <div id="gd-sum-month-box" style="margin-bottom:24px; background:#f0f4f9; padding:14px; border-radius:14px; border:1px solid #e0e2e0;">
+                <label style="font-size:12px; color:var(--primary-dark); font-weight:800; margin-bottom:6px; display:block;">SELECT MONTH</label>
+                <input type="month" id="gr-month-picker" class="form-control" style="padding:12px; border-radius:10px; font-weight:600;" onchange="generateReportData()">
+            </div>
+
+            <div id="gd-sum-custom-box" style="display:none; gap:10px; margin-bottom:24px; background:#f0f4f9; padding:14px; border-radius:14px; border:1px solid #e0e2e0;">
+                <div style="flex:1;">
+                    <label style="font-size:12px; color:var(--primary-dark); font-weight:800; margin-bottom:6px; display:block;">FROM DATE</label>
+                    <input type="date" id="gr-from" class="form-control" style="padding:12px; border-radius:10px; font-weight:600;" onchange="generateReportData()">
                 </div>
                 <div style="flex:1;">
-                    <div style="font-size:11px; color:var(--primary); font-weight:800; margin-bottom:4px;">BALANCE DUE</div>
-                    <div style="font-size:18px; font-weight:800; color:var(--primary); font-family:'Product Sans', sans-serif;" id="gr-month-bal">₹0</div>
+                    <label style="font-size:12px; color:var(--primary-dark); font-weight:800; margin-bottom:6px; display:block;">TO DATE</label>
+                    <input type="date" id="gr-to" class="form-control" style="padding:12px; border-radius:10px; font-weight:600;" onchange="generateReportData()">
                 </div>
             </div>
-        </div>
-        
-        <!-- Report PDF Preview Content -->
-        <div class="scroll-content" style="padding-top:0; background:#e0e2e0;">
-            <div id="gr-preview-render-area" style="zoom:0.52; margin-top:16px;"></div>
-        </div>
-        
-        <div class="bottom-action-bar" style="padding: 12px 16px; gap: 8px; z-index:9999;">
-            <button class="btn-submit" onclick="shareGodownReportPDF()" style="flex: 1; background: var(--success); display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded">share</span> Share Report</button>
-            <button class="btn-submit" onclick="downloadGodownReportPDF()" style="flex: 1; background: var(--primary-dark); display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded">download</span> Download PDF</button>
+
+            <!-- Button 3: Show Report -->
+            <button class="btn-submit" onclick="showGodownReportPdf()" style="width:100%; background:var(--primary); padding:16px; border-radius:16px; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 15px rgba(10,86,208,0.3); letter-spacing:0.5px;">
+                <span class="material-symbols-rounded" style="font-size:20px;">picture_as_pdf</span> 3. Show Report
+            </button>
         </div>
     </div>
 	
@@ -3753,50 +3760,75 @@
         }
 
 // 🌟 FAST REPORT GENERATOR LOGIC (On Click of Month Box) 🌟
+        window.currentGdSumMode = 'month';
+
+        window.toggleGdSummaryFilter = function(mode) {
+            window.currentGdSumMode = mode;
+            let btnMonth = document.getElementById('btn-gd-sum-month');
+            let btnCustom = document.getElementById('btn-gd-sum-custom');
+            let boxMonth = document.getElementById('gd-sum-month-box');
+            let boxCustom = document.getElementById('gd-sum-custom-box');
+
+            if (mode === 'month') {
+                btnMonth.style.borderColor = 'var(--primary)'; btnMonth.style.color = 'var(--primary)'; btnMonth.style.background = '#e8f0fe';
+                btnCustom.style.borderColor = 'var(--border)'; btnCustom.style.color = 'var(--text-muted)'; btnCustom.style.background = 'white';
+                boxMonth.style.display = 'block';
+                boxCustom.style.display = 'none';
+            } else {
+                btnCustom.style.borderColor = 'var(--primary)'; btnCustom.style.color = 'var(--primary)'; btnCustom.style.background = '#e8f0fe';
+                btnMonth.style.borderColor = 'var(--border)'; btnMonth.style.color = 'var(--text-muted)'; btnMonth.style.background = 'white';
+                boxCustom.style.display = 'flex';
+                boxMonth.style.display = 'none';
+            }
+            generateReportData();
+        }
+
         window.openMonthlyGodownReport = function() {
             let today = new Date();
+            let currentMonthVal = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, '0');
+            document.getElementById('gr-month-picker').value = currentMonthVal;
+            
+            // Set default custom dates as backup
             let firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
             let lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            document.getElementById('gr-from').value = firstDay.getFullYear() + "-" + String(firstDay.getMonth() + 1).padStart(2, '0') + "-" + String(firstDay.getDate()).padStart(2, '0');
+            document.getElementById('gr-to').value = lastDay.getFullYear() + "-" + String(lastDay.getMonth() + 1).padStart(2, '0') + "-" + String(lastDay.getDate()).padStart(2, '0');
 
-            let fromD = firstDay.getFullYear() + "-" + String(firstDay.getMonth() + 1).padStart(2, '0') + "-" + String(firstDay.getDate()).padStart(2, '0');
-            let toD = lastDay.getFullYear() + "-" + String(lastDay.getMonth() + 1).padStart(2, '0') + "-" + String(lastDay.getDate()).padStart(2, '0');
-            
-            document.getElementById('gr-from').value = fromD;
-            document.getElementById('gr-to').value = toD;
-
-            generateReportData();
+            toggleGdSummaryFilter('month'); // Default load
             openPage('godown-report-page');
         }
 
         window.generateReportData = function() {
-            let fromD = document.getElementById('gr-from').value;
-            let toD = document.getElementById('gr-to').value;
+            let fromD, toD;
+            if (window.currentGdSumMode === 'month') {
+                let monthVal = document.getElementById('gr-month-picker').value;
+                if(!monthVal) return;
+                let [yyyy, mm] = monthVal.split('-');
+                let firstDay = new Date(yyyy, parseInt(mm)-1, 1);
+                let lastDay = new Date(yyyy, parseInt(mm), 0);
+                fromD = firstDay.getFullYear() + "-" + String(firstDay.getMonth() + 1).padStart(2, '0') + "-" + String(firstDay.getDate()).padStart(2, '0');
+                toD = lastDay.getFullYear() + "-" + String(lastDay.getMonth() + 1).padStart(2, '0') + "-" + String(lastDay.getDate()).padStart(2, '0');
+            } else {
+                fromD = document.getElementById('gr-from').value;
+                toD = document.getElementById('gr-to').value;
+            }
+
             if (!fromD || !toD) return;
 
+            // Fast Calculation (Without creating HTML for PDF yet)
             let fromTime = new Date(fromD).getTime(); 
             let toTime = new Date(toD + "T23:59:59").getTime(); 
-            
             let monthIn = 0; let monthOut = 0;
-            let stockHtml = "";
 
-            let filteredTransfers = allGodownTransfers.filter(t => { 
+            for (let i = 0; i < allGodownTransfers.length; i++) {
+                let t = allGodownTransfers[i];
                 let eTime = new Date(t.date).getTime(); 
-                return eTime >= fromTime && eTime <= toTime; 
-            });
-
-            filteredTransfers.forEach(t => { 
-                let amt = parseFloat(t.amount) || 0;
-                if(t.type === 'IN') monthIn += amt;
-                if(t.type === 'OUT') monthOut += amt;
-
-                let dStr = new Date(t.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); 
-                let action = t.type === 'IN' ? 'Transfer IN' : 'Transfer OUT'; 
-                
-                // 🌟 SMART DYNAMIC UNIT LOGIC (Cone/Kg) 🌟
-                let unit = (t.cat === 'Nylon' || t.cat === 'Bobbin' || t.cat === 'Coding') ? "Kg" : "Cone";
-                
-                stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">${action}</td><td style="padding:10px; border:1px solid #e0e2e0;">${t.item} (${t.cat})</td><td style="padding:10px; border:1px solid #e0e2e0;">Godown</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${t.qty} ${unit}</td></tr>`; 
-            });
+                if(eTime >= fromTime && eTime <= toTime) {
+                    let amt = parseFloat(t.amount) || 0;
+                    if(t.type === 'IN') monthIn += amt;
+                    if(t.type === 'OUT') monthOut += amt;
+                }
+            }
 
             document.getElementById('gr-month-in').innerText = "₹ " + monthIn.toLocaleString('en-IN');
             document.getElementById('gr-month-out').innerText = "₹ " + monthOut.toLocaleString('en-IN');
@@ -3807,53 +3839,26 @@
             if(netBal > 0) { balEl.style.color = "var(--danger)"; } 
             else if (netBal < 0) { balEl.style.color = "var(--success)"; } 
             else { balEl.style.color = "var(--primary)"; }
-
-            if(!stockHtml) stockHtml = `<tr><td colspan="5" style="text-align:center; padding:20px;">No stock movement found for these dates.</td></tr>`;
-            
-            // 🌟 TITLE CHANGE LOGIC
-            let reportTitle = "SHOP TO SHOP STOCK TRANSFER";
-            document.querySelector('#pdf-stock-template h2').innerText = reportTitle;
-            document.getElementById('psr-date-range').innerText = `From: ${new Date(fromD).toLocaleDateString('en-GB')} To: ${new Date(toD).toLocaleDateString('en-GB')}`; 
-            
-            // 🌟 HEADER FIX (Box -> Qty)
-            document.querySelector('#pdf-stock-template thead').innerHTML = `
-                <tr style="background:#146c2e; color:white;">
-                    <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Date & Time</th>
-                    <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Action Type</th>
-                    <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Item Detail</th>
-                    <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Party / Location</th>
-                    <th style="padding:10px; border:1px solid #e0e2e0; text-align:right;">Qty</th>
-                </tr>
-            `;
-            
-            document.getElementById('psr-table-body').innerHTML = stockHtml;
-            let previewHtml = document.getElementById('pdf-stock-template').innerHTML; 
-            document.getElementById('gr-preview-render-area').innerHTML = previewHtml; 
-            
-            window.currentGodownReportFileName = `Shop_To_Shop_Transfer_${fromD}.pdf`; 
         }
 
-        window.downloadGodownReportPDF = function() {
-            let elem = document.getElementById('pdf-stock-template'); 
-            let opt = { margin: 0.4, filename: window.currentGodownReportFileName, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
-            alert("Downloading PDF... Please wait."); 
-            html2pdf().set(opt).from(elem).save();
-        }
-
-        window.shareGodownReportPDF = async function() {
-            let elem = document.getElementById('pdf-stock-template'); 
-            let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: window.currentGodownReportFileName, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
-            try { 
-                alert("Preparing PDF for direct sharing... this may take a few seconds."); 
-                let pdfBlob = await html2pdf().set(opt).from(elem).output('blob'); 
-                let file = new File([pdfBlob], opt.filename, { type: 'application/pdf' }); 
-                if (navigator.canShare && navigator.canShare({ files: [file] })) { 
-                    await navigator.share({ files: [file], title: 'Shop to Shop Transfer Report', text: `Please find attached the transfer report.` }); 
-                } else { 
-                    alert("Your browser does not support direct PDF sharing. Downloading instead..."); 
-                    html2pdf().set(opt).from(elem).save(); 
-                } 
-            } catch(e) { console.error(e); } 
+        window.showGodownReportPdf = function() {
+            let fromD, toD;
+            if (window.currentGdSumMode === 'month') {
+                let monthVal = document.getElementById('gr-month-picker').value;
+                if(!monthVal) return alert('Please select a month!');
+                let [yyyy, mm] = monthVal.split('-');
+                let firstDay = new Date(yyyy, parseInt(mm)-1, 1);
+                let lastDay = new Date(yyyy, parseInt(mm), 0);
+                fromD = firstDay.getFullYear() + "-" + String(firstDay.getMonth() + 1).padStart(2, '0') + "-" + String(firstDay.getDate()).padStart(2, '0');
+                toD = lastDay.getFullYear() + "-" + String(lastDay.getMonth() + 1).padStart(2, '0') + "-" + String(lastDay.getDate()).padStart(2, '0');
+            } else {
+                fromD = document.getElementById('gr-from').value;
+                toD = document.getElementById('gr-to').value;
+                if (!fromD || !toD) return alert('Please select From Date and To Date!');
+            }
+            
+            // Reusing existing ultra-fast function to generate and open the new PDF preview page
+            generateStockReport(fromD, toD, 'godown');
         }
 		
         window.renderGodownHistory = function() { 

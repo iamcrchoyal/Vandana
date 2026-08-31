@@ -975,28 +975,73 @@
         </div>
         <div class="fixed-top-section">
             
-            <div class="form-panel anim-form form-hidden" id="gd-form-panel" style="margin-bottom:10px;">
-                <input type="hidden" id="gd-edit-key" value="">
-                <input type="date" id="gd-date" class="form-control" style="margin-bottom:12px; font-family:'Product Sans', sans-serif;">
-                <select id="gd-cat" class="form-control" style="margin-bottom:12px;">
-                    <option value="Shree Kamlai Thread">Shree Kamlai Thread</option>
-                    <option value="Zari">Zari</option>
-                    <option value="Nylon">Nylon</option>
-                    <option value="Bobbin">Bobbin</option>
-                    <option value="Coding">Coding</option>
-                </select>
-                <!-- 🌟 POINT 6: SMART AUTO-SUGGEST & AUTO-FILL TRIGGER 🌟 -->
-                <div style="position:relative; margin-bottom:12px;">
-                    <input type="text" id="gd-item" class="form-control" autocomplete="off" placeholder="Item Name / Shade No." onkeyup="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item'); autoFillRate(document.getElementById('gd-cat').value, this.value.trim(), true)" onfocus="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item')">
-                    <div id="gd-suggestion-box" style="display:none; position:absolute; top:100%; left:0; width:100%; background:white; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.15); z-index:9999; max-height:200px; overflow-y:auto;"></div>
+            <div class="form-panel anim-form form-hidden" id="gd-form-panel" style="margin-bottom:10px; padding: 12px; background: #f8fafd; border: 1px solid #c2e7ff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                
+                <!-- 1. Top Section (Date & Type) -->
+                <div style="display:flex; gap:10px; margin-bottom:12px; align-items:center;">
+                    <div style="flex:1;">
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TRANSFER DATE</label>
+                        <input type="date" id="gd-date" class="form-control" style="font-family:'Product Sans', sans-serif; padding:10px; border-radius:10px;">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TRANSFER TYPE</label>
+                        <div style="display:flex; background:white; border-radius:10px; overflow:hidden; border:1px solid var(--border);">
+                            <button id="gd-toggle-in" onclick="setGdType('IN')" style="flex:1; padding:10px; border:none; background:#e6f4ea; color:var(--success); font-weight:700; cursor:pointer;">🟢 IN</button>
+                            <button id="gd-toggle-out" onclick="setGdType('OUT')" style="flex:1; padding:10px; border:none; background:white; color:var(--text-muted); font-weight:700; cursor:pointer;">🔴 OUT</button>
+                        </div>
+                        <input type="hidden" id="gd-entry-type" value="IN">
+                    </div>
                 </div>
-                <div class="input-btn-group" style="margin-bottom: 16px;">
-                    <input type="number" id="gd-qty" class="form-control" placeholder="Total Cones">
-                    <input type="number" id="gd-rate" class="form-control" placeholder="Rate (₹)">
+
+                <!-- 2. Smart Input Section -->
+                <div style="background:white; padding:12px; border-radius:12px; border:1px solid #e0e2e0; margin-bottom:12px;">
+                    <select id="gd-cat" class="form-control" style="margin-bottom:12px; font-weight:600; border-radius:10px; background:#f0f4f9;" onchange="updateGdUnitUI()">
+                        <option value="">Select Category</option>
+                    </select>
+
+                    <div style="position:relative; margin-bottom:12px;">
+                        <input type="text" id="gd-item" class="form-control" autocomplete="off" placeholder="Item Name / Shade No." onkeyup="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item'); autoFillRate(document.getElementById('gd-cat').value, this.value.trim(), true)" onfocus="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item')" style="border-radius:10px; font-weight:600;">
+                        <div id="gd-suggestion-box" style="display:none; position:absolute; top:100%; left:0; width:100%; background:white; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.15); z-index:9999; max-height:200px; overflow-y:auto;"></div>
+                    </div>
+
+                    <div class="input-btn-group" style="margin-bottom:12px;">
+                        <input type="number" id="gd-qty" class="form-control" placeholder="Qty" style="border-radius:10px; font-weight:600;" onkeypress="handleGdEnterKey(event)">
+                        <input type="text" id="gd-unit-display" value="Cone" disabled style="width:70px; background:#e8f0fe; border:1px solid #c2e7ff; border-radius:10px; text-align:center; font-weight:800; color:var(--primary); padding:10px 0;">
+                        <input type="number" id="gd-rate" class="form-control" placeholder="Rate (₹)" style="border-radius:10px; font-weight:600;" onkeypress="handleGdEnterKey(event)">
+                    </div>
+
+                    <input type="hidden" id="gd-edit-index" value="-1">
+                    <input type="hidden" id="gd-edit-key" value="">
+                    <button class="btn-submit" id="gd-add-draft-btn" style="width:100%; background:var(--primary); padding:12px; border-radius:12px; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 2px 8px rgba(10,86,208,0.2);" onclick="addGdToDraft()">
+                        <span class="material-symbols-rounded" style="font-size:18px;">add_shopping_cart</span> Add to Draft
+                    </button>
                 </div>
-                <div style="display:flex; gap:10px;">
-                    <button class="btn-submit" id="gd-btn-in" style="background:#146c2e; flex:1; border-radius:12px;" onclick="processGodown('IN')">🟢 Shop IN</button>
-                    <button class="btn-submit" id="gd-btn-out" style="background:#b3261e; flex:1; border-radius:12px;" onclick="processGodown('OUT')">🔴 Shop OUT</button>
+
+                <!-- 3. Draft List Area -->
+                <div id="gd-draft-area" style="display:none;">
+                    <div style="background:white; border:1px solid #e0e2e0; border-radius:12px; overflow:hidden; margin-bottom:12px;">
+                        <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                            <thead style="background:#f0f4f9;">
+                                <tr>
+                                    <th style="padding:8px; text-align:left; color:var(--text-muted);">Item</th>
+                                    <th style="padding:8px; text-align:center; color:var(--text-muted);">Qty</th>
+                                    <th style="padding:8px; text-align:right; color:var(--text-muted);">Total</th>
+                                    <th style="padding:8px; text-align:center; color:var(--text-muted);">Act</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gd-draft-list"></tbody>
+                        </table>
+                    </div>
+                    
+                    <div style="display:flex; justify-content:space-between; background:#e8f0fe; padding:10px; border-radius:10px; font-weight:700; color:var(--primary-dark); font-size:12px; margin-bottom:12px; border:1px solid #c2e7ff;">
+                        <span id="gd-draft-qty-summary">Total: 0 Cone, 0 Kg</span>
+                        <span id="gd-draft-amt-summary">Total: ₹0</span>
+                    </div>
+
+                    <!-- 4. Final Save -->
+                    <button class="btn-submit" style="width:100%; background:#146c2e; padding:14px; border-radius:14px; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 4px 10px rgba(20,108,46,0.3);" onclick="saveGdDraftBulk()">
+                        <span class="material-symbols-rounded" style="font-size:20px;">save</span> Final Save All Transfers
+                    </button>
                 </div>
             </div>
 
@@ -3706,132 +3751,256 @@
                 alert("Photo upload failed: " + error.message);
             });
         }
-        window.processGodown = function(type) { 
-            let editKey = document.getElementById('gd-edit-key').value;
-            let cat = document.getElementById('gd-cat').value; 
-            let item = document.getElementById('gd-item').value; 
-            let qty = parseInt(document.getElementById('gd-qty').value); 
-            let rate = parseFloat(document.getElementById('gd-rate').value) || 0;
-            
-            if(!item || isNaN(qty) || qty <= 0 || rate <= 0) return alert("Please enter valid Item Name, Quantity, and Rate!"); 
-            
-            let invKey = cat + "_" + item; 
+        // 🌟 POINT 15: ZERO-LATENCY BULK DRAFT ENGINE (SHOP TRANSFER) 🌟
+        window.gdDraftList = [];
 
-            // 🌟 LIVE STOCK VALIDATION (Superfast Synchronous Check)
+        window.setGdType = function(type) {
+            document.getElementById('gd-entry-type').value = type;
+            let btnIn = document.getElementById('gd-toggle-in');
+            let btnOut = document.getElementById('gd-toggle-out');
+            if (type === 'IN') {
+                btnIn.style.background = '#e6f4ea'; btnIn.style.color = 'var(--success)';
+                btnOut.style.background = 'white'; btnOut.style.color = 'var(--text-muted)';
+            } else {
+                btnOut.style.background = '#fdf2f2'; btnOut.style.color = 'var(--danger)';
+                btnIn.style.background = 'white'; btnIn.style.color = 'var(--text-muted)';
+            }
+        };
+
+        window.updateGdUnitUI = function() {
+            let cat = document.getElementById('gd-cat').value;
+            let unitDisplay = document.getElementById('gd-unit-display');
+            if (cat === 'Nylon' || cat === 'Bobbin' || cat === 'Coding') {
+                unitDisplay.value = 'Kg';
+            } else {
+                unitDisplay.value = 'Cone';
+            }
+        };
+
+        window.handleGdEnterKey = function(event) {
+            if (event.key === 'Enter' || event.keyCode === 13) {
+                event.preventDefault();
+                addGdToDraft();
+            }
+        };
+
+        window.addGdToDraft = function() {
+            let dateVal = document.getElementById('gd-date').value;
+            let type = document.getElementById('gd-entry-type').value;
+            let cat = document.getElementById('gd-cat').value;
+            let item = document.getElementById('gd-item').value.trim();
+            let qty = parseFloat(document.getElementById('gd-qty').value) || 0;
+            let rate = parseFloat(document.getElementById('gd-rate').value) || 0;
+            let editIndex = parseInt(document.getElementById('gd-edit-index').value);
+            let editKey = document.getElementById('gd-edit-key').value; 
+
+            if(!cat || !item || qty <= 0 || rate <= 0) {
+                return alert("Please enter valid Category, Item, Qty, and Rate!");
+            }
+
+            let unit = (cat === 'Nylon' || cat === 'Bobbin' || cat === 'Coding') ? "Kg" : "Cone";
+
+            // 🌟 Live Stock Validation for OUT
             if (type === 'OUT') {
+                let invKey = cat + "_" + item;
                 let dbStock = smartInventory[invKey] || { cone: 0, kg: 0 };
                 if(typeof dbStock === 'number') dbStock = { cone: dbStock, kg: 0 };
-                let availCone = parseFloat(dbStock.cone) || 0;
                 
-                if (qty > availCone) {
-                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Shop me sirf ${availCone} Cone bache hain. ⚠️`);
-                    else alert(`Error: Out of Stock! Shop me sirf ${availCone} Cone bache hain.`);
-                    return; // Code yahin ruk jayega, aage save nahi hoga!
+                let availQty = unit === "Kg" ? (parseFloat(dbStock.kg) || 0) : (parseFloat(dbStock.cone) || 0);
+
+                // Minus draft quantities of the same item
+                window.gdDraftList.forEach((draft, idx) => {
+                    if (idx !== editIndex && draft.cat === cat && draft.item.toUpperCase() === item.toUpperCase() && draft.type === 'OUT') {
+                        availQty -= draft.qty;
+                    }
+                });
+
+                if (qty > availQty && !editKey) { 
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Only ${availQty} ${unit} available. ⚠️`);
+                    else alert(`Out of Stock! Only ${availQty} ${unit} available.`);
+                    return;
                 }
             }
 
-            let dateVal = document.getElementById('gd-date').value;
-            let finalDateTime;
-            if(dateVal) {
-                let [year, month, day] = dateVal.split('-');
-                let dObj = new Date(); 
-                dObj.setFullYear(year, parseInt(month) - 1, day);
-                finalDateTime = dObj.toISOString();
-            } else {
-                finalDateTime = new Date().toISOString();
-            }
+            let amount = qty * rate;
 
-            let totalAmount = qty * rate;
-            let itemRef = ref(db, 'Inventory/' + invKey); 
-            
-            // Inventory Adjust
-            get(itemRef).then((snap) => { 
-                let cur = snap.val() || { cone: 0, kg: 0 }; 
-                if(typeof cur === 'number') cur = { cone: cur, kg: 0 };
-                
-                let oldCone = parseFloat(cur.cone) || 0;
-                let oldKg = parseFloat(cur.kg) || 0;
-                
-                // If editing, inventory was already reverted during the edit button click.
-                let newConeQty = type === 'OUT' ? oldCone - qty : oldCone + qty; 
-                if(newConeQty < 0) newConeQty = 0; 
-                
-                set(itemRef, { cone: newConeQty, kg: oldKg }); 
-            }); 
-            
-            let dataObj = { 
-                date: finalDateTime, 
-                cat: cat, 
-                item: item, 
-                qty: qty, 
+            let draftObj = {
+                dbKey: editKey, 
+                date: dateVal,
+                type: type,
+                cat: cat,
+                item: item,
+                qty: qty,
+                unit: unit,
                 rate: rate,
-                amount: totalAmount,
-                type: type 
+                amount: amount
             };
 
-            if(editKey) {
-                update(ref(db, 'GodownTransfers/' + editKey), dataObj);
-                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Entry Updated Successfully! ✅");
-                else alert("Entry Updated!");
-                document.getElementById('gd-edit-key').value = '';
-                document.getElementById('gd-btn-in').style.display = 'block';
-                document.getElementById('gd-btn-out').style.display = 'block';
+            if (editIndex >= 0) {
+                window.gdDraftList[editIndex] = draftObj;
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Draft Item Updated! 🔄");
             } else {
-                push(ref(db, 'GodownTransfers'), dataObj); 
-                if(typeof window.showSaaSToast === 'function') window.showSaaSToast(type === 'IN' ? `Stock Received from Godown! ✅` : `Stock Sent to Godown! ✅`);
-                else alert(type === 'IN' ? `Stock Received from Godown!` : `Stock Sent to Godown!`); 
+                // Merge logic if same item, same type
+                let existIdx = window.gdDraftList.findIndex(d => d.cat === cat && d.item.toUpperCase() === item.toUpperCase() && d.type === type && !d.dbKey);
+                if (existIdx > -1) {
+                    window.gdDraftList[existIdx].qty += qty;
+                    window.gdDraftList[existIdx].rate = rate; 
+                    window.gdDraftList[existIdx].amount = window.gdDraftList[existIdx].qty * rate;
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Quantity Merged in Draft! 🔄");
+                } else {
+                    window.gdDraftList.push(draftObj);
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Added to List! ✅");
+                }
+            }
+
+            // Reset inputs
+            document.getElementById('gd-item').value = '';
+            document.getElementById('gd-qty').value = '';
+            document.getElementById('gd-rate').value = '';
+            document.getElementById('gd-edit-index').value = '-1';
+            document.getElementById('gd-edit-key').value = '';
+            document.getElementById('gd-add-draft-btn').innerHTML = '<span class="material-symbols-rounded" style="font-size:18px;">add_shopping_cart</span> Add to Draft';
+
+            renderGdDraftUI();
+            document.getElementById('gd-item').focus();
+        };
+
+        window.renderGdDraftUI = function() {
+            let tbody = document.getElementById('gd-draft-list');
+            let draftArea = document.getElementById('gd-draft-area');
+            tbody.innerHTML = '';
+            
+            let totalCones = 0; let totalKg = 0; let totalAmt = 0;
+
+            if (window.gdDraftList.length === 0) {
+                draftArea.style.display = 'none';
+                return;
             }
             
-            document.getElementById('gd-item').value = ''; 
-            document.getElementById('gd-qty').value = ''; 
-            document.getElementById('gd-rate').value = ''; 
-            document.getElementById('gd-form-panel').classList.add('form-hidden'); 
-        }
-       window.currentGdFilterMode = 'month';
+            draftArea.style.display = 'block';
 
-        window.updateMonthLabel = function() {
-            let val = document.getElementById('godown-date-picker').value; 
-            if(val) {
-                let [yyyy, mm] = val.split('-');
-                let monthName = new Date(yyyy, parseInt(mm)-1, 1).toLocaleString('default', { month: 'short' });
-                document.getElementById('gd-month-label').innerText = `${monthName} ${yyyy}`;
-            }
-        }
+            window.gdDraftList.forEach((draft, index) => {
+                totalAmt += draft.amount;
+                if (draft.unit === 'Kg') totalKg += draft.qty;
+                else totalCones += draft.qty;
 
-        // Toggle Logic for Custom Filter
-        window.toggleGdFilter = function(mode) {
-            let btnMonth = document.getElementById('btn-gd-month');
-            let btnCustom = document.getElementById('btn-gd-custom');
-            let customBox = document.getElementById('gd-custom-filter-box');
+                let icon = draft.type === 'IN' ? '🟢' : '🔴';
+                let color = draft.type === 'IN' ? 'var(--success)' : 'var(--danger)';
 
-            if(mode === 'custom') {
-                if (customBox.style.display === 'block') {
-                    // Turn Off Custom (Switch to Month)
-                    window.currentGdFilterMode = 'month';
-                    customBox.style.display = 'none';
-                    btnCustom.style.borderColor = 'var(--border)'; btnCustom.style.color = 'var(--text-muted)';
-                    btnMonth.style.borderColor = 'var(--primary)'; btnMonth.style.color = 'var(--primary)';
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="padding:10px 8px; border-bottom:1px solid #f0f4f9;">
+                            <div style="font-weight:700; color:var(--text-dark); font-size:13px;">${icon} ${draft.item}</div>
+                            <div style="font-size:10px; color:var(--text-muted);">${draft.cat}</div>
+                        </td>
+                        <td style="padding:10px 8px; border-bottom:1px solid #f0f4f9; text-align:center; font-weight:700; font-size:13px; color:${color};">
+                            ${draft.qty} ${draft.unit}
+                        </td>
+                        <td style="padding:10px 8px; border-bottom:1px solid #f0f4f9; text-align:right; font-weight:700; font-size:13px; color:var(--primary);">
+                            ₹${draft.amount.toLocaleString('en-IN')}
+                        </td>
+                        <td style="padding:10px 8px; border-bottom:1px solid #f0f4f9; text-align:center; white-space:nowrap;">
+                            <span class="material-symbols-rounded" style="font-size:16px; color:#0a56d0; cursor:pointer; padding:4px; background:#e8f0fe; border-radius:6px; margin-right:4px;" onclick="editGdDraft(${index})">edit</span>
+                            <span class="material-symbols-rounded" style="font-size:16px; color:#b3261e; cursor:pointer; padding:4px; background:#fdf2f2; border-radius:6px;" onclick="deleteGdDraft(${index})">delete</span>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('gd-draft-qty-summary').innerText = `Total: ${totalCones} Cone, ${totalKg} Kg`;
+            document.getElementById('gd-draft-amt-summary').innerText = `Total: ₹${totalAmt.toLocaleString('en-IN')}`;
+        };
+
+        window.deleteGdDraft = function(index) {
+            window.gdDraftList.splice(index, 1);
+            renderGdDraftUI();
+        };
+
+        window.editGdDraft = function(index) {
+            let draft = window.gdDraftList[index];
+            setGdType(draft.type);
+            document.getElementById('gd-cat').value = draft.cat;
+            updateGdUnitUI();
+            document.getElementById('gd-item').value = draft.item;
+            document.getElementById('gd-qty').value = draft.qty;
+            document.getElementById('gd-rate').value = draft.rate;
+            document.getElementById('gd-edit-index').value = index;
+            document.getElementById('gd-edit-key').value = draft.dbKey || "";
+            document.getElementById('gd-add-draft-btn').innerHTML = '<span class="material-symbols-rounded" style="font-size:18px;">update</span> Update List';
+            if(draft.date) document.getElementById('gd-date').value = draft.date;
+        };
+
+        // 🌟 ONE-CLICK BULK SAVE TO FIREBASE
+        window.saveGdDraftBulk = function() {
+            if (window.gdDraftList.length === 0) return alert("Draft is empty!");
+
+            let promises = [];
+            let inventoryUpdates = {};
+
+            window.gdDraftList.forEach(draft => {
+                let finalDateTime;
+                if(draft.date) {
+                    let [year, month, day] = draft.date.split('-');
+                    let dObj = new Date(); 
+                    dObj.setFullYear(year, parseInt(month) - 1, day);
+                    finalDateTime = dObj.toISOString();
                 } else {
-                    // Turn On Custom
-                    window.currentGdFilterMode = 'custom';
-                    customBox.style.display = 'block';
-                    btnCustom.style.borderColor = 'var(--primary)'; btnCustom.style.color = 'var(--primary)';
-                    btnMonth.style.borderColor = 'var(--border)'; btnMonth.style.color = 'var(--text-muted)';
-                    
-                    if(!document.getElementById('gd-from').value) {
-                        let d = new Date(); d.setDate(1);
-                        document.getElementById('gd-from').value = d.toISOString().split('T')[0];
-                        document.getElementById('gd-to').value = new Date().toISOString().split('T')[0];
-                    }
+                    finalDateTime = new Date().toISOString();
                 }
-            } else {
-                window.currentGdFilterMode = 'month';
-                customBox.style.display = 'none';
-                btnMonth.style.borderColor = 'var(--primary)'; btnMonth.style.color = 'var(--primary)';
-                btnCustom.style.borderColor = 'var(--border)'; btnCustom.style.color = 'var(--text-muted)';
-            }
-            renderGodownHistory();
-        }
+
+                let dataObj = { 
+                    date: finalDateTime, 
+                    cat: draft.cat, 
+                    item: draft.item, 
+                    qty: draft.qty, 
+                    rate: draft.rate,
+                    amount: draft.amount,
+                    type: draft.type 
+                };
+
+                // Track Inventory Updates Locally to do a bulk save
+                let invKey = draft.cat + "_" + draft.item;
+                if (!inventoryUpdates[invKey]) inventoryUpdates[invKey] = { coneDiff: 0, kgDiff: 0 };
+                
+                let isKg = (draft.unit === 'Kg');
+                let qtyChange = draft.type === 'IN' ? draft.qty : -draft.qty;
+                
+                if (isKg) inventoryUpdates[invKey].kgDiff += qtyChange;
+                else inventoryUpdates[invKey].coneDiff += qtyChange;
+
+                if(draft.dbKey) {
+                    promises.push(update(ref(db, 'GodownTransfers/' + draft.dbKey), dataObj));
+                } else {
+                    promises.push(push(ref(db, 'GodownTransfers'), dataObj));
+                }
+            });
+
+            // Process Inventory Updates
+            Object.keys(inventoryUpdates).forEach(invKey => {
+                let diff = inventoryUpdates[invKey];
+                if (diff.coneDiff !== 0 || diff.kgDiff !== 0) {
+                    let itemRef = ref(db, 'Inventory/' + invKey);
+                    promises.push(
+                        get(itemRef).then((snap) => {
+                            let cur = snap.val() || { cone: 0, kg: 0 }; 
+                            if(typeof cur === 'number') cur = { cone: cur, kg: 0 };
+                            let newCone = Math.max(0, (parseFloat(cur.cone) || 0) + diff.coneDiff);
+                            let newKg = Math.max(0, (parseFloat(cur.kg) || 0) + diff.kgDiff);
+                            return set(itemRef, { cone: newCone, kg: newKg, isInactive: null });
+                        })
+                    );
+                }
+            });
+
+            Promise.all(promises).then(() => {
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("All Transfers Saved Successfully! 🚀");
+                else alert("All Transfers Saved Successfully!");
+                
+                window.gdDraftList = [];
+                renderGdDraftUI();
+                document.getElementById('gd-form-panel').classList.add('form-hidden'); 
+            }).catch(err => alert("Error saving bulk transfers: " + err.message));
+        };
 
         window.openGdCustomReport = function() {
             let fromD = document.getElementById('gd-from').value;
@@ -6955,29 +7124,35 @@ window.showTargetCelebration = function() {
             get(itemRef).then(snap => {
                 let cur = snap.val() || {cone:0, kg:0};
                 if(typeof cur === 'number') cur = {cone:cur, kg:0};
-                let newConeQty = entry.type === 'OUT' ? cur.cone + entry.qty : cur.cone - entry.qty;
-                if(newConeQty < 0) newConeQty = 0;
-                set(itemRef, {cone: newConeQty, kg: cur.kg});
+                
+                let isKg = (entry.cat === 'Nylon' || entry.cat === 'Bobbin' || entry.cat === 'Coding');
+                let revertCone = isKg ? 0 : (entry.type === 'OUT' ? entry.qty : -entry.qty);
+                let revertKg = isKg ? (entry.type === 'OUT' ? entry.qty : -entry.qty) : 0;
+
+                let newConeQty = Math.max(0, cur.cone + revertCone);
+                let newKgQty = Math.max(0, cur.kg + revertKg);
+
+                set(itemRef, {cone: newConeQty, kg: newKgQty});
             });
 
-            document.getElementById('gd-edit-key').value = entry.key;
-            document.getElementById('gd-date').value = new Date(entry.date).toISOString().split('T')[0];
-            document.getElementById('gd-cat').value = entry.cat;
-            document.getElementById('gd-item').value = entry.item;
-            document.getElementById('gd-qty').value = entry.qty;
-            document.getElementById('gd-rate').value = entry.rate;
-
             document.getElementById('gd-form-panel').classList.remove('form-hidden');
-
-            if(entry.type === 'IN') {
-                document.getElementById('gd-btn-out').style.display = 'none';
-                document.getElementById('gd-btn-in').style.display = 'block';
-                document.getElementById('gd-btn-in').innerText = 'UPDATE IN';
-            } else {
-                document.getElementById('gd-btn-in').style.display = 'none';
-                document.getElementById('gd-btn-out').style.display = 'block';
-                document.getElementById('gd-btn-out').innerText = 'UPDATE OUT';
-            }
+            
+            // Push to draft directly for edit
+            let unit = (entry.cat === 'Nylon' || entry.cat === 'Bobbin' || entry.cat === 'Coding') ? "Kg" : "Cone";
+            window.gdDraftList.push({
+                dbKey: entry.key,
+                date: new Date(entry.date).toISOString().split('T')[0],
+                type: entry.type,
+                cat: entry.cat,
+                item: entry.item,
+                qty: entry.qty,
+                unit: unit,
+                rate: entry.rate,
+                amount: entry.amount || (entry.qty * entry.rate)
+            });
+            renderGdDraftUI();
+            
+            if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Entry added to Draft for editing. Don't forget to Final Save! ✏️");
             window.scrollTo(0,0);
         }
 

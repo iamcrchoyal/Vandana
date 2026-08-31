@@ -1005,40 +1005,16 @@
                 </div>
             </fieldset>
             
+            <!-- 🌟 POINT 6 UPDATE: Cleaned up UI (Moved filters to new report page) -->
             <div class="search-bar-container" style="margin: 0 0 12px 0; border-radius:12px; padding:4px 16px;">
                 <span class="material-symbols-rounded" style="font-size:18px; color:gray;">search</span>
                 <input type="text" id="gd-search-history" placeholder="Search Item/Shade..." onkeyup="renderGodownHistory()">
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; padding:5px 0 10px 0;">
-                <h3 class="section-title" style="margin:0; font-size: 15px; font-weight: 600;">Transfer History</h3>
-                <div style="display:flex; gap:8px;">
-                    <div style="position:relative; display:inline-block;">
-                        <button class="btn-outline" style="padding:6px 10px; font-size:12px; border-radius:8px; display:flex; align-items:center; gap:4px; border-color:var(--primary); color:var(--primary);" id="btn-gd-month" onclick="toggleGdFilter('month')">
-                            <span class="material-symbols-rounded" style="font-size:16px;">calendar_view_month</span> <span id="gd-month-label">Month</span>
-                        </button>
-                        <input type="month" id="godown-date-picker" style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;" onchange="updateMonthLabel(); renderGodownHistory()">
-                    </div>
-                    
-                    <button class="btn-outline" style="padding:6px 10px; font-size:12px; border-radius:8px; display:flex; align-items:center; gap:4px; border-color:var(--border); color:var(--text-muted);" id="btn-gd-custom" onclick="toggleGdFilter('custom')"><span class="material-symbols-rounded" style="font-size:16px;">date_range</span> Custom</button>
-                </div>
+                <h3 class="section-title" style="margin:0; font-size: 15px; font-weight: 600;">Recent Transfers</h3>
             </div>
-
-            <div id="gd-custom-filter-box" style="display:none; background:white; border: 1px solid var(--border); padding:12px; border-radius:12px; margin-bottom:12px; box-shadow:0 2px 5px rgba(0,0,0,0.02);">
-                <div style="display:flex; gap:10px; margin-bottom:12px;">
-                    <div style="flex:1;">
-                        <label style="font-size:11px; color:var(--text-muted); font-weight:600;">From Date</label>
-                        <input type="date" id="gd-from" class="form-control" style="padding:8px;" onchange="renderGodownHistory()">
-                    </div>
-                    <div style="flex:1;">
-                        <label style="font-size:11px; color:var(--text-muted); font-weight:600;">To Date</label>
-                        <input type="date" id="gd-to" class="form-control" style="padding:8px;" onchange="renderGodownHistory()">
-                    </div>
-                </div>
-                <button class="btn-submit" style="width:100%; background:var(--primary-dark); font-size:13px; padding:10px; display:flex; align-items:center; justify-content:center; gap:6px; border-radius:12px;" onclick="openGdCustomReport()">
-                    <span class="material-symbols-rounded" style="font-size:18px;">picture_as_pdf</span> Generate Report & Share
-                </button>
-            </div>
+			
         </div>
         <div class="scroll-content" style="padding-top:0;">
             <div id="godown-history-list"></div>
@@ -1047,6 +1023,54 @@
             </div>
         </div>
     </div>
+
+	<!-- 📄 NEW DEDICATED MONTHLY GODOWN REPORT PAGE -->
+    <div class="page flex-page" id="godown-report-page" style="z-index: 5200;">
+        <div class="sub-header">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('godown-report-page')">arrow_back</button>
+            <h2 class="page-title" style="flex:1;">Shop-to-Shop Report</h2>
+        </div>
+        <div class="fixed-top-section" style="padding-top:16px;">
+            <!-- Date Filters -->
+            <div style="display:flex; gap:10px; margin-bottom:16px;">
+                <div style="flex:1;">
+                    <label style="font-size:11px; color:var(--text-muted); font-weight:700;">From Date</label>
+                    <input type="date" id="gr-from" class="form-control" style="padding:10px;" onchange="generateReportData()">
+                </div>
+                <div style="flex:1;">
+                    <label style="font-size:11px; color:var(--text-muted); font-weight:700;">To Date</label>
+                    <input type="date" id="gr-to" class="form-control" style="padding:10px;" onchange="generateReportData()">
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div style="display:flex; justify-content:space-between; text-align:center; background:#f8fafd; border:1px solid #c2e7ff; border-radius:16px; padding:16px; margin-bottom:16px;">
+                <div style="flex:1; border-right:1px solid #e0e2e0;">
+                    <div style="font-size:11px; color:var(--success); font-weight:800; margin-bottom:4px;">TOTAL IN</div>
+                    <div style="font-size:18px; font-weight:800; color:var(--success); font-family:'Product Sans', sans-serif;" id="gr-month-in">₹0</div>
+                </div>
+                <div style="flex:1; border-right:1px solid #e0e2e0;">
+                    <div style="font-size:11px; color:var(--danger); font-weight:800; margin-bottom:4px;">TOTAL OUT</div>
+                    <div style="font-size:18px; font-weight:800; color:var(--danger); font-family:'Product Sans', sans-serif;" id="gr-month-out">₹0</div>
+                </div>
+                <div style="flex:1;">
+                    <div style="font-size:11px; color:var(--primary); font-weight:800; margin-bottom:4px;">BALANCE DUE</div>
+                    <div style="font-size:18px; font-weight:800; color:var(--primary); font-family:'Product Sans', sans-serif;" id="gr-month-bal">₹0</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Report PDF Preview Content -->
+        <div class="scroll-content" style="padding-top:0; background:#e0e2e0;">
+            <div id="gr-preview-render-area" style="zoom:0.52; margin-top:16px;"></div>
+        </div>
+        
+        <div class="bottom-action-bar" style="padding: 12px 16px; gap: 8px; z-index:9999;">
+            <button class="btn-submit" onclick="shareGodownReportPDF()" style="flex: 1; background: var(--success); display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded">share</span> Share Report</button>
+            <button class="btn-submit" onclick="downloadGodownReportPDF()" style="flex: 1; background: var(--primary-dark); display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded">download</span> Download PDF</button>
+        </div>
+    </div>
+	
     <!-- 🧾 SALE INVOICE PAGE -->
     <div class="page flex-page" id="pos-page">
         <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('pos-page')">arrow_back</button><h2 class="page-title">Create Invoice</h2></div>
@@ -3730,90 +3754,133 @@
 
 // 🌟 FAST REPORT GENERATOR LOGIC (On Click of Month Box) 🌟
         window.openMonthlyGodownReport = function() {
-            let mode = window.currentGdFilterMode || 'month';
-            let fromD = ""; let toD = "";
+            let today = new Date();
+            let firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            let lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
-            if (mode === 'month') {
-                let val = document.getElementById('godown-date-picker').value;
-                if(!val) return;
-                let [yyyy, mm] = val.split('-');
+            let fromD = firstDay.getFullYear() + "-" + String(firstDay.getMonth() + 1).padStart(2, '0') + "-" + String(firstDay.getDate()).padStart(2, '0');
+            let toD = lastDay.getFullYear() + "-" + String(lastDay.getMonth() + 1).padStart(2, '0') + "-" + String(lastDay.getDate()).padStart(2, '0');
+            
+            document.getElementById('gr-from').value = fromD;
+            document.getElementById('gr-to').value = toD;
+
+            generateReportData();
+            openPage('godown-report-page');
+        }
+
+        window.generateReportData = function() {
+            let fromD = document.getElementById('gr-from').value;
+            let toD = document.getElementById('gr-to').value;
+            if (!fromD || !toD) return;
+
+            let fromTime = new Date(fromD).getTime(); 
+            let toTime = new Date(toD + "T23:59:59").getTime(); 
+            
+            let monthIn = 0; let monthOut = 0;
+            let stockHtml = "";
+
+            let filteredTransfers = allGodownTransfers.filter(t => { 
+                let eTime = new Date(t.date).getTime(); 
+                return eTime >= fromTime && eTime <= toTime; 
+            });
+
+            filteredTransfers.forEach(t => { 
+                let amt = parseFloat(t.amount) || 0;
+                if(t.type === 'IN') monthIn += amt;
+                if(t.type === 'OUT') monthOut += amt;
+
+                let dStr = new Date(t.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); 
+                let action = t.type === 'IN' ? 'Transfer IN' : 'Transfer OUT'; 
                 
-                // महीने की पहली तारीख
-                let firstDay = new Date(yyyy, parseInt(mm)-1, 1);
-                // महीने की आखिरी तारीख (Trick: Agle mahine ki '0' tarikh)
-                let lastDay = new Date(yyyy, parseInt(mm), 0);
+                // 🌟 SMART DYNAMIC UNIT LOGIC (Cone/Kg) 🌟
+                let unit = (t.cat === 'Nylon' || t.cat === 'Bobbin' || t.cat === 'Coding') ? "Kg" : "Cone";
+                
+                stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">${action}</td><td style="padding:10px; border:1px solid #e0e2e0;">${t.item} (${t.cat})</td><td style="padding:10px; border:1px solid #e0e2e0;">Godown</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${t.qty} ${unit}</td></tr>`; 
+            });
 
-                // Date format change fastly
-                fromD = firstDay.getFullYear() + "-" + String(firstDay.getMonth() + 1).padStart(2, '0') + "-" + String(firstDay.getDate()).padStart(2, '0');
-                toD = lastDay.getFullYear() + "-" + String(lastDay.getMonth() + 1).padStart(2, '0') + "-" + String(lastDay.getDate()).padStart(2, '0');
-            } else {
-                fromD = document.getElementById('gd-from').value;
-                toD = document.getElementById('gd-to').value;
-            }
+            document.getElementById('gr-month-in').innerText = "₹ " + monthIn.toLocaleString('en-IN');
+            document.getElementById('gr-month-out').innerText = "₹ " + monthOut.toLocaleString('en-IN');
+            
+            let netBal = monthIn - monthOut;
+            let balEl = document.getElementById('gr-month-bal');
+            balEl.innerText = "₹ " + Math.abs(netBal).toLocaleString('en-IN');
+            if(netBal > 0) { balEl.style.color = "var(--danger)"; } 
+            else if (netBal < 0) { balEl.style.color = "var(--success)"; } 
+            else { balEl.style.color = "var(--primary)"; }
 
-            if (!fromD || !toD) return alert("Please select a date range first!");
+            if(!stockHtml) stockHtml = `<tr><td colspan="5" style="text-align:center; padding:20px;">No stock movement found for these dates.</td></tr>`;
+            
+            // 🌟 TITLE CHANGE LOGIC
+            let reportTitle = "SHOP TO SHOP STOCK TRANSFER";
+            document.querySelector('#pdf-stock-template h2').innerText = reportTitle;
+            document.getElementById('psr-date-range').innerText = `From: ${new Date(fromD).toLocaleDateString('en-GB')} To: ${new Date(toD).toLocaleDateString('en-GB')}`; 
+            
+            // 🌟 HEADER FIX (Box -> Qty)
+            document.querySelector('#pdf-stock-template thead').innerHTML = `
+                <tr style="background:#146c2e; color:white;">
+                    <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Date & Time</th>
+                    <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Action Type</th>
+                    <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Item Detail</th>
+                    <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Party / Location</th>
+                    <th style="padding:10px; border:1px solid #e0e2e0; text-align:right;">Qty</th>
+                </tr>
+            `;
+            
+            document.getElementById('psr-table-body').innerHTML = stockHtml;
+            let previewHtml = document.getElementById('pdf-stock-template').innerHTML; 
+            document.getElementById('gr-preview-render-area').innerHTML = previewHtml; 
+            
+            window.currentGodownReportFileName = `Shop_To_Shop_Transfer_${fromD}.pdf`; 
+        }
 
-            // Call your existing report function instantly
-            generateStockReport(fromD, toD, 'godown');
+        window.downloadGodownReportPDF = function() {
+            let elem = document.getElementById('pdf-stock-template'); 
+            let opt = { margin: 0.4, filename: window.currentGodownReportFileName, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
+            alert("Downloading PDF... Please wait."); 
+            html2pdf().set(opt).from(elem).save();
+        }
+
+        window.shareGodownReportPDF = async function() {
+            let elem = document.getElementById('pdf-stock-template'); 
+            let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: window.currentGodownReportFileName, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
+            try { 
+                alert("Preparing PDF for direct sharing... this may take a few seconds."); 
+                let pdfBlob = await html2pdf().set(opt).from(elem).output('blob'); 
+                let file = new File([pdfBlob], opt.filename, { type: 'application/pdf' }); 
+                if (navigator.canShare && navigator.canShare({ files: [file] })) { 
+                    await navigator.share({ files: [file], title: 'Shop to Shop Transfer Report', text: `Please find attached the transfer report.` }); 
+                } else { 
+                    alert("Your browser does not support direct PDF sharing. Downloading instead..."); 
+                    html2pdf().set(opt).from(elem).save(); 
+                } 
+            } catch(e) { console.error(e); } 
         }
 		
         window.renderGodownHistory = function() { 
-            let mode = window.currentGdFilterMode || 'month';
             let searchQuery = document.getElementById('gd-search-history').value.toLowerCase().trim();
-            
             let monthIn = 0; let monthOut = 0;
             let filteredTransfers = [];
 
-            // 1. Filter for List & Month Tracker
-            if (mode === 'month') {
-                let filterMonth = document.getElementById('godown-date-picker').value; 
-                if(!filterMonth) {
-                    let today = new Date();
-                    filterMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
-                    document.getElementById('godown-date-picker').value = filterMonth;
-                    updateMonthLabel();
+            // 1. Fast Filter & Search (Sirf is mahine ka data box me dikhega)
+            let today = new Date();
+            let filterMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+            
+            filteredTransfers = allGodownTransfers.filter(t => { 
+                let tMonth = ""; 
+                try { tMonth = new Date(t.date).toISOString().slice(0, 7); } catch(e){} 
+                
+                if(tMonth === filterMonth) {
+                    let amt = parseFloat(t.amount) || 0;
+                    if(t.type === 'IN') monthIn += amt;
+                    if(t.type === 'OUT') monthOut += amt;
                 }
-                filteredTransfers = allGodownTransfers.filter(t => { 
-                    let tMonth = ""; 
-                    try { tMonth = new Date(t.date).toISOString().slice(0, 7); } catch(e){} 
-                    
-                    if(tMonth === filterMonth) {
-                        let amt = parseFloat(t.amount) || 0;
-                        if(t.type === 'IN') monthIn += amt;
-                        if(t.type === 'OUT') monthOut += amt;
-                        
-                        // Search Logic
-                        if(searchQuery) {
-                            return (t.item && t.item.toLowerCase().includes(searchQuery)) || (t.cat && t.cat.toLowerCase().includes(searchQuery));
-                        }
-                        return true;
-                    }
-                    return false; 
-                }); 
-            } else {
-                // Custom Mode Logic
-                let fromD = document.getElementById('gd-from').value;
-                let toD = document.getElementById('gd-to').value;
-                if(fromD && toD) {
-                    let fromTime = new Date(fromD).getTime(); 
-                    let toTime = new Date(toD + "T23:59:59").getTime();
-                    filteredTransfers = allGodownTransfers.filter(t => { 
-                        let tTime = new Date(t.date).getTime();
-                        if(tTime >= fromTime && tTime <= toTime) {
-                            let amt = parseFloat(t.amount) || 0;
-                            if(t.type === 'IN') monthIn += amt;
-                            if(t.type === 'OUT') monthOut += amt;
-                            
-                            // Search Logic
-                            if(searchQuery) {
-                                return (t.item && t.item.toLowerCase().includes(searchQuery)) || (t.cat && t.cat.toLowerCase().includes(searchQuery));
-                            }
-                            return true;
-                        }
-                        return false;
-                    });
+
+                // Search filtering
+                if(searchQuery) {
+                    return (t.item && t.item.toLowerCase().includes(searchQuery)) || (t.cat && t.cat.toLowerCase().includes(searchQuery));
                 }
-            }
+                return true;
+            }); 
 
             // 2. Update This Month Tracker UI
             document.getElementById('gd-month-in').innerText = "₹ " + monthIn.toLocaleString('en-IN');
@@ -3826,19 +3893,9 @@
             else if (netBal < 0) { balEl.style.color = "var(--success)"; } 
             else { balEl.style.color = "var(--primary)"; }
 
-            // 🌟 POINT 6 FIX: CLEAN DYNAMIC MONTH LABELS & FAST REPORT LOGIC 🌟
             let legendEl = document.getElementById('gd-dynamic-legend');
-            if (mode === 'month') {
-                let val = document.getElementById('godown-date-picker').value;
-                let displayStr = "This Month";
-                if(val) {
-                    let [yyyy, mm] = val.split('-');
-                    displayStr = new Date(yyyy, parseInt(mm)-1, 1).toLocaleString('default', { month: 'short' }) + " " + yyyy;
-                }
-                if(legendEl) legendEl.innerText = displayStr + " Summary";
-            } else {
-                if(legendEl) legendEl.innerText = "Custom Dates Summary";
-            }
+            let displayStr = new Date().toLocaleString('default', { month: 'short' }) + " " + today.getFullYear();
+            if(legendEl) legendEl.innerText = displayStr + " Summary";
 
             // 3. Render List HTML
             let html = ""; 
@@ -3854,6 +3911,7 @@
                     let dateStr = isNaN(d) ? t.date : d.toLocaleDateString('en-GB', {day:'numeric', month:'short'}) + " " + d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}); 
                     
                     // STOCK TRANSFER UI
+                    let unit = (t.cat === 'Nylon' || t.cat === 'Bobbin' || t.cat === 'Coding') ? "Kg" : "Cone";
                     let color = t.type === 'IN' ? 'var(--success)' : 'var(--danger)'; 
                     let icon = t.type === 'IN' ? '🟢 IN' : '🔴 OUT'; 
                     let amountStr = t.amount ? `<span style="font-size:14px; color:var(--text-dark); font-weight:700;">₹${t.amount.toLocaleString('en-IN')}</span> <span style="font-size:10px; color:gray;">(@₹${t.rate})</span>` : "";
@@ -3867,7 +3925,7 @@
                                 <div style="font-size:11px; color:var(--text-muted);">${dateStr}</div>
                             </div>
                             <div style="text-align:right;">
-                                <div style="color:${color}; font-weight:800; font-size:14px;">${icon} ${t.qty} Cone</div>
+                                <div style="color:${color}; font-weight:800; font-size:14px;">${icon} ${t.qty} ${unit}</div>
                                 ${amountStr}
                             </div>
                         </div>

@@ -1027,24 +1027,24 @@
 	<!-- 📄 NEW DEDICATED MONTHLY GODOWN REPORT PAGE -->
     <div class="page flex-page" id="godown-report-page" style="z-index: 5200; background:white;">
         <div class="sub-header" style="box-shadow:0 2px 10px rgba(0,0,0,0.03); border:none;">
-            <button class="back-btn material-symbols-rounded" onclick="closePage('godown-report-page')">arrow_back</button>
+            <button class="back-btn material-symbols-rounded" onclick="document.getElementById('godown-report-page').classList.remove('active'); navTo('godown-page', null);">arrow_back</button>
             <h2 class="page-title" style="flex:1;">Shop-To-Shop Summary</h2>
         </div>
         <div class="scroll-content" style="padding:16px;">
             
             <!-- Summary Cards -->
-            <div style="display:flex; justify-content:space-between; text-align:center; background:#f8fafd; border:1px solid #c2e7ff; border-radius:16px; padding:20px 16px; margin-bottom:24px; box-shadow:0 4px 15px rgba(10,86,208,0.05);">
-                <div style="flex:1; border-right:1px solid #e0e2e0;">
-                    <div style="font-size:11px; color:var(--success); font-weight:800; margin-bottom:6px; letter-spacing:0.5px;">TOTAL IN</div>
-                    <div style="font-size:22px; font-weight:800; color:var(--success); font-family:'Product Sans', sans-serif;" id="gr-month-in">₹0</div>
+            <div style="display:flex; justify-content:space-between; text-align:center; background:#f8fafd; border:1px solid #c2e7ff; border-radius:16px; padding:20px 6px; margin-bottom:24px; box-shadow:0 4px 15px rgba(10,86,208,0.05);">
+                <div style="flex:1; border-right:1px solid #e0e2e0; padding:0 4px; overflow:hidden;">
+                    <div style="font-size:10px; color:var(--success); font-weight:800; margin-bottom:6px; letter-spacing:0.5px;">TOTAL IN</div>
+                    <div style="font-size:16px; font-weight:800; color:var(--success); font-family:'Product Sans', sans-serif; word-wrap:break-word; line-height:1.2;" id="gr-month-in">₹0</div>
                 </div>
-                <div style="flex:1; border-right:1px solid #e0e2e0;">
-                    <div style="font-size:11px; color:var(--danger); font-weight:800; margin-bottom:6px; letter-spacing:0.5px;">TOTAL OUT</div>
-                    <div style="font-size:22px; font-weight:800; color:var(--danger); font-family:'Product Sans', sans-serif;" id="gr-month-out">₹0</div>
+                <div style="flex:1; border-right:1px solid #e0e2e0; padding:0 4px; overflow:hidden;">
+                    <div style="font-size:10px; color:var(--danger); font-weight:800; margin-bottom:6px; letter-spacing:0.5px;">TOTAL OUT</div>
+                    <div style="font-size:16px; font-weight:800; color:var(--danger); font-family:'Product Sans', sans-serif; word-wrap:break-word; line-height:1.2;" id="gr-month-out">₹0</div>
                 </div>
-                <div style="flex:1;">
-                    <div style="font-size:11px; color:var(--primary); font-weight:800; margin-bottom:6px; letter-spacing:0.5px;">BALANCE DUE</div>
-                    <div style="font-size:22px; font-weight:800; color:var(--primary); font-family:'Product Sans', sans-serif;" id="gr-month-bal">₹0</div>
+                <div style="flex:1; padding:0 4px; overflow:hidden;">
+                    <div style="font-size:10px; color:var(--primary); font-weight:800; margin-bottom:6px; letter-spacing:0.5px;">BALANCE DUE</div>
+                    <div style="font-size:16px; font-weight:800; color:var(--primary); font-family:'Product Sans', sans-serif; word-wrap:break-word; line-height:1.2;" id="gr-month-bal">₹0</div>
                 </div>
             </div>
 
@@ -3795,7 +3795,7 @@
             document.getElementById('gr-to').value = lastDay.getFullYear() + "-" + String(lastDay.getMonth() + 1).padStart(2, '0') + "-" + String(lastDay.getDate()).padStart(2, '0');
 
             toggleGdSummaryFilter('month'); // Default load
-            openPage('godown-report-page');
+            navTo('godown-report-page', null); // ⚡ FIX 1: Push page to stack properly for Back Button!
         }
 
         window.generateReportData = function() {
@@ -3848,7 +3848,7 @@
                 if(!monthVal) return alert('Please select a month!');
                 let [yyyy, mm] = monthVal.split('-');
                 let firstDay = new Date(yyyy, parseInt(mm)-1, 1);
-                let lastDay = new Date(yyyy, parseInt(mm), 0);
+                let lastDay = new Date(yyyy, parseInt(mm), 0); 
                 fromD = firstDay.getFullYear() + "-" + String(firstDay.getMonth() + 1).padStart(2, '0') + "-" + String(firstDay.getDate()).padStart(2, '0');
                 toD = lastDay.getFullYear() + "-" + String(lastDay.getMonth() + 1).padStart(2, '0') + "-" + String(lastDay.getDate()).padStart(2, '0');
             } else {
@@ -3857,7 +3857,9 @@
                 if (!fromD || !toD) return alert('Please select From Date and To Date!');
             }
             
-            // Reusing existing ultra-fast function to generate and open the new PDF preview page
+            // ⚡ FIX 2: Hide summary page so the new Report Page comes smoothly in front!
+            document.getElementById('godown-report-page').classList.remove('active');
+            
             generateStockReport(fromD, toD, 'godown');
         }
 		

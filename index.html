@@ -563,23 +563,39 @@
             </div>
         </div>
 
-        <div id="pdf-stock-template" style="background:white; padding:30px; font-family:Arial, sans-serif; color:black; width:100%; max-width:700px; box-sizing:border-box;">
-            <div style="text-align:center; border-bottom:2px solid #146c2e; padding-bottom:15px; margin-bottom:20px;">
-                <h1 style="color:#146c2e; margin:0; font-size:26px;">Vandana Enterprises</h1>
-                <h2 style="margin:5px 0 0 0; font-size:20px; color:#444746;">DAILY STOCK REPORT</h2>
-                <p style="margin:5px 0 0 0; font-size:14px;" id="psr-date-range">From: -- To: --</p>
+        <div id="pdf-stock-template" style="background:white; padding:30px; font-family:'Product Sans', Arial, sans-serif; color:black; width:100%; max-width:720px; box-sizing:border-box; margin:0 auto;">
+            <div style="text-align:center; border-bottom:2px solid #146c2e; padding-bottom:15px; margin-bottom:15px;">
+                <h1 style="color:#146c2e; margin:0; font-size:26px; font-weight:800; text-transform:uppercase;">Vandana Enterprises</h1>
+                <h2 id="pdf-stock-title" style="margin:5px 0 0 0; font-size:18px; color:#444746; font-weight:700;">Shop In Out Report</h2>
+                <p style="margin:5px 0 0 0; font-size:13px; font-weight:500;" id="psr-date-range">From: -- To: --</p>
             </div>
-            <table style="width:100%; border-collapse:collapse; margin-bottom:20px; font-size:14px;">
-                <thead>
+            <table style="width:100%; border-collapse:collapse; margin-bottom:10px; font-size:13px;">
+                <thead style="display:table-header-group;">
                     <tr style="background:#146c2e; color:white;">
-                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Date & Time</th>
-                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Action Type</th>
-                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Item Detail</th>
-                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:left;">Party / Location</th>
-                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:right;">Qty (Box)</th>
+                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:left; font-weight:700;">Date & Time</th>
+                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:left; font-weight:700;">Action Type</th>
+                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:left; font-weight:700;">Item Detail</th>
+                        <th id="pdf-stock-loc-header" style="padding:10px; border:1px solid #e0e2e0; text-align:left; font-weight:700;">Location</th>
+                        <th style="padding:10px; border:1px solid #e0e2e0; text-align:right; font-weight:700;">Qty</th>
                     </tr>
                 </thead>
                 <tbody id="psr-table-body"></tbody>
+                <tfoot style="display:table-footer-group;">
+                    <tr>
+                        <td colspan="5" style="padding-top:20px; border:none;">
+                            <div style="border-top:2px dashed #e0e2e0; padding-top:15px; display:flex; justify-content:space-between; align-items:flex-end;">
+                                <div style="color:#718096; font-size:12px; font-weight:500; text-align:left;">
+                                    <p style="margin:0 0 4px 0; color:#1f1f1f; font-weight:600;">Thank you for your business!</p>
+                                    <p style="margin:0;">Report generated via Vandana ERP System</p>
+                                </div>
+                                <div style="text-align:right; color:#1f1f1f; font-size:14px; font-weight:700; display:flex; flex-direction:column; align-items:flex-end;">
+                                    <div style="font-family: 'Brush Script MT', cursive; font-size: 24px; color: #146c2e; line-height: 1; margin-bottom: 4px; font-weight: normal;">Vandana Ent.</div>
+                                    Authorized Signatory
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -921,7 +937,7 @@
         </div>
         <div class="bottom-action-bar" style="padding: 12px 16px; gap: 8px; z-index:9999;">
             <button class="btn-submit" onclick="shareReportPDF()" style="flex: 1; background: var(--success); display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded">share</span> Share</button>
-            <button class="btn-submit" onclick="executeReportDownload()" style="flex: 1; background: var(--primary-dark); display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded">download</span> Download PDF</button>
+            <button class="btn-submit" onclick="executeReportDownload()" style="flex: 1; background: var(--primary-dark); display:flex; align-items:center; justify-content:center; gap:6px;"><span class="material-symbols-rounded">download</span> Download Report</button>
         </div>
     </div>
 
@@ -3400,13 +3416,34 @@
             let fromTime = new Date(fromD).getTime(); 
             let toTime = new Date(toD + "T23:59:59").getTime(); 
             let stockHtml = "";
+            let totalInAmt = 0;
+            let totalOutAmt = 0;
             
             // 1. गोडाउन ट्रांसफर का डेटा (Godown Data)
             let filteredTransfers = allGodownTransfers.filter(t => { let eTime = new Date(t.date).getTime(); return eTime >= fromTime && eTime <= toTime; });
+            
+            // Sort to ensure chronologically ordered list
+            filteredTransfers.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
             filteredTransfers.forEach(t => { 
                 let dStr = new Date(t.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); 
                 let action = t.type === 'IN' ? 'Transfer IN' : 'Transfer OUT'; 
-                stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">${action}</td><td style="padding:10px; border:1px solid #e0e2e0;">${t.item} (${t.cat})</td><td style="padding:10px; border:1px solid #e0e2e0;">Godown</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${t.qty}</td></tr>`; 
+                
+                // 🌟 Smart Location Logic: IN -> Sanganer, OUT -> Bais Godam
+                let locationText = "Godown";
+                if(reportType === 'godown') {
+                    locationText = (t.type === 'IN') ? "Sanganer" : "Bais Godam";
+                }
+
+                // 🌟 Smart Unit Logic
+                let unit = (t.cat === 'Nylon' || t.cat === 'Bobbin' || t.cat === 'Coding') ? "Kg" : "Cone";
+                
+                // Amount calculation for IN and OUT
+                let amt = parseFloat(t.amount) || 0;
+                if(t.type === 'IN') totalInAmt += amt;
+                if(t.type === 'OUT') totalOutAmt += amt;
+
+                stockHtml += `<tr style="page-break-inside: avoid;"><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0;">${action}</td><td style="padding:10px; border:1px solid #e0e2e0;">${t.item} (${t.cat})</td><td style="padding:10px; border:1px solid #e0e2e0;">${locationText}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right; white-space:nowrap;">${t.qty} ${unit}</td></tr>`; 
             });
 
             // 2. सेल्स का डेटा (सिर्फ तब जब 'all' रिपोर्ट मांगी गई हो)
@@ -3415,35 +3452,79 @@
                 salesEntries.forEach(entry => { 
                     let dStr = new Date(entry.date).toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); 
                     entry.cart.forEach(item => { 
-                        stockHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0; color:var(--danger); font-weight:600;">Sale (OUT)</td><td style="padding:10px; border:1px solid #e0e2e0;">${item.shade} (${item.cat})</td><td style="padding:10px; border:1px solid #e0e2e0;">${entry.name}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right;">${item.qty}</td></tr>`; 
+                        let unit = (item.cat === 'Nylon' || item.cat === 'Bobbin' || item.cat === 'Coding') ? "Kg" : "Cone";
+                        stockHtml += `<tr style="page-break-inside: avoid;"><td style="padding:10px; border:1px solid #e0e2e0;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0; color:var(--danger); font-weight:600;">Sale (OUT)</td><td style="padding:10px; border:1px solid #e0e2e0;">${item.shade} (${item.cat})</td><td style="padding:10px; border:1px solid #e0e2e0;">${entry.name}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right; white-space:nowrap;">${item.qty.replace(/ Cone| KG/ig, '')} ${unit}</td></tr>`; 
                     }); 
                 });
             }
 
             if(!stockHtml) stockHtml = `<tr><td colspan="5" style="text-align:center; padding:20px;">No stock movement found for these dates.</td></tr>`;
             
+            // 🌟 Add Summary AT THE END of table body for "Shop-To-Shop Summary"
+            if(reportType === 'godown') {
+                let netBal = totalInAmt - totalOutAmt;
+                let balColor = netBal > 0 ? 'var(--danger)' : (netBal < 0 ? 'var(--success)' : 'var(--primary)');
+                stockHtml += `
+                    <tr style="background:#f8fafd; page-break-inside: avoid;">
+                        <td colspan="5" style="padding:15px; border:1px solid #e0e2e0;">
+                            <div style="display:flex; justify-content:space-around; align-items:center;">
+                                <div style="text-align:center;">
+                                    <div style="font-size:11px; font-weight:800; color:var(--success); margin-bottom:4px;">TOTAL IN AMOUNT</div>
+                                    <div style="font-size:16px; font-weight:800; color:var(--success); font-family:'Product Sans', sans-serif;">₹${totalInAmt.toLocaleString('en-IN')}</div>
+                                </div>
+                                <div style="text-align:center;">
+                                    <div style="font-size:11px; font-weight:800; color:var(--danger); margin-bottom:4px;">TOTAL OUT AMOUNT</div>
+                                    <div style="font-size:16px; font-weight:800; color:var(--danger); font-family:'Product Sans', sans-serif;">₹${totalOutAmt.toLocaleString('en-IN')}</div>
+                                </div>
+                                <div style="text-align:center;">
+                                    <div style="font-size:11px; font-weight:800; color:var(--primary); margin-bottom:4px;">BALANCE DUE</div>
+                                    <div style="font-size:16px; font-weight:800; color:${balColor}; font-family:'Product Sans', sans-serif;">₹${Math.abs(netBal).toLocaleString('en-IN')}</div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+
             // UI Update & PDF Generation
-            let reportTitle = reportType === 'godown' ? "GODOWN TRANSFER REPORT" : "DAILY STOCK REPORT";
-            document.querySelector('#pdf-stock-template h2').innerText = reportTitle;
+            let reportTitle = reportType === 'godown' ? "Shop In Out Report" : "DAILY STOCK REPORT";
+            
+            let headerElem = document.querySelector('#pdf-stock-template h2');
+            if(headerElem) headerElem.innerText = reportTitle;
+            
+            // Adjust Location column header
+            let locHeader = document.getElementById('pdf-stock-loc-header');
+            if(locHeader) locHeader.innerText = reportType === 'godown' ? "Location" : "Party / Location";
+
             document.getElementById('psr-date-range').innerText = `From: ${new Date(fromD).toLocaleDateString('en-GB')} To: ${new Date(toD).toLocaleDateString('en-GB')}`; 
             document.getElementById('psr-table-body').innerHTML = stockHtml;
             
-            let previewHtml = document.getElementById('pdf-stock-template').innerHTML; 
+            let previewHtml = document.getElementById('pdf-stock-template').outerHTML; 
             document.getElementById('preview-render-area').innerHTML = previewHtml; 
             
             window.currentReportElemId = 'pdf-stock-template'; 
             window.currentReportFilename = `${reportTitle.replace(/\s+/g, '_')}_${fromD}.pdf`; 
+            
+            // Reset Zoom for better preview
+            window.currentZoom = 0.52;
+            document.getElementById('preview-render-area').style.zoom = window.currentZoom;
+            
             openPage('report-preview-page');
         }
-		
 
-        window.executeReportDownload = function() { let elem = document.getElementById(window.currentReportElemId); let opt = { margin: 0.4, filename: window.currentReportFilename, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; alert("Downloading PDF... Please wait."); html2pdf().set(opt).from(elem).save(); }
+        window.executeReportDownload = function() { 
+            let elem = document.getElementById(window.currentReportElemId); 
+            // pagebreak: avoid-all -> ensures text/tables do not cut in the middle.
+            let opt = { margin: 0.4, filename: window.currentReportFilename, pagebreak: { mode: 'avoid-all' }, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
+            alert("Downloading Report... Please wait."); 
+            html2pdf().set(opt).from(elem).save(); 
+        }
         
         window.shareReportPDF = async function() { 
             let elem = document.getElementById(window.currentReportElemId); 
-            let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: window.currentReportFilename, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
+            let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: window.currentReportFilename, pagebreak: { mode: 'avoid-all' }, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
             try { 
-                alert("Preparing PDF for direct sharing... this may take a few seconds."); 
+                alert("Preparing Report for direct sharing... this may take a few seconds."); 
                 let pdfBlob = await html2pdf().set(opt).from(elem).output('blob'); 
                 let file = new File([pdfBlob], opt.filename, { type: 'application/pdf' }); 
                 if (navigator.canShare && navigator.canShare({ files: [file] })) { 

@@ -975,8 +975,14 @@
         </div>
         <div class="fixed-top-section">
             
-            <!-- 🌟 FULL SCREEN BULK TRANSFER PAGE (100% FIX) 🌟 -->
-            <div class="anim-form form-hidden" id="gd-form-panel" style="position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 10500 !important; background: var(--bg-color) !important; flex-direction: column; padding: 0; margin: 0; box-sizing: border-box; overflow: hidden; display: flex;">
+            <!-- 🌟 100% BULLETPROOF FULL SCREEN ENTRY PAGE 🌟 -->
+            <style>
+                /* यह CSS इसे ज़बरदस्ती फुल स्क्रीन बनाएगा और पॉप-अप वाले डिज़ाइन को खत्म करेगा */
+                #gd-form-panel { position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: var(--bg-color); z-index: 105000; flex-direction: column; padding: 0; margin: 0; }
+                #gd-form-panel.form-hidden { display: none !important; }
+                #gd-form-panel:not(.form-hidden) { display: flex !important; }
+            </style>
+            <div id="gd-form-panel" class="form-hidden">
                 
                 <!-- Header (Fixed) -->
                 <div class="sub-header" style="box-shadow: 0 2px 4px rgba(0,0,0,0.05); z-index: 10; flex-shrink: 0;">
@@ -1053,8 +1059,8 @@
                 </div>
             </div>
 
-            <!-- 🌟 FULL SCREEN PREVIEW PAGE (100% FIX) 🌟 -->
-            <div class="anim-form form-hidden" id="gd-preview-page" style="position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 11000 !important; background: var(--bg-color) !important; flex-direction: column; padding: 0; margin: 0; box-sizing: border-box; overflow: hidden; display: flex;">
+            <!-- 🌟 100% BULLETPROOF FULL SCREEN PREVIEW PAGE 🌟 -->
+            <div id="gd-preview-page" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; z-index: 110000; background: var(--bg-color); flex-direction: column; padding: 0; margin: 0;">
                 
                 <div class="sub-header" style="box-shadow: 0 2px 4px rgba(0,0,0,0.05); z-index: 10; flex-shrink: 0;">
                     <button class="back-btn material-symbols-rounded" onclick="closeGdPreviewPage()">arrow_back</button>
@@ -3961,14 +3967,14 @@
             });
         };
 
-        // 🌟 FULL PAGE PREVIEW LOGIC
+        // 🌟 FULL PAGE PREVIEW LOGIC (Zero Latency)
         window.openGdPreviewPage = function() {
             if (window.gdDraftList.length === 0) return;
             
             let totalIn = 0; let totalOut = 0;
             let inQty = 0; let outQty = 0;
             
-            // 1. Generate Full Detailed Draft List (3 Columns Only)
+            // Generate Full Detailed Draft List
             let listHtml = `<div style="background:white; border:1px solid #e0e2e0; border-radius:12px; overflow:hidden; margin-bottom:16px;">
                 <table style="width:100%; border-collapse:collapse; font-size:13px;">
                     <thead style="background:#f0f4f9;">
@@ -4004,7 +4010,7 @@
             });
             listHtml += `</tbody></table></div>`;
 
-            // 2. Generate Sleek Professional Summary Box at the Bottom
+            // Generate Professional Summary Box at the Bottom
             let summaryHtml = `
                 <div style="background:#f8fafd; border:1px solid #c2e7ff; border-radius:12px; padding:14px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 8px rgba(10,86,208,0.05);">
                     <div style="text-align:center; flex:1;">
@@ -4025,20 +4031,22 @@
             `;
             
             document.getElementById('gd-preview-content').innerHTML = listHtml + summaryHtml;
-            document.getElementById('gd-preview-page').classList.remove('form-hidden');
+            // Native display property used to ensure it overtakes the screen
+            document.getElementById('gd-preview-page').style.display = 'flex';
         };
 
         window.closeGdPreviewPage = function() {
-            document.getElementById('gd-preview-page').classList.add('form-hidden');
+            // Hides the Preview page, returning you exactly to the Entry page
+            document.getElementById('gd-preview-page').style.display = 'none';
         };
 
-        // 🌟 RE-CONFIRMATION FOR FINAL SAVE (WITH LIVE SAVE ICON HACK)
+        // 🌟 RE-CONFIRMATION FOR FINAL SAVE (WITH LIVE SAVE ICON)
         window.confirmFinalSaveGd = function() {
             window.showCustomConfirm("Confirm Final Save?", "क्या आप इस पूरे स्टॉक को फाइनली डेटाबेस में सेव करना चाहते हैं?", function() {
                 saveGdDraftBulk();
             });
             
-            // 🔥 Inject Save Icon and Green Button dynamically for this specific modal!
+            // 🔥 Inject Save Icon and Green Button dynamically!
             setTimeout(() => {
                 let modal = document.getElementById('custom-confirm-modal');
                 if(modal) {
@@ -4049,7 +4057,7 @@
                     }
                     let lordIcon = modal.querySelector('lord-icon');
                     if(lordIcon) {
-                        lordIcon.setAttribute('src', 'https://cdn.lordicon.com/egiwmiit.json'); // Live Checkmark / Save Icon
+                        lordIcon.setAttribute('src', 'https://cdn.lordicon.com/egiwmiit.json');
                         lordIcon.setAttribute('colors', 'primary:#146c2e,secondary:#146c2e');
                         let iconContainer = lordIcon.parentElement;
                         if(iconContainer) iconContainer.style.background = '#e6f4ea';

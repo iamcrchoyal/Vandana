@@ -967,122 +967,12 @@
     </div>
 
     <!-- 🚚 GODOWN TRANSFER PAGE -->
-    <div class="page flex-page" id="godown-page">
-        <div class="sub-header">
+    <div class="sub-header">
             <button class="back-btn material-symbols-rounded" onclick="closePage('godown-page')">arrow_back</button>
             <h2 class="page-title" style="flex:1;">Shop-to-Shop Transfer</h2>
-            <button class="pro-add-btn" onclick="document.getElementById('gd-form-panel').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Entry</button>
+            <button class="pro-add-btn" onclick="openPage('transfer-entry-page')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Entry</button>
         </div>
         <div class="fixed-top-section">
-            
-            <!-- 🌟 100% BULLETPROOF FULL SCREEN ENTRY PAGE (BOTTOM FIXED) 🌟 -->
-            <style>
-                #gd-form-panel { position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: var(--bg-color); z-index: 105000; flex-direction: column; padding: 0; margin: 0; box-sizing: border-box; overflow: hidden; }
-                #gd-form-panel.form-hidden { display: none !important; }
-                #gd-form-panel:not(.form-hidden) { display: flex !important; }
-                
-                #gd-preview-page { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; z-index: 110000; background: var(--bg-color); flex-direction: column; padding: 0; margin: 0; box-sizing: border-box; overflow: hidden; }
-            </style>
-            
-            <div id="gd-form-panel" class="form-hidden">
-                <!-- Header (Fixed) -->
-                <div class="sub-header" style="box-shadow: 0 2px 4px rgba(0,0,0,0.05); z-index: 10; flex-shrink: 0; position: relative;">
-                    <button class="back-btn material-symbols-rounded" onclick="document.getElementById('gd-form-panel').classList.add('form-hidden')">arrow_back</button>
-                    <h2 class="page-title" style="flex:1;">Transfer Entry Details</h2>
-                </div>
-
-                <!-- Moveable/Scrollable Content Area (Padding bottom added so list doesn't hide behind buttons) -->
-                <div class="scroll-content" style="padding: 16px; flex: 1; overflow-y: auto; padding-bottom: 90px;">
-                    
-                    <!-- 1. Top Section (Date & Type) -->
-                    <div style="display:flex; gap:10px; margin-bottom:16px; align-items:center;">
-                        <div style="flex:1;">
-                            <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TRANSFER DATE</label>
-                            <input type="date" id="gd-date" class="form-control" style="font-family:'Product Sans', sans-serif; padding:10px; border-radius:10px;">
-                        </div>
-                        <div style="flex:1;">
-                            <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TRANSFER TYPE</label>
-                            <div style="display:flex; background:white; border-radius:10px; overflow:hidden; border:1px solid var(--border);">
-                                <button id="gd-toggle-in" onclick="setGdType('IN')" style="flex:1; padding:10px; border:none; background:#e6f4ea; color:var(--success); font-weight:700; cursor:pointer;">🟢 IN</button>
-                                <button id="gd-toggle-out" onclick="setGdType('OUT')" style="flex:1; padding:10px; border:none; background:white; color:var(--text-muted); font-weight:700; cursor:pointer;">🔴 OUT</button>
-                            </div>
-                            <input type="hidden" id="gd-entry-type" value="IN">
-                        </div>
-                    </div>
-
-                    <!-- 2. Smart Input Section -->
-                    <div style="background:white; padding:16px; border-radius:16px; border:1px solid #e0e2e0; margin-bottom:16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
-                        <select id="gd-cat" class="form-control" style="margin-bottom:12px; font-weight:600; border-radius:10px; background:#f0f4f9;" onchange="updateGdUnitUI()">
-                            <option value="">Select Category</option>
-                        </select>
-
-                        <div style="position:relative; margin-bottom:12px;">
-                            <input type="text" id="gd-item" class="form-control" autocomplete="off" placeholder="Item Name / Shade No." onkeyup="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item'); autoFillRate(document.getElementById('gd-cat').value, this.value.trim(), true)" onfocus="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item')" style="border-radius:10px; font-weight:600;">
-                            <div id="gd-suggestion-box" style="display:none; position:absolute; top:100%; left:0; width:100%; background:white; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.15); z-index:9999; max-height:200px; overflow-y:auto;"></div>
-                        </div>
-
-                        <div class="input-btn-group" style="margin-bottom:12px;">
-                            <input type="number" id="gd-qty" class="form-control" placeholder="Qty" style="border-radius:10px; font-weight:600;" onkeypress="handleGdEnterKey(event)">
-                            <input type="text" id="gd-unit-display" value="Cone" disabled style="width:70px; background:#e8f0fe; border:1px solid #c2e7ff; border-radius:10px; text-align:center; font-weight:800; color:var(--primary); padding:10px 0;">
-                            <input type="number" id="gd-rate" class="form-control" placeholder="Rate (₹)" style="border-radius:10px; font-weight:600;" onkeypress="handleGdEnterKey(event)">
-                        </div>
-
-                        <input type="hidden" id="gd-edit-index" value="-1">
-                        <input type="hidden" id="gd-edit-key" value="">
-                        <button class="btn-submit" id="gd-add-draft-btn" style="width:100%; background:var(--primary); padding:14px; border-radius:12px; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 2px 8px rgba(10,86,208,0.2);" onclick="addGdToDraft()">
-                            <span class="material-symbols-rounded" style="font-size:18px;">add_shopping_cart</span> Add to Draft
-                        </button>
-                    </div>
-
-                    <!-- 3. Moveable Draft List Area -->
-                    <div id="gd-draft-area" style="display:none;">
-                        <div style="background:white; border:1px solid #e0e2e0; border-radius:12px; overflow:hidden; margin-bottom:12px;">
-                            <table style="width:100%; border-collapse:collapse; font-size:13px;">
-                                <thead style="background:#f0f4f9;">
-                                    <tr>
-                                        <th style="padding:10px; text-align:left; color:var(--text-muted);">Item</th>
-                                        <th style="padding:10px; text-align:center; color:var(--text-muted);">Qty</th>
-                                        <th style="padding:10px; text-align:right; color:var(--text-muted);">Total</th>
-                                        <th style="padding:10px; text-align:center; color:var(--text-muted);">Act</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="gd-draft-list"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bottom Action Bar (ABSOLUTELY FIXED AT BOTTOM OF SCREEN) -->
-                <div id="gd-bottom-bar" style="display:none; position: absolute; bottom: 0; left: 0; width: 100%; background: white; padding: 12px 16px; box-shadow: 0 -4px 20px rgba(0,0,0,0.08); z-index: 20; border-top: 1px solid #e0e2e0;">
-                    <button class="btn-submit" style="width:100%; background:var(--primary); padding:14px; border-radius:12px; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="openGdPreviewPage()">
-                        <span class="material-symbols-rounded" style="font-size:20px;">visibility</span> Preview
-                    </button>
-                </div>
-            </div>
-
-            <!-- 🌟 100% BULLETPROOF FULL SCREEN PREVIEW PAGE 🌟 -->
-            <div id="gd-preview-page">
-                
-                <div class="sub-header" style="box-shadow: 0 2px 4px rgba(0,0,0,0.05); z-index: 10; flex-shrink: 0; position: relative;">
-                    <button class="back-btn material-symbols-rounded" onclick="closeGdPreviewPage()">arrow_back</button>
-                    <h2 class="page-title" style="flex:1;">Transfer Entry Preview</h2>
-                </div>
-                
-                <!-- Moveable/Scrollable Content Area -->
-                <div class="scroll-content" style="padding: 16px; flex: 1; overflow-y: auto; padding-bottom: 90px;">
-                    <div id="gd-preview-content"></div>
-                </div>
-
-                <!-- Bottom Action Bar for Final Save & Go Back (ABSOLUTELY FIXED AT BOTTOM OF SCREEN) -->
-                <div style="position: absolute; bottom: 0; left: 0; width: 100%; background: white; padding: 12px 16px; box-shadow: 0 -10px 30px rgba(0,0,0,0.08); z-index: 20; border-top: 1px solid #e0e2e0; display:flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 10px;">
-                    <button class="btn-outline" style="flex:1; padding:14px; border-radius:12px; font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:4px; border-color:#e0e2e0; color:var(--text-muted); background:#f0f4f9; white-space:nowrap;" onclick="closeGdPreviewPage()">
-                        <span class="material-symbols-rounded" style="font-size:18px;">edit_square</span> Go Back
-                    </button>
-                    <button class="btn-submit" style="flex:1.5; background:#146c2e; padding:14px; border-radius:12px; font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:4px; box-shadow:0 4px 10px rgba(20,108,46,0.3); white-space:nowrap;" onclick="confirmFinalSaveGd()">
-                        <span class="material-symbols-rounded" style="font-size:18px;">save</span> Confirm & Save
-                    </button>
-                </div>
-            </div>
 
             <!-- 🌟 POINT 6: DYNAMIC MONTH BOX & FAST REPORT TRIGGER 🌟 -->
             <fieldset onclick="openMonthlyGodownReport()" style="cursor: pointer; border: 1px solid var(--primary); border-radius: 16px; padding: 12px; margin-bottom: 16px; background: white; box-shadow: 0 4px 15px rgba(10,86,208,0.05); display: flex; justify-content: space-between; text-align: center; position: relative;">
@@ -1124,6 +1014,102 @@
         </div>
     </div>
 
+<!-- 🌟 NATIVE TRANSFER ENTRY PAGE (Fixed Navigation) 🌟 -->
+    <div class="page flex-page" id="transfer-entry-page">
+        <div class="sub-header" style="box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('transfer-entry-page')">arrow_back</button>
+            <h2 class="page-title" style="flex:1;">Transfer Entry Details</h2>
+        </div>
+        
+        <div class="scroll-content" style="padding: 16px; flex: 1; overflow-y: auto;">
+            <!-- 1. Top Section (Date & Type) -->
+            <div style="display:flex; gap:10px; margin-bottom:16px; align-items:center;">
+                <div style="flex:1;">
+                    <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TRANSFER DATE</label>
+                    <input type="date" id="gd-date" class="form-control" style="font-family:'Product Sans', sans-serif; padding:10px; border-radius:10px;">
+                </div>
+                <div style="flex:1;">
+                    <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TRANSFER TYPE</label>
+                    <div style="display:flex; background:white; border-radius:10px; overflow:hidden; border:1px solid var(--border);">
+                        <button id="gd-toggle-in" onclick="setGdType('IN')" style="flex:1; padding:10px; border:none; background:#e6f4ea; color:var(--success); font-weight:700; cursor:pointer;">🟢 IN</button>
+                        <button id="gd-toggle-out" onclick="setGdType('OUT')" style="flex:1; padding:10px; border:none; background:white; color:var(--text-muted); font-weight:700; cursor:pointer;">🔴 OUT</button>
+                    </div>
+                    <input type="hidden" id="gd-entry-type" value="IN">
+                </div>
+            </div>
+
+            <!-- 2. Smart Input Section -->
+            <div style="background:white; padding:16px; border-radius:16px; border:1px solid #e0e2e0; margin-bottom:16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+                <select id="gd-cat" class="form-control" style="margin-bottom:12px; font-weight:600; border-radius:10px; background:#f0f4f9;" onchange="updateGdUnitUI()">
+                    <option value="">Select Category</option>
+                </select>
+
+                <div style="position:relative; margin-bottom:12px;">
+                    <input type="text" id="gd-item" class="form-control" autocomplete="off" placeholder="Item Name / Shade No." onkeyup="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item'); autoFillRate(document.getElementById('gd-cat').value, this.value.trim(), true)" onfocus="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item')" style="border-radius:10px; font-weight:600;">
+                    <div id="gd-suggestion-box" style="display:none; position:absolute; top:100%; left:0; width:100%; background:white; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.15); z-index:9999; max-height:200px; overflow-y:auto;"></div>
+                </div>
+
+                <div class="input-btn-group" style="margin-bottom:12px;">
+                    <input type="number" id="gd-qty" class="form-control" placeholder="Qty" style="border-radius:10px; font-weight:600;" onkeypress="handleGdEnterKey(event)">
+                    <input type="text" id="gd-unit-display" value="Cone" disabled style="width:70px; background:#e8f0fe; border:1px solid #c2e7ff; border-radius:10px; text-align:center; font-weight:800; color:var(--primary); padding:10px 0;">
+                    <input type="number" id="gd-rate" class="form-control" placeholder="Rate (₹)" style="border-radius:10px; font-weight:600;" onkeypress="handleGdEnterKey(event)">
+                </div>
+
+                <input type="hidden" id="gd-edit-index" value="-1">
+                <input type="hidden" id="gd-edit-key" value="">
+                <button class="btn-submit" id="gd-add-draft-btn" style="width:100%; background:var(--primary); padding:14px; border-radius:12px; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 2px 8px rgba(10,86,208,0.2);" onclick="addGdToDraft()">
+                    <span class="material-symbols-rounded" style="font-size:18px;">add_shopping_cart</span> Add to Draft
+                </button>
+            </div>
+
+            <!-- 3. Draft List Area -->
+            <div id="gd-draft-area" style="display:none; padding-bottom: 20px;">
+                <div style="background:white; border:1px solid #e0e2e0; border-radius:12px; overflow:hidden;">
+                    <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                        <thead style="background:#f0f4f9;">
+                            <tr>
+                                <th style="padding:10px; text-align:left; color:var(--text-muted);">Item</th>
+                                <th style="padding:10px; text-align:center; color:var(--text-muted);">Qty</th>
+                                <th style="padding:10px; text-align:right; color:var(--text-muted);">Total</th>
+                                <th style="padding:10px; text-align:center; color:var(--text-muted);">Act</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gd-draft-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Bottom Action Bar -->
+        <div id="gd-bottom-bar" class="bottom-action-bar" style="display:none; z-index: 5505;">
+            <button class="btn-submit" style="width:100%; background:var(--primary); padding:14px; border-radius:12px; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="openGdPreviewPage()">
+                <span class="material-symbols-rounded" style="font-size:20px;">visibility</span> Preview
+            </button>
+        </div>
+    </div>
+
+    <!-- 🌟 NATIVE TRANSFER PREVIEW PAGE (Fixed Navigation) 🌟 -->
+    <div class="page flex-page" id="transfer-preview-page">
+        <div class="sub-header" style="box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('transfer-preview-page')">arrow_back</button>
+            <h2 class="page-title" style="flex:1;">Transfer Entry Preview</h2>
+        </div>
+        
+        <div class="scroll-content" style="padding: 16px; flex: 1; overflow-y: auto;">
+            <div id="gd-preview-content"></div>
+        </div>
+
+        <!-- System Bottom Action Bar -->
+        <div class="bottom-action-bar" style="z-index: 5605; gap: 10px;">
+            <button class="btn-outline" style="flex:1; padding:14px; border-radius:12px; font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:4px; border-color:#e0e2e0; color:var(--text-muted); background:#f0f4f9; white-space:nowrap;" onclick="closePage('transfer-preview-page')">
+                <span class="material-symbols-rounded" style="font-size:18px;">edit_square</span> Go Back
+            </button>
+            <button class="btn-submit" style="flex:1.5; background:#146c2e; padding:14px; border-radius:12px; font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:4px; box-shadow:0 4px 10px rgba(20,108,46,0.3); white-space:nowrap;" onclick="confirmFinalSaveGd()">
+                <span class="material-symbols-rounded" style="font-size:18px;">save</span> Confirm & Save
+            </button>
+        </div>
+    </div>
+	
 	<!-- 📄 NEW DEDICATED MONTHLY GODOWN REPORT PAGE -->
     <div class="page flex-page" id="godown-report-page" style="z-index: 5200; background:white;">
         <div class="sub-header" style="box-shadow:0 2px 10px rgba(0,0,0,0.03); border:none;">
@@ -3325,7 +3311,7 @@
             if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
-        const allPagesList = ['smart-menu-page', 'items-page', 'wastage-page', 'manage-categories-page', 'dynamic-stock-page', 'parties-page', 'cashbook-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'coding-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'home'];
+        const allPagesList = ['transfer-entry-page', 'transfer-preview-page', 'smart-menu-page', 'items-page', 'wastage-page', 'manage-categories-page', 'dynamic-stock-page', 'parties-page', 'cashbook-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'coding-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'home'];
         
         window.openPage = function(id, isBack = false) { 
             if(!isBack && window.pageStack[window.pageStack.length-1] !== id) {
@@ -3969,7 +3955,7 @@
             });
         };
 
-        // 🌟 FULL PAGE PREVIEW LOGIC (Zero Latency)
+        // 🌟 NATIVE PAGE PREVIEW LOGIC (Zero Latency)
         window.openGdPreviewPage = function() {
             if (window.gdDraftList.length === 0) return;
             
@@ -4033,24 +4019,14 @@
             `;
             
             document.getElementById('gd-preview-content').innerHTML = listHtml + summaryHtml;
-            
-            // ⚡ Zero-Latency Fix: Hide Entry Page entirely, Show Preview Page
-            document.getElementById('gd-form-panel').style.display = 'none';
-            document.getElementById('gd-preview-page').style.display = 'flex';
-        };
-
-        window.closeGdPreviewPage = function() {
-            // ⚡ Zero-Latency Fix: Hide Preview Page, Show Entry Page smoothly without losing data
-            document.getElementById('gd-preview-page').style.display = 'none';
-            document.getElementById('gd-form-panel').style.display = 'flex';
+            // Native ERP Navigation call
+            openPage('transfer-preview-page');
         };
 
         // 🌟 RE-CONFIRMATION FOR FINAL SAVE (WITH LIVE SAVE ICON)
         window.confirmFinalSaveGd = function() {
             window.showCustomConfirm("Confirm Final Save?", "क्या आप इस पूरे स्टॉक को फाइनली डेटाबेस में सेव करना चाहते हैं?", function() {
                 saveGdDraftBulk();
-                // Close preview page after saving
-                document.getElementById('gd-preview-page').style.display = 'none';
             });
             
             // 🔥 Inject Save Icon and Green Button dynamically!
@@ -4134,8 +4110,10 @@
                 
                 window.gdDraftList = [];
                 renderGdDraftUI();
-                closeGdPreviewPage();
-                document.getElementById('gd-form-panel').classList.add('form-hidden'); 
+                
+                // ⚡ NATIVE NAVIGATION LOGIC: Close both pages natively
+                closePage('transfer-preview-page'); 
+                setTimeout(() => closePage('transfer-entry-page'), 300); // Small delay for smooth exit
             }).catch(err => alert("Error saving bulk transfers: " + err.message));
         };
 

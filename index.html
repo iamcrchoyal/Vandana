@@ -975,22 +975,23 @@
         </div>
         <div class="fixed-top-section">
             
-            <!-- 🌟 100% BULLETPROOF FULL SCREEN ENTRY PAGE 🌟 -->
+            <!-- 🌟 100% BULLETPROOF FULL SCREEN ENTRY PAGE (BOTTOM FIXED) 🌟 -->
             <style>
-                /* यह CSS इसे ज़बरदस्ती फुल स्क्रीन बनाएगा और पॉप-अप वाले डिज़ाइन को खत्म करेगा */
-                #gd-form-panel { position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: var(--bg-color); z-index: 105000; flex-direction: column; padding: 0; margin: 0; }
+                #gd-form-panel { position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: var(--bg-color); z-index: 105000; flex-direction: column; padding: 0; margin: 0; box-sizing: border-box; overflow: hidden; }
                 #gd-form-panel.form-hidden { display: none !important; }
                 #gd-form-panel:not(.form-hidden) { display: flex !important; }
-            </style>
-            <div id="gd-form-panel" class="form-hidden">
                 
+                #gd-preview-page { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; z-index: 110000; background: var(--bg-color); flex-direction: column; padding: 0; margin: 0; box-sizing: border-box; overflow: hidden; }
+            </style>
+            
+            <div id="gd-form-panel" class="form-hidden">
                 <!-- Header (Fixed) -->
-                <div class="sub-header" style="box-shadow: 0 2px 4px rgba(0,0,0,0.05); z-index: 10; flex-shrink: 0;">
+                <div class="sub-header" style="box-shadow: 0 2px 4px rgba(0,0,0,0.05); z-index: 10; flex-shrink: 0; position: relative;">
                     <button class="back-btn material-symbols-rounded" onclick="document.getElementById('gd-form-panel').classList.add('form-hidden')">arrow_back</button>
                     <h2 class="page-title" style="flex:1;">Transfer Entry Details</h2>
                 </div>
 
-                <!-- Moveable/Scrollable Content Area (With padding for bottom bar) -->
+                <!-- Moveable/Scrollable Content Area (Padding bottom added so list doesn't hide behind buttons) -->
                 <div class="scroll-content" style="padding: 16px; flex: 1; overflow-y: auto; padding-bottom: 90px;">
                     
                     <!-- 1. Top Section (Date & Type) -->
@@ -1051,8 +1052,8 @@
                     </div>
                 </div>
 
-                <!-- Bottom Action Bar (ABSOLUTELY FIXED AT SCREEN BOTTOM) -->
-                <div id="gd-bottom-bar" style="display:none; position: absolute; bottom: 0; left: 0; width: 100%; background: white; padding: 12px 16px; box-shadow: 0 -4px 20px rgba(0,0,0,0.06); z-index: 10; border-top: 1px solid #e0e2e0;">
+                <!-- Bottom Action Bar (ABSOLUTELY FIXED AT BOTTOM OF SCREEN) -->
+                <div id="gd-bottom-bar" style="display:none; position: absolute; bottom: 0; left: 0; width: 100%; background: white; padding: 12px 16px; box-shadow: 0 -4px 20px rgba(0,0,0,0.08); z-index: 20; border-top: 1px solid #e0e2e0;">
                     <button class="btn-submit" style="width:100%; background:var(--primary); padding:14px; border-radius:12px; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="openGdPreviewPage()">
                         <span class="material-symbols-rounded" style="font-size:20px;">visibility</span> Preview
                     </button>
@@ -1060,20 +1061,20 @@
             </div>
 
             <!-- 🌟 100% BULLETPROOF FULL SCREEN PREVIEW PAGE 🌟 -->
-            <div id="gd-preview-page" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; z-index: 110000; background: var(--bg-color); flex-direction: column; padding: 0; margin: 0;">
+            <div id="gd-preview-page">
                 
-                <div class="sub-header" style="box-shadow: 0 2px 4px rgba(0,0,0,0.05); z-index: 10; flex-shrink: 0;">
+                <div class="sub-header" style="box-shadow: 0 2px 4px rgba(0,0,0,0.05); z-index: 10; flex-shrink: 0; position: relative;">
                     <button class="back-btn material-symbols-rounded" onclick="closeGdPreviewPage()">arrow_back</button>
                     <h2 class="page-title" style="flex:1;">Transfer Entry Preview</h2>
                 </div>
                 
-                <!-- (With padding for bottom bar) -->
+                <!-- Moveable/Scrollable Content Area -->
                 <div class="scroll-content" style="padding: 16px; flex: 1; overflow-y: auto; padding-bottom: 90px;">
                     <div id="gd-preview-content"></div>
                 </div>
 
-                <!-- Bottom Action Bar for Final Save & Go Back (ABSOLUTELY FIXED AT SCREEN BOTTOM) -->
-                <div style="position: absolute; bottom: 0; left: 0; width: 100%; background: white; padding: 12px 16px; box-shadow: 0 -10px 30px rgba(0,0,0,0.08); z-index: 10; border-top: 1px solid #e0e2e0; display:flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 10px;">
+                <!-- Bottom Action Bar for Final Save & Go Back (ABSOLUTELY FIXED AT BOTTOM OF SCREEN) -->
+                <div style="position: absolute; bottom: 0; left: 0; width: 100%; background: white; padding: 12px 16px; box-shadow: 0 -10px 30px rgba(0,0,0,0.08); z-index: 20; border-top: 1px solid #e0e2e0; display:flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 10px;">
                     <button class="btn-outline" style="flex:1; padding:14px; border-radius:12px; font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:4px; border-color:#e0e2e0; color:var(--text-muted); background:#f0f4f9; white-space:nowrap;" onclick="closeGdPreviewPage()">
                         <span class="material-symbols-rounded" style="font-size:18px;">edit_square</span> Go Back
                     </button>

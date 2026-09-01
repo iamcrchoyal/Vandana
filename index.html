@@ -987,11 +987,11 @@
                 <!-- Header (Fixed) -->
                 <div class="sub-header" style="box-shadow: 0 2px 4px rgba(0,0,0,0.05); z-index: 10; flex-shrink: 0;">
                     <button class="back-btn material-symbols-rounded" onclick="document.getElementById('gd-form-panel').classList.add('form-hidden')">arrow_back</button>
-                    <h2 class="page-title" style="flex:1;">Bulk Transfer Entry</h2>
+                    <h2 class="page-title" style="flex:1;">Transfer Entry Details</h2>
                 </div>
 
-                <!-- Moveable/Scrollable Content Area -->
-                <div class="scroll-content" style="padding: 16px; flex: 1; overflow-y: auto;">
+                <!-- Moveable/Scrollable Content Area (With padding for bottom bar) -->
+                <div class="scroll-content" style="padding: 16px; flex: 1; overflow-y: auto; padding-bottom: 90px;">
                     
                     <!-- 1. Top Section (Date & Type) -->
                     <div style="display:flex; gap:10px; margin-bottom:16px; align-items:center;">
@@ -1051,8 +1051,8 @@
                     </div>
                 </div>
 
-                <!-- Bottom Action Bar (PERMANENTLY FIXED AT BOTTOM) -->
-                <div id="gd-bottom-bar" style="display:none; width: 100%; background: white; padding: 12px 16px; box-shadow: 0 -4px 20px rgba(0,0,0,0.06); z-index: 10; border-top: 1px solid #e0e2e0; flex-shrink: 0;">
+                <!-- Bottom Action Bar (ABSOLUTELY FIXED AT SCREEN BOTTOM) -->
+                <div id="gd-bottom-bar" style="display:none; position: absolute; bottom: 0; left: 0; width: 100%; background: white; padding: 12px 16px; box-shadow: 0 -4px 20px rgba(0,0,0,0.06); z-index: 10; border-top: 1px solid #e0e2e0;">
                     <button class="btn-submit" style="width:100%; background:var(--primary); padding:14px; border-radius:12px; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="openGdPreviewPage()">
                         <span class="material-symbols-rounded" style="font-size:20px;">visibility</span> Preview
                     </button>
@@ -1064,15 +1064,16 @@
                 
                 <div class="sub-header" style="box-shadow: 0 2px 4px rgba(0,0,0,0.05); z-index: 10; flex-shrink: 0;">
                     <button class="back-btn material-symbols-rounded" onclick="closeGdPreviewPage()">arrow_back</button>
-                    <h2 class="page-title" style="flex:1;">Preview Transfers</h2>
+                    <h2 class="page-title" style="flex:1;">Transfer Entry Preview</h2>
                 </div>
                 
-                <div class="scroll-content" style="padding: 16px; flex: 1; overflow-y: auto;">
+                <!-- (With padding for bottom bar) -->
+                <div class="scroll-content" style="padding: 16px; flex: 1; overflow-y: auto; padding-bottom: 90px;">
                     <div id="gd-preview-content"></div>
                 </div>
 
-                <!-- Bottom Action Bar for Final Save & Go Back (PERMANENTLY FIXED AT BOTTOM) -->
-                <div style="width: 100%; background: white; padding: 12px 16px; box-shadow: 0 -10px 30px rgba(0,0,0,0.08); z-index: 10; border-top: 1px solid #e0e2e0; display:flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 10px; flex-shrink: 0;">
+                <!-- Bottom Action Bar for Final Save & Go Back (ABSOLUTELY FIXED AT SCREEN BOTTOM) -->
+                <div style="position: absolute; bottom: 0; left: 0; width: 100%; background: white; padding: 12px 16px; box-shadow: 0 -10px 30px rgba(0,0,0,0.08); z-index: 10; border-top: 1px solid #e0e2e0; display:flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 10px;">
                     <button class="btn-outline" style="flex:1; padding:14px; border-radius:12px; font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:4px; border-color:#e0e2e0; color:var(--text-muted); background:#f0f4f9; white-space:nowrap;" onclick="closeGdPreviewPage()">
                         <span class="material-symbols-rounded" style="font-size:18px;">edit_square</span> Go Back
                     </button>
@@ -4031,19 +4032,24 @@
             `;
             
             document.getElementById('gd-preview-content').innerHTML = listHtml + summaryHtml;
-            // Native display property used to ensure it overtakes the screen
+            
+            // ⚡ Zero-Latency Fix: Hide Entry Page entirely, Show Preview Page
+            document.getElementById('gd-form-panel').style.display = 'none';
             document.getElementById('gd-preview-page').style.display = 'flex';
         };
 
         window.closeGdPreviewPage = function() {
-            // Hides the Preview page, returning you exactly to the Entry page
+            // ⚡ Zero-Latency Fix: Hide Preview Page, Show Entry Page smoothly without losing data
             document.getElementById('gd-preview-page').style.display = 'none';
+            document.getElementById('gd-form-panel').style.display = 'flex';
         };
 
         // 🌟 RE-CONFIRMATION FOR FINAL SAVE (WITH LIVE SAVE ICON)
         window.confirmFinalSaveGd = function() {
             window.showCustomConfirm("Confirm Final Save?", "क्या आप इस पूरे स्टॉक को फाइनली डेटाबेस में सेव करना चाहते हैं?", function() {
                 saveGdDraftBulk();
+                // Close preview page after saving
+                document.getElementById('gd-preview-page').style.display = 'none';
             });
             
             // 🔥 Inject Save Icon and Green Button dynamically!

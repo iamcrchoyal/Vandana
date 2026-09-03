@@ -971,79 +971,9 @@
         <div class="sub-header">
             <button class="back-btn material-symbols-rounded" onclick="closePage('godown-page')">arrow_back</button>
             <h2 class="page-title" style="flex:1;">Shop-to-Shop Transfer</h2>
-            <button class="pro-add-btn" onclick="document.getElementById('gd-form-panel').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Entry</button>
+            <button class="pro-add-btn" onclick="openGodownEntryPage()"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Bulk Entry</button>
         </div>
         <div class="fixed-top-section">
-            
-            <div class="form-panel anim-form form-hidden" id="gd-form-panel" style="margin-bottom:10px; padding: 12px; background: #f8fafd; border: 1px solid #c2e7ff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                
-                <!-- 1. Top Section (Date & Type) -->
-                <div style="display:flex; gap:10px; margin-bottom:12px; align-items:center;">
-                    <div style="flex:1;">
-                        <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TRANSFER DATE</label>
-                        <input type="date" id="gd-date" class="form-control" style="font-family:'Product Sans', sans-serif; padding:10px; border-radius:10px;">
-                    </div>
-                    <div style="flex:1;">
-                        <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TRANSFER TYPE</label>
-                        <div style="display:flex; background:white; border-radius:10px; overflow:hidden; border:1px solid var(--border);">
-                            <button id="gd-toggle-in" onclick="setGdType('IN')" style="flex:1; padding:10px; border:none; background:#e6f4ea; color:var(--success); font-weight:700; cursor:pointer;">🟢 IN</button>
-                            <button id="gd-toggle-out" onclick="setGdType('OUT')" style="flex:1; padding:10px; border:none; background:white; color:var(--text-muted); font-weight:700; cursor:pointer;">🔴 OUT</button>
-                        </div>
-                        <input type="hidden" id="gd-entry-type" value="IN">
-                    </div>
-                </div>
-
-                <!-- 2. Smart Input Section -->
-                <div style="background:white; padding:12px; border-radius:12px; border:1px solid #e0e2e0; margin-bottom:12px;">
-                    <select id="gd-cat" class="form-control" style="margin-bottom:12px; font-weight:600; border-radius:10px; background:#f0f4f9;" onchange="updateGdUnitUI()">
-                        <option value="">Select Category</option>
-                    </select>
-
-                    <div style="position:relative; margin-bottom:12px;">
-                        <input type="text" id="gd-item" class="form-control" autocomplete="off" placeholder="Item Name / Shade No." onkeyup="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item'); autoFillRate(document.getElementById('gd-cat').value, this.value.trim(), true)" onfocus="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item')" style="border-radius:10px; font-weight:600;">
-                        <div id="gd-suggestion-box" style="display:none; position:absolute; top:100%; left:0; width:100%; background:white; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.15); z-index:9999; max-height:200px; overflow-y:auto;"></div>
-                    </div>
-
-                    <div class="input-btn-group" style="margin-bottom:12px;">
-                        <input type="number" id="gd-qty" class="form-control" placeholder="Qty" style="border-radius:10px; font-weight:600;" onkeypress="handleGdEnterKey(event)">
-                        <input type="text" id="gd-unit-display" value="Cone" disabled style="width:70px; background:#e8f0fe; border:1px solid #c2e7ff; border-radius:10px; text-align:center; font-weight:800; color:var(--primary); padding:10px 0;">
-                        <input type="number" id="gd-rate" class="form-control" placeholder="Rate (₹)" style="border-radius:10px; font-weight:600;" onkeypress="handleGdEnterKey(event)">
-                    </div>
-
-                    <input type="hidden" id="gd-edit-index" value="-1">
-                    <input type="hidden" id="gd-edit-key" value="">
-                    <button class="btn-submit" id="gd-add-draft-btn" style="width:100%; background:var(--primary); padding:12px; border-radius:12px; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 2px 8px rgba(10,86,208,0.2);" onclick="addGdToDraft()">
-                        <span class="material-symbols-rounded" style="font-size:18px;">add_shopping_cart</span> Add to Draft
-                    </button>
-                </div>
-
-                <!-- 3. Draft List Area -->
-                <div id="gd-draft-area" style="display:none;">
-                    <div style="background:white; border:1px solid #e0e2e0; border-radius:12px; overflow:hidden; margin-bottom:12px;">
-                        <table style="width:100%; border-collapse:collapse; font-size:12px;">
-                            <thead style="background:#f0f4f9;">
-                                <tr>
-                                    <th style="padding:8px; text-align:left; color:var(--text-muted);">Item</th>
-                                    <th style="padding:8px; text-align:center; color:var(--text-muted);">Qty</th>
-                                    <th style="padding:8px; text-align:right; color:var(--text-muted);">Total</th>
-                                    <th style="padding:8px; text-align:center; color:var(--text-muted);">Act</th>
-                                </tr>
-                            </thead>
-                            <tbody id="gd-draft-list"></tbody>
-                        </table>
-                    </div>
-                    
-                    <div style="display:flex; justify-content:space-between; background:#e8f0fe; padding:10px; border-radius:10px; font-weight:700; color:var(--primary-dark); font-size:12px; margin-bottom:12px; border:1px solid #c2e7ff;">
-                        <span id="gd-draft-qty-summary">Total: 0 Cone, 0 Kg</span>
-                        <span id="gd-draft-amt-summary">Total: ₹0</span>
-                    </div>
-
-                    <!-- 4. Final Save -->
-                    <button class="btn-submit" style="width:100%; background:#146c2e; padding:14px; border-radius:14px; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 4px 10px rgba(20,108,46,0.3);" onclick="saveGdDraftBulk()">
-                        <span class="material-symbols-rounded" style="font-size:20px;">save</span> Final Save All Transfers
-                    </button>
-                </div>
-            </div>
 
             <!-- 🌟 POINT 6: DYNAMIC MONTH BOX & FAST REPORT TRIGGER 🌟 -->
             <fieldset onclick="openMonthlyGodownReport()" style="cursor: pointer; border: 1px solid var(--primary); border-radius: 16px; padding: 12px; margin-bottom: 16px; background: white; box-shadow: 0 4px 15px rgba(10,86,208,0.05); display: flex; justify-content: space-between; text-align: center; position: relative;">
@@ -1081,6 +1011,120 @@
             <div id="godown-history-list"></div>
             <div style="text-align:center; padding:10px 0 30px 0;">
                 <button class="btn-outline" id="godown-load-more-btn" onclick="loadMoreGodown()" style="display:none; font-size:13px; border-radius:16px; background:#e8f0fe; color:var(--primary); border:none; box-shadow:0 2px 4px rgba(0,0,0,0.05); padding:10px 20px;">⬇️ पुरानी एंट्रीज़ लोड करें (Load More)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📦 NEW BULK ENTRY PAGE -->
+    <div class="page flex-page" id="godown-entry-page">
+        <div class="sub-header" style="box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('godown-entry-page')">arrow_back</button>
+            <h2 class="page-title" style="flex:1; font-weight:800; color:var(--primary-dark);">Bulk Shop Transfer</h2>
+        </div>
+        <div class="scroll-content" style="padding-top:16px; padding-bottom:100px;">
+            <div class="form-panel" style="padding: 16px; background: white; border: 1px solid #c2e7ff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                <div style="display:flex; gap:10px; margin-bottom:12px; align-items:center;">
+                    <div style="flex:1;">
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TRANSFER DATE</label>
+                        <input type="date" id="gd-date" class="form-control" style="font-family:'Product Sans', sans-serif; padding:10px; border-radius:10px;">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TRANSFER TYPE</label>
+                        <div style="display:flex; background:white; border-radius:10px; overflow:hidden; border:1px solid var(--border);">
+                            <button id="gd-toggle-in" onclick="setGdType('IN')" style="flex:1; padding:10px; border:none; background:#e6f4ea; color:var(--success); font-weight:700; cursor:pointer;">🟢 IN</button>
+                            <button id="gd-toggle-out" onclick="setGdType('OUT')" style="flex:1; padding:10px; border:none; background:white; color:var(--text-muted); font-weight:700; cursor:pointer;">🔴 OUT</button>
+                        </div>
+                        <input type="hidden" id="gd-entry-type" value="IN">
+                    </div>
+                </div>
+
+                <div style="background:#f8fafd; padding:12px; border-radius:12px; border:1px solid #e0e2e0; margin-bottom:12px;">
+                    <select id="gd-cat" class="form-control" style="margin-bottom:12px; font-weight:600; border-radius:10px; background:white;" onchange="updateGdUnitUI()">
+                        <option value="">Select Category</option>
+                    </select>
+
+                    <div style="position:relative; margin-bottom:12px;">
+                        <input type="text" id="gd-item" class="form-control" autocomplete="off" placeholder="Item Name / Shade No." onkeyup="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item'); autoFillRate(document.getElementById('gd-cat').value, this.value.trim(), true)" onfocus="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item')" style="border-radius:10px; font-weight:600;">
+                        <div id="gd-suggestion-box" style="display:none; position:absolute; top:100%; left:0; width:100%; background:white; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.15); z-index:9999; max-height:200px; overflow-y:auto;"></div>
+                    </div>
+
+                    <div class="input-btn-group" style="margin-bottom:12px;">
+                        <input type="number" id="gd-qty" class="form-control" placeholder="Qty" style="border-radius:10px; font-weight:600;" onkeypress="handleGdEnterKey(event)">
+                        <input type="text" id="gd-unit-display" value="Cone" disabled style="width:70px; background:#e8f0fe; border:1px solid #c2e7ff; border-radius:10px; text-align:center; font-weight:800; color:var(--primary); padding:10px 0;">
+                        <input type="number" id="gd-rate" class="form-control" placeholder="Rate (₹)" style="border-radius:10px; font-weight:600;" onkeypress="handleGdEnterKey(event)">
+                    </div>
+
+                    <input type="hidden" id="gd-edit-index" value="-1">
+                    <input type="hidden" id="gd-edit-key" value="">
+                    <button class="btn-submit" id="gd-add-draft-btn" style="width:100%; background:var(--primary); padding:12px; border-radius:12px; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 2px 8px rgba(10,86,208,0.2);" onclick="addGdToDraft()">
+                        <span class="material-symbols-rounded" style="font-size:18px;">add_shopping_cart</span> Add to Draft
+                    </button>
+                </div>
+            </div>
+
+            <!-- Movable Draft List Area -->
+            <div id="gd-draft-area" style="display:none; margin-top:16px;">
+                <h3 style="font-size:14px; color:var(--primary-dark); font-weight:800; margin-bottom:10px; font-family:'Product Sans', sans-serif;">Drafted Items</h3>
+                <div style="background:white; border:1px solid #e0e2e0; border-radius:12px; overflow:hidden; margin-bottom:12px; box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+                    <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                        <thead style="background:#f0f4f9;">
+                            <tr>
+                                <th style="padding:10px; text-align:left; color:var(--text-muted);">Item Details</th>
+                                <th style="padding:10px; text-align:center; color:var(--text-muted);">Qty</th>
+                                <th style="padding:10px; text-align:right; color:var(--text-muted);">Total</th>
+                                <th style="padding:10px; text-align:center; color:var(--text-muted);">Act</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gd-draft-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bottom-action-bar" id="gd-preview-btn-bar" style="display:none; padding:12px 16px; z-index:9999;">
+            <button class="btn-submit" style="width:100%; background:#146c2e; padding:16px; border-radius:16px; font-size:16px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 4px 15px rgba(20,108,46,0.3);" onclick="openGdPreviewPage()">
+                <span class="material-symbols-rounded" style="font-size:22px;">visibility</span> Proceed to Preview
+            </button>
+        </div>
+    </div>
+
+    <!-- 👀 STOCK IN OUT PREVIEW PAGE -->
+    <div class="page flex-page" id="godown-preview-page" style="z-index: 5500;">
+        <div class="sub-header" style="box-shadow: 0 2px 10px rgba(0,0,0,0.05); border:none;">
+            <button class="back-btn material-symbols-rounded" onclick="closePage('godown-preview-page')">arrow_back</button>
+            <h2 class="page-title" style="flex:1; font-weight:800; color:var(--primary-dark);">Stock In Out Preview</h2>
+        </div>
+        <div class="scroll-content" style="padding-top:16px; padding-bottom:150px; background:#f8fafd;">
+            <div style="background:white; border:1px solid #c2e7ff; border-radius:16px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03);">
+                <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                    <thead style="background:#0a56d0; color:white;">
+                        <tr>
+                            <th style="padding:14px; text-align:left;">Product Details</th>
+                            <th style="padding:14px; text-align:center;">Qty</th>
+                            <th style="padding:14px; text-align:right;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gd-preview-list"></tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="bottom-action-bar" style="flex-direction:column; padding:0; background:transparent; border-top:none; box-shadow:none; z-index:9999;">
+            <!-- Summary Box -->
+            <div style="background:white; padding:16px 20px; border-top:1px solid #e0e2e0; box-shadow:0 -4px 15px rgba(0,0,0,0.03); display:flex; justify-content:space-between; align-items:center; font-weight:700;">
+                <div>
+                    <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">TOTAL QUANTITY</div>
+                    <div style="font-size:15px; color:var(--primary-dark);" id="gd-preview-qty">0 Cone, 0 Kg</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">GRAND TOTAL</div>
+                    <div style="font-size:22px; color:var(--primary); font-family:'Product Sans', sans-serif;" id="gd-preview-amt">₹0</div>
+                </div>
+            </div>
+            <!-- Buttons -->
+            <div style="display:flex; gap:12px; padding:14px 16px; background:white;">
+                <button class="btn-outline" style="flex:1; border: 2px solid var(--text-muted); color:var(--text-dark); border-radius:14px; font-weight:800; font-size:15px; padding:14px;" onclick="closePage('godown-preview-page')">Go Back</button>
+                <button class="btn-submit" style="flex:1; background:#146c2e; border-radius:14px; font-weight:800; font-size:15px; padding:14px; box-shadow:0 4px 12px rgba(20,108,46,0.3);" onclick="confirmGdBulkSave()">Final Save</button>
             </div>
         </div>
     </div>
@@ -3286,7 +3330,7 @@
             if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
-        const allPagesList = ['smart-menu-page', 'items-page', 'wastage-page', 'manage-categories-page', 'dynamic-stock-page', 'parties-page', 'cashbook-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'coding-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'home'];
+        const allPagesList = ['smart-menu-page', 'items-page', 'wastage-page', 'manage-categories-page', 'dynamic-stock-page', 'parties-page', 'cashbook-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'coding-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'godown-entry-page', 'godown-preview-page', 'home'];
         
         window.openPage = function(id, isBack = false) { 
             if(!isBack && window.pageStack[window.pageStack.length-1] !== id) {
@@ -3911,26 +3955,81 @@
             document.getElementById('gd-draft-amt-summary').innerText = `Total: ₹${totalAmt.toLocaleString('en-IN')}`;
         };
 
+        window.openGodownEntryPage = function() {
+            document.getElementById('gd-item').value = '';
+            document.getElementById('gd-qty').value = '';
+            document.getElementById('gd-rate').value = '';
+            document.getElementById('gd-edit-index').value = '-1';
+            document.getElementById('gd-edit-key').value = '';
+            document.getElementById('gd-add-draft-btn').innerHTML = '<span class="material-symbols-rounded" style="font-size:18px;">add_shopping_cart</span> Add to Draft';
+            openPage('godown-entry-page');
+        };
+
         window.deleteGdDraft = function(index) {
-            window.gdDraftList.splice(index, 1);
-            renderGdDraftUI();
+            window.showCustomConfirm("Delete Item?", "क्या आप सच में इस आइटम को लिस्ट से हटाना चाहते हैं?", function() {
+                window.gdDraftList.splice(index, 1);
+                renderGdDraftUI();
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Item removed from draft! 🗑️");
+            });
         };
 
         window.editGdDraft = function(index) {
-            let draft = window.gdDraftList[index];
-            setGdType(draft.type);
-            document.getElementById('gd-cat').value = draft.cat;
-            updateGdUnitUI();
-            document.getElementById('gd-item').value = draft.item;
-            document.getElementById('gd-qty').value = draft.qty;
-            document.getElementById('gd-rate').value = draft.rate;
-            document.getElementById('gd-edit-index').value = index;
-            document.getElementById('gd-edit-key').value = draft.dbKey || "";
-            document.getElementById('gd-add-draft-btn').innerHTML = '<span class="material-symbols-rounded" style="font-size:18px;">update</span> Update List';
-            if(draft.date) document.getElementById('gd-date').value = draft.date;
+            window.showCustomConfirm("Edit Item?", "क्या आप इस आइटम की डिटेल्स बदलना चाहते हैं?", function() {
+                let draft = window.gdDraftList[index];
+                setGdType(draft.type);
+                document.getElementById('gd-cat').value = draft.cat;
+                updateGdUnitUI();
+                document.getElementById('gd-item').value = draft.item;
+                document.getElementById('gd-qty').value = draft.qty;
+                document.getElementById('gd-rate').value = draft.rate;
+                document.getElementById('gd-edit-index').value = index;
+                document.getElementById('gd-edit-key').value = draft.dbKey || "";
+                document.getElementById('gd-add-draft-btn').innerHTML = '<span class="material-symbols-rounded" style="font-size:18px;">update</span> Update List';
+                if(draft.date) document.getElementById('gd-date').value = draft.date;
+                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Item ready for editing! ✏️");
+            });
         };
 
-        // 🌟 ONE-CLICK BULK SAVE TO FIREBASE
+        window.openGdPreviewPage = function() {
+            if (window.gdDraftList.length === 0) return alert("Draft is empty! Please add products first.");
+            let tbody = document.getElementById('gd-preview-list');
+            tbody.innerHTML = '';
+            let totalCones = 0; let totalKg = 0; let totalAmt = 0;
+
+            window.gdDraftList.forEach((draft) => {
+                totalAmt += draft.amount;
+                if (draft.unit === 'Kg') totalKg += draft.qty;
+                else totalCones += draft.qty;
+                let icon = draft.type === 'IN' ? '🟢 IN' : '🔴 OUT';
+                let color = draft.type === 'IN' ? 'var(--success)' : 'var(--danger)';
+
+                tbody.innerHTML += `
+                    <tr style="border-bottom:1px solid #e0e2e0;">
+                        <td style="padding:16px 14px;">
+                            <div style="font-weight:800; color:var(--text-dark); font-size:14px; margin-bottom:4px;">${draft.item}</div>
+                            <div style="font-size:11px; color:var(--text-muted); font-weight:600;">Category: ${draft.cat}</div>
+                        </td>
+                        <td style="padding:16px 14px; text-align:center; font-weight:800; font-size:14px; color:${color};">
+                            ${icon} ${draft.qty} ${draft.unit}
+                        </td>
+                        <td style="padding:16px 14px; text-align:right; font-weight:800; font-size:15px; color:var(--primary);">
+                            ₹${draft.amount.toLocaleString('en-IN')}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('gd-preview-qty').innerText = `${totalCones} Cone, ${totalKg} Kg`;
+            document.getElementById('gd-preview-amt').innerText = `₹${totalAmt.toLocaleString('en-IN')}`;
+            openPage('godown-preview-page');
+        };
+
+        window.confirmGdBulkSave = function() {
+            window.showCustomConfirm("Save Stock?", "क्या आप सच में इस पूरे स्टॉक को फाइनल सेव करना चाहते हैं?", function() {
+                saveGdDraftBulk();
+            });
+        };
+
         window.saveGdDraftBulk = function() {
             if (window.gdDraftList.length === 0) return alert("Draft is empty!");
 
@@ -3958,7 +4057,6 @@
                     type: draft.type 
                 };
 
-                // Track Inventory Updates Locally to do a bulk save
                 let invKey = draft.cat + "_" + draft.item;
                 if (!inventoryUpdates[invKey]) inventoryUpdates[invKey] = { coneDiff: 0, kgDiff: 0 };
                 
@@ -3975,7 +4073,6 @@
                 }
             });
 
-            // Process Inventory Updates
             Object.keys(inventoryUpdates).forEach(invKey => {
                 let diff = inventoryUpdates[invKey];
                 if (diff.coneDiff !== 0 || diff.kgDiff !== 0) {
@@ -3994,11 +4091,10 @@
 
             Promise.all(promises).then(() => {
                 if(typeof window.showSaaSToast === 'function') window.showSaaSToast("All Transfers Saved Successfully! 🚀");
-                else alert("All Transfers Saved Successfully!");
                 
                 window.gdDraftList = [];
                 renderGdDraftUI();
-                document.getElementById('gd-form-panel').classList.add('form-hidden'); 
+                navTo('godown-page', null); 
             }).catch(err => alert("Error saving bulk transfers: " + err.message));
         };
 
@@ -7135,7 +7231,7 @@ window.showTargetCelebration = function() {
                 set(itemRef, {cone: newConeQty, kg: newKgQty});
             });
 
-            document.getElementById('gd-form-panel').classList.remove('form-hidden');
+            openGodownEntryPage();
             
             // Push to draft directly for edit
             let unit = (entry.cat === 'Nylon' || entry.cat === 'Bobbin' || entry.cat === 'Coding') ? "Kg" : "Cone";

@@ -967,12 +967,83 @@
     </div>
 
     <!-- 🚚 GODOWN TRANSFER PAGE -->
-    <div class="sub-header">
+    <div class="page flex-page" id="godown-page">
+        <div class="sub-header">
             <button class="back-btn material-symbols-rounded" onclick="closePage('godown-page')">arrow_back</button>
             <h2 class="page-title" style="flex:1;">Shop-to-Shop Transfer</h2>
-            <button class="pro-add-btn" onclick="openPage('transfer-entry-page')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Entry</button>
+            <button class="pro-add-btn" onclick="document.getElementById('gd-form-panel').classList.toggle('form-hidden')"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Entry</button>
         </div>
         <div class="fixed-top-section">
+            
+            <div class="form-panel anim-form form-hidden" id="gd-form-panel" style="margin-bottom:10px; padding: 12px; background: #f8fafd; border: 1px solid #c2e7ff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                
+                <!-- 1. Top Section (Date & Type) -->
+                <div style="display:flex; gap:10px; margin-bottom:12px; align-items:center;">
+                    <div style="flex:1;">
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TRANSFER DATE</label>
+                        <input type="date" id="gd-date" class="form-control" style="font-family:'Product Sans', sans-serif; padding:10px; border-radius:10px;">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TRANSFER TYPE</label>
+                        <div style="display:flex; background:white; border-radius:10px; overflow:hidden; border:1px solid var(--border);">
+                            <button id="gd-toggle-in" onclick="setGdType('IN')" style="flex:1; padding:10px; border:none; background:#e6f4ea; color:var(--success); font-weight:700; cursor:pointer;">🟢 IN</button>
+                            <button id="gd-toggle-out" onclick="setGdType('OUT')" style="flex:1; padding:10px; border:none; background:white; color:var(--text-muted); font-weight:700; cursor:pointer;">🔴 OUT</button>
+                        </div>
+                        <input type="hidden" id="gd-entry-type" value="IN">
+                    </div>
+                </div>
+
+                <!-- 2. Smart Input Section -->
+                <div style="background:white; padding:12px; border-radius:12px; border:1px solid #e0e2e0; margin-bottom:12px;">
+                    <select id="gd-cat" class="form-control" style="margin-bottom:12px; font-weight:600; border-radius:10px; background:#f0f4f9;" onchange="updateGdUnitUI()">
+                        <option value="">Select Category</option>
+                    </select>
+
+                    <div style="position:relative; margin-bottom:12px;">
+                        <input type="text" id="gd-item" class="form-control" autocomplete="off" placeholder="Item Name / Shade No." onkeyup="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item'); autoFillRate(document.getElementById('gd-cat').value, this.value.trim(), true)" onfocus="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item')" style="border-radius:10px; font-weight:600;">
+                        <div id="gd-suggestion-box" style="display:none; position:absolute; top:100%; left:0; width:100%; background:white; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.15); z-index:9999; max-height:200px; overflow-y:auto;"></div>
+                    </div>
+
+                    <div class="input-btn-group" style="margin-bottom:12px;">
+                        <input type="number" id="gd-qty" class="form-control" placeholder="Qty" style="border-radius:10px; font-weight:600;" onkeypress="handleGdEnterKey(event)">
+                        <input type="text" id="gd-unit-display" value="Cone" disabled style="width:70px; background:#e8f0fe; border:1px solid #c2e7ff; border-radius:10px; text-align:center; font-weight:800; color:var(--primary); padding:10px 0;">
+                        <input type="number" id="gd-rate" class="form-control" placeholder="Rate (₹)" style="border-radius:10px; font-weight:600;" onkeypress="handleGdEnterKey(event)">
+                    </div>
+
+                    <input type="hidden" id="gd-edit-index" value="-1">
+                    <input type="hidden" id="gd-edit-key" value="">
+                    <button class="btn-submit" id="gd-add-draft-btn" style="width:100%; background:var(--primary); padding:12px; border-radius:12px; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 2px 8px rgba(10,86,208,0.2);" onclick="addGdToDraft()">
+                        <span class="material-symbols-rounded" style="font-size:18px;">add_shopping_cart</span> Add to Draft
+                    </button>
+                </div>
+
+                <!-- 3. Draft List Area -->
+                <div id="gd-draft-area" style="display:none;">
+                    <div style="background:white; border:1px solid #e0e2e0; border-radius:12px; overflow:hidden; margin-bottom:12px;">
+                        <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                            <thead style="background:#f0f4f9;">
+                                <tr>
+                                    <th style="padding:8px; text-align:left; color:var(--text-muted);">Item</th>
+                                    <th style="padding:8px; text-align:center; color:var(--text-muted);">Qty</th>
+                                    <th style="padding:8px; text-align:right; color:var(--text-muted);">Total</th>
+                                    <th style="padding:8px; text-align:center; color:var(--text-muted);">Act</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gd-draft-list"></tbody>
+                        </table>
+                    </div>
+                    
+                    <div style="display:flex; justify-content:space-between; background:#e8f0fe; padding:10px; border-radius:10px; font-weight:700; color:var(--primary-dark); font-size:12px; margin-bottom:12px; border:1px solid #c2e7ff;">
+                        <span id="gd-draft-qty-summary">Total: 0 Cone, 0 Kg</span>
+                        <span id="gd-draft-amt-summary">Total: ₹0</span>
+                    </div>
+
+                    <!-- 4. Final Save -->
+                    <button class="btn-submit" style="width:100%; background:#146c2e; padding:14px; border-radius:14px; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 4px 10px rgba(20,108,46,0.3);" onclick="saveGdDraftBulk()">
+                        <span class="material-symbols-rounded" style="font-size:20px;">save</span> Final Save All Transfers
+                    </button>
+                </div>
+            </div>
 
             <!-- 🌟 POINT 6: DYNAMIC MONTH BOX & FAST REPORT TRIGGER 🌟 -->
             <fieldset onclick="openMonthlyGodownReport()" style="cursor: pointer; border: 1px solid var(--primary); border-radius: 16px; padding: 12px; margin-bottom: 16px; background: white; box-shadow: 0 4px 15px rgba(10,86,208,0.05); display: flex; justify-content: space-between; text-align: center; position: relative;">
@@ -1014,102 +1085,6 @@
         </div>
     </div>
 
-<!-- 🌟 NATIVE TRANSFER ENTRY PAGE (Fixed Navigation) 🌟 -->
-    <div class="page flex-page" id="transfer-entry-page">
-        <div class="sub-header" style="box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-            <button class="back-btn material-symbols-rounded" onclick="closePage('transfer-entry-page')">arrow_back</button>
-            <h2 class="page-title" style="flex:1;">Transfer Entry Details</h2>
-        </div>
-        
-        <div class="scroll-content" style="padding: 16px; flex: 1; overflow-y: auto;">
-            <!-- 1. Top Section (Date & Type) -->
-            <div style="display:flex; gap:10px; margin-bottom:16px; align-items:center;">
-                <div style="flex:1;">
-                    <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TRANSFER DATE</label>
-                    <input type="date" id="gd-date" class="form-control" style="font-family:'Product Sans', sans-serif; padding:10px; border-radius:10px;">
-                </div>
-                <div style="flex:1;">
-                    <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TRANSFER TYPE</label>
-                    <div style="display:flex; background:white; border-radius:10px; overflow:hidden; border:1px solid var(--border);">
-                        <button id="gd-toggle-in" onclick="setGdType('IN')" style="flex:1; padding:10px; border:none; background:#e6f4ea; color:var(--success); font-weight:700; cursor:pointer;">🟢 IN</button>
-                        <button id="gd-toggle-out" onclick="setGdType('OUT')" style="flex:1; padding:10px; border:none; background:white; color:var(--text-muted); font-weight:700; cursor:pointer;">🔴 OUT</button>
-                    </div>
-                    <input type="hidden" id="gd-entry-type" value="IN">
-                </div>
-            </div>
-
-            <!-- 2. Smart Input Section -->
-            <div style="background:white; padding:16px; border-radius:16px; border:1px solid #e0e2e0; margin-bottom:16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
-                <select id="gd-cat" class="form-control" style="margin-bottom:12px; font-weight:600; border-radius:10px; background:#f0f4f9;" onchange="updateGdUnitUI()">
-                    <option value="">Select Category</option>
-                </select>
-
-                <div style="position:relative; margin-bottom:12px;">
-                    <input type="text" id="gd-item" class="form-control" autocomplete="off" placeholder="Item Name / Shade No." onkeyup="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item'); autoFillRate(document.getElementById('gd-cat').value, this.value.trim(), true)" onfocus="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item')" style="border-radius:10px; font-weight:600;">
-                    <div id="gd-suggestion-box" style="display:none; position:absolute; top:100%; left:0; width:100%; background:white; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.15); z-index:9999; max-height:200px; overflow-y:auto;"></div>
-                </div>
-
-                <div class="input-btn-group" style="margin-bottom:12px;">
-                    <input type="number" id="gd-qty" class="form-control" placeholder="Qty" style="border-radius:10px; font-weight:600;" onkeypress="handleGdEnterKey(event)">
-                    <input type="text" id="gd-unit-display" value="Cone" disabled style="width:70px; background:#e8f0fe; border:1px solid #c2e7ff; border-radius:10px; text-align:center; font-weight:800; color:var(--primary); padding:10px 0;">
-                    <input type="number" id="gd-rate" class="form-control" placeholder="Rate (₹)" style="border-radius:10px; font-weight:600;" onkeypress="handleGdEnterKey(event)">
-                </div>
-
-                <input type="hidden" id="gd-edit-index" value="-1">
-                <input type="hidden" id="gd-edit-key" value="">
-                <button class="btn-submit" id="gd-add-draft-btn" style="width:100%; background:var(--primary); padding:14px; border-radius:12px; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 2px 8px rgba(10,86,208,0.2);" onclick="addGdToDraft()">
-                    <span class="material-symbols-rounded" style="font-size:18px;">add_shopping_cart</span> Add to Draft
-                </button>
-            </div>
-
-            <!-- 3. Draft List Area -->
-            <div id="gd-draft-area" style="display:none; padding-bottom: 20px;">
-                <div style="background:white; border:1px solid #e0e2e0; border-radius:12px; overflow:hidden;">
-                    <table style="width:100%; border-collapse:collapse; font-size:13px;">
-                        <thead style="background:#f0f4f9;">
-                            <tr>
-                                <th style="padding:10px; text-align:left; color:var(--text-muted);">Item</th>
-                                <th style="padding:10px; text-align:center; color:var(--text-muted);">Qty</th>
-                                <th style="padding:10px; text-align:right; color:var(--text-muted);">Total</th>
-                                <th style="padding:10px; text-align:center; color:var(--text-muted);">Act</th>
-                            </tr>
-                        </thead>
-                        <tbody id="gd-draft-list"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- System Bottom Action Bar -->
-        <div id="gd-bottom-bar" class="bottom-action-bar" style="display:none; z-index: 5505;">
-            <button class="btn-submit" style="width:100%; background:var(--primary); padding:14px; border-radius:12px; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="openGdPreviewPage()">
-                <span class="material-symbols-rounded" style="font-size:20px;">visibility</span> Preview
-            </button>
-        </div>
-    </div>
-
-    <!-- 🌟 NATIVE TRANSFER PREVIEW PAGE (Fixed Navigation) 🌟 -->
-    <div class="page flex-page" id="transfer-preview-page">
-        <div class="sub-header" style="box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-            <button class="back-btn material-symbols-rounded" onclick="closePage('transfer-preview-page')">arrow_back</button>
-            <h2 class="page-title" style="flex:1;">Transfer Entry Preview</h2>
-        </div>
-        
-        <div class="scroll-content" style="padding: 16px; flex: 1; overflow-y: auto;">
-            <div id="gd-preview-content"></div>
-        </div>
-
-        <!-- System Bottom Action Bar -->
-        <div class="bottom-action-bar" style="z-index: 5605; gap: 10px;">
-            <button class="btn-outline" style="flex:1; padding:14px; border-radius:12px; font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:4px; border-color:#e0e2e0; color:var(--text-muted); background:#f0f4f9; white-space:nowrap;" onclick="closePage('transfer-preview-page')">
-                <span class="material-symbols-rounded" style="font-size:18px;">edit_square</span> Go Back
-            </button>
-            <button class="btn-submit" style="flex:1.5; background:#146c2e; padding:14px; border-radius:12px; font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:4px; box-shadow:0 4px 10px rgba(20,108,46,0.3); white-space:nowrap;" onclick="confirmFinalSaveGd()">
-                <span class="material-symbols-rounded" style="font-size:18px;">save</span> Confirm & Save
-            </button>
-        </div>
-    </div>
-	
 	<!-- 📄 NEW DEDICATED MONTHLY GODOWN REPORT PAGE -->
     <div class="page flex-page" id="godown-report-page" style="z-index: 5200; background:white;">
         <div class="sub-header" style="box-shadow:0 2px 10px rgba(0,0,0,0.03); border:none;">
@@ -3311,7 +3286,7 @@
             if(pageId === 'home') { document.getElementById('bottom-nav-bar').classList.remove('hidden-by-page'); } else { document.getElementById('bottom-nav-bar').classList.add('hidden-by-page'); }
         }
 
-        const allPagesList = ['transfer-entry-page', 'transfer-preview-page', 'smart-menu-page', 'items-page', 'wastage-page', 'manage-categories-page', 'dynamic-stock-page', 'parties-page', 'cashbook-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'coding-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'home'];
+        const allPagesList = ['smart-menu-page', 'items-page', 'wastage-page', 'manage-categories-page', 'dynamic-stock-page', 'parties-page', 'cashbook-page', 'pos-page','mybills-page', 'godown-page', 'invoices-page', 'recycle-page', 'absent-page', 'report-preview-page', 'admin-profile-page', 'thread-stock-page', 'zari-stock-page', 'coding-stock-page', 'nylon-stock-page', 'bobbin-stock-page', 'lowstock-page', 'ledger-deep-page', 'customer-profile-page', 'entry-details-page', 'calculator-page', 'verification-page', 'payment-screen-page', 'manage-users-page', 'home'];
         
         window.openPage = function(id, isBack = false) { 
             if(!isBack && window.pageStack[window.pageStack.length-1] !== id) {
@@ -3792,13 +3767,10 @@
             }
         };
 
-        // 🌟 BUG FIX: Coding/Cording completely mapped to Kg
         window.updateGdUnitUI = function() {
-            let cat = document.getElementById('gd-cat').value || "";
-            let catLower = cat.toLowerCase();
+            let cat = document.getElementById('gd-cat').value;
             let unitDisplay = document.getElementById('gd-unit-display');
-            
-            if (catLower.includes('coding') || catLower.includes('cording') || catLower.includes('nylon') || catLower.includes('bobbin')) {
+            if (cat === 'Nylon' || cat === 'Bobbin' || cat === 'Coding') {
                 unitDisplay.value = 'Kg';
             } else {
                 unitDisplay.value = 'Cone';
@@ -3826,9 +3798,9 @@
                 return alert("Please enter valid Category, Item, Qty, and Rate!");
             }
 
-            let catLower = cat.toLowerCase();
-            let unit = (catLower.includes('coding') || catLower.includes('cording') || catLower.includes('nylon') || catLower.includes('bobbin')) ? "Kg" : "Cone";
+            let unit = (cat === 'Nylon' || cat === 'Bobbin' || cat === 'Coding') ? "Kg" : "Cone";
 
+            // 🌟 Live Stock Validation for OUT
             if (type === 'OUT') {
                 let invKey = cat + "_" + item;
                 let dbStock = smartInventory[invKey] || { cone: 0, kg: 0 };
@@ -3836,6 +3808,7 @@
                 
                 let availQty = unit === "Kg" ? (parseFloat(dbStock.kg) || 0) : (parseFloat(dbStock.cone) || 0);
 
+                // Minus draft quantities of the same item
                 window.gdDraftList.forEach((draft, idx) => {
                     if (idx !== editIndex && draft.cat === cat && draft.item.toUpperCase() === item.toUpperCase() && draft.type === 'OUT') {
                         availQty -= draft.qty;
@@ -3850,12 +3823,24 @@
             }
 
             let amount = qty * rate;
-            let draftObj = { dbKey: editKey, date: dateVal, type: type, cat: cat, item: item, qty: qty, unit: unit, rate: rate, amount: amount };
+
+            let draftObj = {
+                dbKey: editKey, 
+                date: dateVal,
+                type: type,
+                cat: cat,
+                item: item,
+                qty: qty,
+                unit: unit,
+                rate: rate,
+                amount: amount
+            };
 
             if (editIndex >= 0) {
                 window.gdDraftList[editIndex] = draftObj;
                 if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Draft Item Updated! 🔄");
             } else {
+                // Merge logic if same item, same type
                 let existIdx = window.gdDraftList.findIndex(d => d.cat === cat && d.item.toUpperCase() === item.toUpperCase() && d.type === type && !d.dbKey);
                 if (existIdx > -1) {
                     window.gdDraftList[existIdx].qty += qty;
@@ -3868,6 +3853,7 @@
                 }
             }
 
+            // Reset inputs
             document.getElementById('gd-item').value = '';
             document.getElementById('gd-qty').value = '';
             document.getElementById('gd-rate').value = '';
@@ -3882,19 +3868,16 @@
         window.renderGdDraftUI = function() {
             let tbody = document.getElementById('gd-draft-list');
             let draftArea = document.getElementById('gd-draft-area');
-            let bottomBar = document.getElementById('gd-bottom-bar');
             tbody.innerHTML = '';
             
             let totalCones = 0; let totalKg = 0; let totalAmt = 0;
 
             if (window.gdDraftList.length === 0) {
                 draftArea.style.display = 'none';
-                bottomBar.style.display = 'none';
                 return;
             }
             
             draftArea.style.display = 'block';
-            bottomBar.style.display = 'block';
 
             window.gdDraftList.forEach((draft, index) => {
                 totalAmt += draft.amount;
@@ -3907,18 +3890,18 @@
                 tbody.innerHTML += `
                     <tr>
                         <td style="padding:10px 8px; border-bottom:1px solid #f0f4f9;">
-                            <div style="font-weight:700; color:var(--text-dark); font-size:14px;">${icon} ${draft.item}</div>
-                            <div style="font-size:11px; color:var(--text-muted); font-weight:600;">${draft.cat}</div>
+                            <div style="font-weight:700; color:var(--text-dark); font-size:13px;">${icon} ${draft.item}</div>
+                            <div style="font-size:10px; color:var(--text-muted);">${draft.cat}</div>
                         </td>
-                        <td style="padding:10px 8px; border-bottom:1px solid #f0f4f9; text-align:center; font-weight:700; font-size:14px; color:${color};">
-                            ${draft.qty} <span style="font-size:10px; color:var(--text-muted);">${draft.unit}</span>
+                        <td style="padding:10px 8px; border-bottom:1px solid #f0f4f9; text-align:center; font-weight:700; font-size:13px; color:${color};">
+                            ${draft.qty} ${draft.unit}
                         </td>
-                        <td style="padding:10px 8px; border-bottom:1px solid #f0f4f9; text-align:right; font-weight:700; font-size:14px; color:var(--primary);">
+                        <td style="padding:10px 8px; border-bottom:1px solid #f0f4f9; text-align:right; font-weight:700; font-size:13px; color:var(--primary);">
                             ₹${draft.amount.toLocaleString('en-IN')}
                         </td>
                         <td style="padding:10px 8px; border-bottom:1px solid #f0f4f9; text-align:center; white-space:nowrap;">
-                            <span class="material-symbols-rounded" style="font-size:18px; color:#0a56d0; cursor:pointer; padding:6px; background:#e8f0fe; border-radius:8px; margin-right:6px;" onclick="editGdDraft(${index})">edit</span>
-                            <span class="material-symbols-rounded" style="font-size:18px; color:#b3261e; cursor:pointer; padding:6px; background:#fdf2f2; border-radius:8px;" onclick="deleteGdDraft(${index})">delete</span>
+                            <span class="material-symbols-rounded" style="font-size:16px; color:#0a56d0; cursor:pointer; padding:4px; background:#e8f0fe; border-radius:6px; margin-right:4px;" onclick="editGdDraft(${index})">edit</span>
+                            <span class="material-symbols-rounded" style="font-size:16px; color:#b3261e; cursor:pointer; padding:4px; background:#fdf2f2; border-radius:6px;" onclick="deleteGdDraft(${index})">delete</span>
                         </td>
                     </tr>
                 `;
@@ -3928,125 +3911,23 @@
             document.getElementById('gd-draft-amt-summary').innerText = `Total: ₹${totalAmt.toLocaleString('en-IN')}`;
         };
 
-        // 🌟 RE-CONFIRMATION FOR DELETE & EDIT
         window.deleteGdDraft = function(index) {
-            window.showCustomConfirm("Delete Item?", "क्या आप इस आइटम को लिस्ट से हटाना चाहते हैं?", function() {
-                window.gdDraftList.splice(index, 1);
-                renderGdDraftUI();
-                if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Item Removed! 🗑️");
-            });
+            window.gdDraftList.splice(index, 1);
+            renderGdDraftUI();
         };
 
         window.editGdDraft = function(index) {
-            window.showCustomConfirm("Edit Item?", "क्या आप इस आइटम में बदलाव करना चाहते हैं?", function() {
-                let draft = window.gdDraftList[index];
-                setGdType(draft.type);
-                document.getElementById('gd-cat').value = draft.cat;
-                updateGdUnitUI();
-                document.getElementById('gd-item').value = draft.item;
-                document.getElementById('gd-qty').value = draft.qty;
-                document.getElementById('gd-rate').value = draft.rate;
-                document.getElementById('gd-edit-index').value = index;
-                document.getElementById('gd-edit-key').value = draft.dbKey || "";
-                document.getElementById('gd-add-draft-btn').innerHTML = '<span class="material-symbols-rounded" style="font-size:18px;">update</span> Update List';
-                if(draft.date) document.getElementById('gd-date').value = draft.date;
-                
-                document.getElementById('gd-item').focus();
-            });
-        };
-
-        // 🌟 NATIVE PAGE PREVIEW LOGIC (Zero Latency)
-        window.openGdPreviewPage = function() {
-            if (window.gdDraftList.length === 0) return;
-            
-            let totalIn = 0; let totalOut = 0;
-            let inQty = 0; let outQty = 0;
-            
-            // Generate Full Detailed Draft List
-            let listHtml = `<div style="background:white; border:1px solid #e0e2e0; border-radius:12px; overflow:hidden; margin-bottom:16px;">
-                <table style="width:100%; border-collapse:collapse; font-size:13px;">
-                    <thead style="background:#f0f4f9;">
-                        <tr>
-                            <th style="padding:10px; text-align:left; color:var(--text-muted);">Item</th>
-                            <th style="padding:10px; text-align:center; color:var(--text-muted);">Qty</th>
-                            <th style="padding:10px; text-align:right; color:var(--text-muted);">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
-            
-            window.gdDraftList.forEach(d => {
-                if(d.type === 'IN') { totalIn += d.amount; inQty += d.qty; }
-                else { totalOut += d.amount; outQty += d.qty; }
-                
-                let icon = d.type === 'IN' ? '🟢' : '🔴';
-                let color = d.type === 'IN' ? 'var(--success)' : 'var(--danger)';
-                
-                listHtml += `
-                    <tr>
-                        <td style="padding:12px 8px; border-bottom:1px solid #f0f4f9;">
-                            <div style="font-weight:700; color:var(--text-dark); font-size:13px;">${icon} ${d.item}</div>
-                            <div style="font-size:10px; color:var(--text-muted); font-weight:600; margin-top:2px;">${d.cat}</div>
-                        </td>
-                        <td style="padding:12px 8px; border-bottom:1px solid #f0f4f9; text-align:center; font-weight:700; font-size:13px; color:${color};">
-                            ${d.qty} <span style="font-size:10px; color:var(--text-muted);">${d.unit}</span>
-                        </td>
-                        <td style="padding:12px 8px; border-bottom:1px solid #f0f4f9; text-align:right; font-weight:700; font-size:13px; color:var(--primary);">
-                            ₹${d.amount.toLocaleString('en-IN')}
-                        </td>
-                    </tr>
-                `;
-            });
-            listHtml += `</tbody></table></div>`;
-
-            // Generate Professional Summary Box at the Bottom
-            let summaryHtml = `
-                <div style="background:#f8fafd; border:1px solid #c2e7ff; border-radius:12px; padding:14px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 8px rgba(10,86,208,0.05);">
-                    <div style="text-align:center; flex:1;">
-                        <div style="font-size:10px; color:var(--text-muted); font-weight:800; letter-spacing:0.5px;">TOTAL IN 🟢</div>
-                        <div style="font-size:20px; color:var(--success); font-weight:800; margin:4px 0;">${inQty} <span style="font-size:10px;">Qty</span></div>
-                        <div style="font-size:14px; color:var(--text-dark); font-weight:700;">₹${totalIn.toLocaleString('en-IN')}</div>
-                    </div>
-                    <div style="width:1px; height:60px; background:#c2e7ff;"></div>
-                    <div style="text-align:center; flex:1;">
-                        <div style="font-size:10px; color:var(--text-muted); font-weight:800; letter-spacing:0.5px;">TOTAL OUT 🔴</div>
-                        <div style="font-size:20px; color:var(--danger); font-weight:800; margin:4px 0;">${outQty} <span style="font-size:10px;">Qty</span></div>
-                        <div style="font-size:14px; color:var(--text-dark); font-weight:700;">₹${totalOut.toLocaleString('en-IN')}</div>
-                    </div>
-                </div>
-                <div style="text-align:center; margin-top:10px; font-size:12px; font-weight:700; color:var(--text-muted);">
-                    Total Items to Save: <span style="color:var(--primary); font-size:14px;">${window.gdDraftList.length}</span>
-                </div>
-            `;
-            
-            document.getElementById('gd-preview-content').innerHTML = listHtml + summaryHtml;
-            // Native ERP Navigation call
-            openPage('transfer-preview-page');
-        };
-
-        // 🌟 RE-CONFIRMATION FOR FINAL SAVE (WITH LIVE SAVE ICON)
-        window.confirmFinalSaveGd = function() {
-            window.showCustomConfirm("Confirm Final Save?", "क्या आप इस पूरे स्टॉक को फाइनली डेटाबेस में सेव करना चाहते हैं?", function() {
-                saveGdDraftBulk();
-            });
-            
-            // 🔥 Inject Save Icon and Green Button dynamically!
-            setTimeout(() => {
-                let modal = document.getElementById('custom-confirm-modal');
-                if(modal) {
-                    let confirmBtn = document.getElementById('confirm-modal-btn');
-                    if(confirmBtn) {
-                        confirmBtn.style.background = '#146c2e'; 
-                        confirmBtn.innerText = 'Yes, Save';
-                    }
-                    let lordIcon = modal.querySelector('lord-icon');
-                    if(lordIcon) {
-                        lordIcon.setAttribute('src', 'https://cdn.lordicon.com/egiwmiit.json');
-                        lordIcon.setAttribute('colors', 'primary:#146c2e,secondary:#146c2e');
-                        let iconContainer = lordIcon.parentElement;
-                        if(iconContainer) iconContainer.style.background = '#e6f4ea';
-                    }
-                }
-            }, 10);
+            let draft = window.gdDraftList[index];
+            setGdType(draft.type);
+            document.getElementById('gd-cat').value = draft.cat;
+            updateGdUnitUI();
+            document.getElementById('gd-item').value = draft.item;
+            document.getElementById('gd-qty').value = draft.qty;
+            document.getElementById('gd-rate').value = draft.rate;
+            document.getElementById('gd-edit-index').value = index;
+            document.getElementById('gd-edit-key').value = draft.dbKey || "";
+            document.getElementById('gd-add-draft-btn').innerHTML = '<span class="material-symbols-rounded" style="font-size:18px;">update</span> Update List';
+            if(draft.date) document.getElementById('gd-date').value = draft.date;
         };
 
         // 🌟 ONE-CLICK BULK SAVE TO FIREBASE
@@ -4068,10 +3949,16 @@
                 }
 
                 let dataObj = { 
-                    date: finalDateTime, cat: draft.cat, item: draft.item, 
-                    qty: draft.qty, rate: draft.rate, amount: draft.amount, type: draft.type 
+                    date: finalDateTime, 
+                    cat: draft.cat, 
+                    item: draft.item, 
+                    qty: draft.qty, 
+                    rate: draft.rate,
+                    amount: draft.amount,
+                    type: draft.type 
                 };
 
+                // Track Inventory Updates Locally to do a bulk save
                 let invKey = draft.cat + "_" + draft.item;
                 if (!inventoryUpdates[invKey]) inventoryUpdates[invKey] = { coneDiff: 0, kgDiff: 0 };
                 
@@ -4088,6 +3975,7 @@
                 }
             });
 
+            // Process Inventory Updates
             Object.keys(inventoryUpdates).forEach(invKey => {
                 let diff = inventoryUpdates[invKey];
                 if (diff.coneDiff !== 0 || diff.kgDiff !== 0) {
@@ -4110,10 +3998,7 @@
                 
                 window.gdDraftList = [];
                 renderGdDraftUI();
-                
-                // ⚡ NATIVE NAVIGATION LOGIC: Close both pages natively
-                closePage('transfer-preview-page'); 
-                setTimeout(() => closePage('transfer-entry-page'), 300); // Small delay for smooth exit
+                document.getElementById('gd-form-panel').classList.add('form-hidden'); 
             }).catch(err => alert("Error saving bulk transfers: " + err.message));
         };
 

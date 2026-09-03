@@ -3912,16 +3912,19 @@
         window.renderGdDraftUI = function() {
             let tbody = document.getElementById('gd-draft-list');
             let draftArea = document.getElementById('gd-draft-area');
+            let previewBtnBar = document.getElementById('gd-preview-btn-bar');
             tbody.innerHTML = '';
             
             let totalCones = 0; let totalKg = 0; let totalAmt = 0;
 
             if (window.gdDraftList.length === 0) {
                 draftArea.style.display = 'none';
+                if(previewBtnBar) previewBtnBar.style.display = 'none';
                 return;
             }
             
             draftArea.style.display = 'block';
+            if(previewBtnBar) previewBtnBar.style.display = 'flex';
 
             window.gdDraftList.forEach((draft, index) => {
                 totalAmt += draft.amount;

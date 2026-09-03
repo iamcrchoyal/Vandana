@@ -970,7 +970,7 @@
     <div class="page flex-page" id="godown-page">
         <div class="sub-header">
             <button class="back-btn material-symbols-rounded" onclick="closePage('godown-page')">arrow_back</button>
-            <h2 class="page-title" style="flex:1;">Shop-to-Shop Transfer</h2>
+            <h2 class="page-title" style="flex:1; font-size:17px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Shop - To - Shop Transfer</h2>
             <button class="pro-add-btn" onclick="openGodownEntryPage()"><span class="material-symbols-rounded" style="font-size:16px;">add</span> Bulk Entry</button>
         </div>
         <div class="fixed-top-section">
@@ -1039,11 +1039,12 @@
                 </div>
 
                 <div style="background:#f8fafd; padding:12px; border-radius:12px; border:1px solid #e0e2e0; margin-bottom:12px;">
+                    <label style="font-size:12px; font-weight:800; color:var(--primary-dark); margin-bottom:8px; display:block; text-transform:uppercase;">Product Details</label>
                     <select id="gd-cat" class="form-control" style="margin-bottom:12px; font-weight:600; border-radius:10px; background:white;" onchange="updateGdUnitUI()">
                         <option value="">Select Category</option>
                     </select>
 
-                    <div style="position:relative; margin-bottom:12px;">
+                    <div id="gd-item-container" style="position:relative; margin-bottom:12px;">
                         <input type="text" id="gd-item" class="form-control" autocomplete="off" placeholder="Item Name / Shade No." onkeyup="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item'); autoFillRate(document.getElementById('gd-cat').value, this.value.trim(), true)" onfocus="handleStockSearch(this.value, 'gd-cat', 'gd-suggestion-box', 'gd-item')" style="border-radius:10px; font-weight:600;">
                         <div id="gd-suggestion-box" style="display:none; position:absolute; top:100%; left:0; width:100%; background:white; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.15); z-index:9999; max-height:200px; overflow-y:auto;"></div>
                     </div>
@@ -1090,8 +1091,7 @@
 
     <!-- 👀 STOCK IN OUT PREVIEW PAGE -->
     <div class="page flex-page" id="godown-preview-page" style="z-index: 5500;">
-        <div class="sub-header" style="box-shadow: 0 2px 10px rgba(0,0,0,0.05); border:none;">
-            <button class="back-btn material-symbols-rounded" onclick="closePage('godown-preview-page')">arrow_back</button>
+        <div class="sub-header" style="box-shadow: 0 2px 10px rgba(0,0,0,0.05); border:none; padding-left:20px;">
             <h2 class="page-title" style="flex:1; font-weight:800; color:var(--primary-dark);">Stock In Out Preview</h2>
         </div>
         <div class="scroll-content" style="padding-top:16px; padding-bottom:150px; background:#f8fafd;">
@@ -3814,10 +3814,37 @@
         window.updateGdUnitUI = function() {
             let cat = document.getElementById('gd-cat').value;
             let unitDisplay = document.getElementById('gd-unit-display');
-            if (cat === 'Nylon' || cat === 'Bobbin' || cat === 'Coding') {
+            let itemInput = document.getElementById('gd-item');
+            let itemContainer = document.getElementById('gd-item-container');
+
+            // 🌟 1. Coding / Cording Unit Fix (Kg instead of Cone)
+            if (cat === 'Nylon' || cat === 'Bobbin' || cat === 'Coding' || cat === 'Cording') {
                 unitDisplay.value = 'Kg';
             } else {
                 unitDisplay.value = 'Cone';
+            }
+
+            // 🌟 2. Dynamic Placeholders & Hiding Box for Nylon
+            itemContainer.style.display = 'block'; // Default Show
+            
+            // Only clear input if it was auto-filled by Nylon previously
+            if (itemInput.value === 'Nylon') itemInput.value = '';
+
+            if (cat === 'Thread' || cat === 'Shree Kamlai Thread') {
+                itemInput.placeholder = 'Thread Number';
+            } else if (cat === 'Zari') {
+                itemInput.placeholder = 'Zari Name';
+            } else if (cat === 'Nylon') {
+                itemContainer.style.display = 'none'; // Hide Box
+                itemInput.value = 'Nylon'; // Auto-Fill for backend
+            } else if (cat === 'Bobbin') {
+                itemInput.placeholder = 'Bobbin Colour';
+            } else if (cat === 'Coding' || cat === 'Cording') {
+                itemInput.placeholder = 'Coding Name';
+            } else if (cat === 'Cotton') {
+                itemInput.placeholder = 'Cotton Name';
+            } else {
+                itemInput.placeholder = 'Item Name / Shade No.';
             }
         };
 
@@ -7852,6 +7879,7 @@ window.showTargetCelebration = function() {
             let isEdit = title.toLowerCase().includes('edit');
             let isLogout = title.toLowerCase().includes('logout');
             let isRestore = title.toLowerCase().includes('restore');
+            let isSave = title.toLowerCase().includes('save');
             
             let iconBg = document.getElementById('confirm-modal-icon-bg');
             let confirmBtn = document.getElementById('confirm-modal-btn');
@@ -7865,7 +7893,6 @@ window.showTargetCelebration = function() {
                 confirmBtn.innerText = 'Yes, Edit';
             } else if (isLogout) {
                 iconBg.style.background = '#fdf4e5';
-                // 🚪 LOGOUT ANIMATION: Darwaze se bahar nikalne wala live icon
                 iconBg.innerHTML = '<lord-icon src="https://cdn.lordicon.com/eohwfuhe.json" trigger="loop" delay="500" colors="primary:#b36b00,secondary:#b36b00" style="width:38px;height:38px"></lord-icon>';
                 confirmBtn.style.background = '#b36b00';
                 confirmBtn.innerText = 'Yes, Logout';
@@ -7874,8 +7901,12 @@ window.showTargetCelebration = function() {
                 iconBg.innerHTML = '<lord-icon src="https://cdn.lordicon.com/nxaaasqe.json" trigger="loop" delay="500" colors="primary:#146c2e,secondary:#146c2e" style="width:38px;height:38px"></lord-icon>';
                 confirmBtn.style.background = 'var(--success)';
                 confirmBtn.innerText = 'Yes, Restore';
+            } else if (isSave) {
+                iconBg.style.background = '#e6f4ea';
+                iconBg.innerHTML = '<span class="material-symbols-rounded" style="font-size:32px; color:var(--success);">save</span>';
+                confirmBtn.style.background = 'var(--success)';
+                confirmBtn.innerText = 'Yes, Save';
             } else {
-                // 🗑️ DELETE ANIMATION: Kachre ke dabbe wala live icon
                 iconBg.style.background = '#fdf2f2';
                 iconBg.innerHTML = '<lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" delay="500" colors="primary:#b3261e,secondary:#b3261e" style="width:38px;height:38px"></lord-icon>';
                 confirmBtn.style.background = 'var(--danger)';

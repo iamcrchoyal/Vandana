@@ -2462,7 +2462,7 @@
             
             if(!identifier || (cone <= 0 && kg <= 0)) return alert("Please enter valid Item Name & Qty!"); 
             
-            let key = category + "_" + identifier; 
+            let key = (category + "_" + identifier).replace(/[.#$\[\]]/g, '_'); // 🔥 Firebase Key Bug Fix
 
             if (type === 'WASTAGE') {
                 let dbStock = smartInventory[key] || { cone: 0, kg: 0 };
@@ -3873,7 +3873,7 @@
 
             // 🌟 Live Stock Validation for OUT
             if (type === 'OUT') {
-                let invKey = cat + "_" + item;
+                let invKey = (cat + "_" + item).replace(/[.#$\[\]]/g, '_'); // 🔥 Firebase Key Bug Fix
                 let dbStock = smartInventory[invKey] || { cone: 0, kg: 0 };
                 if(typeof dbStock === 'number') dbStock = { cone: dbStock, kg: 0 };
                 
@@ -4087,7 +4087,7 @@
                     type: draft.type 
                 };
 
-                let invKey = draft.cat + "_" + draft.item;
+                let invKey = (draft.cat + "_" + draft.item).replace(/[.#$\[\]]/g, '_'); // 🔥 Firebase Key Bug Fix
                 if (!inventoryUpdates[invKey]) inventoryUpdates[invKey] = { coneDiff: 0, kgDiff: 0 };
                 
                 let isKg = (draft.unit === 'Kg');
@@ -5049,7 +5049,7 @@
                 // Agar bill me items hain (Invoice hai), toh delete karte hi stock wapas godam me jud jayega
                 if(currentEntryData.cart && currentEntryData.cart.length > 0) {
                     currentEntryData.cart.forEach(item => { 
-                        let key = item.cat + "_" + item.shade; 
+                        let key = (item.cat + "_" + item.shade).replace(/[.#$\[\]]/g, '_'); // 🔥 Firebase Key Bug Fix
                         let itemRef = ref(db, 'Inventory/' + key); 
                         
                         // Background me fast update karega bina screen roke
@@ -5713,7 +5713,7 @@
 
         // 🌟 LIVE CART-AWARE STOCK CALCULATOR (Advanced Edit Support)
         window.getAvailableStock = function(cat, shade, ignoreIndex = -1) {
-            let key = cat + "_" + shade;
+            let key = (cat + "_" + shade).replace(/[.#$\[\]]/g, '_'); // 🔥 Firebase Key Bug Fix
             let dbStock = smartInventory[key] || { cone: 0, kg: 0 };
             if(typeof dbStock === 'number') dbStock = { cone: dbStock, kg: 0 };
             
@@ -6196,7 +6196,7 @@
             
             if (window.editingEntryKey && window.originalEditCart) {
                 window.originalEditCart.forEach(item => {
-                    let key = item.cat + "_" + item.shade;
+                    let key = (item.cat + "_" + item.shade).replace(/[.#$\[\]]/g, '_'); // 🔥 Firebase Key Bug Fix
                     if(!stockUpdates[key]) stockUpdates[key] = {cone:0, kg:0};
                     stockUpdates[key].cone += (parseFloat(item.rawCone) || 0); 
                     stockUpdates[key].kg += (parseFloat(item.rawKg) || 0);
@@ -6204,7 +6204,7 @@
             }
 
             currentCart.forEach(item => {
-                let key = item.cat + "_" + item.shade;
+                let key = (item.cat + "_" + item.shade).replace(/[.#$\[\]]/g, '_'); // 🔥 Firebase Key Bug Fix
                 if(!stockUpdates[key]) stockUpdates[key] = {cone:0, kg:0};
                 stockUpdates[key].cone -= (parseFloat(item.rawCone) || 0); 
                 stockUpdates[key].kg -= (parseFloat(item.rawKg) || 0);
@@ -7224,7 +7224,7 @@ window.showTargetCelebration = function() {
         window.deleteGdTransfer = function(key, type, cat, item, qty) {
             window.showCustomConfirm("Delete Transfer?", "क्या आप इस गोडाउन एंट्री को डिलीट करना चाहते हैं?", function() {
                 // Adjust inventory back
-                let invKey = cat + "_" + item;
+                let invKey = (cat + "_" + item).replace(/[.#$\[\]]/g, '_'); // 🔥 Firebase Key Bug Fix
                 let itemRef = ref(db, 'Inventory/' + invKey);
                 get(itemRef).then(snap => {
                     let cur = snap.val() || {cone:0, kg:0};
@@ -7245,7 +7245,7 @@ window.showTargetCelebration = function() {
             if(!entry) return;
             
             // Revert inventory first so processGodown can re-apply correctly
-            let invKey = entry.cat + "_" + entry.item;
+            let invKey = (entry.cat + "_" + entry.item).replace(/[.#$\[\]]/g, '_'); // 🔥 Firebase Key Bug Fix
             let itemRef = ref(db, 'Inventory/' + invKey);
             get(itemRef).then(snap => {
                 let cur = snap.val() || {cone:0, kg:0};

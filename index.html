@@ -6589,7 +6589,7 @@
             document.getElementById('pdf-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleDateString('en-GB'); 
             document.getElementById('pdf-bill-no').innerText = currentEntryData.billNo || currentEntryData.key.substring(1, 8).toUpperCase(); 
             
-            // Phase 1: Customer Name & Mobile Number logic (Name upar, Number niche)
+            // Phase 1: Customer Name & Mobile Number logic
             let cData = globalCustomers.find(c => c.name === currentEntryData.name);
             document.getElementById('pdf-cust-name').innerText = currentEntryData.name;
             let phoneElem = document.getElementById('pdf-cust-phone');
@@ -6602,7 +6602,7 @@
                 }
             }
             
-            // 2. टेबल लॉजिक (With Sr. No. & Total Qty)
+            // 2. टेबल लॉजिक
             let totalCones = 0;
             let totalKgs = 0;
             
@@ -6612,7 +6612,6 @@
                     totalCones += (parseFloat(item.rawCone) || 0); 
                     totalKgs += (parseFloat(item.rawKg) || 0); 
                     
-                    // Shree Kamlai Thread me 'Number: X' aayega, baki sab me direct Sub-Product ka naam aayega (Jaise: Water 20)
                     let subTextDisplay = (item.cat === 'Shree Kamlai Thread') ? `Number: ${item.shade}` : `${item.shade}`;
                     
                     html += `
@@ -6642,7 +6641,6 @@
                 else if (totalKgs > 0) totalQtyStr = `${totalKgs} Kg`;
                 else totalQtyStr = `${totalCones} Cone`;
                 
-                // एकदम नीचे Total Qty का बॉक्स
                 html += `
                     <tr style="background:#f8fafd; font-weight:bold;">
                         <td colspan="2" style="padding:12px; border:1px solid #e0e2e0; text-align:right; font-size:14px; color:#0a56d0; vertical-align:middle;">Total Quantity:</td>
@@ -6653,7 +6651,6 @@
 
                 document.getElementById('pdf-cart-body').innerHTML = html;
                 
-                // Phase 1: 5-COLUMN HEADER (Sr. No. Properly Aligned - nowrap lagaya)
                 document.getElementById('pdf-table-header').innerHTML = `
                     <tr style="background:#0a56d0; color:white;">
                         <th style="padding:12px; text-align:center; font-size:14px; border:1px solid #0a56d0; width:65px; white-space:nowrap;">Sr. No.</th>
@@ -6664,7 +6661,6 @@
                     </tr>
                 `;
             } else {
-                // लेजर एंट्री
                 document.getElementById('pdf-table-header').innerHTML = `
                     <tr style="background:#0a56d0; color:white;">
                         <th style="padding:12px; text-align:center; font-size:14px; border:1px solid #0a56d0; width:60px;">Sr. No.</th>
@@ -6693,13 +6689,12 @@
                 document.getElementById('pdf-payment-breakdown').style.display = 'none';
             }
 
-            // 4. ✨ HIGHLY PROFESSIONAL PDF QR LOGIC (For Pending/Due Amount) ✨
+            // 4. ✨ HIGHLY PROFESSIONAL PDF QR LOGIC ✨
             let qrContainer = document.getElementById('pdf-qr-container');
             let upiId = localStorage.getItem('v_adminUpi'); 
             
             let amountForQR = parseFloat(currentEntryData.amount) || 0;
             
-            // Calculate exact pending amount
             if(currentEntryData.breakdown && currentEntryData.breakdown.pending !== undefined) {
                 amountForQR = parseFloat(currentEntryData.breakdown.pending);
             }
@@ -6711,14 +6706,12 @@
                 
                 document.getElementById('pdf-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=H&margin=0&data=${encodeURIComponent(upiString)}`;
                 
-                // Professional 'PAY DUE' Badge (Moved Up for 100% Scanning)
                 let qrLabel = document.getElementById('pdf-qr-label');
                 if(!qrLabel) {
                     qrContainer.style.border = "2px solid #0a56d0";
                     qrContainer.style.background = "white";
                     qrContainer.style.boxShadow = "0 8px 20px rgba(10,86,208,0.15)";
                     
-                    // top:-26px ensure karega ki label QR code image par bilkul na aaye
                     qrContainer.insertAdjacentHTML('afterbegin', `
                         <div id="pdf-qr-label" style="position:absolute; top:-26px; left:50%; transform:translateX(-50%); background:#0a56d0; color:white; border:2px solid white; font-size:12px; font-weight:800; padding:4px 12px; border-radius:20px; white-space:nowrap; box-shadow:0 4px 10px rgba(10,86,208,0.3); font-family:'Product Sans', sans-serif; z-index:10;">
                             PAY DUE: ₹${safeAmount}
@@ -6733,7 +6726,7 @@
                 qrContainer.style.display = 'none';
             }
         }
-        
+
         window.downloadPDFFromEntry = function() { 
             if(!currentEntryData) return; 
             preparePDFData(); 

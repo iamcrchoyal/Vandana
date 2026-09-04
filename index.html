@@ -1218,9 +1218,17 @@
 	
     <!-- 🧾 SALE INVOICE PAGE -->
     <div class="page flex-page" id="pos-page">
-        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('pos-page')">arrow_back</button><h2 class="page-title">Create Invoice</h2></div>
+        <div class="sub-header"><button class="back-btn material-symbols-rounded" onclick="closePage('pos-page')">arrow_back</button><h2 class="page-title" id="pos-page-title">Create Invoice</h2></div>
         <div class="scroll-content" style="padding-top:16px;">
             <div id="billing-form-area">
+                
+                <!-- 🌟 SMART INVOICE TYPE TOGGLE 🌟 -->
+                <div style="background:white; border-radius:12px; padding:6px; display:flex; margin-bottom:16px; border:1px solid var(--border); box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+                    <button id="toggle-sale-inv" onclick="setInvoiceType('Sale')" style="flex:1; padding:12px; border:none; background:#e8f0fe; color:var(--primary); font-weight:800; border-radius:10px; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; transition:0.3s;"><span class="material-symbols-rounded" style="font-size:18px;">receipt_long</span> Sale Invoice</button>
+                    <button id="toggle-sale-ret" onclick="setInvoiceType('Return')" style="flex:1; padding:12px; border:none; background:transparent; color:var(--text-muted); font-weight:800; border-radius:10px; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; transition:0.3s;"><span class="material-symbols-rounded" style="font-size:18px;">keyboard_return</span> Sale Return</button>
+                </div>
+                <input type="hidden" id="pos-invoice-type" value="Sale">
+
                 <!-- 🌟 POINT 5: PREMIUM SHARE INVOICE UI (FIELDSET DESIGN) 🌟 -->
                 <fieldset style="border: 1px solid var(--primary); border-radius: 16px; padding: 16px; margin-bottom: 16px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.03); position: relative;">
                     <legend style="color: var(--primary); font-family: 'Product Sans', sans-serif; font-weight: 800; font-size: 13px; padding: 0 8px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px;">📋 Customer Details</legend>
@@ -5070,6 +5078,8 @@
                 // 🌟 VIRTUAL REVERT: Puraane items ko database se nahi, sirf memory me temporary store karenge
                 window.originalEditCart = JSON.parse(JSON.stringify(currentEntryData.cart)); 
 
+                window.setInvoiceType(currentEntryData.invoiceType || 'Sale'); // Set Correct Toggle Status
+
                 window.editingEntryKey = currentEntryData.key;
                 window.editingBillNo = currentEntryData.billNo;
                 window.editingEntryDate = currentEntryData.date;
@@ -6292,11 +6302,14 @@
                 });
             }
 
+            let invType = document.getElementById('pos-invoice-type').value; // Sale or Return
+            let stockMultiplier = invType === 'Sale' ? -1 : 1; // Sale = Minus stock, Return = Plus stock
+
             currentCart.forEach(item => {
                 let key = (item.cat + "_" + item.shade).replace(/[.#$\[\]]/g, '_'); // 🔥 Firebase Key Bug Fix
                 if(!stockUpdates[key]) stockUpdates[key] = {cone:0, kg:0};
-                stockUpdates[key].cone -= (parseFloat(item.rawCone) || 0); 
-                stockUpdates[key].kg -= (parseFloat(item.rawKg) || 0);
+                stockUpdates[key].cone += ((parseFloat(item.rawCone) || 0) * stockMultiplier); 
+                stockUpdates[key].kg += ((parseFloat(item.rawKg) || 0) * stockMultiplier);
             });
 
             Object.keys(stockUpdates).forEach(key => {
@@ -6374,13 +6387,16 @@
                 auditText = `${createTime} | Last Edit: ${editTime}`;
             }
 
+            let ledgerAction = invType === 'Sale' ? "Gave" : "Got";
+            let detailsPrefix = invType === 'Sale' ? "Invoice" : "Return";
+
             let newEntry = { 
-                date: finalDateTime, name: partyName, type: "Gave", amount: grandInvoiceTotal, 
-                details: `Invoice #${tempBillNo} - ${qtyDetailsStr}`, cart: currentCart, 
-                billNo: tempBillNo, breakdown: breakdownData, editHistory: auditText
+                date: finalDateTime, name: partyName, type: ledgerAction, amount: grandInvoiceTotal, 
+                details: `${detailsPrefix} #${tempBillNo} - ${qtyDetailsStr}`, cart: currentCart, 
+                billNo: tempBillNo, breakdown: breakdownData, editHistory: auditText, invoiceType: invType
             };
             
-            document.getElementById('success-msg-title').innerText = isUpdating ? "Invoice Updated Successfully!" : "Invoice Generated Successfully!";
+            document.getElementById('success-msg-title').innerText = isUpdating ? `${detailsPrefix} Updated Successfully!` : `${detailsPrefix} Generated Successfully!`;
 
             let savePromise;
             if (window.editingEntryKey) {
@@ -6396,31 +6412,32 @@
             savePromise.then(() => {
                 let paymentPromises = [];
                 
+                let pType = invType === 'Sale' ? "Got" : "Gave";
+                let cbType = invType === 'Sale' ? "IN" : "OUT";
+                let cashDetail = invType === 'Sale' ? "Cash Received" : "Cash Refunded";
+                let onlineDetail = invType === 'Sale' ? "Online Received" : "Online Refunded";
+
                 if(cAmt > 0) {
-                    // 1. Customer Ledger Entry (Cash)
-                    let cashEntry = { date: finalDateTime, name: partyName, type: "Got", amount: cAmt, details: `Cash Received (Bill #${tempBillNo})` };
+                    let cashEntry = { date: finalDateTime, name: partyName, type: pType, amount: cAmt, details: `${cashDetail} (${detailsPrefix} #${tempBillNo})` };
                     paymentPromises.push(push(ref(db, 'Ledger'), cashEntry));
                     
-                    // 2. Cashbook Entry (Galla Plus Hoga)
                     paymentPromises.push(push(ref(db, 'CashBankBook/Transactions'), {
-                        date: finalDateTime, type: 'IN', amount: cAmt, mode: 'Cash', modeKey: 'Cash', details: `Bill Payment - ${partyName} (#${tempBillNo})`
+                        date: finalDateTime, type: cbType, amount: cAmt, mode: 'Cash', modeKey: 'Cash', details: `${detailsPrefix} Payment - ${partyName} (#${tempBillNo})`
                     }));
                 }
                 
                 if(oAmt > 0) {
-                    // 1. Customer Ledger Entry (Online)
-                    let onlineEntry = { date: finalDateTime, name: partyName, type: "Got", amount: oAmt, details: `Online via ${window.selBankNameForBill} (Bill #${tempBillNo})` };
+                    let onlineEntry = { date: finalDateTime, name: partyName, type: pType, amount: oAmt, details: `${onlineDetail} via ${window.selBankNameForBill} (${detailsPrefix} #${tempBillNo})` };
                     paymentPromises.push(push(ref(db, 'Ledger'), onlineEntry));
                     
-                    // 2. Bank Transaction Entry
                     paymentPromises.push(push(ref(db, 'CashBankBook/Transactions'), {
-                        date: finalDateTime, type: 'IN', amount: oAmt, mode: window.selBankNameForBill, modeKey: window.selBankKeyForBill, details: `Bill Payment - ${partyName} (#${tempBillNo})`
+                        date: finalDateTime, type: cbType, amount: oAmt, mode: window.selBankNameForBill, modeKey: window.selBankKeyForBill, details: `${detailsPrefix} Payment - ${partyName} (#${tempBillNo})`
                     }));
                     
-                    // 3. Bank Account Balance Update (Superfast)
                     let targetBank = cbBanks.find(b => b.key === window.selBankKeyForBill);
                     if(targetBank) {
-                        paymentPromises.push(update(ref(db, 'CashBankBook/Banks/' + targetBank.key), { balance: targetBank.balance + oAmt }));
+                        let newBankBal = (cbType === 'IN') ? (targetBank.balance + oAmt) : (targetBank.balance - oAmt);
+                        paymentPromises.push(update(ref(db, 'CashBankBook/Banks/' + targetBank.key), { balance: newBankBal }));
                     }
                 }
 
@@ -6452,6 +6469,27 @@
             }); 
         }
 
+        // 🌟 SMART INVOICE TOGGLE LOGIC
+        window.setInvoiceType = function(type) {
+            document.getElementById('pos-invoice-type').value = type;
+            let btnSale = document.getElementById('toggle-sale-inv');
+            let btnRet = document.getElementById('toggle-sale-ret');
+            let pageTitle = document.getElementById('pos-page-title');
+            let genBtn = document.getElementById('save-bill-btn');
+            
+            if (type === 'Sale') {
+                btnSale.style.background = '#e8f0fe'; btnSale.style.color = 'var(--primary)';
+                btnRet.style.background = 'transparent'; btnRet.style.color = 'var(--text-muted)';
+                if(pageTitle) pageTitle.innerText = "Create Invoice";
+                if(genBtn) genBtn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">update</span> Update Invoice` : `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">receipt_long</span> Generate Invoice`;
+            } else {
+                btnRet.style.background = '#fdf2f2'; btnRet.style.color = 'var(--danger)';
+                btnSale.style.background = 'transparent'; btnSale.style.color = 'var(--text-muted)';
+                if(pageTitle) pageTitle.innerText = "Sale Return";
+                if(genBtn) genBtn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">update</span> Update Return` : `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">keyboard_return</span> Generate Return`;
+            }
+        };
+
         // 🌟 RESET BILLING PAGE LOGIC
         window.resetBillingPage = function() { 
             currentCart = []; 
@@ -6467,6 +6505,8 @@
             
             document.getElementById('inv-party').value = ''; 
             document.getElementById('inv-phone').value = ''; 
+            
+            window.setInvoiceType('Sale'); // Reset toggle
             
             let posTitle = document.querySelector('#pos-page .page-title');
             if(posTitle) posTitle.innerText = "Create Invoice";
@@ -6534,6 +6574,9 @@
                 }
             });
             
+            let pdfHeader = document.querySelector('#pdf-invoice-template h2');
+            if (pdfHeader) pdfHeader.innerText = (currentEntryData.invoiceType === 'Return') ? "SALE RETURN" : "INVOICE";
+
             let d = new Date(currentEntryData.date); 
             document.getElementById('pdf-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleDateString('en-GB'); 
             document.getElementById('pdf-bill-no').innerText = currentEntryData.billNo || currentEntryData.key.substring(1, 8).toUpperCase(); 

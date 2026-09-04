@@ -4748,7 +4748,7 @@
                 try { let d = new Date(entry.date); if (!isNaN(d)) { entryDateString = d.toISOString().split('T')[0]; entryMonthString = d.toISOString().slice(0, 7); } } catch(e){} 
                 if(!balances[entry.name]) balances[entry.name] = 0; 
 
-                // 🌟 TRUE DOUBLE-ENTRY BALANCE LOGIC (For Ledger Only)
+                // 🌟 TRUE DOUBLE-ENTRY BALANCE LOGIC (For Ledger & Running Balance)
                 if(entry.type === 'Gave') balances[entry.name] += amt; 
                 if(entry.type === 'Got') balances[entry.name] -= amt; 
                 
@@ -5437,8 +5437,8 @@
                     let d = new Date(entry.date); 
                     if (!isNaN(d)) entryDateString = d.toISOString().split('T')[0]; 
                 } catch(e){} 
-                // "Bill" की जगह "Invoice" शब्द को मैच कर रहे हैं
-                return entryDateString === selectedDateString && entry.details && entry.details.includes("Invoice"); 
+                // 🚀 STRICT FILTER FOR INVOICE PAGE (Skips Payment Entries completely)
+                return entryDateString === selectedDateString && entry.type === 'Gave' && entry.cart && (!entry.invoiceType || entry.invoiceType === 'Sale'); 
             }); 
 
             if(todayInvoices.length === 0) { 
@@ -7132,7 +7132,8 @@ window.showTargetCelebration = function() {
             let myCustName = globalCustomers.length > 0 ? globalCustomers[0].name : window.currentUserName;
             
             let myBills = window.rawLedger.filter(entry => {
-                if (entry.name !== myCustName || !entry.details || !entry.details.includes("Invoice")) return false;
+                // 🚀 STRICT FILTER FOR MY BILLS: Only main invoices, no payments
+                if (entry.name !== myCustName || entry.type !== 'Gave' || !entry.cart || (entry.invoiceType && entry.invoiceType !== 'Sale')) return false;
                 let eTime = new Date(entry.date).getTime();
                 // Check if date is within selected range (दिन के अंत तक)
                 return eTime >= fDate.getTime() && eTime <= (tDate.getTime() + 86399000); 

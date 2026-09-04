@@ -6328,7 +6328,7 @@
                 });
             }
 
-            let invType = document.getElementById('pos-invoice-type').value; // Sale or Return
+            let invType = document.getElementById('pos-invoice-type') ? document.getElementById('pos-invoice-type').value : 'Sale'; // Sale or Return
             let stockMultiplier = invType === 'Sale' ? -1 : 1; // Sale = Minus stock, Return = Plus stock
 
             currentCart.forEach(item => {
@@ -6382,13 +6382,11 @@
             }
 
             // 🌟 SMART PAYMENT ADJUSTMENT (POINT 7) 🌟
-            // अगर पुराना बिल एडिट हो रहा है, तो पुरानी पेमेंट को सुरक्षित रखना है और नया बैलेंस निकालना है
             let breakdownData = {};
             if (window.editingEntryKey && currentEntryData && currentEntryData.breakdown) {
                 let oldCash = parseFloat(currentEntryData.breakdown.cash) || 0;
                 let oldOnline = parseFloat(currentEntryData.breakdown.online) || 0;
                 
-                // अगर एडिट करते समय कस्टमर ने कुछ और पैसे भी दिए हैं, तो उन्हें पुराने पैसों में जोड़ दें
                 let updatedCash = oldCash + cAmt;
                 let updatedOnline = oldOnline + oAmt;
                 let totalPaidNow = updatedCash + updatedOnline;
@@ -6500,27 +6498,6 @@
             }); 
         }
 
-        // 🌟 SMART INVOICE TOGGLE LOGIC
-        window.setInvoiceType = function(type) {
-            document.getElementById('pos-invoice-type').value = type;
-            let btnSale = document.getElementById('toggle-sale-inv');
-            let btnRet = document.getElementById('toggle-sale-ret');
-            let pageTitle = document.getElementById('pos-page-title');
-            let genBtn = document.getElementById('save-bill-btn');
-            
-            if (type === 'Sale') {
-                btnSale.style.background = '#e8f0fe'; btnSale.style.color = 'var(--primary)';
-                btnRet.style.background = 'transparent'; btnRet.style.color = 'var(--text-muted)';
-                if(pageTitle) pageTitle.innerText = "Create Invoice";
-                if(genBtn) genBtn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">update</span> Update Invoice` : `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">receipt_long</span> Generate Invoice`;
-            } else {
-                btnRet.style.background = '#fdf2f2'; btnRet.style.color = 'var(--danger)';
-                btnSale.style.background = 'transparent'; btnSale.style.color = 'var(--text-muted)';
-                if(pageTitle) pageTitle.innerText = "Sale Return";
-                if(genBtn) genBtn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">update</span> Update Return` : `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">keyboard_return</span> Generate Return`;
-            }
-        };
-
         // 🌟 RESET BILLING PAGE LOGIC
         window.resetBillingPage = function() { 
             currentCart = []; 
@@ -6537,8 +6514,8 @@
             document.getElementById('inv-party').value = ''; 
             document.getElementById('inv-phone').value = ''; 
             
-            window.setInvoiceType('Sale'); // Reset toggle
-            
+            if(typeof window.setInvoiceType === 'function') window.setInvoiceType('Sale');
+
             let posTitle = document.querySelector('#pos-page .page-title');
             if(posTitle) posTitle.innerText = "Create Invoice";
             
@@ -6558,7 +6535,7 @@
             let elem = document.getElementById('pdf-invoice-template');
             let isSupplier = (globalCustomers.find(c => c.name === currentEntryData.name)?.type === 'Supplier');
             let fName = `${isSupplier ? 'Purchase' : 'Sale'}_Invoice_${currentEntryData.billNo ? currentEntryData.billNo.replace(' ', '_') : currentEntryData.name.replace(/\s+/g, '_')}.pdf`;
-            let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: fName, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } };
+            let opt = { margin: [0.4, 0.4, 0.4, 0.4], filename: fName, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 700 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } }; 
             
             if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Preparing Fast PDF... Please wait.");
             

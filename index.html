@@ -1641,10 +1641,8 @@
                     <a href="#" id="l-call-btn" style="color:var(--primary); text-decoration:none; font-size:20px; border:1px solid var(--border); border-radius:50%; width:36px; height:36px; display:flex; justify-content:center; align-items:center; background:white; box-shadow:0 1px 2px rgba(0,0,0,0.02); flex-shrink:0; margin-left:12px;" class="material-symbols-rounded">call</a>
                 </div>
             </div>
-            <div class="ledger-bal-card">
-                <span style="font-size:13px; color:var(--text-muted); font-weight:500;" id="l-deep-bal-text">You will give</span>
-                <span style="font-size:24px; font-weight:400; font-family: 'Product Sans', sans-serif;" id="l-deep-bal-amt">₹ 0</span>
-            </div>
+            <!-- 🌟 NEW FIXED SUMMARY BOX 🌟 -->
+            <div id="ledger-deep-summary-box" style="margin: 14px 16px 0 16px;"></div>
             <div class="ledger-action-tabs">
                 <div class="l-tab" id="l-wa-btn" style="color:#146c2e; border-color:#e0e2e0; display:flex; justify-content:center; align-items:center; gap:4px;"><span class="material-symbols-rounded" style="font-size:16px;">chat</span> Reminder</div>
                 <div class="l-tab" id="l-sms-btn" onclick="openReportModal('ledger')" style="display:flex; justify-content:center; align-items:center; gap:4px;"><span class="material-symbols-rounded" style="font-size:16px;">description</span> Statement</div>
@@ -5325,42 +5323,42 @@
             let totalGave = 0; 
             let totalGot = 0; 
             let customerEntries = allLedgerData.filter(e => e.name === name); 
-            if(customerEntries.length === 0) { 
-                entryList.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No entries yet.</div>`; 
-            } else { 
-                // 🌟 Sort Chronologically for Running Balance
-                customerEntries.sort((a,b) => new Date(a.date) - new Date(b.date));
-                
-                let runningBal = 0; 
-                customerEntries.forEach(entry => {
-                    let amt = parseFloat(entry.amount) || 0;
-                    if(entry.type === 'Gave') { runningBal += amt; totalGave += amt; }
-                    if(entry.type === 'Got') { runningBal -= amt; totalGot += amt; }
-                    entry.runningBal = runningBal; // Assign live balance
-                });
+            
+            // 🌟 Calculate totals and Running Balance first
+            customerEntries.sort((a,b) => new Date(a.date) - new Date(b.date));
+            let runningBal = 0; 
+            customerEntries.forEach(entry => {
+                let amt = parseFloat(entry.amount) || 0;
+                if(entry.type === 'Gave') { runningBal += amt; totalGave += amt; }
+                if(entry.type === 'Got') { runningBal -= amt; totalGot += amt; }
+                entry.runningBal = runningBal; // Assign live balance
+            });
 
-                // Reverse to show newest on top
-                customerEntries.reverse();
-
-                let netPending = totalGave - totalGot;
-                let pendingText = netPending > 0 ? `₹${netPending} (Dr)` : (netPending < 0 ? `₹${Math.abs(netPending)} (Cr)` : `₹0`);
-
-                // 🌟 Smart Ledger Summary Header
-                entryList.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; background:#f8fafd; padding:14px; border-radius:12px; margin-bottom:16px; border:1px solid #c2e7ff; box-shadow:0 2px 6px rgba(0,0,0,0.02);">
-                        <div style="text-align:center;"><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; font-weight:600;">Total Billed</div><div style="font-size:15px; color:var(--danger); font-weight:800; margin-top:4px;">₹${totalGave}</div></div>
-                        <div style="text-align:center;"><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; font-weight:600;">Total Received</div><div style="font-size:15px; color:var(--success); font-weight:800; margin-top:4px;">₹${totalGot}</div></div>
+            // 🌟 Update the Fixed Top Summary Box
+            let netPending = totalGave - totalGot;
+            let pendingText = netPending > 0 ? `₹${netPending.toLocaleString('en-IN')} (Dr)` : (netPending < 0 ? `₹${Math.abs(netPending).toLocaleString('en-IN')} (Cr)` : `₹0`);
+            let summaryBox = document.getElementById('ledger-deep-summary-box');
+            if(summaryBox) {
+                summaryBox.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; background:#f8fafd; padding:14px; border-radius:12px; border:1px solid #c2e7ff; box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+                        <div style="text-align:center;"><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; font-weight:600;">Total Billed</div><div style="font-size:15px; color:var(--danger); font-weight:800; margin-top:4px;">₹${totalGave.toLocaleString('en-IN')}</div></div>
+                        <div style="text-align:center;"><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; font-weight:600;">Total Received</div><div style="font-size:15px; color:var(--success); font-weight:800; margin-top:4px;">₹${totalGot.toLocaleString('en-IN')}</div></div>
                         <div style="text-align:center;"><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; font-weight:600;">Net Pending</div><div style="font-size:15px; color:var(--primary-dark); font-weight:800; margin-top:4px;">${pendingText}</div></div>
                     </div>
                 `;
+            }
 
+            if(customerEntries.length === 0) { 
+                entryList.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No entries yet.</div>`; 
+            } else { 
+                customerEntries.reverse(); // Reverse to show newest on top
                 customerEntries.forEach(entry => { 
                     let amt = parseFloat(entry.amount) || 0; 
-                    let gaveHtml = entry.type === 'Gave' ? `₹ ${amt}` : '-'; 
-                    let gotHtml = entry.type === 'Got' ? `₹ ${amt}` : '-'; 
+                    let gaveHtml = entry.type === 'Gave' ? `₹ ${amt.toLocaleString('en-IN')}` : '-'; 
+                    let gotHtml = entry.type === 'Got' ? `₹ ${amt.toLocaleString('en-IN')}` : '-'; 
                     let d = new Date(entry.date); 
                     let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); 
-                    let curBalStr = entry.runningBal > 0 ? `₹${entry.runningBal} Dr` : (entry.runningBal < 0 ? `₹${Math.abs(entry.runningBal)} Cr` : `₹0`);
+                    let curBalStr = entry.runningBal > 0 ? `₹${entry.runningBal.toLocaleString('en-IN')} Dr` : (entry.runningBal < 0 ? `₹${Math.abs(entry.runningBal).toLocaleString('en-IN')} Cr` : `₹0`);
                     
                     entryList.innerHTML += `
                         <div class="entry-card" onclick="openEntryDetails('${entry.key}')">
@@ -5373,27 +5371,6 @@
                             <div class="ec-got" style="color:var(--success); font-weight:700;">${gotHtml}</div>
                         </div>`; 
                 }); 
-            } 
-            
-            let balEl = document.getElementById('l-deep-bal-amt'); 
-            let txtEl = document.getElementById('l-deep-bal-text'); 
-            let finalBal = totalGave - totalGot; 
-            
-            // SMART LOGIC: Admin vs Customer
-            let isAdmin = (window.currentUserRole === 'admin');
-
-            if(finalBal > 0) { 
-                balEl.innerText = "₹ " + finalBal.toLocaleString(); 
-                balEl.style.color = isAdmin ? "var(--success)" : "var(--danger)"; 
-                txtEl.innerText = isAdmin ? "You will get" : "Due Payment"; 
-            } else if (finalBal < 0) { 
-                balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); 
-                balEl.style.color = isAdmin ? "var(--danger)" : "var(--success)"; 
-                txtEl.innerText = isAdmin ? "You will give" : "Advance Amount"; 
-            } else { 
-                balEl.innerText = "₹ 0"; 
-                balEl.style.color = "var(--text-dark)"; 
-                txtEl.innerText = "Settled"; 
             } 
         }
         window.renderCustomerList = function(list) { 

@@ -6334,8 +6334,11 @@
             let invType = document.getElementById('pos-invoice-type').value; // Sale or Return
             let stockMultiplier = invType === 'Sale' ? -1 : 1; // Sale = Minus stock, Return = Plus stock
 
+            let invType = document.getElementById('pos-invoice-type') ? document.getElementById('pos-invoice-type').value : 'Sale';
+            let stockMultiplier = invType === 'Sale' ? -1 : 1;
+
             currentCart.forEach(item => {
-                let key = (item.cat + "_" + item.shade).replace(/[.#$\[\]]/g, '_'); // 🔥 Firebase Key Bug Fix
+                let key = (item.cat + "_" + item.shade).replace(/[.#$\[\]]/g, '_');
                 if(!stockUpdates[key]) stockUpdates[key] = {cone:0, kg:0};
                 stockUpdates[key].cone += ((parseFloat(item.rawCone) || 0) * stockMultiplier); 
                 stockUpdates[key].kg += ((parseFloat(item.rawKg) || 0) * stockMultiplier);
@@ -6354,7 +6357,7 @@
                         let newKg = cur.kg + diffKg;
                         if(newCone < 0) newCone = 0; 
                         if(newKg < 0) newKg = 0;
-                        set(itemRef, {cone: newCone, kg: newKg, isInactive: null}); // 🌟 Auto-Reactivate deleted items on Return
+                        set(itemRef, {cone: newCone, kg: newKg, isInactive: null}); // Reactivate if returned 
                     }); 
                 }
             });
@@ -6380,27 +6383,18 @@
             }
 
             // 🌟 SMART PAYMENT ADJUSTMENT (POINT 7) 🌟
-            // अगर पुराना बिल एडिट हो रहा है, तो पुरानी पेमेंट को सुरक्षित रखना है और नया बैलेंस निकालना है
             let breakdownData = {};
             if (window.editingEntryKey && currentEntryData && currentEntryData.breakdown) {
                 let oldCash = parseFloat(currentEntryData.breakdown.cash) || 0;
                 let oldOnline = parseFloat(currentEntryData.breakdown.online) || 0;
-                
-                // अगर एडिट करते समय कस्टमर ने कुछ और पैसे भी दिए हैं, तो उन्हें पुराने पैसों में जोड़ दें
                 let updatedCash = oldCash + cAmt;
                 let updatedOnline = oldOnline + oAmt;
                 let totalPaidNow = updatedCash + updatedOnline;
-                
-                breakdownData = { 
-                    cash: updatedCash, 
-                    online: updatedOnline, 
-                    pending: grandInvoiceTotal - totalPaidNow 
-                };
+                breakdownData = { cash: updatedCash, online: updatedOnline, pending: grandInvoiceTotal - totalPaidNow };
             } else {
                 breakdownData = { cash: cAmt, online: oAmt, pending: grandInvoiceTotal - totalReceived };
             }
 
-            // 🌟 Professional Total Qty for Database Details
             let tCones = 0; let tKgs = 0;
             currentCart.forEach(i => { tCones += (parseFloat(i.rawCone) || 0); tKgs += (parseFloat(i.rawKg) || 0); });
             let qtyDetailsStr = "";
@@ -6408,7 +6402,6 @@
             else if (tCones > 0) qtyDetailsStr = `${tCones} Cone`;
             else if (tKgs > 0) qtyDetailsStr = `${tKgs} KG`;
 
-            // 🌟 SMART AUDIT TRAIL (POINT 9) 🌟
             let auditText = "";
             if (window.editingEntryKey && currentEntryData) {
                 let editTime = new Date().toLocaleString('en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
@@ -6416,7 +6409,7 @@
                 auditText = `${createTime} | Last Edit: ${editTime}`;
             }
 
-            let ledgerAction = invType === 'Sale' ? "Gave" : "Got";
+            let ledgerAction = invType === 'Sale' ? "Gave" : "Got"; // Sale = Gave Goods, Return = Got Goods
             let detailsPrefix = invType === 'Sale' ? "Invoice" : "Return";
 
             let newEntry = { 
@@ -6440,12 +6433,12 @@
 
             savePromise.then(() => {
                 let paymentPromises = [];
-                
-                let pType = invType === 'Sale' ? "Got" : "Gave";
-                let cbType = invType === 'Sale' ? "IN" : "OUT";
+
+                let pType = invType === 'Sale' ? "Got" : "Gave"; // Sale = Got money, Return = Gave money
+                let cbType = invType === 'Sale' ? "IN" : "OUT";  // Sale = Cash IN, Return = Cash OUT
                 let cashDetail = invType === 'Sale' ? "Cash Received" : "Cash Refunded";
                 let onlineDetail = invType === 'Sale' ? "Online Received" : "Online Refunded";
-
+                
                 if(cAmt > 0) {
                     let cashEntry = { date: finalDateTime, name: partyName, type: pType, amount: cAmt, details: `${cashDetail} (${detailsPrefix} #${tempBillNo})` };
                     paymentPromises.push(push(ref(db, 'Ledger'), cashEntry));
@@ -6469,7 +6462,6 @@
                         paymentPromises.push(update(ref(db, 'CashBankBook/Banks/' + targetBank.key), { balance: newBankBal }));
                     }
                 }
-
                 Promise.all(paymentPromises).then(() => {
                     if(typeof window.autoAdjustBillNumbers === 'function') window.autoAdjustBillNumbers(); 
                 });
@@ -6512,7 +6504,7 @@
                 if (type === 'Sale') {
                     btnSale.style.background = '#e8f0fe'; btnSale.style.color = 'var(--primary)';
                     btnRet.style.background = 'transparent'; btnRet.style.color = 'var(--text-muted)';
-                    if(pageTitle) pageTitle.innerText = "Create Invoice";
+                    if(pageTitle) pageTitle.innerText = "Sale Invoice"; // 🌟 TITLE FIXED
                     if(genBtn) genBtn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">update</span> Update Invoice` : `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">receipt_long</span> Generate Invoice`;
                 } else {
                     btnRet.style.background = '#fdf2f2'; btnRet.style.color = 'var(--danger)';
@@ -6543,11 +6535,11 @@
             
             document.getElementById('inv-party').value = ''; 
             document.getElementById('inv-phone').value = ''; 
-            
-            window.setInvoiceType('Sale'); // Reset toggle
+
+            window.setInvoiceType('Sale'); // Reset toggle & title
             
             let posTitle = document.querySelector('#pos-page .page-title');
-            if(posTitle) posTitle.innerText = "Create Invoice";
+            if(posTitle) posTitle.innerText = "Sale Invoice"; // 🌟 TITLE FIXED
             
             if(typeof checkPosStep1 === 'function') checkPosStep1();
             

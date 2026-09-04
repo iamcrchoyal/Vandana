@@ -3496,7 +3496,15 @@
             let custEntries = allLedgerData.filter(e => e.name === currentPartyName).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
             
             let openingBal = 0; let statementHtml = ""; let currentBal = 0;
-            custEntries.forEach(entry => { let eTime = new Date(entry.date).getTime(); let amt = parseFloat(entry.amount) || 0; if(eTime < fromTime) { if(entry.type === 'Gave') openingBal += amt; else openingBal -= amt; } });
+            custEntries.forEach(entry => { 
+                let eTime = new Date(entry.date).getTime(); 
+                let amt = parseFloat(entry.amount) || 0; 
+                let effectiveAmt = (entry.breakdown && entry.breakdown.pending !== undefined) ? parseFloat(entry.breakdown.pending) : amt;
+                if(eTime < fromTime) { 
+                    if(entry.type === 'Gave') openingBal += effectiveAmt; 
+                    else openingBal -= effectiveAmt; 
+                } 
+            });
             currentBal = openingBal;
             let opBalStr = openingBal > 0 ? `₹${openingBal} Dr` : (openingBal < 0 ? `₹${Math.abs(openingBal)} Cr` : `₹0`);
             
@@ -3508,15 +3516,18 @@
                 let eTime = new Date(entry.date).getTime(); 
                 if(eTime >= fromTime && eTime <= toTime) { 
                     let amt = parseFloat(entry.amount) || 0; 
-                    let gave = entry.type === 'Gave' ? amt : 0; 
-                    let got = entry.type === 'Got' ? amt : 0; 
+                    let effectiveAmt = (entry.breakdown && entry.breakdown.pending !== undefined) ? parseFloat(entry.breakdown.pending) : amt;
+                    let fullBillText = entry.breakdown ? ` (Bill: ₹${amt.toLocaleString('en-IN')}, Paid: ₹${((parseFloat(entry.breakdown.cash)||0) + (parseFloat(entry.breakdown.online)||0)).toLocaleString('en-IN')})` : '';
+
+                    let gave = entry.type === 'Gave' ? effectiveAmt : 0; 
+                    let got = entry.type === 'Got' ? effectiveAmt : 0; 
                     currentBal += (gave - got); 
                     
                     let d = new Date(entry.date);
                     let dStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}); 
                     
                     let curBalStr = currentBal > 0 ? `₹${currentBal} Dr` : (currentBal < 0 ? `₹${Math.abs(currentBal)} Cr` : `₹0`); 
-                    statementHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0; font-size:12px;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0; font-size:13px;">${entry.details || 'App Entry'}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right; color:var(--danger);">${gave ? '₹'+gave : '-'}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right; color:var(--success);">${got ? '₹'+got : '-'}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right; font-weight:bold;">${curBalStr}</td></tr>`; 
+                    statementHtml += `<tr><td style="padding:10px; border:1px solid #e0e2e0; font-size:12px;">${dStr}</td><td style="padding:10px; border:1px solid #e0e2e0; font-size:13px;">${entry.details || 'App Entry'} ${fullBillText}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right; color:var(--danger);">${gave ? '₹'+gave : '-'}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right; color:var(--success);">${got ? '₹'+got : '-'}</td><td style="padding:10px; border:1px solid #e0e2e0; text-align:right; font-weight:bold;">${curBalStr}</td></tr>`; 
                 } 
             });
             
@@ -4712,7 +4723,35 @@
             let selD = new Date(selectedDateString); selD.setDate(selD.getDate() - 1); let yesterdayDateString = selD.toISOString().split('T')[0]; 
             let todayDate = new Date(); let currentMonth = todayDate.toISOString().slice(0, 7); let lmDate = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1); let lastMonth = lmDate.toISOString().slice(0, 7);
             
-            allLedgerData.forEach(entry => { let amt = parseFloat(entry.amount) || 0; let entryDateString = ""; let entryMonthString = ""; try { let d = new Date(entry.date); if (!isNaN(d)) { entryDateString = d.toISOString().split('T')[0]; entryMonthString = d.toISOString().slice(0, 7); } } catch(e){} if(!balances[entry.name]) balances[entry.name] = 0; if(entry.type === 'Gave') balances[entry.name] += amt; if(entry.type === 'Got') balances[entry.name] -= amt; if (entry.details && entry.details.includes("Invoice")) { if(entryMonthString === currentMonth) { currMonthSales[entry.name] = (currMonthSales[entry.name] || 0) + amt; } if(entryMonthString === lastMonth) { lastMonthSales[entry.name] = (lastMonthSales[entry.name] || 0) + amt; } if(entryDateString === yesterdayDateString){ yesterdayTotalSale += amt; } if(entryDateString === selectedDateString){ todayTotalSale += amt; if(entry.breakdown){ todayCash += (parseFloat(entry.breakdown.cash)||0) + (parseFloat(entry.breakdown.online)||0); todayCredit += (parseFloat(entry.breakdown.pending)||0); } else { todayCredit += amt; } let boxMatch = entry.details.match(/(\d+)\s*Box/i); if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); } } });
+            allLedgerData.forEach(entry => { 
+                let amt = parseFloat(entry.amount) || 0; 
+                let entryDateString = ""; let entryMonthString = ""; 
+                try { let d = new Date(entry.date); if (!isNaN(d)) { entryDateString = d.toISOString().split('T')[0]; entryMonthString = d.toISOString().slice(0, 7); } } catch(e){} 
+                if(!balances[entry.name]) balances[entry.name] = 0; 
+
+                // 🌟 SINGLE ENTRY ACCOUNTING LOGIC (Using Pending Amount)
+                let effectiveAmt = (entry.breakdown && entry.breakdown.pending !== undefined) ? parseFloat(entry.breakdown.pending) : amt;
+
+                if(entry.type === 'Gave') balances[entry.name] += effectiveAmt; 
+                if(entry.type === 'Got') balances[entry.name] -= effectiveAmt; 
+                
+                if (entry.details && entry.details.includes("Invoice") || (entry.details && entry.details.includes("Return"))) { 
+                    if(entryMonthString === currentMonth) { currMonthSales[entry.name] = (currMonthSales[entry.name] || 0) + amt; } 
+                    if(entryMonthString === lastMonth) { lastMonthSales[entry.name] = (lastMonthSales[entry.name] || 0) + amt; } 
+                    if(entryDateString === yesterdayDateString){ yesterdayTotalSale += amt; } 
+                    if(entryDateString === selectedDateString){ 
+                        todayTotalSale += amt; 
+                        if(entry.breakdown){ 
+                            todayCash += (parseFloat(entry.breakdown.cash)||0) + (parseFloat(entry.breakdown.online)||0); 
+                            todayCredit += (parseFloat(entry.breakdown.pending)||0); 
+                        } else { 
+                            todayCredit += amt; 
+                        } 
+                        let boxMatch = entry.details.match(/(\d+)\s*Box/i); 
+                        if (boxMatch && boxMatch[1]) todayTotalBox += parseInt(boxMatch[1]); 
+                    } 
+                } 
+            });
             
             window.globalBalances = balances; 
             let partyTypes = {}; 
@@ -5270,13 +5309,19 @@
             } else { 
                 customerEntries.forEach(entry => { 
                     let amt = parseFloat(entry.amount) || 0; 
-                    let gaveHtml = entry.type === 'Gave' ? `₹ ${amt}` : ''; 
-                    let gotHtml = entry.type === 'Got' ? `₹ ${amt}` : ''; 
-                    if(entry.type === 'Gave') totalGave += amt; 
-                    if(entry.type === 'Got') totalGot += amt; 
+                    let effectiveAmt = (entry.breakdown && entry.breakdown.pending !== undefined) ? parseFloat(entry.breakdown.pending) : amt;
+                    let displayAmt = effectiveAmt; 
+
+                    let fullBillText = entry.breakdown ? `<br><span style="font-size:10px; color:var(--primary);">Bill: ₹${amt.toLocaleString('en-IN')}, Paid: ₹${((parseFloat(entry.breakdown.cash)||0) + (parseFloat(entry.breakdown.online)||0)).toLocaleString('en-IN')}</span>` : '';
+
+                    let gaveHtml = entry.type === 'Gave' && displayAmt !== 0 ? `₹ ${displayAmt}` : (entry.type === 'Gave' ? '-' : ''); 
+                    let gotHtml = entry.type === 'Got' && displayAmt !== 0 ? `₹ ${displayAmt}` : (entry.type === 'Got' ? '-' : ''); 
+                    if(entry.type === 'Gave') totalGave += effectiveAmt; 
+                    if(entry.type === 'Got') totalGot += effectiveAmt; 
+
                     let d = new Date(entry.date); 
                     let dateStr = isNaN(d) ? entry.date : d.toLocaleString('en-GB', {day:'numeric', month:'short'}); 
-                    entryList.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')"><div class="ec-left"><div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${dateStr}</div><div style="font-size:13px; color:var(--text-dark); font-weight:500;">${entry.details || 'App Entry'}</div></div><div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div></div>`; 
+                    entryList.innerHTML += `<div class="entry-card" onclick="openEntryDetails('${entry.key}')"><div class="ec-left"><div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${dateStr}</div><div style="font-size:13px; color:var(--text-dark); font-weight:500;">${entry.details || 'App Entry'} ${fullBillText}</div></div><div class="ec-gave">${gaveHtml}</div><div class="ec-got">${gotHtml}</div></div>`; 
                 }); 
             } 
             
@@ -6440,27 +6485,21 @@
 
             savePromise.then(() => {
                 let paymentPromises = [];
-                
-                let pType = invType === 'Sale' ? "Got" : "Gave";
-                let cbType = invType === 'Sale' ? "IN" : "OUT";
+
+                let cbType = invType === 'Sale' ? "IN" : "OUT";  // Sale = Cash IN, Return = Cash OUT
                 let cashDetail = invType === 'Sale' ? "Cash Received" : "Cash Refunded";
                 let onlineDetail = invType === 'Sale' ? "Online Received" : "Online Refunded";
-
+                
                 if(cAmt > 0) {
-                    let cashEntry = { date: finalDateTime, name: partyName, type: pType, amount: cAmt, details: `${cashDetail} (${detailsPrefix} #${tempBillNo})` };
-                    paymentPromises.push(push(ref(db, 'Ledger'), cashEntry));
-                    
+                    // 🌟 SINGLE ENTRY ACCOUNTING: Ledger me alag se payment nahi jayega, sirf Cashbook me jayega
                     paymentPromises.push(push(ref(db, 'CashBankBook/Transactions'), {
-                        date: finalDateTime, type: cbType, amount: cAmt, mode: 'Cash', modeKey: 'Cash', details: `${detailsPrefix} Payment - ${partyName} (#${tempBillNo})`
+                        date: finalDateTime, type: cbType, amount: cAmt, mode: 'Cash', modeKey: 'Cash', details: `${cashDetail} - ${partyName} (#${tempBillNo})`
                     }));
                 }
                 
                 if(oAmt > 0) {
-                    let onlineEntry = { date: finalDateTime, name: partyName, type: pType, amount: oAmt, details: `${onlineDetail} via ${window.selBankNameForBill} (${detailsPrefix} #${tempBillNo})` };
-                    paymentPromises.push(push(ref(db, 'Ledger'), onlineEntry));
-                    
                     paymentPromises.push(push(ref(db, 'CashBankBook/Transactions'), {
-                        date: finalDateTime, type: cbType, amount: oAmt, mode: window.selBankNameForBill, modeKey: window.selBankKeyForBill, details: `${detailsPrefix} Payment - ${partyName} (#${tempBillNo})`
+                        date: finalDateTime, type: cbType, amount: oAmt, mode: window.selBankNameForBill, modeKey: window.selBankKeyForBill, details: `${onlineDetail} - ${partyName} (#${tempBillNo})`
                     }));
                     
                     let targetBank = cbBanks.find(b => b.key === window.selBankKeyForBill);
@@ -6469,6 +6508,7 @@
                         paymentPromises.push(update(ref(db, 'CashBankBook/Banks/' + targetBank.key), { balance: newBankBal }));
                     }
                 }
+
 
                 Promise.all(paymentPromises).then(() => {
                     if(typeof window.autoAdjustBillNumbers === 'function') window.autoAdjustBillNumbers(); 

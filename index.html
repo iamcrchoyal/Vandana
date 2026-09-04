@@ -6618,9 +6618,6 @@
                 }
             });
             
-            let pdfHeader = document.querySelector('#pdf-invoice-template h2');
-            if (pdfHeader) pdfHeader.innerText = (currentEntryData.invoiceType === 'Return') ? "SALE RETURN" : "INVOICE";
-
             let pdfHeader = document.getElementById('pdf-invoice-title');
             if (pdfHeader) pdfHeader.innerText = (currentEntryData.invoiceType === 'Return') ? "SALE RETURN / CREDIT NOTE" : "INVOICE";
 

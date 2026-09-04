@@ -3499,10 +3499,9 @@
             custEntries.forEach(entry => { 
                 let eTime = new Date(entry.date).getTime(); 
                 let amt = parseFloat(entry.amount) || 0; 
-                let effectiveAmt = (entry.breakdown && entry.breakdown.pending !== undefined) ? parseFloat(entry.breakdown.pending) : amt;
                 if(eTime < fromTime) { 
-                    if(entry.type === 'Gave') openingBal += effectiveAmt; 
-                    else openingBal -= effectiveAmt; 
+                    if(entry.type === 'Gave') openingBal += amt; 
+                    else openingBal -= amt; 
                 } 
             });
             currentBal = openingBal;
@@ -4749,13 +4748,15 @@
                 try { let d = new Date(entry.date); if (!isNaN(d)) { entryDateString = d.toISOString().split('T')[0]; entryMonthString = d.toISOString().slice(0, 7); } } catch(e){} 
                 if(!balances[entry.name]) balances[entry.name] = 0; 
 
-                // 🌟 SINGLE ENTRY ACCOUNTING LOGIC (Using Pending Amount)
-                let effectiveAmt = (entry.breakdown && entry.breakdown.pending !== undefined) ? parseFloat(entry.breakdown.pending) : amt;
-
-                if(entry.type === 'Gave') balances[entry.name] += effectiveAmt; 
-                if(entry.type === 'Got') balances[entry.name] -= effectiveAmt; 
+                // 🌟 TRUE DOUBLE-ENTRY BALANCE LOGIC
+                if(entry.type === 'Gave') balances[entry.name] += amt; 
+                if(entry.type === 'Got') balances[entry.name] -= amt; 
                 
-                if (entry.details && entry.details.includes("Invoice") || (entry.details && entry.details.includes("Return"))) { 
+                // 🌟 DASHBOARD LOGIC (STRICTLY ONLY SALE BILLS)
+                // Payment entry has "Cash Received (Invoice...)", so we use startsWith("Invoice #") to skip payments
+                let isMainSaleBill = entry.type === 'Gave' && entry.details && entry.details.startsWith("Invoice #");
+
+                if (isMainSaleBill) { 
                     if(entryMonthString === currentMonth) { currMonthSales[entry.name] = (currMonthSales[entry.name] || 0) + amt; } 
                     if(entryMonthString === lastMonth) { lastMonthSales[entry.name] = (lastMonthSales[entry.name] || 0) + amt; } 
                     if(entryDateString === yesterdayDateString){ yesterdayTotalSale += amt; } 

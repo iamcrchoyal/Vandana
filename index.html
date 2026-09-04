@@ -5677,14 +5677,32 @@
             let isKgItem = (cat === 'Cording' || cat === 'Nylon' || cat === 'Bobbin');
             let isQtyValid = isKgItem ? (kg > 0) : (cone > 0);
 
+            // 🌟 SMART VALIDATION: Check Sale vs Return (Allows 0 Stock on Return)
+            let invType = document.getElementById('pos-invoice-type') ? document.getElementById('pos-invoice-type').value : 'Sale';
+            let availStock = getAvailableStock(cat, shade);
+            let hasStock = isKgItem ? (availStock.kg >= kg) : (availStock.cone >= cone);
+            let allowAdd = (invType === 'Return') ? true : hasStock;
+
+            let btnText = (invType === 'Return') ? 'Return Product' : 'Add Product';
+            btn.innerHTML = `<span class="material-symbols-rounded" style="font-size:22px;">${invType === 'Return' ? 'keyboard_return' : 'add_shopping_cart'}</span> ${btnText}`;
+
             if (cat && shade && isQtyValid && rate > 0) {
-                // Ready to Add (Make it Blue/Active)
-                btn.style.background = 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)';
-                btn.style.color = 'white';
-                btn.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
-                btn.style.pointerEvents = 'auto';
+                if(allowAdd) {
+                    // Ready to Add
+                    btn.style.background = 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)';
+                    btn.style.color = 'white';
+                    btn.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
+                    btn.style.pointerEvents = 'auto';
+                } else {
+                    // Out of stock error in button UI
+                    btn.style.background = '#fdf2f2';
+                    btn.style.color = 'var(--danger)';
+                    btn.innerHTML = `<span class="material-symbols-rounded" style="font-size:22px;">error</span> Out of Stock`;
+                    btn.style.boxShadow = 'none';
+                    btn.style.pointerEvents = 'none';
+                }
             } else {
-                // Not Ready (Make it Grey/Disabled)
+                // Not Ready
                 btn.style.background = '#e0e2e0';
                 btn.style.color = '#a8aaaa';
                 btn.style.boxShadow = 'none';
@@ -5747,9 +5765,9 @@
             if (!cat || !shade) return alert("Select Category and Item Details first!"); 
             if ((cone <= 0 && kg <= 0) || rate <= 0) return alert("Enter valid Qty & Rate!"); 
 
-            let invType = document.getElementById('pos-invoice-type').value;
+            let invType = document.getElementById('pos-invoice-type') ? document.getElementById('pos-invoice-type').value : 'Sale';
 
-            // 🌟 Live Cart-Aware Stock Check (Only if Sale, Skip for Return)
+            // Live Cart-Aware Stock Check (Bypass if Return)
             if (invType === 'Sale') {
                 let availStock = getAvailableStock(cat, shade);
 
@@ -5869,39 +5887,26 @@
                     let coneQty = availStock.cone;
                     let kgQty = availStock.kg;
                     
-                    if(coneQty > 0 || kgQty > 0) { 
-                        itemsFound = true;
-                        let isKgItem = (cat === 'Cording' || cat === 'Nylon' || cat === 'Bobbin');
-                        let stockVal = isKgItem ? `${kgQty} Kg` : `${coneQty} Cone`;
-                        
-                        // Green if stock > 5, Orange if Low Stock
-                        let stockColor = (isKgItem ? kgQty : coneQty) > 5 ? 'var(--success)' : '#d97706';
-                        let stockBg = (isKgItem ? kgQty : coneQty) > 5 ? '#e6f4ea' : '#fef3c7';
-                        let icon = (isKgItem ? kgQty : coneQty) > 5 ? '🟢' : '🟠';
-
-                        listContainer.innerHTML += `
-                            <div class="search-item-row" onclick="selectProductSearchItem('${parts[1]}', '${icon} ${stockVal}')" style="background:white; padding:14px 16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; border:1px solid #e0e2e0; box-shadow:0 2px 4px rgba(0,0,0,0.02); transition:0.2s;">
-                                <sp// 🌟 Use Smart Available Stock (DB Stock - Cart Stock)
-                    let availStock = getAvailableStock(parts[0], parts[1]);
-                    let coneQty = availStock.cone;
-                    let kgQty = availStock.kg;
-                    
                     itemsFound = true;
                     let isKgItem = (cat === 'Cording' || cat === 'Nylon' || cat === 'Bobbin');
+                    let currentQty = isKgItem ? kgQty : coneQty;
                     let stockVal = isKgItem ? `${kgQty} Kg` : `${coneQty} Cone`;
-                    let qty = isKgItem ? kgQty : coneQty;
                     
-                    // 🌟 ZERO STOCK SMART LOGIC
-                    let stockColor = qty > 5 ? 'var(--success)' : (qty > 0 ? '#d97706' : 'var(--danger)');
-                    let stockBg = qty > 5 ? '#e6f4ea' : (qty > 0 ? '#fef3c7' : '#fdf2f2');
-                    let icon = qty > 5 ? '🟢' : (qty > 0 ? '🟠' : '🔴');
+                    let stockColor = '#d97706'; let stockBg = '#fef3c7'; let icon = '🟠';
+                    
+                    if (currentQty > 5) {
+                        stockColor = 'var(--success)'; stockBg = '#e6f4ea'; icon = '🟢';
+                    } else if (currentQty <= 0) {
+                        stockColor = 'var(--danger)'; stockBg = '#fdf2f2'; icon = '🔴';
+                        stockVal = 'Out of Stock'; // 🌟 SHOWS 0 STOCK ALWAYS
+                    }
 
                     listContainer.innerHTML += `
                         <div class="search-item-row" onclick="selectProductSearchItem('${parts[1]}', '${icon} ${stockVal}')" style="background:white; padding:14px 16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; border:1px solid #e0e2e0; box-shadow:0 2px 4px rgba(0,0,0,0.02); transition:0.2s;">
                             <span style="font-weight:700; color:var(--text-dark); font-size:15px; font-family:'Product Sans', sans-serif;">${parts[1]}</span>
                             <span style="font-size:13px; color:${stockColor}; font-weight:700; background:${stockBg}; padding:6px 10px; border-radius:8px;">${icon} ${stockVal}</span>
                         </div>
-                    `;
+                    `; 
                 } 
             }
 
@@ -6118,11 +6123,11 @@
             let maxCone = parseFloat(document.getElementById('ei-max-cone').value) || 0;
             let maxKg = parseFloat(document.getElementById('ei-max-kg').value) || 0;
 
+            let invType = document.getElementById('pos-invoice-type') ? document.getElementById('pos-invoice-type').value : 'Sale';
+
             if (cone <= 0 || rate <= 0) return alert("Please enter valid Cone & Rate!");
             
-            let invType = document.getElementById('pos-invoice-type').value;
-
-            // 🛑 STOCK VALIDATION (Skip for Return)
+            // 🛑 STOCK VALIDATION: Bypass if Return
             if (invType === 'Sale') {
                 if (cone > maxCone) {
                     if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Only ${maxCone} Cone left. ⚠️`);
@@ -6351,12 +6356,7 @@
                         let newKg = cur.kg + diffKg;
                         if(newCone < 0) newCone = 0; 
                         if(newKg < 0) newKg = 0;
-                        
-                        // 🌟 AUTO-REACTIVATE IF INACTIVE
-                        let updatePayload = {cone: newCone, kg: newKg};
-                        if (invType === 'Return') updatePayload.isInactive = null;
-                        
-                        set(itemRef, updatePayload); 
+                        set(itemRef, {cone: newCone, kg: newKg, isInactive: null}); // 🌟 Auto-Reactivate deleted items on Return
                     }); 
                 }
             });

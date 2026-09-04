@@ -1137,6 +1137,11 @@
         </div>
         <div class="scroll-content" style="padding:16px;">
             
+            <!-- 🌟 SMART DATE LABEL 🌟 -->
+            <div style="text-align:center; margin-bottom:14px;">
+                <span id="gr-date-label" style="font-size:13px; font-weight:800; color:var(--primary-dark); background:#e8f0fe; padding:6px 16px; border-radius:20px; border:1px solid #c2e7ff; display:inline-block; letter-spacing:0.5px;">-</span>
+            </div>
+
             <!-- Summary Cards -->
             <div style="display:flex; justify-content:space-between; text-align:center; background:#f8fafd; border:1px solid #c2e7ff; border-radius:16px; padding:20px 6px; margin-bottom:24px; box-shadow:0 4px 15px rgba(10,86,208,0.05);">
                 <div style="flex:1; border-right:1px solid #e0e2e0; padding:0 4px; overflow:hidden;">
@@ -4260,6 +4265,19 @@
             
             document.getElementById('gr-qty-in-list').innerHTML = inHtml || '<span style="color:gray;">0</span>';
             document.getElementById('gr-qty-out-list').innerHTML = outHtml || '<span style="color:gray;">0</span>';
+
+            // 🌟 Update Date Label (Superfast)
+            let dateLabel = document.getElementById('gr-date-label');
+            if(dateLabel) {
+                if(window.currentGdSumMode === 'month') {
+                    let dObj = new Date(fromD);
+                    dateLabel.innerText = dObj.toLocaleString('en-GB', { month: 'long', year: 'numeric' }).toUpperCase();
+                } else {
+                    let fd = new Date(fromD).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+                    let td = new Date(toD).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+                    dateLabel.innerText = `${fd} TO ${td}`.toUpperCase();
+                }
+            }
 
             document.getElementById('gr-month-in').innerText = "₹ " + monthIn.toLocaleString('en-IN');
             document.getElementById('gr-month-out').innerText = "₹ " + monthOut.toLocaleString('en-IN');

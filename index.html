@@ -5747,19 +5747,23 @@
             if (!cat || !shade) return alert("Select Category and Item Details first!"); 
             if ((cone <= 0 && kg <= 0) || rate <= 0) return alert("Enter valid Qty & Rate!"); 
 
-            // Live Cart-Aware Stock Check
-            let availStock = getAvailableStock(cat, shade);
+            let invType = document.getElementById('pos-invoice-type').value;
 
-            if(cone > 0 && cone > availStock.cone) { 
-                if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.cone} Cone bache hain. ⚠️`);
-                else alert(`Error: Out of Stock! Only ${availStock.cone} Cone left.`);
-                return; 
-            } 
-            if (cat === 'Nylon' || cat === 'Cording' || cat === 'Bobbin') {
-                if (kg > 0 && kg > availStock.kg) {
-                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.kg} Kg bache hain. ⚠️`);
-                    else alert(`Error: Out of Stock! Only ${availStock.kg} Kg left.`);
+            // 🌟 Live Cart-Aware Stock Check (Only if Sale, Skip for Return)
+            if (invType === 'Sale') {
+                let availStock = getAvailableStock(cat, shade);
+
+                if(cone > 0 && cone > availStock.cone) { 
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.cone} Cone bache hain. ⚠️`);
+                    else alert(`Error: Out of Stock! Only ${availStock.cone} Cone left.`);
                     return; 
+                } 
+                if (cat === 'Nylon' || cat === 'Cording' || cat === 'Bobbin') {
+                    if (kg > 0 && kg > availStock.kg) {
+                        if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.kg} Kg bache hain. ⚠️`);
+                        else alert(`Error: Out of Stock! Only ${availStock.kg} Kg left.`);
+                        return; 
+                    }
                 }
             }
 
@@ -5877,11 +5881,27 @@
 
                         listContainer.innerHTML += `
                             <div class="search-item-row" onclick="selectProductSearchItem('${parts[1]}', '${icon} ${stockVal}')" style="background:white; padding:14px 16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; border:1px solid #e0e2e0; box-shadow:0 2px 4px rgba(0,0,0,0.02); transition:0.2s;">
-                                <span style="font-weight:700; color:var(--text-dark); font-size:15px; font-family:'Product Sans', sans-serif;">${parts[1]}</span>
-                                <span style="font-size:13px; color:${stockColor}; font-weight:700; background:${stockBg}; padding:6px 10px; border-radius:8px;">${icon} ${stockVal}</span>
-                            </div>
-                        `; 
-                    }
+                                <sp// 🌟 Use Smart Available Stock (DB Stock - Cart Stock)
+                    let availStock = getAvailableStock(parts[0], parts[1]);
+                    let coneQty = availStock.cone;
+                    let kgQty = availStock.kg;
+                    
+                    itemsFound = true;
+                    let isKgItem = (cat === 'Cording' || cat === 'Nylon' || cat === 'Bobbin');
+                    let stockVal = isKgItem ? `${kgQty} Kg` : `${coneQty} Cone`;
+                    let qty = isKgItem ? kgQty : coneQty;
+                    
+                    // 🌟 ZERO STOCK SMART LOGIC
+                    let stockColor = qty > 5 ? 'var(--success)' : (qty > 0 ? '#d97706' : 'var(--danger)');
+                    let stockBg = qty > 5 ? '#e6f4ea' : (qty > 0 ? '#fef3c7' : '#fdf2f2');
+                    let icon = qty > 5 ? '🟢' : (qty > 0 ? '🟠' : '🔴');
+
+                    listContainer.innerHTML += `
+                        <div class="search-item-row" onclick="selectProductSearchItem('${parts[1]}', '${icon} ${stockVal}')" style="background:white; padding:14px 16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; border:1px solid #e0e2e0; box-shadow:0 2px 4px rgba(0,0,0,0.02); transition:0.2s;">
+                            <span style="font-weight:700; color:var(--text-dark); font-size:15px; font-family:'Product Sans', sans-serif;">${parts[1]}</span>
+                            <span style="font-size:13px; color:${stockColor}; font-weight:700; background:${stockBg}; padding:6px 10px; border-radius:8px;">${icon} ${stockVal}</span>
+                        </div>
+                    `;
                 } 
             }
 
@@ -6009,8 +6029,10 @@
             let badge = document.getElementById('live-stock-badge');
             badge.innerText = stockText;
             
-            // Set Badge Color Dynamically
-            if(stockText.includes('🟠')) {
+            // Set Badge Color Dynamically (Includes 🔴 for 0 Stock)
+            if(stockText.includes('🔴')) {
+                badge.style.background = '#fdf2f2'; badge.style.color = 'var(--danger)'; badge.style.borderColor = '#f8cbcb';
+            } else if(stockText.includes('🟠')) {
                 badge.style.background = '#fef3c7'; badge.style.color = '#d97706'; badge.style.borderColor = '#fde68a';
             } else {
                 badge.style.background = '#e6f4ea'; badge.style.color = 'var(--success)'; badge.style.borderColor = '#cce8d6';
@@ -6098,17 +6120,21 @@
 
             if (cone <= 0 || rate <= 0) return alert("Please enter valid Cone & Rate!");
             
-            // 🛑 STOCK VALIDATION: Agar stock se zyada likha to Error dekar rok dena
-            if (cone > maxCone) {
-                if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Only ${maxCone} Cone left. ⚠️`);
-                else alert(`Out of Stock! Only ${maxCone} Cone left.`);
-                return; // Code yahi ruk jayega, save nahi hoga
-            }
-            if (cat === 'Nylon' || cat === 'Coding' || cat === 'Bobbin') {
-                if (kg > 0 && kg > maxKg) {
-                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Only ${maxKg} Kg left. ⚠️`);
-                    else alert(`Out of Stock! Only ${maxKg} Kg left.`);
-                    return; 
+            let invType = document.getElementById('pos-invoice-type').value;
+
+            // 🛑 STOCK VALIDATION (Skip for Return)
+            if (invType === 'Sale') {
+                if (cone > maxCone) {
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Only ${maxCone} Cone left. ⚠️`);
+                    else alert(`Out of Stock! Only ${maxCone} Cone left.`);
+                    return; // Code yahi ruk jayega, save nahi hoga
+                }
+                if (cat === 'Nylon' || cat === 'Coding' || cat === 'Bobbin') {
+                    if (kg > 0 && kg > maxKg) {
+                        if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Only ${maxKg} Kg left. ⚠️`);
+                        else alert(`Out of Stock! Only ${maxKg} Kg left.`);
+                        return; 
+                    }
                 }
             }
 
@@ -6325,7 +6351,12 @@
                         let newKg = cur.kg + diffKg;
                         if(newCone < 0) newCone = 0; 
                         if(newKg < 0) newKg = 0;
-                        set(itemRef, {cone: newCone, kg: newKg}); 
+                        
+                        // 🌟 AUTO-REACTIVATE IF INACTIVE
+                        let updatePayload = {cone: newCone, kg: newKg};
+                        if (invType === 'Return') updatePayload.isInactive = null;
+                        
+                        set(itemRef, updatePayload); 
                     }); 
                 }
             });

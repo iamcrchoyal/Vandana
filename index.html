@@ -4748,13 +4748,13 @@
                 try { let d = new Date(entry.date); if (!isNaN(d)) { entryDateString = d.toISOString().split('T')[0]; entryMonthString = d.toISOString().slice(0, 7); } } catch(e){} 
                 if(!balances[entry.name]) balances[entry.name] = 0; 
 
-                // 🌟 TRUE DOUBLE-ENTRY BALANCE LOGIC
+                // 🌟 TRUE DOUBLE-ENTRY BALANCE LOGIC (For Ledger & Running Balance)
                 if(entry.type === 'Gave') balances[entry.name] += amt; 
                 if(entry.type === 'Got') balances[entry.name] -= amt; 
                 
-                // 🌟 DASHBOARD LOGIC (STRICTLY ONLY SALE BILLS)
-                // Payment entry has "Cash Received (Invoice...)", so we use startsWith("Invoice #") to skip payments
-                let isMainSaleBill = entry.type === 'Gave' && entry.details && entry.details.startsWith("Invoice #");
+                // 🌟 DASHBOARD LOGIC (STRICTLY ONLY MAIN SALE BILLS)
+                // Blocks Payment Entries & Return Bills completely from Today's Sale
+                let isMainSaleBill = (entry.invoiceType === 'Sale') || (!entry.invoiceType && entry.type === 'Gave' && entry.details && entry.details.startsWith("Invoice #") && entry.breakdown);
 
                 if (isMainSaleBill) { 
                     if(entryMonthString === currentMonth) { currMonthSales[entry.name] = (currMonthSales[entry.name] || 0) + amt; } 
@@ -4762,6 +4762,7 @@
                     if(entryDateString === yesterdayDateString){ yesterdayTotalSale += amt; } 
                     if(entryDateString === selectedDateString){ 
                         todayTotalSale += amt; 
+                        // Dashbaord uses breakdown from Main Bill only
                         if(entry.breakdown){ 
                             todayCash += (parseFloat(entry.breakdown.cash)||0) + (parseFloat(entry.breakdown.online)||0); 
                             todayCredit += (parseFloat(entry.breakdown.pending)||0); 

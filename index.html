@@ -5393,7 +5393,27 @@
                        </div>`; 
                 }); 
             } 
-            // NOTE: The balEl text logic has been removed as we are now using the static 3-column summary header!
+            
+            let balEl = document.getElementById('l-deep-bal-amt'); 
+            let txtEl = document.getElementById('l-deep-bal-text'); 
+            let finalBal = totalGave - totalGot; 
+            
+            // SMART LOGIC: Admin vs Customer
+            let isAdmin = (window.currentUserRole === 'admin');
+
+            if(finalBal > 0) { 
+                balEl.innerText = "₹ " + finalBal.toLocaleString(); 
+                balEl.style.color = isAdmin ? "var(--success)" : "var(--danger)"; 
+                txtEl.innerText = isAdmin ? "You will get" : "Due Payment"; 
+            } else if (finalBal < 0) { 
+                balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); 
+                balEl.style.color = isAdmin ? "var(--danger)" : "var(--success)"; 
+                txtEl.innerText = isAdmin ? "You will give" : "Advance Amount"; 
+            } else { 
+                balEl.innerText = "₹ 0"; 
+                balEl.style.color = "var(--text-dark)"; 
+                txtEl.innerText = "Settled"; 
+            } 
         }
         window.renderCustomerList = function(list) { 
             let isAdmin = (window.currentUserRole === 'admin');

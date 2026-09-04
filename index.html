@@ -474,8 +474,8 @@
                     <p style="margin:4px 0 0 0; font-size:14px; color:#444746; font-weight:500;" id="pdf-biz-gst">GSTIN: --------</p>
                 </div>
                 <div style="text-align:right;">
-                                <h2 id="pdf-invoice-title" style="margin:0; font-size:36px; color:#1f1f1f; letter-spacing:1px; text-transform:uppercase;">INVOICE</h2>
-                                <p style="margin:12px 0 0 0; font-size:15px; font-weight:700;">Bill No: <span style="color:#b3261e;" id="pdf-bill-no">-</span></p>
+                    <h2 style="margin:0; font-size:36px; color:#1f1f1f; letter-spacing:1px; text-transform:uppercase;">INVOICE</h2>
+                    <p style="margin:12px 0 0 0; font-size:15px; font-weight:700;">Bill No: <span style="color:#b3261e;" id="pdf-bill-no">-</span></p>
                     <p style="margin:4px 0 0 0; font-size:14px; color:#444746; font-weight:500;">Date: <span id="pdf-date">-</span></p>
                 </div>
             </div>
@@ -6416,14 +6416,8 @@
                 auditText = `${createTime} | Last Edit: ${editTime}`;
             }
 
-            // 🌟 NEW: SMART ACCOUNTING FOR SALE vs RETURN
-            let invType = document.getElementById('pos-invoice-type') ? document.getElementById('pos-invoice-type').value : 'Sale';
-            let ledgerAction = invType === 'Sale' ? "Gave" : "Got"; 
-            let paymentLedgerAction = invType === 'Sale' ? "Got" : "Gave"; 
-            let cbType = invType === 'Sale' ? "IN" : "OUT";
-            let detailsPrefix = invType === 'Sale' ? "Invoice" : "Sale Return";
-            let cashDetail = invType === 'Sale' ? "Cash Received" : "Cash Refunded";
-            let onlineDetail = invType === 'Sale' ? "Online Received" : "Online Refunded";
+            let ledgerAction = invType === 'Sale' ? "Gave" : "Got";
+            let detailsPrefix = invType === 'Sale' ? "Invoice" : "Return";
 
             let newEntry = { 
                 date: finalDateTime, name: partyName, type: ledgerAction, amount: grandInvoiceTotal, 
@@ -6447,28 +6441,28 @@
             savePromise.then(() => {
                 let paymentPromises = [];
                 
+                let pType = invType === 'Sale' ? "Got" : "Gave";
+                let cbType = invType === 'Sale' ? "IN" : "OUT";
+                let cashDetail = invType === 'Sale' ? "Cash Received" : "Cash Refunded";
+                let onlineDetail = invType === 'Sale' ? "Online Received" : "Online Refunded";
+
                 if(cAmt > 0) {
-                    // 1. Customer Ledger Entry (Cash)
-                    let cashEntry = { date: finalDateTime, name: partyName, type: paymentLedgerAction, amount: cAmt, details: `${cashDetail} (${detailsPrefix} #${tempBillNo})` };
+                    let cashEntry = { date: finalDateTime, name: partyName, type: pType, amount: cAmt, details: `${cashDetail} (${detailsPrefix} #${tempBillNo})` };
                     paymentPromises.push(push(ref(db, 'Ledger'), cashEntry));
                     
-                    // 2. Cashbook Entry
                     paymentPromises.push(push(ref(db, 'CashBankBook/Transactions'), {
                         date: finalDateTime, type: cbType, amount: cAmt, mode: 'Cash', modeKey: 'Cash', details: `${detailsPrefix} Payment - ${partyName} (#${tempBillNo})`
                     }));
                 }
                 
                 if(oAmt > 0) {
-                    // 1. Customer Ledger Entry (Online)
-                    let onlineEntry = { date: finalDateTime, name: partyName, type: paymentLedgerAction, amount: oAmt, details: `${onlineDetail} via ${window.selBankNameForBill} (${detailsPrefix} #${tempBillNo})` };
+                    let onlineEntry = { date: finalDateTime, name: partyName, type: pType, amount: oAmt, details: `${onlineDetail} via ${window.selBankNameForBill} (${detailsPrefix} #${tempBillNo})` };
                     paymentPromises.push(push(ref(db, 'Ledger'), onlineEntry));
                     
-                    // 2. Bank Transaction Entry
                     paymentPromises.push(push(ref(db, 'CashBankBook/Transactions'), {
                         date: finalDateTime, type: cbType, amount: oAmt, mode: window.selBankNameForBill, modeKey: window.selBankKeyForBill, details: `${detailsPrefix} Payment - ${partyName} (#${tempBillNo})`
                     }));
                     
-                    // 3. Bank Account Balance Update
                     let targetBank = cbBanks.find(b => b.key === window.selBankKeyForBill);
                     if(targetBank) {
                         let newBankBal = (cbType === 'IN') ? (targetBank.balance + oAmt) : (targetBank.balance - oAmt);
@@ -6518,7 +6512,7 @@
                 if (type === 'Sale') {
                     btnSale.style.background = '#e8f0fe'; btnSale.style.color = 'var(--primary)';
                     btnRet.style.background = 'transparent'; btnRet.style.color = 'var(--text-muted)';
-                    if(pageTitle) pageTitle.innerText = "Sale Invoice";
+                    if(pageTitle) pageTitle.innerText = "Create Invoice";
                     if(genBtn) genBtn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">update</span> Update Invoice` : `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">receipt_long</span> Generate Invoice`;
                 } else {
                     btnRet.style.background = '#fdf2f2'; btnRet.style.color = 'var(--danger)';
@@ -6553,7 +6547,7 @@
             window.setInvoiceType('Sale'); // Reset toggle
             
             let posTitle = document.querySelector('#pos-page .page-title');
-            if(posTitle) posTitle.innerText = "Sale Invoice";
+            if(posTitle) posTitle.innerText = "Create Invoice";
             
             if(typeof checkPosStep1 === 'function') checkPosStep1();
             
@@ -6618,8 +6612,8 @@
                 }
             });
             
-            let pdfHeader = document.getElementById('pdf-invoice-title');
-            if (pdfHeader) pdfHeader.innerText = (currentEntryData.invoiceType === 'Return') ? "SALE RETURN / CREDIT NOTE" : "INVOICE";
+            let pdfHeader = document.querySelector('#pdf-invoice-template h2');
+            if (pdfHeader) pdfHeader.innerText = (currentEntryData.invoiceType === 'Return') ? "SALE RETURN" : "INVOICE";
 
             let d = new Date(currentEntryData.date); 
             document.getElementById('pdf-date').innerText = isNaN(d) ? currentEntryData.date : d.toLocaleDateString('en-GB'); 

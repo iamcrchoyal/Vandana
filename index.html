@@ -1641,13 +1641,32 @@
                     <a href="#" id="l-call-btn" style="color:var(--primary); text-decoration:none; font-size:20px; border:1px solid var(--border); border-radius:50%; width:36px; height:36px; display:flex; justify-content:center; align-items:center; background:white; box-shadow:0 1px 2px rgba(0,0,0,0.02); flex-shrink:0; margin-left:12px;" class="material-symbols-rounded">call</a>
                 </div>
             </div>
-            <div class="ledger-bal-card">
-                <span style="font-size:13px; color:var(--text-muted); font-weight:500;" id="l-deep-bal-text">You will give</span>
-                <span style="font-size:24px; font-weight:400; font-family: 'Product Sans', sans-serif;" id="l-deep-bal-amt">₹ 0</span>
             </div>
-            <div class="ledger-action-tabs">
-                <div class="l-tab" id="l-wa-btn" style="color:#146c2e; border-color:#e0e2e0; display:flex; justify-content:center; align-items:center; gap:4px;"><span class="material-symbols-rounded" style="font-size:16px;">chat</span> Reminder</div>
-                <div class="l-tab" id="l-sms-btn" onclick="openReportModal('ledger')" style="display:flex; justify-content:center; align-items:center; gap:4px;"><span class="material-symbols-rounded" style="font-size:16px;">description</span> Statement</div>
+            </div>
+            <!-- 🌟 NEW PROFESSIONAL LEDGER SUMMARY BOX 🌟 -->
+            <div style="display:flex; justify-content:space-between; background:linear-gradient(145deg, #ffffff 0%, #f8fafd 100%); padding:16px; border-radius:16px; margin: 12px 16px; border:1px solid #c2e7ff; box-shadow:0 4px 15px rgba(0,0,0,0.03);">
+                <div style="text-align:center; flex:1; border-right:1px dashed #e0e2e0;">
+                    <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase; font-weight:800; margin-bottom:4px; letter-spacing: 0.5px;">Total Billed</div>
+                    <div style="font-size:18px; color:var(--danger); font-weight:800; font-family:'Product Sans', sans-serif;" id="l-deep-total-billed">₹0</div>
+                </div>
+                <div style="text-align:center; flex:1; border-right:1px dashed #e0e2e0;">
+                    <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase; font-weight:800; margin-bottom:4px; letter-spacing: 0.5px;">Received</div>
+                    <div style="font-size:18px; color:var(--success); font-weight:800; font-family:'Product Sans', sans-serif;" id="l-deep-total-received">₹0</div>
+                </div>
+                <div style="text-align:center; flex:1;">
+                    <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase; font-weight:800; margin-bottom:4px; letter-spacing: 0.5px;">Net Pending</div>
+                    <div style="font-size:18px; color:var(--primary-dark); font-weight:800; font-family:'Product Sans', sans-serif;" id="l-deep-net-pending">₹0</div>
+                </div>
+            </div>
+            
+            <!-- 🌟 PROFESSIONAL ACTION BUTTONS 🌟 -->
+            <div style="display:flex; gap:12px; margin: 0 16px 16px 16px;">
+                <button id="l-wa-btn" style="flex:1; background:#e6f4ea; color:#146c2e; border:1px solid #cce8d6; padding:12px; border-radius:14px; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer; box-shadow:0 2px 6px rgba(20, 108, 46, 0.05); transition:transform 0.2s;">
+                    <span class="material-symbols-rounded" style="font-size:18px;">chat</span> Reminder
+                </button>
+                <button id="l-sms-btn" onclick="openReportModal('ledger')" style="flex:1; background:#f0f4f9; color:var(--primary-dark); border:1px solid #c2e7ff; padding:12px; border-radius:14px; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer; box-shadow:0 2px 6px rgba(10, 86, 208, 0.05); transition:transform 0.2s;">
+                    <span class="material-symbols-rounded" style="font-size:18px;">description</span> Statement
+                </button>
             </div>
             <div style="text-align:center; font-size:11px; font-weight:500; color:var(--text-muted); margin-bottom:12px;" id="l-deep-today-date"></div>
             <div style="display:flex; justify-content:space-between; padding:0 20px; font-size:10px; font-weight:600; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;"><span style="flex:2;">ENTRIES</span><span style="flex:1; text-align:center;">YOU GAVE</span><span style="flex:1; text-align:right;">YOU GOT</span></div>
@@ -4935,18 +4954,18 @@
             let waBtn = document.getElementById('l-wa-btn');
             
             if (isAdmin) {
-                // Admin Button
-                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;">chat</span> Reminder`;
+                // Admin Button (Professional Green)
+                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:18px;">chat</span> Reminder`;
                 waBtn.style.color = '#146c2e';
-                waBtn.style.backgroundColor = 'white';
-                waBtn.style.borderColor = '#e0e2e0';
+                waBtn.style.backgroundColor = '#e6f4ea';
+                waBtn.style.borderColor = '#cce8d6';
                 waBtn.onclick = () => window.open(`https://wa.me/91${phone}?text=Hello ${name}, reminder from Vandana Enterprises.`, '_blank'); 
             } else {
-                // Customer Button
-                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;">payments</span> Pay Now`;
+                // Customer Button (Professional Purple)
+                waBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size:18px;">payments</span> Pay Now`;
                 waBtn.style.color = 'white';
-                waBtn.style.backgroundColor = '#5f259f'; 
-                waBtn.style.borderColor = '#5f259f';
+                waBtn.style.backgroundColor = '#7e22ce'; 
+                waBtn.style.borderColor = '#6b21a8';
                 
                 waBtn.onclick = () => {
                     let upiId = localStorage.getItem('v_adminUpi');
@@ -5343,16 +5362,16 @@
                 customerEntries.reverse();
 
                 let netPending = totalGave - totalGot;
-                let pendingText = netPending > 0 ? `₹${netPending} (Dr)` : (netPending < 0 ? `₹${Math.abs(netPending)} (Cr)` : `₹0`);
+                let pendingText = netPending > 0 ? `₹${netPending.toLocaleString('en-IN')} Dr` : (netPending < 0 ? `₹${Math.abs(netPending).toLocaleString('en-IN')} Cr` : `₹0`);
 
-                // 🌟 Smart Ledger Summary Header
-                entryList.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; background:#f8fafd; padding:14px; border-radius:12px; margin-bottom:16px; border:1px solid #c2e7ff; box-shadow:0 2px 6px rgba(0,0,0,0.02);">
-                        <div style="text-align:center;"><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; font-weight:600;">Total Billed</div><div style="font-size:15px; color:var(--danger); font-weight:800; margin-top:4px;">₹${totalGave}</div></div>
-                        <div style="text-align:center;"><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; font-weight:600;">Total Received</div><div style="font-size:15px; color:var(--success); font-weight:800; margin-top:4px;">₹${totalGot}</div></div>
-                        <div style="text-align:center;"><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; font-weight:600;">Net Pending</div><div style="font-size:15px; color:var(--primary-dark); font-weight:800; margin-top:4px;">${pendingText}</div></div>
-                    </div>
-                `;
+                // 🌟 Update Static Header Elements
+                let billedEl = document.getElementById('l-deep-total-billed');
+                let receivedEl = document.getElementById('l-deep-total-received');
+                let pendingEl = document.getElementById('l-deep-net-pending');
+                
+                if(billedEl) billedEl.innerText = `₹${totalGave.toLocaleString('en-IN')}`;
+                if(receivedEl) receivedEl.innerText = `₹${totalGot.toLocaleString('en-IN')}`;
+                if(pendingEl) pendingEl.innerText = pendingText;
 
                 customerEntries.forEach(entry => { 
                     let amt = parseFloat(entry.amount) || 0; 
@@ -5371,30 +5390,10 @@
                             </div>
                             <div class="ec-gave" style="color:var(--danger); font-weight:700;">${gaveHtml}</div>
                             <div class="ec-got" style="color:var(--success); font-weight:700;">${gotHtml}</div>
-                        </div>`; 
+                       </div>`; 
                 }); 
             } 
-            
-            let balEl = document.getElementById('l-deep-bal-amt'); 
-            let txtEl = document.getElementById('l-deep-bal-text'); 
-            let finalBal = totalGave - totalGot; 
-            
-            // SMART LOGIC: Admin vs Customer
-            let isAdmin = (window.currentUserRole === 'admin');
-
-            if(finalBal > 0) { 
-                balEl.innerText = "₹ " + finalBal.toLocaleString(); 
-                balEl.style.color = isAdmin ? "var(--success)" : "var(--danger)"; 
-                txtEl.innerText = isAdmin ? "You will get" : "Due Payment"; 
-            } else if (finalBal < 0) { 
-                balEl.innerText = "₹ " + Math.abs(finalBal).toLocaleString(); 
-                balEl.style.color = isAdmin ? "var(--danger)" : "var(--success)"; 
-                txtEl.innerText = isAdmin ? "You will give" : "Advance Amount"; 
-            } else { 
-                balEl.innerText = "₹ 0"; 
-                balEl.style.color = "var(--text-dark)"; 
-                txtEl.innerText = "Settled"; 
-            } 
+            // NOTE: The balEl text logic has been removed as we are now using the static 3-column summary header!
         }
         window.renderCustomerList = function(list) { 
             let isAdmin = (window.currentUserRole === 'admin');

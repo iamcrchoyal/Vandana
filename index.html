@@ -732,52 +732,68 @@
                 </div>
                 <span class="material-symbols-rounded" style="color: #856404;">chevron_right</span>
             </div>
-            <!-- 🌟 POINT 4: SMART TODAY'S SALE CARD (CASH vs CREDIT & TREND) 🌟 -->
-            <div class="google-card" style="padding:20px; border:1px solid #c2e7ff; background:linear-gradient(145deg, #ffffff 0%, #f8fafd 100%);" onclick="openInvoicesPage()">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+
+            <!-- 🌟 COMPACT & SLEEK TODAY'S SALE CARD 🌟 -->
+            <div class="google-card" style="padding:16px; border:1px solid #c2e7ff; background:linear-gradient(145deg, #ffffff 0%, #f8fafd 100%); margin-bottom:12px;" onclick="openInvoicesPage()">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
                     <div>
-                        <div class="card-header" id="dash-sales-label" style="color:var(--text-muted); font-size:13px; text-transform:uppercase; letter-spacing:0.5px;">Today's Billed</div>
-                        <div class="card-value" id="dash-card-sale-value" style="color:var(--primary-dark); font-size:42px;">₹0</div>
+                        <div class="card-header" id="dash-sales-label" style="color:var(--text-muted); font-size:12px; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px;">Today's Billed</div>
+                        <div class="card-value" id="dash-card-sale-value" style="color:var(--primary-dark); font-size:32px; line-height:1;">₹0</div>
                     </div>
-                    <div id="dash-trend-badge" style="background:#f0f4f9; color:var(--text-muted); padding:6px 12px; border-radius:20px; font-size:12px; font-weight:800; display:flex; align-items:center; gap:4px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                    <div id="dash-trend-badge" style="background:#f0f4f9; color:var(--text-muted); padding:4px 10px; border-radius:16px; font-size:12px; font-weight:800; display:flex; align-items:center; gap:4px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
                         <span class="material-symbols-rounded" style="font-size:16px;">trending_flat</span> 0%
                     </div>
                 </div>
                 
-                <div style="display:flex; justify-content:space-between; margin-top:16px; border-top:1px dashed #e0e2e0; padding-top:12px;">
+                <div style="display:flex; justify-content:space-between; margin-top:12px; border-top:1px dashed #e0e2e0; padding-top:10px;">
                     <div>
-                        <div style="font-size:11px; color:var(--text-muted); font-weight:600;">CASH RECEIVED</div>
-                        <div style="font-size:16px; font-weight:800; color:var(--success); font-family:'Product Sans', sans-serif;" id="dash-cash-sale">₹0</div>
+                        <div style="font-size:10px; color:var(--text-muted); font-weight:700;">CASH RECEIVED</div>
+                        <div style="font-size:15px; font-weight:800; color:var(--success); font-family:'Product Sans', sans-serif;" id="dash-cash-sale">₹0</div>
                     </div>
                     <div style="text-align:right;">
-                        <div style="font-size:11px; color:var(--text-muted); font-weight:600;">CREDIT / DUE</div>
-                        <div style="font-size:16px; font-weight:800; color:var(--danger); font-family:'Product Sans', sans-serif;" id="dash-credit-sale">₹0</div>
+                        <div style="font-size:10px; color:var(--text-muted); font-weight:700;">CREDIT / DUE</div>
+                        <div style="font-size:15px; font-weight:800; color:var(--danger); font-family:'Product Sans', sans-serif;" id="dash-credit-sale">₹0</div>
                     </div>
                 </div>
             </div>
-            <div class="dash-card-grid" id="admin-action-cards">
-				<div class="dash-card" onclick="navTo('pos-page', null)">
-					<div style="width:48px; height:48px; border-radius:16px; background:#e8f0fe; color:var(--primary); display:flex; align-items:center; justify-content:center; margin-bottom:10px;" class="anim-float">
-						<span class="material-symbols-rounded" style="font-size:26px;">receipt_long</span>
+
+            <!-- 🌟 4 SMART BUTTONS GRID (2x2) 🌟 -->
+            <div class="dash-card-grid" id="admin-action-cards" style="margin-bottom:12px; gap:10px;">
+				<!-- 1. Sale Invoice (Blue) -->
+				<div class="dash-card" onclick="navTo('pos-page', null)" style="min-height:100px; padding:14px 10px;">
+					<div style="width:40px; height:40px; border-radius:12px; background:#e8f0fe; color:var(--primary); display:flex; align-items:center; justify-content:center; margin-bottom:8px;" class="anim-float">
+						<span class="material-symbols-rounded" style="font-size:22px;">receipt_long</span>
 					</div>
-					<div class="card-header" style="margin-bottom:2px; font-size:15px; font-weight:700;">Sale Invoice</div>
-					<div style="font-size:12px; color:var(--text-muted); font-weight:500;">Quick Billing & POS</div>
-					<div style="font-size:12px; color:var(--primary); font-weight:700; margin-top:8px; display:flex; align-items:center; gap:2px;">
-						Open <span class="material-symbols-rounded" style="font-size:16px;">arrow_forward</span>
-					</div>
+					<div class="card-header" style="margin-bottom:2px; font-size:14px; font-weight:700;">Sale Invoice</div>
+					<div style="font-size:11px; color:var(--text-muted); font-weight:600;">Make Bill</div>
 				</div>
-				<div class="dash-card" onclick="navTo('godown-page', null)">
-					<div style="width:48px; height:48px; border-radius:16px; background:#fdf2f2; color:var(--danger); display:flex; align-items:center; justify-content:center; margin-bottom:10px;" class="anim-float">
-						<span class="material-symbols-rounded" style="font-size:26px;">storefront</span>
+				<!-- 2. Purchase Invoice (Purple/Orange) -->
+				<div class="dash-card" onclick="if(typeof window.showSaaSToast === 'function') window.showSaaSToast('Purchase Entry Module Coming Soon! 🚀'); else alert('Coming Soon!');" style="min-height:100px; padding:14px 10px;">
+					<div style="width:40px; height:40px; border-radius:12px; background:#f4ebff; color:#9333ea; display:flex; align-items:center; justify-content:center; margin-bottom:8px;" class="anim-float">
+						<span class="material-symbols-rounded" style="font-size:22px;">shopping_cart</span>
 					</div>
-					<div class="card-header" style="margin-bottom:2px; font-size:15px; font-weight:700;">Shop Transfer</div>
-					<div style="font-size:12px; color:var(--text-muted); font-weight:500;">Inter-Shop Transfer</div>
-					<div style="font-size:12px; color:var(--danger); font-weight:700; margin-top:8px; display:flex; align-items:center; gap:2px;">
-						View <span class="material-symbols-rounded" style="font-size:16px;">arrow_forward</span>
+					<div class="card-header" style="margin-bottom:2px; font-size:14px; font-weight:700; color:#4c1d95;">Purchase Invoice</div>
+					<div style="font-size:11px; color:var(--text-muted); font-weight:600;">Add Stock</div>
+				</div>
+				<!-- 3. Shop Transfer (Red) -->
+				<div class="dash-card" onclick="navTo('godown-page', null)" style="min-height:100px; padding:14px 10px;">
+					<div style="width:40px; height:40px; border-radius:12px; background:#fdf2f2; color:var(--danger); display:flex; align-items:center; justify-content:center; margin-bottom:8px;" class="anim-float">
+						<span class="material-symbols-rounded" style="font-size:22px;">storefront</span>
 					</div>
+					<div class="card-header" style="margin-bottom:2px; font-size:14px; font-weight:700;">Shop Transfer</div>
+					<div style="font-size:11px; color:var(--text-muted); font-weight:600;">Send/Receive</div>
+				</div>
+				<!-- 4. Cash Book (Green) -->
+				<div class="dash-card" onclick="navTo('cashbook-page', null)" style="min-height:100px; padding:14px 10px;">
+					<div style="width:40px; height:40px; border-radius:12px; background:#e6f4ea; color:var(--success); display:flex; align-items:center; justify-content:center; margin-bottom:8px;" class="anim-float">
+						<span class="material-symbols-rounded" style="font-size:22px;">account_balance</span>
+					</div>
+					<div class="card-header" style="margin-bottom:2px; font-size:14px; font-weight:700;">Cash Book</div>
+					<div style="font-size:11px; color:var(--text-muted); font-weight:600;">Bank & Galla</div>
 				</div>
 			</div>
-            <div id="top-customers-container" style="background: rgba(255, 255, 255, 0.9); border-radius: 20px; padding: 16px; margin-top: -10px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid rgba(255,255,255,0.8); width: 100%; box-sizing: border-box; position: relative; z-index: 5;">
+            
+            <div id="top-customers-container" style="background: rgba(255, 255, 255, 0.9); border-radius: 20px; padding: 16px; margin-top: 0px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid rgba(255,255,255,0.8); width: 100%; box-sizing: border-box; position: relative; z-index: 5;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
                     <div style="font-size: 14px; font-weight: 500; color: var(--text-dark); font-family: 'Inter', sans-serif; display:flex; align-items:center; gap:8px;" id="tc-title">Top Customers <span class="anim-pulse" style="display:inline-block;">🏆</span> <span style="font-size:10px; color:var(--danger); background:#fdf2f2; padding:2px 6px; border-radius:4px; border:1px solid #f8cbcb;" class="anim-pulse">2% OFF</span></div>
 </div>

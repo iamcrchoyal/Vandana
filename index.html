@@ -5677,14 +5677,32 @@
             let isKgItem = (cat === 'Cording' || cat === 'Nylon' || cat === 'Bobbin');
             let isQtyValid = isKgItem ? (kg > 0) : (cone > 0);
 
+            // 🌟 SMART VALIDATION: Check Sale vs Return (Allows 0 Stock on Return)
+            let invType = document.getElementById('pos-invoice-type') ? document.getElementById('pos-invoice-type').value : 'Sale';
+            let availStock = getAvailableStock(cat, shade);
+            let hasStock = isKgItem ? (availStock.kg >= kg) : (availStock.cone >= cone);
+            let allowAdd = (invType === 'Return') ? true : hasStock;
+
+            let btnText = (invType === 'Return') ? 'Return Product' : 'Add Product';
+            btn.innerHTML = `<span class="material-symbols-rounded" style="font-size:22px;">${invType === 'Return' ? 'keyboard_return' : 'add_shopping_cart'}</span> ${btnText}`;
+
             if (cat && shade && isQtyValid && rate > 0) {
-                // Ready to Add (Make it Blue/Active)
-                btn.style.background = 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)';
-                btn.style.color = 'white';
-                btn.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
-                btn.style.pointerEvents = 'auto';
+                if(allowAdd) {
+                    // Ready to Add
+                    btn.style.background = 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)';
+                    btn.style.color = 'white';
+                    btn.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
+                    btn.style.pointerEvents = 'auto';
+                } else {
+                    // Out of stock error in button UI
+                    btn.style.background = '#fdf2f2';
+                    btn.style.color = 'var(--danger)';
+                    btn.innerHTML = `<span class="material-symbols-rounded" style="font-size:22px;">error</span> Out of Stock`;
+                    btn.style.boxShadow = 'none';
+                    btn.style.pointerEvents = 'none';
+                }
             } else {
-                // Not Ready (Make it Grey/Disabled)
+                // Not Ready
                 btn.style.background = '#e0e2e0';
                 btn.style.color = '#a8aaaa';
                 btn.style.boxShadow = 'none';
@@ -5747,19 +5765,23 @@
             if (!cat || !shade) return alert("Select Category and Item Details first!"); 
             if ((cone <= 0 && kg <= 0) || rate <= 0) return alert("Enter valid Qty & Rate!"); 
 
-            // Live Cart-Aware Stock Check
-            let availStock = getAvailableStock(cat, shade);
+            let invType = document.getElementById('pos-invoice-type') ? document.getElementById('pos-invoice-type').value : 'Sale';
 
-            if(cone > 0 && cone > availStock.cone) { 
-                if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.cone} Cone bache hain. ⚠️`);
-                else alert(`Error: Out of Stock! Only ${availStock.cone} Cone left.`);
-                return; 
-            } 
-            if (cat === 'Nylon' || cat === 'Cording' || cat === 'Bobbin') {
-                if (kg > 0 && kg > availStock.kg) {
-                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.kg} Kg bache hain. ⚠️`);
-                    else alert(`Error: Out of Stock! Only ${availStock.kg} Kg left.`);
+            // Live Cart-Aware Stock Check (Bypass if Return)
+            if (invType === 'Sale') {
+                let availStock = getAvailableStock(cat, shade);
+
+                if(cone > 0 && cone > availStock.cone) { 
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.cone} Cone bache hain. ⚠️`);
+                    else alert(`Error: Out of Stock! Only ${availStock.cone} Cone left.`);
                     return; 
+                } 
+                if (cat === 'Nylon' || cat === 'Cording' || cat === 'Bobbin') {
+                    if (kg > 0 && kg > availStock.kg) {
+                        if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Cart me hone ke baad ab sirf ${availStock.kg} Kg bache hain. ⚠️`);
+                        else alert(`Error: Out of Stock! Only ${availStock.kg} Kg left.`);
+                        return; 
+                    }
                 }
             }
 
@@ -5865,23 +5887,26 @@
                     let coneQty = availStock.cone;
                     let kgQty = availStock.kg;
                     
-                    if(coneQty > 0 || kgQty > 0) { 
-                        itemsFound = true;
-                        let isKgItem = (cat === 'Cording' || cat === 'Nylon' || cat === 'Bobbin');
-                        let stockVal = isKgItem ? `${kgQty} Kg` : `${coneQty} Cone`;
-                        
-                        // Green if stock > 5, Orange if Low Stock
-                        let stockColor = (isKgItem ? kgQty : coneQty) > 5 ? 'var(--success)' : '#d97706';
-                        let stockBg = (isKgItem ? kgQty : coneQty) > 5 ? '#e6f4ea' : '#fef3c7';
-                        let icon = (isKgItem ? kgQty : coneQty) > 5 ? '🟢' : '🟠';
-
-                        listContainer.innerHTML += `
-                            <div class="search-item-row" onclick="selectProductSearchItem('${parts[1]}', '${icon} ${stockVal}')" style="background:white; padding:14px 16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; border:1px solid #e0e2e0; box-shadow:0 2px 4px rgba(0,0,0,0.02); transition:0.2s;">
-                                <span style="font-weight:700; color:var(--text-dark); font-size:15px; font-family:'Product Sans', sans-serif;">${parts[1]}</span>
-                                <span style="font-size:13px; color:${stockColor}; font-weight:700; background:${stockBg}; padding:6px 10px; border-radius:8px;">${icon} ${stockVal}</span>
-                            </div>
-                        `; 
+                    itemsFound = true;
+                    let isKgItem = (cat === 'Cording' || cat === 'Nylon' || cat === 'Bobbin');
+                    let currentQty = isKgItem ? kgQty : coneQty;
+                    let stockVal = isKgItem ? `${kgQty} Kg` : `${coneQty} Cone`;
+                    
+                    let stockColor = '#d97706'; let stockBg = '#fef3c7'; let icon = '🟠';
+                    
+                    if (currentQty > 5) {
+                        stockColor = 'var(--success)'; stockBg = '#e6f4ea'; icon = '🟢';
+                    } else if (currentQty <= 0) {
+                        stockColor = 'var(--danger)'; stockBg = '#fdf2f2'; icon = '🔴';
+                        stockVal = 'Out of Stock'; // 🌟 SHOWS 0 STOCK ALWAYS
                     }
+
+                    listContainer.innerHTML += `
+                        <div class="search-item-row" onclick="selectProductSearchItem('${parts[1]}', '${icon} ${stockVal}')" style="background:white; padding:14px 16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; border:1px solid #e0e2e0; box-shadow:0 2px 4px rgba(0,0,0,0.02); transition:0.2s;">
+                            <span style="font-weight:700; color:var(--text-dark); font-size:15px; font-family:'Product Sans', sans-serif;">${parts[1]}</span>
+                            <span style="font-size:13px; color:${stockColor}; font-weight:700; background:${stockBg}; padding:6px 10px; border-radius:8px;">${icon} ${stockVal}</span>
+                        </div>
+                    `; 
                 } 
             }
 
@@ -6096,19 +6121,23 @@
             let maxCone = parseFloat(document.getElementById('ei-max-cone').value) || 0;
             let maxKg = parseFloat(document.getElementById('ei-max-kg').value) || 0;
 
+            let invType = document.getElementById('pos-invoice-type') ? document.getElementById('pos-invoice-type').value : 'Sale';
+
             if (cone <= 0 || rate <= 0) return alert("Please enter valid Cone & Rate!");
             
-            // 🛑 STOCK VALIDATION: Agar stock se zyada likha to Error dekar rok dena
-            if (cone > maxCone) {
-                if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Only ${maxCone} Cone left. ⚠️`);
-                else alert(`Out of Stock! Only ${maxCone} Cone left.`);
-                return; // Code yahi ruk jayega, save nahi hoga
-            }
-            if (cat === 'Nylon' || cat === 'Coding' || cat === 'Bobbin') {
-                if (kg > 0 && kg > maxKg) {
-                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Only ${maxKg} Kg left. ⚠️`);
-                    else alert(`Out of Stock! Only ${maxKg} Kg left.`);
-                    return; 
+            // 🛑 STOCK VALIDATION: Bypass if Return
+            if (invType === 'Sale') {
+                if (cone > maxCone) {
+                    if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Only ${maxCone} Cone left. ⚠️`);
+                    else alert(`Out of Stock! Only ${maxCone} Cone left.`);
+                    return; // Code yahi ruk jayega, save nahi hoga
+                }
+                if (cat === 'Nylon' || cat === 'Coding' || cat === 'Bobbin') {
+                    if (kg > 0 && kg > maxKg) {
+                        if(typeof window.showSaaSToast === 'function') window.showSaaSToast(`Error: Out of Stock! Only ${maxKg} Kg left. ⚠️`);
+                        else alert(`Out of Stock! Only ${maxKg} Kg left.`);
+                        return; 
+                    }
                 }
             }
 
@@ -6325,7 +6354,7 @@
                         let newKg = cur.kg + diffKg;
                         if(newCone < 0) newCone = 0; 
                         if(newKg < 0) newKg = 0;
-                        set(itemRef, {cone: newCone, kg: newKg}); 
+                        set(itemRef, {cone: newCone, kg: newKg, isInactive: null}); // 🌟 Auto-Reactivate deleted items on Return
                     }); 
                 }
             });
@@ -6469,24 +6498,33 @@
             }); 
         }
 
-        // 🌟 SMART INVOICE TOGGLE LOGIC
+        // 🌟 SMART INVOICE TOGGLE LOGIC (Bulletproof & Fast)
         window.setInvoiceType = function(type) {
-            document.getElementById('pos-invoice-type').value = type;
+            let hiddenInput = document.getElementById('pos-invoice-type');
+            if (hiddenInput) hiddenInput.value = type;
+
             let btnSale = document.getElementById('toggle-sale-inv');
             let btnRet = document.getElementById('toggle-sale-ret');
             let pageTitle = document.getElementById('pos-page-title');
             let genBtn = document.getElementById('save-bill-btn');
             
-            if (type === 'Sale') {
-                btnSale.style.background = '#e8f0fe'; btnSale.style.color = 'var(--primary)';
-                btnRet.style.background = 'transparent'; btnRet.style.color = 'var(--text-muted)';
-                if(pageTitle) pageTitle.innerText = "Create Invoice";
-                if(genBtn) genBtn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">update</span> Update Invoice` : `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">receipt_long</span> Generate Invoice`;
-            } else {
-                btnRet.style.background = '#fdf2f2'; btnRet.style.color = 'var(--danger)';
-                btnSale.style.background = 'transparent'; btnSale.style.color = 'var(--text-muted)';
-                if(pageTitle) pageTitle.innerText = "Sale Return";
-                if(genBtn) genBtn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">update</span> Update Return` : `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">keyboard_return</span> Generate Return`;
+            if (btnSale && btnRet) {
+                if (type === 'Sale') {
+                    btnSale.style.background = '#e8f0fe'; btnSale.style.color = 'var(--primary)';
+                    btnRet.style.background = 'transparent'; btnRet.style.color = 'var(--text-muted)';
+                    if(pageTitle) pageTitle.innerText = "Create Invoice";
+                    if(genBtn) genBtn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">update</span> Update Invoice` : `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">receipt_long</span> Generate Invoice`;
+                } else {
+                    btnRet.style.background = '#fdf2f2'; btnRet.style.color = 'var(--danger)';
+                    btnSale.style.background = 'transparent'; btnSale.style.color = 'var(--text-muted)';
+                    if(pageTitle) pageTitle.innerText = "Sale Return";
+                    if(genBtn) genBtn.innerHTML = window.editingBillNo ? `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">update</span> Update Return` : `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle;">keyboard_return</span> Generate Return`;
+                }
+            }
+            
+            // 🔥 UPDATE SMART BUTTON INSTANTLY WHEN TOGGLED
+            if (typeof window.validateSmartButton === 'function') {
+                window.validateSmartButton();
             }
         };
 

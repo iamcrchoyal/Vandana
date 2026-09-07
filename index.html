@@ -1967,13 +1967,7 @@
             if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Internet Connection Restored! (इंटरनेट वापस आ गया)");
         });
 
-        // Firebase Connection State Check
-        onValue(ref(db, '.info/connected'), (snap) => {
-            if (snap.val() === false && !navigator.onLine) {
-                document.getElementById('offline-banner').style.display = 'block';
-            }
-        });
-        // =========================================================
+    
 
         let allLedgerData = []; let globalCustomers = []; let smartInventory = {}; let allGodownTransfers = []; let allRecycleData = []; let allPendingRequests = [];
         let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null; 

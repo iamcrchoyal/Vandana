@@ -2973,66 +2973,80 @@
                     }
                 });
 
-                // 🌟 ZERO-LATENCY CACHE LOADER 🌟
-                try {
-                    let cachedInv = localStorage.getItem('v_offline_inventory');
-                    if(cachedInv) { smartInventory = JSON.parse(cachedInv); renderInventoryList(); updatePosShades(); window.removeSplashScreen(); }
-                } catch(e) {}
+                // 🌟 SUPABASE INITIAL DATA FETCH 🌟
+async function fetchInitialData() {
+    try {
+        window.removeSplashScreen(); // Turant splash hatao
 
-                onValue(ref(db, 'Inventory'), (snapshot) => { 
-                    smartInventory = snapshot.val() || {}; 
-                    localStorage.setItem('v_offline_inventory', JSON.stringify(smartInventory)); // Save to Cache
-                    renderInventoryList(); 
-                    updatePosShades(); 
-                    checkRestore(); 
-                    window.removeSplashScreen(); // Hide splash as soon as live data hits
-                });
+        // 1. Fetch Customers
+        const { data: custData, error: custErr } = await window.supabaseClient.from('customers').select('*');
+        if (!custErr && custData) {
+            window.rawCustomers = custData;
+            if (typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
+            setupPOSAutocomplete();
+            checkRestore();
+        }
 
-                // 🌟 NEW: Wastage/Damage Data Listener
-                window.allWastageData = [];
-                onValue(ref(db, 'WastageLog'), (snapshot) => {
-                    let data = snapshot.val() || {};
-                    window.allWastageData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse();
-                    if(typeof calculateGrandTotals === 'function') calculateGrandTotals();
-                    if(typeof renderWastageList === 'function') renderWastageList();
-                });
-                
-                onValue(ref(db, 'Customers'), (snapshot) => { 
-                    let data = snapshot.val() || {}; 
-                    window.rawCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); 
-                    if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
-                    setupPOSAutocomplete(); 
-                    checkRestore(); 
-                });
+        // 2. Fetch Inventory
+        const { data: invData, error: invErr } = await window.supabaseClient.from('inventory').select('*');
+        if (!invErr && invData) {
+            smartInventory = {};
+            invData.forEach(item => {
+                smartInventory[item.item_key] = { cone: item.cone, kg: item.kg, isInactive: item.is_inactive };
+            });
+            localStorage.setItem('v_offline_inventory', JSON.stringify(smartInventory));
+            renderInventoryList();
+            updatePosShades();
+            checkRestore();
+        }
 
-                window.allAppUsers = [];
-                onValue(ref(db, 'AppUsers'), (snapshot) => { 
-                    let data = snapshot.val() || {}; 
-                    window.allAppUsers = Object.keys(data).map(key => ({ uid: key, ...data[key] })); 
-                    if(document.getElementById('manage-users-page') && document.getElementById('manage-users-page').classList.contains('active')) {
-                        if(typeof renderManageUsers === 'function') renderManageUsers();
-                    }
-                });
+        // 3. Fetch Ledger (Sirf data lane ke liye, push/set baad me fix karenge)
+        const { data: ledgerData, error: ledErr } = await window.supabaseClient.from('ledger').select('*').order('date', { ascending: false });
+        if (!ledErr && ledgerData) {
+            window.rawLedger = ledgerData;
+            if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
+            renderInventoryList();
+            checkRestore();
+        }
+        
+    } catch (err) {
+        console.error("Supabase Fetch Error:", err);
+    }
+}
+fetchInitialData();
+
+                /*
+window.allAppUsers = [];
+onValue(ref(db, 'AppUsers'), (snapshot) => { 
+    let data = snapshot.val() || {}; 
+    window.allAppUsers = Object.keys(data).map(key => ({ uid: key, ...data[key] })); 
+    if(document.getElementById('manage-users-page') && document.getElementById('manage-users-page').classList.contains('active')) {
+        if(typeof renderManageUsers === 'function') renderManageUsers();
+    }
+});
+*/
                 
                 // LIMIT TO LAST 300 ENTRIES & LOAD MORE LOGIC
-                window.godownLimit = 300;
-                window.godownUnsubscribe = null;
+                /*
+window.godownLimit = 300;
+window.godownUnsubscribe = null;
 
-                window.initGodownListener = function() {
-                    if(window.godownUnsubscribe) window.godownUnsubscribe(); // पुराना कनेक्शन बंद करें
-                    const godownQuery = query(ref(db, 'GodownTransfers'), limitToLast(window.godownLimit));
-                    window.godownUnsubscribe = onValue(godownQuery, (snapshot) => { 
-                        let data = snapshot.val() || {}; 
-                        allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
-                        renderGodownHistory(); 
-                        renderInventoryList(); 
-                        checkRestore(); 
-                        // अगर डेटा 300 या लिमिट के बराबर है, तो Load More बटन दिखाएं
-                        let btn = document.getElementById('godown-load-more-btn');
-                        if(btn) btn.style.display = (allGodownTransfers.length >= window.godownLimit) ? 'inline-block' : 'none';
-                    });
-                }
-                window.initGodownListener(); // पहली बार डेटा लोड करें
+window.initGodownListener = function() {
+    if(window.godownUnsubscribe) window.godownUnsubscribe(); 
+    const godownQuery = query(ref(db, 'GodownTransfers'), limitToLast(window.godownLimit));
+    window.godownUnsubscribe = onValue(godownQuery, (snapshot) => { 
+        let data = snapshot.val() || {}; 
+        allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
+        renderGodownHistory(); 
+        renderInventoryList(); 
+        checkRestore(); 
+        let btn = document.getElementById('godown-load-more-btn');
+        if(btn) btn.style.display = (allGodownTransfers.length >= window.godownLimit) ? 'inline-block' : 'none';
+    });
+}
+window.initGodownListener(); 
+*/
+					// पहली बार डेटा लोड करें
 
                 // बटन क्लिक होने पर चलने वाला फंक्शन
                 window.loadMoreGodown = function() {
@@ -3055,12 +3069,14 @@
                 });
                 
                 // LIMIT TO LAST 100 ENTRIES FOR RECYCLE BIN
-                const recycleQuery = query(ref(db, 'RecycleBin'), limitToLast(100));
-                onValue(recycleQuery, (snapshot) => { 
-                    let data = snapshot.val() || {}; 
-                    allRecycleData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
-                    renderRecycleBin(); 
-                });
+                /*
+const recycleQuery = query(ref(db, 'RecycleBin'), limitToLast(100));
+onValue(recycleQuery, (snapshot) => { 
+    let data = snapshot.val() || {}; 
+    allRecycleData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
+    renderRecycleBin(); 
+});
+*/
                 
                 // Pending Requests UI Update Logic
                 window.updatePendingAlertUI = function() {
@@ -3077,19 +3093,17 @@
                 };
 
                 // नया: Pending Requests को डेटाबेस से लाना (LIMIT 100)
-                const pendingQuery = query(ref(db, 'PendingRequests'), limitToLast(100));
-                onValue(pendingQuery, (snapshot) => { 
-                    let data = snapshot.val() || {}; 
-                    allPendingRequests = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
-                    
-                    // Alert box ko update karein
-                    window.updatePendingAlertUI();
-
-                    // अगर वेरिफिकेशन पेज खुला है, तो उसे रियल-टाइम अपडेट करें
-                    if(document.getElementById('verification-page') && document.getElementById('verification-page').classList.contains('active')) {
-                        if(typeof renderPendingRequests === 'function') renderPendingRequests();
-                    }
-                });
+                /*
+const pendingQuery = query(ref(db, 'PendingRequests'), limitToLast(100));
+onValue(pendingQuery, (snapshot) => { 
+    let data = snapshot.val() || {}; 
+    allPendingRequests = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
+    window.updatePendingAlertUI();
+    if(document.getElementById('verification-page') && document.getElementById('verification-page').classList.contains('active')) {
+        if(typeof renderPendingRequests === 'function') renderPendingRequests();
+    }
+});
+*/
             } catch (error) {}
             // ===============================================================
 
@@ -7457,21 +7471,24 @@ window.showTargetCelebration = function() {
 
     const incomeCategories = ["Sales/Bill Payment", "Owner Capital IN", "Other Income"];
     const expenseCategories = ["Tea/Snacks", "Transport/Freight", "Shop Rent", "Staff Salary", "Owner Withdrawal", "Other Expense"];
-
+     /*
     onValue(ref(db, 'CashBankBook/Banks'), (snapshot) => {
         let data = snapshot.val() || {};
         cbBanks = Object.keys(data).map(key => ({ key: key, ...data[key] }));
         updateCbDashboard();
         if(document.getElementById('cashbook-page').classList.contains('active')) renderCbTab();
     });
+     */
 
-    onValue(ref(db, 'CashBankBook/Transactions'), (snapshot) => {
-        let data = snapshot.val() || {};
-        cbTransactions = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse();
-        updateCbDashboard();
-        if(document.getElementById('cashbook-page').classList.contains('active')) renderCbTab();
-    });
-
+						
+    /*
+onValue(ref(db, 'CashBankBook/Transactions'), (snapshot) => {
+    let data = snapshot.val() || {};
+    cbTransactions = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse();
+    updateCbDashboard();
+    if(document.getElementById('cashbook-page').classList.contains('active')) renderCbTab();
+});
+*/
     function updateCbDashboard() {
         totalBankBal = 0;
         cbBanks.forEach(b => totalBankBal += (parseFloat(b.balance) || 0));

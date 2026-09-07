@@ -1955,8 +1955,34 @@
         </div>
     </div>
 
-    <!-- 🌟 SUPABASE MODULAR CONNECTION 🌟 -->
-<script type="module" src="./js/supabase.js"></script>
+    <!-- ================= FIREBASE JAVASCRIPT ================= -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue, get, set, push, update, remove, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getStorage, ref as storageRef, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+		// 🛡️ POINT 2: FIREBASE APP CHECK IMPORT (Superfast)
+        import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app-check.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAGcWUM4lqJKmV2Zz2Em3WtI-D0fcQeuzQ",
+            authDomain: "vandana-inventory.firebaseapp.com",
+            databaseURL: "https://vandana-inventory-default-rtdb.firebaseio.com",
+            projectId: "vandana-inventory",
+            storageBucket: "vandana-inventory.firebasestorage.app",
+            messagingSenderId: "714747540875",
+            appId: "1:714747540875:web:dfb72712b485039325eb8e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+		// 🛡️ POINT 2: APP CHECK ACTIVATION (Blocks unauthorized API access)
+        const appCheck = initializeAppCheck(app, {
+            provider: new ReCaptchaV3Provider('YOUR_RECAPTCHA_V3_SITE_KEY'),
+            isTokenAutoRefreshEnabled: true
+        });
+        const db = getDatabase(app);
+        const auth = getAuth(app); // OTP के लिए नया ताला
+        const storage = getStorage(app); // Firebase Cloud Storage चालू किया
 
         // ================= OFFLINE SUPPORT LOGIC =================
         window.addEventListener('offline', function() {
@@ -1967,7 +1993,13 @@
             if(typeof window.showSaaSToast === 'function') window.showSaaSToast("Internet Connection Restored! (इंटरनेट वापस आ गया)");
         });
 
-    
+        // Firebase Connection State Check
+        onValue(ref(db, '.info/connected'), (snap) => {
+            if (snap.val() === false && !navigator.onLine) {
+                document.getElementById('offline-banner').style.display = 'block';
+            }
+        });
+        // =========================================================
 
         let allLedgerData = []; let globalCustomers = []; let smartInventory = {}; let allGodownTransfers = []; let allRecycleData = []; let allPendingRequests = [];
         let currentPartyName = ""; let currentPartyPhone = ""; let currentPartyKey = ""; let currentEntryData = null; 
@@ -1985,39 +2017,122 @@
         try { history.pushState(null, null, location.href); window.onpopstate = function () { history.go(1); }; } catch(e) {}
 
         window.addEventListener('DOMContentLoaded', () => {
-           // --- SUPABASE AUTH LOGIC STARTS ---
-            const MASTER_ADMIN_EMAIL = "c.r.choyal.crc@gmail.com"; 
+           // --- NEW AUTH LOGIC STARTS ---
+            const googleProvider = new GoogleAuthProvider();
+            const MASTER_ADMIN_EMAIL = "c.r.choyal.crc@gmail.com"; // यहाँ अपनी मुख्य ईमेल डालें
 
-            window.supabaseClient.auth.onAuthStateChange(async (event, session) => {
-                const user = session ? session.user : null;
-                
-                // 🛑 EMERGENCY BYPASS: Splash screen force hide so UI is visible
-                window.removeSplashScreen();
-
+            onAuthStateChanged(auth, (user) => {
                 if (user) {
+                    // 1. लॉगिन स्क्रीन छुपाएं
                     document.getElementById('login-overlay').style.display = 'none'; 
                     document.getElementById('user-profile-badge').style.display = 'flex';
                     
-                    let userName = user.user_metadata.full_name || "User";
+                    // UI UPDATE: वेबसाइट के डिज़ाइन में नाम और ईमेल बदलना
+                    let userName = user.displayName || "User";
                     let firstName = userName.split(' ')[0];
                     let userInitial = userName.charAt(0).toUpperCase();
 
                     if (document.getElementById('user-name')) document.getElementById('user-name').innerText = userName;
+                    if (document.getElementById('user-photo') && user.photoURL) document.getElementById('user-photo').src = user.photoURL;
+
+                    const hour = new Date().getHours(); 
+                    let greet = "Good morning";
+                    if (hour >= 12 && hour < 17) greet = "Good afternoon"; else if (hour >= 17) greet = "Good evening";
+                    if (document.getElementById('dynamic-greeting')) document.getElementById('dynamic-greeting').innerText = greet + ", " + firstName;
+
+                    if (document.getElementById('pm-email-display')) document.getElementById('pm-email-display').innerText = user.email;
+                    if (document.getElementById('pm-name-display')) document.getElementById('pm-name-display').innerText = "Hi, " + firstName + "!";
                     
-                    // Store details for database calls later
-                    window.currentUserEmail = user.email;
-                    window.currentUserName = userName;
-                    // Temporary Role until DB fetch is migrated
-                    window.currentUserRole = (user.email === MASTER_ADMIN_EMAIL) ? "admin" : "pending";
+                    if (user.photoURL) {
+                        if (document.getElementById('pm-avatar-img')) { document.getElementById('pm-avatar-img').src = user.photoURL; document.getElementById('pm-avatar-img').style.display = 'block'; document.getElementById('pm-avatar-text').style.display = 'none'; }
+                        if (document.getElementById('top-avatar-img')) { document.getElementById('top-avatar-img').src = user.photoURL; document.getElementById('top-avatar-img').style.display = 'block'; document.getElementById('top-avatar-text').style.display = 'none'; }
+                    } else {
+                        if (document.getElementById('pm-avatar-text')) { document.getElementById('pm-avatar-text').innerText = userInitial; document.getElementById('pm-avatar-text').style.display = 'block'; document.getElementById('pm-avatar-img').style.display = 'none'; }
+                        if (document.getElementById('top-avatar-text')) { document.getElementById('top-avatar-text').innerText = userInitial; document.getElementById('top-avatar-text').style.display = 'flex'; document.getElementById('top-avatar-img').style.display = 'none'; }
+                    }
+
+                    // 2. डेटाबेस में यूजर का डेटा सेव/अपडेट करना
+                    const userRef = ref(db, 'AppUsers/' + user.uid);
                     
-                    if(typeof window.applyRoleBasedAccess === 'function') window.applyRoleBasedAccess(window.currentUserRole);
+                    get(userRef).then((snapshot) => {
+                        let assignedRole = "pending";
+                        let finalPhone = "";
+                        let finalAddress = "";
+
+                        if (!snapshot.exists()) {
+                            // Master admin logic is just for fallback, rest depends on database
+                            if (user.email === MASTER_ADMIN_EMAIL) assignedRole = "admin";
+                            // नया अकाउंट
+                            set(userRef, {
+                                name: userName,
+                                email: user.email || "",
+                                photo: user.photoURL || "",
+                                phone: "",     
+                                address: "",    
+                                role: assignedRole,
+                                createdAt: new Date().toISOString()
+                            });
+                        } else {
+                            // पुराना अकाउंट 
+                            let userData = snapshot.val();
+                            assignedRole = userData.role || "pending";
+                            if (user.email === MASTER_ADMIN_EMAIL) assignedRole = "admin"; 
+                            
+                            // डेटाबेस से पुराना नंबर और पता निकाल लें
+                            finalPhone = userData.phone || "";
+                            finalAddress = userData.address || "";
+
+                            update(userRef, {
+                                name: userName,
+                                email: user.email || "",
+                                photo: user.photoURL || "",
+                                role: assignedRole 
+                            });
+                        }
+                        
+                        // ================= AUTO-FILL BUSINESS PROFILE =================
+                        // Admin ka data DB se aayega, isliye Google usko overwrite nahi karega
+                        if (assignedRole !== "admin") {
+                            if (document.getElementById('ap-name')) document.getElementById('ap-name').value = userName;
+                            if (document.getElementById('ap-email')) document.getElementById('ap-email').value = user.email || "";
+                            if (document.getElementById('ap-phone') && finalPhone) document.getElementById('ap-phone').value = finalPhone;
+                            if (document.getElementById('ap-address') && finalAddress) document.getElementById('ap-address').value = finalAddress;
+                        }
+                        // ================================================================
+
+                        // ================= STORE GLOBAL USER DATA =================
+                        window.currentUserEmail = user.email;
+                        window.currentUserRole = assignedRole;
+                        window.currentUserPhone = finalPhone;
+                        window.currentUserName = userName;
+                        
+                        // डेटा छाँटने वाले फंक्शन को चालू करें
+                        if(typeof applyDataFiltering === 'function') applyDataFiltering();
+                        
+                        // नोटिफिकेशन अलर्ट को रिफ्रेश करें (ताकि पेज रिफ्रेश होने पर भी अलर्ट न हटे)
+                        if(typeof window.updatePendingAlertUI === 'function') window.updatePendingAlertUI();
+                        // ==========================================================
+                        // ================= SHOW POPUP FOR NEW CUSTOMERS =================
+                        // अगर रोल 'pending' है और फोन नंबर या एड्रेस खाली है, तो पॉप-अप दिखाएं
+                        if (assignedRole === "pending" && (!finalPhone || !finalAddress)) {
+                            document.getElementById('new-customer-popup').style.display = 'flex';
+                        }
+                        // ================================================================
+                        // ================= CALL ROLE-BASED ACCESS (RBAC) =================
+                        // यूजर का रोल पास करके बटन छुपाने/दिखाने वाला फंक्शन चलाएं
+                        if(typeof window.applyRoleBasedAccess === 'function') {
+                            window.applyRoleBasedAccess(assignedRole);
+                        }
+                        // =================================================================
+                        
+                    }).catch(err => console.error("Database Error:", err));
 
                 } else {
                     document.getElementById('login-overlay').style.display = 'flex'; 
                     document.getElementById('user-profile-badge').style.display = 'none';
                 }
             });
-            // --- SUPABASE AUTH LOGIC ENDS ---
+            // --- NEW AUTH LOGIC ENDS ---
             let todayObjInit = new Date();
             let todayStr = new Date(todayObjInit.getTime() - (todayObjInit.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
             if(document.getElementById('dash-date-picker')) document.getElementById('dash-date-picker').value = todayStr;
@@ -2967,80 +3082,66 @@
                     }
                 });
 
-                // 🌟 SUPABASE INITIAL DATA FETCH 🌟
-async function fetchInitialData() {
-    try {
-        window.removeSplashScreen(); // Turant splash hatao
+                // 🌟 ZERO-LATENCY CACHE LOADER 🌟
+                try {
+                    let cachedInv = localStorage.getItem('v_offline_inventory');
+                    if(cachedInv) { smartInventory = JSON.parse(cachedInv); renderInventoryList(); updatePosShades(); window.removeSplashScreen(); }
+                } catch(e) {}
 
-        // 1. Fetch Customers
-        const { data: custData, error: custErr } = await window.supabaseClient.from('customers').select('*');
-        if (!custErr && custData) {
-            window.rawCustomers = custData;
-            if (typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
-            setupPOSAutocomplete();
-            checkRestore();
-        }
+                onValue(ref(db, 'Inventory'), (snapshot) => { 
+                    smartInventory = snapshot.val() || {}; 
+                    localStorage.setItem('v_offline_inventory', JSON.stringify(smartInventory)); // Save to Cache
+                    renderInventoryList(); 
+                    updatePosShades(); 
+                    checkRestore(); 
+                    window.removeSplashScreen(); // Hide splash as soon as live data hits
+                });
 
-        // 2. Fetch Inventory
-        const { data: invData, error: invErr } = await window.supabaseClient.from('inventory').select('*');
-        if (!invErr && invData) {
-            smartInventory = {};
-            invData.forEach(item => {
-                smartInventory[item.item_key] = { cone: item.cone, kg: item.kg, isInactive: item.is_inactive };
-            });
-            localStorage.setItem('v_offline_inventory', JSON.stringify(smartInventory));
-            renderInventoryList();
-            updatePosShades();
-            checkRestore();
-        }
+                // 🌟 NEW: Wastage/Damage Data Listener
+                window.allWastageData = [];
+                onValue(ref(db, 'WastageLog'), (snapshot) => {
+                    let data = snapshot.val() || {};
+                    window.allWastageData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse();
+                    if(typeof calculateGrandTotals === 'function') calculateGrandTotals();
+                    if(typeof renderWastageList === 'function') renderWastageList();
+                });
+                
+                onValue(ref(db, 'Customers'), (snapshot) => { 
+                    let data = snapshot.val() || {}; 
+                    window.rawCustomers = Object.keys(data).map(key => ({ key: key, ...data[key] })); 
+                    if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
+                    setupPOSAutocomplete(); 
+                    checkRestore(); 
+                });
 
-        // 3. Fetch Ledger (Sirf data lane ke liye, push/set baad me fix karenge)
-        const { data: ledgerData, error: ledErr } = await window.supabaseClient.from('ledger').select('*').order('date', { ascending: false });
-        if (!ledErr && ledgerData) {
-            window.rawLedger = ledgerData;
-            if(typeof window.applyDataFiltering === 'function') window.applyDataFiltering();
-            renderInventoryList();
-            checkRestore();
-        }
-        
-    } catch (err) {
-        console.error("Supabase Fetch Error:", err);
-    }
-}
-fetchInitialData();
-
-                /*
-window.allAppUsers = [];
-onValue(ref(db, 'AppUsers'), (snapshot) => { 
-    let data = snapshot.val() || {}; 
-    window.allAppUsers = Object.keys(data).map(key => ({ uid: key, ...data[key] })); 
-    if(document.getElementById('manage-users-page') && document.getElementById('manage-users-page').classList.contains('active')) {
-        if(typeof renderManageUsers === 'function') renderManageUsers();
-    }
-});
-*/
+                window.allAppUsers = [];
+                onValue(ref(db, 'AppUsers'), (snapshot) => { 
+                    let data = snapshot.val() || {}; 
+                    window.allAppUsers = Object.keys(data).map(key => ({ uid: key, ...data[key] })); 
+                    if(document.getElementById('manage-users-page') && document.getElementById('manage-users-page').classList.contains('active')) {
+                        if(typeof renderManageUsers === 'function') renderManageUsers();
+                    }
+                });
                 
                 // LIMIT TO LAST 300 ENTRIES & LOAD MORE LOGIC
-                /*
-window.godownLimit = 300;
-window.godownUnsubscribe = null;
+                window.godownLimit = 300;
+                window.godownUnsubscribe = null;
 
-window.initGodownListener = function() {
-    if(window.godownUnsubscribe) window.godownUnsubscribe(); 
-    const godownQuery = query(ref(db, 'GodownTransfers'), limitToLast(window.godownLimit));
-    window.godownUnsubscribe = onValue(godownQuery, (snapshot) => { 
-        let data = snapshot.val() || {}; 
-        allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
-        renderGodownHistory(); 
-        renderInventoryList(); 
-        checkRestore(); 
-        let btn = document.getElementById('godown-load-more-btn');
-        if(btn) btn.style.display = (allGodownTransfers.length >= window.godownLimit) ? 'inline-block' : 'none';
-    });
-}
-window.initGodownListener(); 
-*/
-					// पहली बार डेटा लोड करें
+                window.initGodownListener = function() {
+                    if(window.godownUnsubscribe) window.godownUnsubscribe(); // पुराना कनेक्शन बंद करें
+                    const godownQuery = query(ref(db, 'GodownTransfers'), limitToLast(window.godownLimit));
+                    window.godownUnsubscribe = onValue(godownQuery, (snapshot) => { 
+                        let data = snapshot.val() || {}; 
+                        allGodownTransfers = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
+                        renderGodownHistory(); 
+                        renderInventoryList(); 
+                        checkRestore(); 
+                        // अगर डेटा 300 या लिमिट के बराबर है, तो Load More बटन दिखाएं
+                        let btn = document.getElementById('godown-load-more-btn');
+                        if(btn) btn.style.display = (allGodownTransfers.length >= window.godownLimit) ? 'inline-block' : 'none';
+                    });
+                }
+                window.initGodownListener(); // पहली बार डेटा लोड करें
 
                 // बटन क्लिक होने पर चलने वाला फंक्शन
                 window.loadMoreGodown = function() {
@@ -3063,14 +3164,12 @@ window.initGodownListener();
                 });
                 
                 // LIMIT TO LAST 100 ENTRIES FOR RECYCLE BIN
-                /*
-const recycleQuery = query(ref(db, 'RecycleBin'), limitToLast(100));
-onValue(recycleQuery, (snapshot) => { 
-    let data = snapshot.val() || {}; 
-    allRecycleData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
-    renderRecycleBin(); 
-});
-*/
+                const recycleQuery = query(ref(db, 'RecycleBin'), limitToLast(100));
+                onValue(recycleQuery, (snapshot) => { 
+                    let data = snapshot.val() || {}; 
+                    allRecycleData = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
+                    renderRecycleBin(); 
+                });
                 
                 // Pending Requests UI Update Logic
                 window.updatePendingAlertUI = function() {
@@ -3087,17 +3186,19 @@ onValue(recycleQuery, (snapshot) => {
                 };
 
                 // नया: Pending Requests को डेटाबेस से लाना (LIMIT 100)
-                /*
-const pendingQuery = query(ref(db, 'PendingRequests'), limitToLast(100));
-onValue(pendingQuery, (snapshot) => { 
-    let data = snapshot.val() || {}; 
-    allPendingRequests = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
-    window.updatePendingAlertUI();
-    if(document.getElementById('verification-page') && document.getElementById('verification-page').classList.contains('active')) {
-        if(typeof renderPendingRequests === 'function') renderPendingRequests();
-    }
-});
-*/
+                const pendingQuery = query(ref(db, 'PendingRequests'), limitToLast(100));
+                onValue(pendingQuery, (snapshot) => { 
+                    let data = snapshot.val() || {}; 
+                    allPendingRequests = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse(); 
+                    
+                    // Alert box ko update karein
+                    window.updatePendingAlertUI();
+
+                    // अगर वेरिफिकेशन पेज खुला है, तो उसे रियल-टाइम अपडेट करें
+                    if(document.getElementById('verification-page') && document.getElementById('verification-page').classList.contains('active')) {
+                        if(typeof renderPendingRequests === 'function') renderPendingRequests();
+                    }
+                });
             } catch (error) {}
             // ===============================================================
 
@@ -7465,24 +7566,21 @@ window.showTargetCelebration = function() {
 
     const incomeCategories = ["Sales/Bill Payment", "Owner Capital IN", "Other Income"];
     const expenseCategories = ["Tea/Snacks", "Transport/Freight", "Shop Rent", "Staff Salary", "Owner Withdrawal", "Other Expense"];
-     /*
+
     onValue(ref(db, 'CashBankBook/Banks'), (snapshot) => {
         let data = snapshot.val() || {};
         cbBanks = Object.keys(data).map(key => ({ key: key, ...data[key] }));
         updateCbDashboard();
         if(document.getElementById('cashbook-page').classList.contains('active')) renderCbTab();
     });
-     */
 
-						
-    /*
-onValue(ref(db, 'CashBankBook/Transactions'), (snapshot) => {
-    let data = snapshot.val() || {};
-    cbTransactions = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse();
-    updateCbDashboard();
-    if(document.getElementById('cashbook-page').classList.contains('active')) renderCbTab();
-});
-*/
+    onValue(ref(db, 'CashBankBook/Transactions'), (snapshot) => {
+        let data = snapshot.val() || {};
+        cbTransactions = Object.keys(data).map(key => ({ key: key, ...data[key] })).reverse();
+        updateCbDashboard();
+        if(document.getElementById('cashbook-page').classList.contains('active')) renderCbTab();
+    });
+
     function updateCbDashboard() {
         totalBankBal = 0;
         cbBanks.forEach(b => totalBankBal += (parseFloat(b.balance) || 0));

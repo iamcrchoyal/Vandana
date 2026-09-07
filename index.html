@@ -1955,34 +1955,21 @@
         </div>
     </div>
 
-    <!-- ================= FIREBASE JAVASCRIPT ================= -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue, get, set, push, update, remove, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getStorage, ref as storageRef, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-		// 🛡️ POINT 2: FIREBASE APP CHECK IMPORT (Superfast)
-        import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app-check.js";
+    <!-- 🌟 SUPABASE JS SDK 🌟 -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAGcWUM4lqJKmV2Zz2Em3WtI-D0fcQeuzQ",
-            authDomain: "vandana-inventory.firebaseapp.com",
-            databaseURL: "https://vandana-inventory-default-rtdb.firebaseio.com",
-            projectId: "vandana-inventory",
-            storageBucket: "vandana-inventory.firebasestorage.app",
-            messagingSenderId: "714747540875",
-            appId: "1:714747540875:web:dfb72712b485039325eb8e"
-        };
-
-        const app = initializeApp(firebaseConfig);
-		// 🛡️ POINT 2: APP CHECK ACTIVATION (Blocks unauthorized API access)
-        const appCheck = initializeAppCheck(app, {
-            provider: new ReCaptchaV3Provider('YOUR_RECAPTCHA_V3_SITE_KEY'),
-            isTokenAutoRefreshEnabled: true
-        });
-        const db = getDatabase(app);
-        const auth = getAuth(app); // OTP के लिए नया ताला
-        const storage = getStorage(app); // Firebase Cloud Storage चालू किया
+<script type="module">
+    // 🌟 ZERO-LATENCY SUPABASE CONNECTION 🌟
+    const supabaseUrl = 'https://prfdqzhpxuewmarutmyf.supabase.co';
+    const supabaseKey = 'sb_publishable_RhD0daGsqYeMkc8waqqfLQ_Xbi7wXUH';
+    
+    // Initialize Supabase
+    window.supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // पुराने कोड को बिना एरर के चलाने के लिए ग्लोबल शॉर्टकट्स
+    window.db = window.supabaseClient;
+    window.auth = window.supabaseClient.auth;
+    window.storage = window.supabaseClient.storage;
 
         // ================= OFFLINE SUPPORT LOGIC =================
         window.addEventListener('offline', function() {
